@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(app.wunderpass.org)
+domains=(pool.wunderpass.org)
 rsa_key_size=4096
 data_path="./certbot"
 email="m.loechner@wunderpass.io" # Adding a valid address is strongly recommended
