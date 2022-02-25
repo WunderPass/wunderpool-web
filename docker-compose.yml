@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: ./web
+    command: bash -c "npm install && npm run build && npm run start"
+    volumes:
+      - './web:/web'
+    ports:
+      - 3000:3000
+    stdin_open: true
+    env_file:
+      - ./.env
+  nginx:
+    image: nginx
+    restart: always
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/var/www/html
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    
