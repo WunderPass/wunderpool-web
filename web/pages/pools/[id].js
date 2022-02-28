@@ -1,8 +1,11 @@
+import {useRouter} from 'next/router';
 import { Button, Collapse, Container, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 
 export default function Pool(props) {
+  const router = useRouter();
+  const {id} = router.query;
   const [ape, setApe] = useState(false)
   const [fud, setFud] = useState(false)
   const [tokenAddress, setTokenAddress] = useState("")
@@ -21,7 +24,7 @@ export default function Pool(props) {
   return (
     <Container maxWidth="md">
       <Stack spacing={3} alignItems="center">
-        <Typography variant="h3">Your WunderPool</Typography>
+        <Typography variant="h3">WunderPool #{id}</Typography>
         <Collapse in={!ape && !fud}>
           <Stack direction="row" spacing={3}>
             <Button onClick={() => {setApe(true)}} color="success" variant="contained" sx={{width: 300, height: 300}}>So richtig Reinapen</Button>
