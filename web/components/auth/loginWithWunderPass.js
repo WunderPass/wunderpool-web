@@ -24,6 +24,13 @@ export default function LoginWithWunderPass(props) {
         }
       }
     })
+
+    const closedListener = setInterval(() => {
+      if (authPopup.closed) {
+        setPopup(null);
+        clearInterval(closedListener);
+      }
+    }, 500);
   }
 
   const goBack = (e) => {
