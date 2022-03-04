@@ -4,14 +4,14 @@ export default function useWunderPass(config) {
   const sendSignatureRequest = (data) => {
     return new Promise((resolve, reject) => {
       try {
-        const popup = window.open(encodeURI(`http://localhost:3000/sign?name=${name}&imageUrl=${image}`), 'WunderPassSign', 'popup');
+        const popup = window.open(encodeURI(`https://app.wunderpass.org/sign?name=${name}&imageUrl=${image}`), 'WunderPassSign', 'popup');
       
         const requestInterval = setInterval(() => {
-          popup.postMessage({accountId: accountId, data: data}, 'http://localhost:3000')
+          popup.postMessage({accountId: accountId, data: data}, 'https://app.wunderpass.org')
         }, 1000);
         
         window.addEventListener("message", (event) => {
-          if (event.origin == 'http://localhost:3000') {
+          if (event.origin == 'https://app.wunderpass.org') {
             clearInterval(requestInterval);
   
             if (event.data && typeof(event.data) == 'object') {
@@ -29,14 +29,14 @@ export default function useWunderPass(config) {
   const smartContractTransaction = (contract) => {
     return new Promise((resolve, reject) => {
       try {
-        const popup = window.open(encodeURI(`http://localhost:3000/smartContract?name=${name}&imageUrl=${image}`), 'WunderPassContract', 'popup');
+        const popup = window.open(encodeURI(`https://app.wunderpass.org/smartContract?name=${name}&imageUrl=${image}`), 'WunderPassContract', 'popup');
       
         const requestInterval = setInterval(() => {
-          popup.postMessage({accountId: accountId, data: contract}, 'http://localhost:3000')
+          popup.postMessage({accountId: accountId, data: contract}, 'https://app.wunderpass.org')
         }, 1000);
         
         window.addEventListener("message", (event) => {
-          if (event.origin == 'http://localhost:3000') {
+          if (event.origin == 'https://app.wunderpass.org') {
             clearInterval(requestInterval);
   
             if (event.data && typeof(event.data) == 'object') {
