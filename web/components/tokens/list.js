@@ -28,11 +28,11 @@ export default function TokenList(props) {
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack spacing={1}>
             <Typography variant="h6">MATIC</Typography>
-            <Typography variant="subtitle1">Balance: {poolBalance.toNumber()}</Typography>
+            <Typography variant="subtitle1">Balance: {typeof(poolBalance) == 'number' ? poolBalance : poolBalance.toNumber()}</Typography>
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="center">
             <IconButton color="success" onClick={handleFund}><AttachMoneyIcon /></IconButton>
-            <IconButton color="error" disabled={poolBalance.toNumber() == 0} onClick={handleWithdraw}><CallReceivedIcon /></IconButton>
+            <IconButton color="error" disabled={typeof(poolBalance) == 'number' ? poolBalance : poolBalance.toNumber() == 0} onClick={handleWithdraw}><CallReceivedIcon /></IconButton>
           </Stack>
         </Stack>
       </Paper>

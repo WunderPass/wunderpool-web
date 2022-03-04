@@ -6,7 +6,7 @@ export async function vote(poolAddress, proposalId, mode) {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const address = poolAddress;
     const abi = ["function vote(uint proposalId, uint mode) public"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(address, abi, provider);
     
     smartContractTransaction(false).then(async (privKey) => {

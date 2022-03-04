@@ -4,7 +4,7 @@ import useWunderPass from '/hooks/useWunderPass';
 export function fetchPoolProposals(address) {
   return new Promise(async (resolve, reject) => {
     const abi = ["function getAllProposalIds() public view returns(uint[] memory)", "function getProposal(uint _proposalId) public view returns(string memory title, string memory description, uint transactionCount, uint deadline, uint yesVotes, uint noVotes, uint abstainVotes, uint createdAt, bool executed)"];
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(address, abi, provider);
     const proposalIds = await wunderPool.getAllProposalIds();
     const proposals = await Promise.all(proposalIds.map(async (id) => {
@@ -18,7 +18,7 @@ export function fetchPoolProposals(address) {
 export function fetchTransactionData(address, id, transactionCount) {
   return new Promise(async (resolve, reject) => {
     const abi = ["function getProposalTransaction(uint _proposalId, uint _transactionIndex) public view returns(string memory action, bytes memory param, uint transactionValue, address contractAddress)"];
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(address, abi, provider);
     const transactions = await Promise.all([...Array(transactionCount).keys()].map(async (index) => {
       const {action, param, transactionValue, contractAddress} = await wunderPool.getProposalTransaction(id, index);
@@ -32,7 +32,7 @@ export function createMultiActionProposal(poolAddress, title, description, contr
   return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function createMultiActionProposal(string memory _title, string memory _description, address[] memory _contractAddresses, string[] memory _actions, bytes[] memory _params, uint[] memory _transactionValues, uint _deadline) public"];
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     smartContractTransaction(false).then(async (privKey) => {
       try {
@@ -64,7 +64,7 @@ export function execute(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function executeProposal(uint _proposalId) public"];
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     smartContractTransaction(false).then(async (privKey) => {
       try {

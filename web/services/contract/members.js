@@ -5,7 +5,7 @@ export function addMember(poolAddress, memberAddress) {
   return new Promise((resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function addMember(address _newMember) external"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     
     smartContractTransaction(false).then(async (privKey) => {
@@ -26,7 +26,7 @@ export function removeMember(poolAddress, memberAddress) {
   return new Promise((resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function removeMember(address _member) external"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     
     smartContractTransaction(false).then(async (privKey) => {
@@ -47,7 +47,7 @@ export function addAdmin(poolAddress, adminAddress) {
   return new Promise((resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function addAdmin(address _newAdmin) external"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     
     smartContractTransaction(false).then(async (privKey) => {
@@ -68,7 +68,7 @@ export function removeAdmin(poolAddress, adminAddress) {
   return new Promise((resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function removeAdmin(address _admin) external"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     
     smartContractTransaction(false).then(async (privKey) => {
@@ -89,7 +89,7 @@ export function removeMemberAndAdmin(poolAddress, memberAddress) {
   return new Promise((resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function removeAdmin(address _admin) external", "function removeMember(address _member) external"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/TmNYkrTbVUgUS0rjsxLLMmav2iD5AJod");
+    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
     
     smartContractTransaction(false).then(async (privKey) => {
