@@ -5,22 +5,34 @@ import { fetchERC20Data } from '/services/contract/token';
 import { createApeSuggestion } from '/services/contract/proposals';
 
 export default function ApeForm(props) {
-  const {setApe, address, fetchProposals} = props;
+  const {setApe, address, fetchProposals, handleSuccess, handleError} = props;
   const [tokenAddress, setTokenAddress] = useState("");
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const handleClose = () => {
+    setTokenAddress("");
+    setTokenName(null);
+    setTokenSymbol(null);
+    setValue(0)
+    setLoading(false);
+    setApe(false);
+  }
+
   const handleApe = (e) => {
     e.preventDefault();
     setLoading(true);
     createApeSuggestion(address, tokenAddress, `Let's Ape into ${tokenName} (${tokenSymbol})`, `We will ape ${value} MATIC into ${tokenName}`, value).then(res => {
       console.log(res);
-      setLoading(false);
-      setTokenAddress("");
-      setApe(false);
+      handleSuccess(`Created Proposal to Ape into ${tokenSymbol}`);
       fetchProposals();
+      handleClose();
+    }).catch((err) => {
+      handleError(err);
+    }).then(() => {
+      setLoading(false);
     })
   }
 
@@ -47,7 +59,7 @@ export default function ApeForm(props) {
       <Stack width="100%" spacing={3}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="h5">APE</Typography>
-          <IconButton onClick={() => {setApe(false)}}>
+          <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </Stack>

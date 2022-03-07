@@ -1,6 +1,6 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, LinearProgress, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { addAdmin, addMember } from "../../services/contract/members";
+import { addMemberOrAdmin } from "/services/contract/members";
 
 export default function AddMemberDialog(props) {
   const {open, setOpen, poolAddress, handleSuccess, handleError} = props;
@@ -18,39 +18,14 @@ export default function AddMemberDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    if(isMember) {
-      addMember(poolAddress, address).then((res) => {
-        if(isAdmin) {
-          addAdmin(poolAddress, address).then((res) => {
-            setLoading(false);
-            handleSuccess(`Added ${address} as Admin and Member`)
-            handleClose();
-          }).catch((err) => {
-            setLoading(false);
-            handleError(err);
-          })
-        } else {
-          handleSuccess(`Added ${address} as Member`)
-          setLoading(false);
-          handleClose();
-        }
-      }).catch((err) => {
-        setLoading(false);
-        handleError(err)
-      })
-    } else if(isAdmin) {
-      addAdmin(poolAddress, address).then((res) => {
-        handleSuccess(`Added ${address} as Admin`)
-        setLoading(false);
-        handleClose();
-      }).catch((err) => {
-        setLoading(false);
-        handleError(err);
-      })
-    } else {
+    addMemberOrAdmin(poolAddress, address, isMember, isAdmin).then((res) => {
       setLoading(false);
+      handleSuccess(`Added ${address} to the Pool`);
       handleClose();
-    }
+    }).catch((err) => {
+      setLoading(false);
+      handleError(err)
+    })
   }
 
   const handleInput = (e) => {

@@ -17,10 +17,12 @@ import ApeForm from '/components/proposals/apeForm';
 import { fetchPoolMembers } from "/services/contract/pools";
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import { fetchPoolBalance } from '/services/contract/pools';
+import CustomForm from '../../components/proposals/customForm';
 
 export default function Pool(props) {
   const router = useRouter();
   const {id: address, name} = router.query;
+  const {setupPoolListener} = props;
   const [ape, setApe] = useState(false)
   const [customProposal, setCustomProposal] = useState(false)
   const [personDialog, setPersonDialog] = useState(false);
@@ -62,6 +64,7 @@ export default function Pool(props) {
 
   useEffect(() => {
     if(address) {
+      setupPoolListener(address);
       fetchProposals();
       fetchTokens();
       fetchMembers();
@@ -96,16 +99,16 @@ export default function Pool(props) {
           </Stack>
         </Collapse>
         <Collapse in={ape} sx={{width: "100%"}}>
-          <ApeForm setApe={setApe} address={address} fetchProposals={fetchProposals}/>
+          <ApeForm setApe={setApe} address={address} fetchProposals={fetchProposals} {...props}/>
         </Collapse>
         <Collapse in={customProposal} sx={{width: "100%"}}>
-          
+          <CustomForm setCustomProposal={setCustomProposal} poolAddress={address} fetchProposals={fetchProposals} {...props}/>
         </Collapse>
         {loading ? 
           <Skeleton variant="rectangular" width="100%" sx={{height: "100px", borderRadius: 3}} /> :
           <Collapse in={!customProposal && !ape} sx={{width: "100%"}}>
             <ProposalList proposals={proposals} members={members} poolAddress={address} setApe={setApe} fetchProposals={fetchProposals} {...props}/>
-            <TokenList tokens={tokens} poolAddress={address} fetchProposals={fetchProposals} handleFund={() => setFundDialog(true)} handleWithdraw={() => setWithdrawDialog(true)} poolBalance={poolBalance}/>
+            <TokenList tokens={tokens} poolAddress={address} fetchProposals={fetchProposals} handleFund={() => setFundDialog(true)} handleWithdraw={() => setWithdrawDialog(true)} poolBalance={poolBalance} {...props}/>
           </Collapse>
         }
       </Stack>

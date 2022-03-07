@@ -32,7 +32,7 @@ export default function TokenList(props) {
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="center">
             <IconButton color="success" onClick={handleFund}><AttachMoneyIcon /></IconButton>
-            <IconButton color="error" disabled={typeof(poolBalance) == 'number' ? poolBalance : poolBalance.toNumber() == 0} onClick={handleWithdraw}><CallReceivedIcon /></IconButton>
+            <IconButton color="error" disabled={(typeof(poolBalance) == 'number' ? poolBalance : poolBalance.toNumber()) == 0} onClick={handleWithdraw}><CallReceivedIcon /></IconButton>
           </Stack>
         </Stack>
       </Paper>

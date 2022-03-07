@@ -8,9 +8,9 @@ export default function ProposalList(props) {
     proposals.length > 0 ? 
       <Stack spacing={3}>
         <Typography variant="h4">Proposals</Typography>
-        {proposals.map(proposal => {
+        {proposals.sort((one, two) => two.createdAt.sub(one.createdAt)).map(proposal => {
           return (
-            <ProposalCard proposal={proposal} {...props} />
+            <ProposalCard key={`proposal-${proposal.id}`} proposal={proposal} {...props} />
           )
         })}
       </Stack>

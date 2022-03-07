@@ -11,7 +11,7 @@ import { vote } from '/services/contract/vote';
 import VotingBar from "/components/proposals/votingBar";
 
 export default function ProposalCard(props) {
-  const {proposal, poolAddress, handleError, members, fetchProposals} = props;
+  const {proposal, poolAddress, handleSuccess, handleError, members, fetchProposals} = props;
   const [loading, setLoading] = useState(false);
   const [waitingForVote, setWaitingForVote] = useState(false);
   const [waitingForExec, setWaitingForExec] = useState(false);
@@ -34,7 +34,9 @@ export default function ProposalCard(props) {
   const handleVote = (mode) => {
     setWaitingForVote(true);
     vote(poolAddress, proposal.id, mode).then((res) => {
-      console.log(res)
+      handleSuccess(`Voted ${mode == 0 ? 'YES' : 'NO'} for Proposal "${proposal.title}"`);
+      fetchProposals();
+      console.log(res);
     }).catch((err) => {
       handleError(err);
     }).then(() => {
@@ -46,6 +48,7 @@ export default function ProposalCard(props) {
     setWaitingForExec(true);
     execute(poolAddress, proposal.id).then((res) => {
       console.log(res);
+      handleSuccess(`Proposal "${proposal.title}" executed`);
       fetchProposals();
     }).catch((err) => {
       handleError(err);
@@ -55,7 +58,7 @@ export default function ProposalCard(props) {
   }
 
   return (
-    <Paper elevation={3} key={`proposal-${proposal.id}`} sx={{overflowY: 'hidden'}}>
+    <Paper elevation={3} sx={{overflowY: 'hidden'}}>
       <Box p={2}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack spacing={1}>
