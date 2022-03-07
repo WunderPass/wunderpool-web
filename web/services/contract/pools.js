@@ -2,19 +2,19 @@ import {ethers} from 'ethers';
 import useWunderPass from '/hooks/useWunderPass';
 
 export function createPool(name) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const address = "0x841397120D672F8C84FC19DDF1477666855bBB8A"
     const abi = ["function createNewPool(string memory _poolName) public"]
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const poolLauncher = new ethers.Contract(address, abi, provider);
+    const gasPrice = await provider.getGasPrice();
+    const tx = await poolLauncher.populateTransaction.createNewPool(name, {gasPrice: gasPrice.mul(5).div(4)});
     
-    smartContractTransaction(false).then(async (privKey) => {
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const tx = await poolLauncher.connect(wallet).createNewPool(name, {gasPrice: gasPrice.mul(5).div(4)});
-        const receipt = await tx.wait();
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
         resolve(receipt);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);
@@ -60,16 +60,17 @@ export function fetchPoolBalance(poolAddress) {
 }
 
 export function fundPool(poolAddress, amount) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
+    const gasPrice = await provider.getGasPrice();
+    const tx = {to: poolAddress, value: ethers.utils.parseEther(amount), gasPrice: gasPrice.mul(5).div(4)}
     
-    smartContractTransaction(false).then(async (privKey) => {
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const tx = await wallet.sendTransaction({to: poolAddress, value: ethers.utils.parseEther(amount), gasPrice: gasPrice.mul(5).div(4)})
-        resolve(tx);
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
+        resolve(receipt);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);
       }
@@ -78,18 +79,18 @@ export function fundPool(poolAddress, amount) {
 }
 
 export function liquidatePool(poolAddress) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const abi = ["function liquidatePool() external"]
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const poolLauncher = new ethers.Contract(poolAddress, abi, provider);
+    const gasPrice = await provider.getGasPrice();
+    const tx = await poolLauncher.populateTransaction.liquidatePool({gasPrice: gasPrice.mul(5).div(4)});
     
-    smartContractTransaction(false).then(async (privKey) => {
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const tx = await poolLauncher.connect(wallet).liquidatePool({gasPrice: gasPrice.mul(5).div(4)});
-        const receipt = await tx.wait();
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
         resolve(receipt);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);

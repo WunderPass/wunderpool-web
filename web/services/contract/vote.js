@@ -2,21 +2,22 @@ import {ethers} from 'ethers';
 import useWunderPass from '/hooks/useWunderPass';
 
 export async function vote(poolAddress, proposalId, mode) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const address = poolAddress;
     const abi = ["function vote(uint proposalId, uint mode) public"]
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(address, abi, provider);
+    const gasPrice = await provider.getGasPrice();
+    const tx = await wunderPool.populateTransaction.vote(proposalId, mode, {gasPrice: gasPrice.mul(5).div(4)});
     
-    smartContractTransaction(false).then(async (privKey) => {
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const resp = await wunderPool.connect(wallet).vote(proposalId, mode, {gasPrice: gasPrice.mul(5).div(4)});
-        resolve(resp)
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
+        resolve(receipt);
       } catch (error) {
-        reject(error?.error?.error?.error?.message || error)
+        reject(error?.error?.error?.error?.message || error);
       }
     })
   })

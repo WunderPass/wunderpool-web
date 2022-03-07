@@ -1,4 +1,5 @@
 import {ethers} from 'ethers';
+import { toEthString } from '/services/formatter';
 
 export function fetchERC20Data(address) {
   return new Promise(async (resolve, reject) => {
@@ -20,10 +21,8 @@ export function fetchPoolTokens(address) {
     const tokens = await Promise.all(tokenAddresses.map(async (addr) => {
       const token = new ethers.Contract(addr, tokenAbi, provider);
       const balance = await token.balanceOf(address);
-      const decimals = (await token.decimals()).toNumber();
-      const weiBalance = balance.mul(ethers.BigNumber.from("10").pow(ethers.BigNumber.from(`${18 - decimals}`)));
-      const formattedBalance = ethers.utils.formatEther(`${weiBalance}`);
-      return {address: addr, name: await token.name(), symbol: await token.symbol(), balance: balance, decimals: decimals, weiBalance, formattedBalance: formattedBalance};
+      const formattedBalance = toEthString(balance, decimals);
+      return {address: addr, name: await token.name(), symbol: await token.symbol(), balance: balance, decimals: decimals, formattedBalance: formattedBalance};
     }))
     resolve(tokens)
   })

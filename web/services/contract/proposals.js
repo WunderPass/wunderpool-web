@@ -35,15 +35,16 @@ export function createSingleActionProposal(poolAddress, title, description, cont
     const abi = ["function createProposal(string memory _title, string memory _description, address _contractAddress, string memory _action, bytes memory _param, uint _transactionValue, uint _deadline) public "];
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
-    smartContractTransaction(false).then(async (privKey) => {
+    const gasPrice = await provider.getGasPrice();
+    const tx = await wunderPool.populateTransaction.createProposal(title, description, contractAddress, action, params, transactionValue, deadline, {gasPrice: gasPrice.mul(5).div(4)});
+
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const tx = await wunderPool.connect(wallet).createProposal(title, description, contractAddress, action, params, transactionValue, deadline, {gasPrice: gasPrice.mul(5).div(4)});
-        const receipt = await tx.wait();
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
         resolve(receipt);
       } catch (error) {
-        reject(error?.error?.error?.error?.message || error)
+        reject(error?.error?.error?.error?.message || error);
       }
     })
   })
@@ -55,15 +56,16 @@ export function createMultiActionProposal(poolAddress, title, description, contr
     const abi = ["function createMultiActionProposal(string memory _title, string memory _description, address[] memory _contractAddresses, string[] memory _actions, bytes[] memory _params, uint[] memory _transactionValues, uint _deadline) public"];
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
-    smartContractTransaction(false).then(async (privKey) => {
+    const gasPrice = await provider.getGasPrice();
+    const tx = await wunderPool.populateTransaction.createMultiActionProposal(title, description, contractAddresses, actions, params, transactionValues, deadline, {gasPrice: gasPrice.mul(5).div(4)});
+    
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const tx = await wunderPool.connect(wallet).createMultiActionProposal(title, description, contractAddresses, actions, params, transactionValues, deadline, {gasPrice: gasPrice.mul(5).div(4)});
-        const receipt = await tx.wait();
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
         resolve(receipt);
       } catch (error) {
-        reject(error?.error?.error?.error?.message || error)
+        reject(error?.error?.error?.error?.message || error);
       }
     })
   })
@@ -118,15 +120,16 @@ export function execute(poolAddress, id) {
     const abi = ["function executeProposal(uint _proposalId) public"];
     const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const wunderPool = new ethers.Contract(poolAddress, abi, provider);
-    smartContractTransaction(false).then(async (privKey) => {
+    const gasPrice = await provider.getGasPrice();
+    const tx = await wunderPool.populateTransaction.executeProposal(id, {gasPrice: gasPrice.mul(5).div(4)});
+
+    smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const gasPrice = await provider.getGasPrice();
-        const wallet = new ethers.Wallet(privKey, provider);
-        const tx = await wunderPool.connect(wallet).executeProposal(id, {gasPrice: gasPrice.mul(5).div(4)});
-        const receipt = await tx.wait();
+        const resp = await provider.getTransaction(transaction.hash)
+        const receipt = await resp.wait();
         resolve(receipt);
       } catch (error) {
-        reject(error?.error?.error?.error?.message || error)
+        reject(error?.error?.error?.error?.message || error);
       }
     })
   })

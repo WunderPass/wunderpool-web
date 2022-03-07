@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createPool } from "/services/contract/pools";
 
 export default function NewPoolDialog(props) {
-  const {open, setOpen, fetchPools, handleSuccess, handleError} = props;
+  const {open, setOpen, fetchPools, handleSuccess, handleError, user} = props;
   const [name, setName] = useState("");
   const [waitingForPool, setWaitingForPool] = useState(false);
 
@@ -14,7 +14,7 @@ export default function NewPoolDialog(props) {
 
   const handleSubmit = () => {
     setWaitingForPool(true);
-    createPool(name).then((res) => {
+    createPool(user.address, name).then((res) => {
       console.log(res)
       setName("");
       setOpen(false);

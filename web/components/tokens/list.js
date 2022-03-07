@@ -3,7 +3,7 @@ import { useState } from "react";
 import SellTokenDialog from "../dialogs/sellTokenDialog";
 import CallReceivedIcon from '@mui/icons-material/CallReceived';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { ethers } from "ethers";
+import { toEthString } from "/services/formatter";
 
 export default function TokenList(props) {
   const {tokens, poolAddress, handleFund, handleWithdraw, poolBalance} = props;
@@ -28,7 +28,7 @@ export default function TokenList(props) {
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack spacing={1}>
             <Typography variant="h6">MATIC</Typography>
-            <Typography variant="subtitle1">Balance: {typeof(poolBalance) == 'number' ? poolBalance : poolBalance.toNumber()}</Typography>
+            <Typography variant="subtitle1">Balance: {typeof(poolBalance) == 'number' ? poolBalance : toEthString(poolBalance, 18)}</Typography>
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="center">
             <IconButton color="success" onClick={handleFund}><AttachMoneyIcon /></IconButton>
