@@ -1,6 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, LinearProgress, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import { Fragment, useState } from "react";
-import { removeMemberAndAdmin } from "/services/contract/members";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 export default function RemoveMemberDialog(props) {
@@ -12,16 +11,7 @@ export default function RemoveMemberDialog(props) {
   }
 
   const handleRemove = (address) => {
-    setLoading(true);
-    removeMemberAndAdmin(poolAddress, address).then((res) => {
-      setMembers(members.filter((addr) => addr != address));
-      handleSuccess(`Removed ${address} from Pool`)
-      handleClose();
-    }).catch((err) => {
-      handleError(err);
-    }).then(() => {
-      setLoading(false);
-    })
+    handleError("Deprecated");
   }
   
   return(

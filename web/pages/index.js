@@ -1,7 +1,6 @@
-import { Button, Container, Stack, Typography } from '@mui/material';
+import { Container, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { vote } from '../services/contract/vote';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 
 export default function Home(props) {

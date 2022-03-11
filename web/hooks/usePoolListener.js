@@ -1,5 +1,6 @@
-import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { toEthString } from "../services/formatter";
+import { initPoolSocket } from "/services/contract/init";
 
 export default function usePoolListener(handleInfo) {
   const [poolAddress, setPoolAddress] = useState(null);
@@ -9,9 +10,7 @@ export default function usePoolListener(handleInfo) {
   }
 
   const startListener = async () => {
-    const abi = ["event NewProposal(uint indexed id, address indexed creator, string title)", "event Voted(uint indexed proposalId, address indexed voter, uint mode)", "event ProposalExecuted(uint indexed proposalId, address indexed executor, bytes[] result)"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    const wunderPool = new ethers.Contract(poolAddress, abi, provider);
+    const [wunderPool] = initPoolSocket(poolAddress);
 
     wunderPool.removeAllListeners();
 
@@ -22,13 +21,28 @@ export default function usePoolListener(handleInfo) {
 
     wunderPool.on("Voted", async (proposalId, voter, mode) => {
       console.log("Voted:", proposalId, voter, mode)
-      const modeLookup = ["YES", "NO", "ABSTAIN"]
+      const modeLookup = ["NONE", "YES", "NO"]
       handleInfo(`${voter} voted ${modeLookup[mode.toNumber()]} for Proposal #${proposalId.toNumber()}`);
     });
 
     wunderPool.on("ProposalExecuted", async (proposalId, executor, result) => {
       console.log("ProposalExecuted:", proposalId, executor, result)
       handleInfo(`Proposal #${proposalId.toNumber()} was executed by ${executor}`);
+    });
+
+    wunderPool.on("TokenAdded", async (tokenAddress, balance) => {
+      console.log("TokenAdded:", tokenAddress, balance)
+      handleInfo(`New Token Added to the Pool: ${tokenAddress}`);
+    });
+
+    wunderPool.on("MaticWithdrawed", async (receiver, amount) => {
+      console.log("MaticWithdrawed:", receiver, amount)
+      handleInfo(`${toEthString(amount, 18)} MATIC sent to ${receiver}`);
+    });
+
+    wunderPool.on("TokensWithdrawed", async (tokenAddress, receiver, amount) => {
+      console.log("TokensWithdrawed:", tokenAddress, receiver, amount)
+      handleInfo(`Token ${tokenAddress} sent to ${receiver}`);
     });
   }
 

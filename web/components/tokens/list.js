@@ -4,17 +4,27 @@ import SellTokenDialog from "../dialogs/sellTokenDialog";
 import CallReceivedIcon from '@mui/icons-material/CallReceived';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { toEthString } from "/services/formatter";
+import SwapTokenDialog from "/components/dialogs/swapTokenDialog";
 
 export default function TokenList(props) {
   const {tokens, poolAddress, handleFund, handleWithdraw, poolBalance} = props;
-  const [open, setOpen] = useState(false);
+  const [openSell, setOpenSell] = useState(false);
+  const [openSwap, setOpenSwap] = useState(false);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [symbol, setSymbol] = useState("");
   const [balance, setBalance] = useState("");
 
   const handleSell = (token) => {
-    setOpen(true);
+    setOpenSell(true);
+    setAddress(token.address)
+    setName(token.name)
+    setSymbol(token.symbol)
+    setBalance(token.balance.toString())
+  }
+
+  const handleSwap = (token) => {
+    setOpenSwap(true);
     setAddress(token.address)
     setName(token.name)
     setSymbol(token.symbol)
@@ -32,7 +42,7 @@ export default function TokenList(props) {
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="center">
             <IconButton color="success" onClick={handleFund}><AttachMoneyIcon /></IconButton>
-            <IconButton color="error" disabled={(typeof(poolBalance) == 'number' ? poolBalance : poolBalance.toNumber()) == 0} onClick={handleWithdraw}><CallReceivedIcon /></IconButton>
+            <IconButton color="error" disabled={poolBalance == 0} onClick={handleWithdraw}><CallReceivedIcon /></IconButton>
           </Stack>
         </Stack>
       </Paper>
@@ -46,6 +56,7 @@ export default function TokenList(props) {
                   <Typography variant="subtitle1">Balance: {token.formattedBalance}</Typography>
                 </Stack>
                 <Stack direction="row" alignItems="center" justifyContent="center">
+                  <Button color="warning" disabled={token.balance == 0} onClick={() => handleSwap(token)}>Swap</Button>
                   <Button color="error" disabled={token.balance == 0} onClick={() => handleSell(token)}>Sell</Button>
                 </Stack>
               </Stack>
@@ -53,7 +64,8 @@ export default function TokenList(props) {
           )
         })
       }
-      <SellTokenDialog open={open} setOpen={setOpen} name={name} address={address} symbol={symbol} balance={balance} poolAddress={poolAddress} {...props}/>
+      <SellTokenDialog open={openSell} setOpen={setOpenSell} name={name} address={address} symbol={symbol} balance={balance} poolAddress={poolAddress} {...props}/>
+      <SwapTokenDialog open={openSwap} setOpen={setOpenSwap} name={name} address={address} symbol={symbol} balance={balance} poolAddress={poolAddress} {...props}/>
     </Stack>
   )
 }

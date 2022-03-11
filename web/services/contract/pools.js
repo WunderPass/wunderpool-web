@@ -1,20 +1,18 @@
 import {ethers} from 'ethers';
+import { matic } from '/services/formatter';
+import { initLauncher, initPool } from './init';
 import useWunderPass from '/hooks/useWunderPass';
 
-export function createPool(name) {
+export function createPool(poolName, entryBarrier, tokenName, tokenSymbol, value) {
   return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
-    const address = "0x841397120D672F8C84FC19DDF1477666855bBB8A"
-    const abi = ["function createNewPool(string memory _poolName) public"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    const poolLauncher = new ethers.Contract(address, abi, provider);
+    const [poolLauncher, provider] = initLauncher();
     const gasPrice = await provider.getGasPrice();
-    const tx = await poolLauncher.populateTransaction.createNewPool(name, {gasPrice: gasPrice.mul(5).div(4)});
+    const tx = await poolLauncher.populateTransaction.createNewPool(poolName, matic(entryBarrier), tokenName, tokenSymbol, {gasPrice: gasPrice.mul(5).div(4), value: matic(value)});
     
     smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const resp = await provider.getTransaction(transaction.hash)
-        const receipt = await resp.wait();
+        const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);
@@ -23,18 +21,15 @@ export function createPool(name) {
   })
 }
 
-export function fetchUserPools(address) {
+export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
-    const address = "0x841397120D672F8C84FC19DDF1477666855bBB8A"
-    const abi = ["function allPools() public view returns(address[])"];
-    const poolAbi = ["function poolName() public view returns(string)"];
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    const poolLauncher = new ethers.Contract(address, abi, provider);
-    const poolAddresses = await poolLauncher.allPools();
+    const [poolLauncher] = initLauncher();
+    const poolAddresses = await poolLauncher.poolsOfMember(userAddress);
+
     const pools = await Promise.all(poolAddresses.map(async (addr) => {
-      const wunderPool = new ethers.Contract(addr, poolAbi, provider);
+      const [wunderPool] = initPool(addr);
       try {
-        return {address: addr, name: await wunderPool.poolName()};
+        return {address: addr, name: await wunderPool.name()};
       } catch (err) {
         return null;
       }
@@ -43,33 +38,33 @@ export function fetchUserPools(address) {
   })
 }
 
-export function fetchPoolMembers(poolAddress) {
+export function fetchAllPools() {
   return new Promise(async (resolve, reject) => {
-    const abi = ["function poolMembers() public view returns(address[])"];
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    const wunderPool = new ethers.Contract(poolAddress, abi, provider);
-    resolve(await wunderPool.poolMembers())
+    const [poolLauncher] = initLauncher();
+    const poolAddresses = await poolLauncher.allPools();
+
+    const pools = await Promise.all(poolAddresses.map(async (addr) => {
+      const [wunderPool] = initPool(addr);
+      try {
+        return {address: addr, name: await wunderPool.name(), entryBarrier: await wunderPool.entryBarrier()};
+      } catch (err) {
+        return null;
+      }
+    }))
+    resolve(pools.filter((elem) => elem))
   })
 }
 
-export function fetchPoolBalance(poolAddress) {
-  return new Promise(async (resolve, reject) => {
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    resolve(await provider.getBalance(poolAddress))
-  })
-}
-
-export function fundPool(poolAddress, amount) {
+export function joinPool(poolAddress, value) {
   return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
+    const [wunderPool, provider] = initPool(poolAddress);
     const gasPrice = await provider.getGasPrice();
-    const tx = {to: poolAddress, value: ethers.utils.parseEther(amount), gasPrice: gasPrice.mul(5).div(4)}
+    const tx = await wunderPool.populateTransaction.enterPool({gasPrice: gasPrice.mul(5).div(4), value: matic(value)});
     
     smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const resp = await provider.getTransaction(transaction.hash)
-        const receipt = await resp.wait();
+        const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);
@@ -78,19 +73,44 @@ export function fundPool(poolAddress, amount) {
   })
 }
 
-export function liquidatePool(poolAddress) {
+export function fetchPoolName(poolAddress) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool] = initPool(poolAddress);
+    wunderPool.name().then(res => resolve(res)).catch((err) => reject('Pool Not Found'))
+  })
+}
+
+export function fetchPoolMembers(poolAddress) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool] = initPool(poolAddress);
+    resolve(await wunderPool.poolMembers())
+  })
+}
+
+export function isMember(poolAddress, user) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool] = initPool(poolAddress);
+    resolve(await wunderPool.isMember(user))
+  })
+}
+
+export function fetchPoolBalance(poolAddress) {
+  return new Promise(async (resolve, reject) => {
+    const provider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
+    resolve(await provider.getBalance(poolAddress))
+  })
+}
+
+export function fundPool(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
-    const abi = ["function liquidatePool() external"]
-    const provider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    const poolLauncher = new ethers.Contract(poolAddress, abi, provider);
+    const provider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
     const gasPrice = await provider.getGasPrice();
-    const tx = await poolLauncher.populateTransaction.liquidatePool({gasPrice: gasPrice.mul(5).div(4)});
+    const tx = {to: poolAddress, value: ethers.utils.parseEther(amount), gasPrice: gasPrice.mul(5).div(4)}
     
     smartContractTransaction(tx).then(async (transaction) => {
       try {
-        const resp = await provider.getTransaction(transaction.hash)
-        const receipt = await resp.wait();
+        const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);

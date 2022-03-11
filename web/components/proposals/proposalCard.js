@@ -1,19 +1,15 @@
-import { Box, Button, CircularProgress, Collapse, Divider, IconButton, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Collapse, Divider, IconButton, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LoupeIcon from '@mui/icons-material/Loupe';
 import { fetchTransactionData, execute } from '/services/contract/proposals';
 import { ethers } from 'ethers';
 import { decodeParams } from '/services/formatter';
-import { vote } from '/services/contract/vote';
 import VotingBar from "/components/proposals/votingBar";
+import VotingButtons from "./votingButtons";
 
 export default function ProposalCard(props) {
-  const {proposal, poolAddress, handleSuccess, handleError, members, fetchProposals} = props;
+  const {proposal, poolAddress, handleSuccess, handleError, totalGovernanceTokens, fetchProposals, fetchTokens, fetchBalance} = props;
   const [loading, setLoading] = useState(false);
-  const [waitingForVote, setWaitingForVote] = useState(false);
   const [waitingForExec, setWaitingForExec] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
   const [open, setOpen] = useState(null);
@@ -31,25 +27,14 @@ export default function ProposalCard(props) {
     }
   }
 
-  const handleVote = (mode) => {
-    setWaitingForVote(true);
-    vote(poolAddress, proposal.id, mode).then((res) => {
-      handleSuccess(`Voted ${mode == 0 ? 'YES' : 'NO'} for Proposal "${proposal.title}"`);
-      fetchProposals();
-      console.log(res);
-    }).catch((err) => {
-      handleError(err);
-    }).then(() => {
-      setWaitingForVote(false);
-    })
-  }
-
   const executeProposal = () => {
     setWaitingForExec(true);
     execute(poolAddress, proposal.id).then((res) => {
       console.log(res);
       handleSuccess(`Proposal "${proposal.title}" executed`);
       fetchProposals();
+      fetchTokens();
+      fetchBalance();
     }).catch((err) => {
       handleError(err);
     }).then(() => {
@@ -68,28 +53,18 @@ export default function ProposalCard(props) {
             </Stack>
             <Typography variant="subtitle1">{proposal.description}</Typography>
           </Stack>
-          {waitingForVote ? 
-            <CircularProgress /> :
-            proposal.executed ?
-            <CheckCircleOutlineIcon fontSize="large" color="success" /> :
-            <Stack direction="row" alignItems="center" justifyContent="center">
-              <IconButton color="success" onClick={() => handleVote(0)}><ThumbUpOutlinedIcon /></IconButton>
-              <IconButton color="error" onClick={() => handleVote(1)}><ThumbDownOutlinedIcon /></IconButton>
-            </Stack>
-          }
+          <VotingButtons {...props}/>
         </Stack>
         <Collapse in={open == proposal.id}>
           <Stack spacing={1}>
             <Divider />
-            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Zustimmungen</Typography>{proposal.yesVotes.toNumber()} / {members.length} Stimmen</Typography>
+            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Zustimmungen</Typography>{proposal.yesVotes.toString()} / {totalGovernanceTokens?.toString()} Stimmen</Typography>
             <Divider />
-            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Ablehnungen</Typography>{proposal.noVotes.toNumber()} / {members.length} Stimmen</Typography>
+            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Ablehnungen</Typography>{proposal.noVotes.toString()} / {totalGovernanceTokens?.toString()} Stimmen</Typography>
             <Divider />
-            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Enthaltungen</Typography>{proposal.abstainVotes.toNumber()} / {members.length} Stimmen</Typography>
+            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Deadline</Typography>{new Date(proposal.deadline.mul(1000).toNumber()).toLocaleString('de')}</Typography>
             <Divider />
-            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Deadline</Typography>{new Date(proposal.deadline.toNumber() * 1000).toLocaleString('de')}</Typography>
-            <Divider />
-            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Created At</Typography>{new Date(proposal.createdAt.toNumber() * 1000).toLocaleString('de')}</Typography>
+            <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Created At</Typography>{new Date(proposal.createdAt.mul(1000).toNumber()).toLocaleString('de')}</Typography>
             {loading ?
               <Skeleton variant="rectangular" width="100%" sx={{borderRadius: 3}} /> :
               <>
@@ -102,7 +77,17 @@ export default function ProposalCard(props) {
                       <Divider />
                       <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Action</Typography>{data.action}</Typography>
                       <Divider />
-                      <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Params</Typography>{JSON.stringify(decodeParams(data.action, data.params))}</Typography>
+                      <Stack direction="row" justifyContent='space-between'>
+                        <Typography variant="subtitle1" fontStyle="italic">Params</Typography>
+                        <Stack alignItems="end">
+                          {decodeParams(data.action, data.params).map((param, j) => {
+                            const formattedParam = typeof(param) == 'string' ? param : param?.toString() || null; 
+                            return (
+                              <Typography key={`param-${i}-${j}`} variant="subtitle1">{formattedParam || JSON.stringify(param)}</Typography>
+                            )
+                          })}
+                        </Stack>
+                      </Stack>
                       <Divider />
                       <Typography variant="subtitle1" sx={{display: 'flex', justifyContent: 'space-between'}}><Typography variant="span" fontStyle="italic">Value</Typography>{ethers.utils.formatUnits(data.transactionValue)} MATIC</Typography>
                     </Box>
@@ -114,7 +99,7 @@ export default function ProposalCard(props) {
           </Stack>
         </Collapse>
       </Box>
-      <VotingBar yes={proposal.yesVotes.toNumber()} no={proposal.noVotes.toNumber()} total={members.length} />
+      <VotingBar yes={proposal.yesVotes.toNumber()} no={proposal.noVotes.toNumber()} total={totalGovernanceTokens?.toNumber()} />
     </Paper>
   )
 }

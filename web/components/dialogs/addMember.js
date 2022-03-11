@@ -1,6 +1,5 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, LinearProgress, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { addMemberOrAdmin } from "/services/contract/members";
 
 export default function AddMemberDialog(props) {
   const {open, setOpen, poolAddress, handleSuccess, handleError} = props;
@@ -17,15 +16,7 @@ export default function AddMemberDialog(props) {
   }
 
   const handleSubmit = () => {
-    setLoading(true);
-    addMemberOrAdmin(poolAddress, address, isMember, isAdmin).then((res) => {
-      setLoading(false);
-      handleSuccess(`Added ${address} to the Pool`);
-      handleClose();
-    }).catch((err) => {
-      setLoading(false);
-      handleError(err)
-    })
+    handleError("Deprecated")
   }
 
   const handleInput = (e) => {

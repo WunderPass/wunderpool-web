@@ -14,3 +14,8 @@ export function toEthString(num, decimals) {
   const weiBalance = num.mul(ethers.BigNumber.from("10").pow(ethers.BigNumber.from(`${18 - decimals}`)));
   return ethers.utils.formatEther(`${weiBalance}`);
 }
+
+export function matic(num) {
+  num = typeof(num) == 'string' ? num : `${num}`;
+  return ethers.utils.parseEther(num || "0");
+}

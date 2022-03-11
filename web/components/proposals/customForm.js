@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, FormControl, IconButton, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -6,11 +6,11 @@ import { TransactionForm } from "/components/proposals/transactionForm";
 import { createCustomProposal } from "/services/contract/proposals";
 
 export default function CustomForm(props) {
-  const {setCustomProposal, poolAddress, fetchProposals, handleSuccess, handleError} = props;
+  const {customProposal, setCustomProposal, poolAddress, fetchProposals, handleSuccess, handleError} = props;
   const [proposalTitle, setProposalTitle] = useState("");
   const [proposalDescription, setProposalDescription] = useState("");
   const [proposalTransactions, setProposalTransactions] = useState([]);
-  const [proposalDeadline, setProposalDeadline] = useState(new Date(new Date().getTime() + 86400000).toISOString().slice(0,-5));
+  const [proposalDeadline, setProposalDeadline] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -54,6 +54,10 @@ export default function CustomForm(props) {
       setLoading(false);
     })
   }
+
+  useEffect(() => {
+    if(customProposal) setProposalDeadline(new Date(new Date().getTime() + 86400000).toISOString().slice(0,-5))
+  }, [customProposal])
 
   return (
     <form>

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, InputAdornment, InputLabel, LinearProgress, Stack, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, InputAdornment, LinearProgress, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { createFudSuggestion } from "/services/contract/proposals";
 
@@ -35,8 +35,7 @@ export default function SellTokenDialog(props) {
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent sx={{minWidth: '50vw'}}>
-        <InputLabel InputLabel>Amount</InputLabel>
-        <Input type="number" value={amount} onChange={handleInput} label="Amount" placeholder="1" fullWidth endAdornment={<InputAdornment position="end"><Button onClick={() => setAmount(balance)}>MAX</Button></InputAdornment>}/>
+        <TextField autoFocus type="number" margin="dense" value={amount} onChange={handleInput} label="Amount" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end"><Button onClick={() => setAmount(balance)}>MAX</Button></InputAdornment>}}/>
       </DialogContent>
       {loading ? 
         <Stack spacing={2} sx={{textAlign: 'center'}}>

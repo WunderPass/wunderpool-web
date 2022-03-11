@@ -1,11 +1,9 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, Stack, Typography } from "@mui/material";
-import { useRouter } from "next/router";
 import { useState } from "react";
-import { liquidatePool } from "/services/contract/pools";
+import { createLiquidateSuggestion } from "/services/contract/proposals";
 
 export default function DestroyPoolDialog(props) {
-  const router = useRouter();
-  const {open, setOpen, address, name, handleSuccess, handleError} = props;
+  const {open, setOpen, address, name, fetchProposals, handleSuccess, handleError} = props;
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -15,10 +13,11 @@ export default function DestroyPoolDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    liquidatePool(address).then((res) => {
+    createLiquidateSuggestion(address, "Let's Liquidate the Pool", "I want my money back").then((res) => {
       console.log(res);
-      handleSuccess(`Liquidated and transferred Funds of ${name} to all Members`);
-      router.push('/pools');
+      handleSuccess(`Created new Proposal to Liquidate the Pool ${name}`);
+      fetchProposals();
+      handleClose();
     }).catch((err) => {
       handleError(err);
       setLoading(false);
@@ -30,16 +29,16 @@ export default function DestroyPoolDialog(props) {
       <DialogTitle>Liquidate Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>This will transfer all Funds from the Pool equally to all of its Members.</DialogContentText>
-        <Alert severity="error">This action can't be undone</Alert>
+        <Alert severity="warning">This will create a Proposal to Liquidate the Pool</Alert>
       </DialogContent>
       {loading ? 
         <Stack spacing={2} sx={{textAlign: 'center'}}>
-          <Typography variant="subtitle1">Liquidating WunderPool...</Typography>
+          <Typography variant="subtitle1">Submitting Proposal</Typography>
           <LinearProgress />
         </Stack> :
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} color="error">Liquidate</Button>
+          <Button onClick={handleSubmit} color="warning">Submit Proposal</Button>
         </DialogActions>
       }
     </Dialog>

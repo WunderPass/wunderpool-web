@@ -47,7 +47,7 @@ export function TransactionForm(props) {
       fetch(`/api/abi?type=${type}`).then((res) => {
         res.json().then((json) => {
           const formattedAbi = json.map((elem) => ({name: `${elem.name}(${elem.inputs ? elem.inputs.map((input) => input.type) : ''})`, inputs: elem.inputs, payable: elem.stateMutability == 'payable'}))
-          setAction(formattedAbi[0]);
+          handleActionChange(formattedAbi[0]);
           setContractAbi(formattedAbi);
           setFoundAbi(true);
         })
@@ -60,9 +60,9 @@ export function TransactionForm(props) {
       fetchContractAbi(transaction.address).then((res) => {
         const filteredAbi = JSON.parse(res).filter((obj) => obj.type == 'function' && ['payable', 'nonpayable'].includes(obj.stateMutability))
         const formattedAbi = filteredAbi.map((elem) => ({name: `${elem.name}(${elem.inputs ? elem.inputs.map((input) => input.type) : ''})`, inputs: elem.inputs, payable: elem.stateMutability == 'payable'}))
-        setAction(formattedAbi[0]);
-        setFoundAbi(true);
+        handleActionChange(formattedAbi[0]);
         setContractAbi(formattedAbi);
+        setFoundAbi(true);
       }).catch((err) => {
         setFoundAbi(false);
       });

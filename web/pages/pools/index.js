@@ -1,9 +1,11 @@
 import { Button, Container, IconButton, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchUserPools } from "/services/contract/pools";
-import NewPoolDialog from "../../components/dialogs/newPool";
+import { fetchAllPools, fetchUserPools } from "/services/contract/pools";
+import NewPoolDialog from "/components/dialogs/newPool";
+import { toEthString } from "/services/formatter";
 
 function PoolList(props) {
   const {pools, setOpen} = props;
@@ -14,7 +16,10 @@ function PoolList(props) {
         return (
           <Paper elevation={3} key={`pool-${i}`} sx={{p: 2}}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography variant="h6">{pool.name}</Typography>
+              <Stack spacing={1}>
+                <Typography variant="h6">{pool.name}</Typography>
+                {pool.entryBarrier && <Typography variant="subtitle1">Minimum Invest: {toEthString(pool.entryBarrier, 18)} MATIC</Typography>}
+              </Stack>
               <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
                 <IconButton>
                   <ArrowCircleRightOutlinedIcon color="primary"/>
@@ -37,32 +42,48 @@ function PoolList(props) {
 
 export default function Pools(props) {
   const {user} = props;
-  const [pools, setPools] = useState([]);
+  const [allPools, setAllPools] = useState([]);
+  const [userPools, setUserPools] = useState([]);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingAll, setLoadingAll] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   const fetchPools = () => {
-    setLoading(true);
+    setLoadingAll(true);
+    setLoadingUser(true);
     fetchUserPools(user.address).then(pools => {
-      setPools(pools);
-      setLoading(false);
+      setUserPools(pools);
+      setLoadingUser(false);
+    })
+    fetchAllPools(user.address).then(pools => {
+      setAllPools(pools);
+      setLoadingAll(false);
     })
   }
 
   useEffect(() => {
-    fetchPools();
-  }, [])
+    if(user.address) fetchPools();
+  }, [user.address])
 
   return (
     <Container maxWidth="md">
       <Stack spacing={3} paddingTop={2}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="h3">{user?.wunderId}'s WunderPools</Typography>
-          <Button onClick={() => setOpen(true)} variant="contained" color="success">New</Button>
+          <Stack direction="row" spacing={1}>
+            <Button onClick={() => setOpen(true)} variant="contained" color="success">New</Button>
+            <IconButton onClick={user?.logOut} color="error"><LogoutIcon/></IconButton>
+          </Stack>
         </Stack>
-        {loading ? 
+        <Typography variant="h6">Your WunderPools</Typography>
+        {loadingUser ? 
           <Skeleton variant="rectangular" width="100%" sx={{height: "100px", borderRadius: 3}} /> :
-          <PoolList pools={pools} setOpen={setOpen}/>
+          <PoolList pools={userPools} setOpen={setOpen}/>
+        }
+        <Typography variant="h6">All WunderPools</Typography>
+        {loadingAll ? 
+          <Skeleton variant="rectangular" width="100%" sx={{height: "100px", borderRadius: 3}} /> :
+          <PoolList pools={allPools} setOpen={setOpen}/>
         }
       </Stack>
       <NewPoolDialog open={open} setOpen={setOpen} fetchPools={fetchPools} {...props}/>

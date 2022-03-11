@@ -1,40 +1,49 @@
-import {useRouter} from 'next/router';
-import { Button, Collapse, Container, Grid, IconButton, Skeleton, Stack, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import DangerousIcon from '@mui/icons-material/Dangerous';
-import { fetchPoolProposals } from '/services/contract/proposals';
+import {useRouter} from 'next/router';
 import Link from 'next/link';
-import AddMemberDialog from '/components/dialogs/addMember';
+import { Button, Collapse, Container, Grid, IconButton, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
-import RemoveMemberDialog from '/components/dialogs/removeMember';
-import ProposalList from '/components/proposals/list';
-import TokenList from '/components/tokens/list';
-import { fetchPoolTokens } from '/services/contract/token';
-import ApeForm from '/components/proposals/apeForm';
-import { fetchPoolMembers } from "/services/contract/pools";
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
-import { fetchPoolBalance } from '/services/contract/pools';
-import CustomForm from '../../components/proposals/customForm';
+import PoolInfoDialog from '/components/dialogs/poolInfo';
+import JoinPoolDialog from '/components/dialogs/joinPool';
+import { fetchPoolProposals } from '/services/contract/proposals';
+import { fetchPoolTokens } from '/services/contract/token';
+import { fetchPoolName, fetchPoolBalance, isMember } from "/services/contract/pools";
+import { fetchPoolGovernanceToken } from '/services/contract/token';
+import ProposalList from '/components/proposals/list';
+import ApeForm from '/components/proposals/apeForm';
+import CustomForm from '/components/proposals/customForm';
+import TokenList from '/components/tokens/list';
+import { toEthString } from '/services/formatter';
 
 export default function Pool(props) {
   const router = useRouter();
   const {id: address, name} = router.query;
-  const {setupPoolListener} = props;
+  const {setupPoolListener, user} = props;
   const [ape, setApe] = useState(false)
   const [customProposal, setCustomProposal] = useState(false)
-  const [personDialog, setPersonDialog] = useState(false);
-  const [personRemoveDialog, setPersonRemoveDialog] = useState(false);
   const [fundDialog, setFundDialog] = useState(false);
+  const [poolInfo, setPoolInfo] = useState(false);
+  const [joinPool, setJoinPool] = useState(false);
+  const [userIsMember, setUserIsMember] = useState(false);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [tokens, setTokens] = useState([]);
-  const [members, setMembers] = useState([]);
+  const [governanceTokenData, setGovernanceTokenData] = useState(null);
+  const [totalGovernanceTokens, setTotalGovernanceTokens] = useState(null);
   const [poolBalance, setPoolBalance] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const fetchGovernanceTokenData = () => {
+    fetchPoolGovernanceToken(address, user.address).then(gt => {
+      setGovernanceTokenData(gt);
+      setTotalGovernanceTokens(gt.totalSupply);
+    })
+  }
 
   const fetchProposals = () => {
     setLoading(true);
@@ -50,27 +59,36 @@ export default function Pool(props) {
     })
   }
 
-  const fetchMembers = () => {
-    fetchPoolMembers(address).then(res => {
-      setMembers(res);
-    })
-  }
-
   const fetchBalance = () => {
     fetchPoolBalance(address).then(res => {
       setPoolBalance(res);
     })
   }
 
+  const checkPoolExistence = () => {
+    return fetchPoolName(address)
+  }
+
   useEffect(() => {
-    if(address) {
-      setupPoolListener(address);
-      fetchProposals();
-      fetchTokens();
-      fetchMembers();
-      fetchBalance();
+    if(address && user.address) {
+      checkPoolExistence().then(() => {
+        fetchGovernanceTokenData();
+        fetchBalance();
+        isMember(address, user.address).then((res) => {
+          if (res) {
+            setUserIsMember(true);
+            setupPoolListener(address);
+            fetchProposals();
+            fetchTokens();
+          } else {
+            setUserIsMember(false);
+          }
+        })
+      }).catch(() => {
+        router.push('/pools');
+      })
     }
-  }, [address])
+  }, [address, user.address])
 
   return (
     <Container maxWidth="md">
@@ -82,40 +100,54 @@ export default function Pool(props) {
             </Link>
           </Grid>
           <Grid item xs={12} sm={8} textAlign="center">
-            <Typography variant="h3">{name}</Typography>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <Stack direction="row" alignItems="center" justifyContent="right">
-              <IconButton color="success" onClick={() => setPersonDialog(true)}><PersonAddAlt1Icon /></IconButton>
-              <IconButton onClick={() => setPersonRemoveDialog(true)}><PersonRemoveIcon /></IconButton>
-              <IconButton color="error" onClick={() => setDestroyDialog(true)}><DangerousIcon /></IconButton>
+            <Stack direction="row" alignItems="center" justifyContent="center">
+              <Typography variant='h4'>{name}</Typography>
+              {governanceTokenData && <IconButton color="info" onClick={() => setPoolInfo(true)}><InfoOutlinedIcon /></IconButton>}
             </Stack>
           </Grid>
+          {userIsMember && 
+            <Grid item xs={12} sm={2}>
+              <Stack direction="row" alignItems="center" justifyContent="right">
+                <IconButton color="error" onClick={() => setDestroyDialog(true)}><DangerousIcon /></IconButton>
+              </Stack>
+            </Grid>
+          }
         </Grid>
-        <Collapse in={!ape && !customProposal} sx={{width: '100%'}}>
-          <Stack direction="row" spacing={3} sx={{width: '100%'}}>
-            <Button onClick={() => {setApe(true)}} color="success" variant="contained" sx={{width: '100%', minHeight: 150, aspectRatio: '2/1'}}>So richtig Reinapen</Button>
-            <Button onClick={() => {setCustomProposal(true)}} variant="contained" sx={{width: '100%', minHeight: 150, aspectRatio: '2/1'}}>Eigenes Proposal</Button>
-          </Stack>
-        </Collapse>
-        <Collapse in={ape} sx={{width: "100%"}}>
-          <ApeForm setApe={setApe} address={address} fetchProposals={fetchProposals} {...props}/>
-        </Collapse>
-        <Collapse in={customProposal} sx={{width: "100%"}}>
-          <CustomForm setCustomProposal={setCustomProposal} poolAddress={address} fetchProposals={fetchProposals} {...props}/>
-        </Collapse>
-        {loading ? 
-          <Skeleton variant="rectangular" width="100%" sx={{height: "100px", borderRadius: 3}} /> :
-          <Collapse in={!customProposal && !ape} sx={{width: "100%"}}>
-            <ProposalList proposals={proposals} members={members} poolAddress={address} setApe={setApe} fetchProposals={fetchProposals} {...props}/>
-            <TokenList tokens={tokens} poolAddress={address} fetchProposals={fetchProposals} handleFund={() => setFundDialog(true)} handleWithdraw={() => setWithdrawDialog(true)} poolBalance={poolBalance} {...props}/>
+        {userIsMember ?
+          <>
+          <Collapse in={!ape && !customProposal} sx={{width: '100%'}}>
+            <Stack direction="row" spacing={3} sx={{width: '100%'}}>
+              <Button onClick={() => {setApe(true)}} color="success" variant="contained" sx={{width: '100%', minHeight: 150, aspectRatio: '2/1'}}>So richtig Reinapen</Button>
+              <Button onClick={() => {setCustomProposal(true)}} variant="contained" sx={{width: '100%', minHeight: 150, aspectRatio: '2/1'}}>Eigenes Proposal</Button>
+            </Stack>
           </Collapse>
+          <Collapse in={ape} sx={{width: "100%"}}>
+            <ApeForm setApe={setApe} address={address} fetchProposals={fetchProposals} {...props}/>
+          </Collapse>
+          <Collapse in={customProposal} sx={{width: "100%"}}>
+            <CustomForm customProposal={customProposal} setCustomProposal={setCustomProposal} poolAddress={address} fetchProposals={fetchProposals} {...props}/>
+          </Collapse>
+          {loading ? 
+            <Skeleton variant="rectangular" width="100%" sx={{height: "100px", borderRadius: 3}} /> :
+            <Collapse in={!customProposal && !ape} sx={{width: "100%"}}>
+              <ProposalList proposals={proposals} totalGovernanceTokens={totalGovernanceTokens} poolAddress={address} setApe={setApe} fetchProposals={fetchProposals} fetchTokens={fetchTokens} fetchBalance={fetchBalance} {...props}/>
+              <TokenList tokens={tokens} poolAddress={address} fetchProposals={fetchProposals} handleFund={() => setFundDialog(true)} handleWithdraw={() => setWithdrawDialog(true)} poolBalance={poolBalance} {...props}/>
+            </Collapse>
+          }
+          </> :
+          <Paper elevation={4} sx={{width: '100%', p: 3}}>
+            <Stack spacing={2}>
+              <Typography variant="h5">Do you want to join this Pool?</Typography>
+              <Typography variant="subtitle1">Minimum Invest: {governanceTokenData ? toEthString(governanceTokenData.entryBarrier, 18) : '...'} MATIC</Typography>
+              <Button variant="contained" onClick={() => setJoinPool(true)}>Join</Button>
+            </Stack>
+          </Paper>
         }
       </Stack>
-      <AddMemberDialog open={personDialog} setOpen={setPersonDialog} poolAddress={address} {...props}/>
-      <RemoveMemberDialog open={personRemoveDialog} members={members} setOpen={setPersonRemoveDialog} poolAddress={address} {...props}/>
       <FundPoolDialog open={fundDialog} setOpen={setFundDialog} address={address} {...props}/>
-      <DestroyPoolDialog open={destroyDialog} setOpen={setDestroyDialog} address={address} name={name} {...props}/>
+      <DestroyPoolDialog open={destroyDialog} setOpen={setDestroyDialog} address={address} name={name} fetchProposals={fetchProposals} {...props}/>
+      {governanceTokenData && <PoolInfoDialog open={poolInfo} setOpen={setPoolInfo} name={name} address={address} governanceTokenData={governanceTokenData} {...props}/>}
+      {governanceTokenData && <JoinPoolDialog open={joinPool} setOpen={setJoinPool} address={address} price={governanceTokenData.price} totalSupply={governanceTokenData.totalSupply} minimumInvest={governanceTokenData.entryBarrier} {...props}/>}
     </Container>
   )
 }
