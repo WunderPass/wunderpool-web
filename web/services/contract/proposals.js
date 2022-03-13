@@ -1,4 +1,5 @@
 import {ethers} from 'ethers';
+import { encodeParams } from '../formatter';
 import { initPool } from './init';
 import useWunderPass from '/hooks/useWunderPass';
 
@@ -62,14 +63,25 @@ export function createMultiActionProposal(poolAddress, title, description, contr
 }
 
 export function createCustomProposal(poolAddress, title, description, contractAddresses, actions, params, transactionValues, deadline) {
-  const abiCoder = new ethers.utils.AbiCoder();
   if (contractAddresses?.length > 1 && actions?.length > 1 && params?.length > 1 && transactionValues?.length > 1) {
     const formattedValues = transactionValues.map((val) => ethers.utils.parseEther(String(val)));
-    const encodedParams = params.map((param) => abiCoder.encode(param[0], param[1].map((par) => JSON.parse(par))));
+    const encodedParams = params.map((param) => encodeParams(param[0], param[1].map((par) => {
+      try{
+        return JSON.parse(par)
+      } catch {
+        return par;
+      }
+    })));
     return createMultiActionProposal(poolAddress, title, description, contractAddresses, actions, encodedParams, formattedValues, deadline)
   } else if (contractAddresses?.length == 1 && actions?.length == 1 && params?.length == 1 && transactionValues?.length == 1) {
     const formattedValue = ethers.utils.parseEther(String(transactionValues[0] || 0));
-    const encodedParams = abiCoder.encode(params[0][0], params[0][1].map((par) => JSON.parse(par)));
+    const encodedParams = encodeParams(params[0][0], params[0][1].map((par) => {
+      try{
+        return JSON.parse(par)
+      } catch {
+        return par;
+      }
+    }));
     return createSingleActionProposal(poolAddress, title, description, contractAddresses[0], actions[0], encodedParams, formattedValue, deadline)
   } else {
     return new Promise((resolve, reject) => reject('INVALID PROPOSAL'))
@@ -78,14 +90,12 @@ export function createCustomProposal(poolAddress, title, description, contractAd
 
 export function createApeSuggestion(poolAddress, tokenAddress, title, description, value) {
   const wunderSwapperAddress = '0xbD4b2807dDaBF2bCb7A8555D98861A958c11435b';
-  const abiCoder = new ethers.utils.AbiCoder();
-  return createMultiActionProposal(poolAddress, title, description, [wunderSwapperAddress, poolAddress], ["buyTokens(address)", "addToken(address)"], [abiCoder.encode(["address"], [tokenAddress]), abiCoder.encode(["address"], [tokenAddress])], [ethers.utils.parseEther(String(value)), 0], 1846183041);
+  return createMultiActionProposal(poolAddress, title, description, [wunderSwapperAddress, poolAddress], ["buyTokens(address)", "addToken(address)"], [encodeParams(["address"], [tokenAddress]), encodeParams(["address"], [tokenAddress])], [ethers.utils.parseEther(String(value)), 0], 1846183041);
 }
 
 export function createFudSuggestion(poolAddress, tokenAddress, title, description, value) {
   const wunderSwapperAddress = '0xbD4b2807dDaBF2bCb7A8555D98861A958c11435b';
-  const abiCoder = new ethers.utils.AbiCoder();
-  return createMultiActionProposal(poolAddress, title, description, [tokenAddress, wunderSwapperAddress], ["transfer(address,uint256)", "sellTokens(address,uint256)"], [abiCoder.encode(["address", "uint256"], [wunderSwapperAddress, value]), abiCoder.encode(["address", "uint"], [tokenAddress, value])], [0, 0], 1846183041);
+  return createMultiActionProposal(poolAddress, title, description, [tokenAddress, wunderSwapperAddress], ["transfer(address,uint256)", "sellTokens(address,uint256)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, value]), encodeParams(["address", "uint"], [tokenAddress, value])], [0, 0], 1846183041);
 }
 
 export function createLiquidateSuggestion(poolAddress, title, description) {
@@ -94,14 +104,13 @@ export function createLiquidateSuggestion(poolAddress, title, description) {
 
 export async function createSwapSuggestion(poolAddress, tokenIn, tokenOut, title, description, amount) {
   const wunderSwapperAddress = '0xbD4b2807dDaBF2bCb7A8555D98861A958c11435b';
-  const abiCoder = new ethers.utils.AbiCoder();
   const [wunderPool] = initPool(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
   if (tokenAddresses.includes(tokenOut)) {
-    return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)"], [abiCoder.encode(["address", "uint256"], [wunderSwapperAddress, amount]), abiCoder.encode(["address", "address", "uint256"], [tokenIn, tokenOut, amount])], [0, 0], 1846183041);
+    return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]), encodeParams(["address", "address", "uint256"], [tokenIn, tokenOut, amount])], [0, 0], 1846183041);
   } else {
-    return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress, poolAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)", "addToken(address)"], [abiCoder.encode(["address", "uint256"], [wunderSwapperAddress, amount]), abiCoder.encode(["address", "address", "uint256"], [tokenIn, tokenOut, amount]), abiCoder.encode(["address"], [tokenOut])], [0, 0, 0], 1846183041);
+    return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress, poolAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)", "addToken(address)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]), encodeParams(["address", "address", "uint256"], [tokenIn, tokenOut, amount]), encodeParams(["address"], [tokenOut])], [0, 0, 0], 1846183041);
   }
 }
 

@@ -54,7 +54,7 @@ export default function useWunderPass(config) {
   const smartContractTransaction = (tx, network="polygon") => {
     return new Promise(async (resolve, reject) => {
       try {
-        const popup = window.open(encodeURI(`https://app.wunderpass.org/smartContract?name=${name}&imageUrl=${image}`), 'WunderPassContract', 'popup');
+        const popup = window.open(encodeURI(`https://app.wunderpass.org/smartContract?name=${name}&imageUrl=${image}`), 'WunderPassContract', 'tab');
         
         const requestInterval = setInterval(() => {
           popup.postMessage(JSON.parse(JSON.stringify({accountId: accountId, tx: tx, network: network})), 'https://app.wunderpass.org')
