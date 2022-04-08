@@ -6,15 +6,15 @@ export default function LoginWithWunderPass(props) {
 
   const handleClick = (e) => {
     e.preventDefault();
-    const authPopup = popup || window.open(encodeURI(`http://localhost:3000/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`), 'WunderPassAuth', 'popup');
+    const authPopup = popup || window.open(encodeURI(`https://app.wunderpass.org/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`), 'WunderPassAuth', 'popup');
     setPopup(authPopup);
     
     const requestInterval = setInterval(() => {
-      authPopup.postMessage({accountId: 'ABCDE', intent: intent}, 'http://localhost:3000')
+      authPopup.postMessage({accountId: 'ABCDE', intent: intent}, 'https://app.wunderpass.org')
     }, 1000);
     
     window.addEventListener("message", (event) => {
-      if (event.origin == 'http://localhost:3000') {
+      if (event.origin == 'https://app.wunderpass.org') {
         clearInterval(requestInterval);
 
         if (event.data?.wunderId) {
@@ -46,7 +46,7 @@ export default function LoginWithWunderPass(props) {
 
   return (
     <>
-      <a href="http://localhost:3000" onClick={handleClick}>
+      <a href="https://app.wunderpass.org" onClick={handleClick}>
         <div style={{display: 'flex', alignItems: 'center', background: "#192858", borderRadius: 10, padding: "5px 10px"}}>
           <svg width="32" height="32" viewBox="0 0 42 40">
             <path d="M36.0991 34.2592C39.3239 30.5787 41.1373 25.8697 41.2156 20.9734C41.2939 16.0772 39.6319 11.3125 36.5264 7.53041L32.1979 11.0962C34.4589 13.8498 35.6689 17.3188 35.612 20.8836C35.555 24.4483 34.2346 27.8768 31.8868 30.5564L36.0991 34.2592Z" fill="#FFF"/>
