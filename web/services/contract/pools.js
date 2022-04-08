@@ -1,6 +1,6 @@
 import {ethers} from 'ethers';
-import { matic } from '/services/formatter';
-import { initLauncher, initPool } from './init';
+import { usdc } from '/services/formatter';
+import { httpProvider, initLauncher, initPool, usdcAddress, tokenAbi } from './init';
 import useWunderPass from '/hooks/useWunderPass';
 
 export function createPool(poolName, entryBarrier, tokenName, tokenSymbol, value) {
@@ -8,9 +8,9 @@ export function createPool(poolName, entryBarrier, tokenName, tokenSymbol, value
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const [poolLauncher, provider] = initLauncher();
     const gasPrice = await provider.getGasPrice();
-    const tx = await poolLauncher.populateTransaction.createNewPool(poolName, matic(entryBarrier), tokenName, tokenSymbol, {gasPrice: gasPrice.mul(5).div(4), value: matic(value)});
+    const tx = await poolLauncher.populateTransaction.createNewPool(poolName, usdc(entryBarrier), tokenName, tokenSymbol, usdc(value), {gasPrice: gasPrice.mul(5).div(4)});
     
-    smartContractTransaction(tx).then(async (transaction) => {
+    smartContractTransaction(tx, {amount: usdc(value), spender: poolLauncher.address}).then(async (transaction) => {
       try {
         const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);
@@ -60,9 +60,9 @@ export function joinPool(poolAddress, value) {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
     const [wunderPool, provider] = initPool(poolAddress);
     const gasPrice = await provider.getGasPrice();
-    const tx = await wunderPool.populateTransaction.enterPool({gasPrice: gasPrice.mul(5).div(4), value: matic(value)});
+    const tx = await wunderPool.populateTransaction.joinPool(usdc(value), {gasPrice: gasPrice.mul(5).div(4)});
     
-    smartContractTransaction(tx).then(async (transaction) => {
+    smartContractTransaction(tx, {amount: usdc(value), spender: poolAddress}).then(async (transaction) => {
       try {
         const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);
@@ -96,19 +96,20 @@ export function isMember(poolAddress, user) {
 
 export function fetchPoolBalance(poolAddress) {
   return new Promise(async (resolve, reject) => {
-    const provider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    resolve(await provider.getBalance(poolAddress))
+    const provider = httpProvider;
+    const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider)
+    resolve(await usdcContract.balanceOf(poolAddress))
   })
 }
 
 export function fundPool(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
     const {smartContractTransaction} = useWunderPass({name: 'WunderPool', accountId: 'ABCDEF'});
-    const provider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
+    const [wunderPool, provider] = initPool(poolAddress);
     const gasPrice = await provider.getGasPrice();
-    const tx = {to: poolAddress, value: ethers.utils.parseEther(amount), gasPrice: gasPrice.mul(5).div(4)}
+    const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {gasPrice: gasPrice.mul(5).div(4)});
     
-    smartContractTransaction(tx).then(async (transaction) => {
+    smartContractTransaction(tx, {amount: usdc(amount), spender: poolAddress}).then(async (transaction) => {
       try {
         const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);

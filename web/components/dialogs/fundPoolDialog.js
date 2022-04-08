@@ -16,7 +16,7 @@ export default function FundPoolDialog(props) {
   const handleSubmit = () => {
     setLoading(true);
     fundPool(address, amount).then((res) => {
-      handleSuccess(`Funded Pool with ${amount} MATIC`)
+      handleSuccess(`Funded Pool with ${amount} USD`)
       handleClose();
     }).catch((err) => {
       handleError(err);
@@ -30,14 +30,14 @@ export default function FundPoolDialog(props) {
 
   return(
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Send MATIC to Pool</DialogTitle>
-      <DialogContent sx={{minWidth: '50vw'}}>
-        <DialogContentText>Send MATIC to the Pool. You will get more Governance Tokens in exchange</DialogContentText>
-        <TextField autoFocus type="number" margin="dense" value={amount} onChange={handleInput} label="Amount" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">MATIC</InputAdornment>}}/>
+      <DialogTitle>Send USD to Pool</DialogTitle>
+      <DialogContent>
+        <DialogContentText>Send USD to the Pool. You will get more Governance Tokens in exchange</DialogContentText>
+        <TextField autoFocus type="number" margin="dense" value={amount} onChange={handleInput} label="Amount" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">USD</InputAdornment>}}/>
       </DialogContent>
       {loading ? 
         <Stack spacing={2} sx={{textAlign: 'center'}}>
-          <Typography variant="subtitle1">Transferring MATIC...</Typography>
+          <Typography variant="subtitle1">Transferring USD...</Typography>
           <LinearProgress />
         </Stack> :
         <DialogActions>

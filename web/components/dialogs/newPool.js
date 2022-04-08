@@ -17,6 +17,7 @@ export default function NewPoolDialog(props) {
     setTokenSymbol("");
     setEntryBarrier("");
     setValue("");
+    setWaitingForPool(false);
     setOpen(false);
   }
 
@@ -29,7 +30,6 @@ export default function NewPoolDialog(props) {
       fetchPools();
     }).catch((err) => {
       handleError(err);
-    }).then(() => {
       setWaitingForPool(false);
     });
   }
@@ -53,8 +53,8 @@ export default function NewPoolDialog(props) {
               <TextField label="Symbol" placeholder="TKN" fullWidth value={tokenSymbol} onChange={(e) => setTokenSymbol(e.target.value)}/>
             </Grid>
           </Grid>
-          <TextField type="number" value={value} onChange={(e) => setValue(e.target.value)} label="Your Invest" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">MATIC</InputAdornment>}}/>
-          <TextField type="number" value={entryBarrier} onChange={(e) => setEntryBarrier(e.target.value)} label="Minimum Invest" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">MATIC</InputAdornment>}}/>
+          <TextField type="number" value={value} onChange={(e) => setValue(e.target.value)} label="Your Invest" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">USD</InputAdornment>}}/>
+          <TextField type="number" value={entryBarrier} onChange={(e) => setEntryBarrier(e.target.value)} label="Minimum Invest" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">USD</InputAdornment>}}/>
         </Stack>
       </DialogContent>
       {waitingForPool ? 

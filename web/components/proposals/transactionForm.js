@@ -93,7 +93,7 @@ export function TransactionForm(props) {
                   <ParamInput key={`param-input-${i}`} label={input.name} type={input.type} value={transaction.params[1][i]} setValue={(val) => handleParamChange(i, val)}/>
                 )
               })}
-              {action?.payable && <TextField type="number" value={transaction.value} onChange={(e) => updateTransaction('value', e.target.value)} label="Value" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">MATIC</InputAdornment>}}/>}
+              {action?.payable && <TextField type="number" value={transaction.value} onChange={(e) => updateTransaction('value', e.target.value)} label="Value" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">USD</InputAdornment>}}/>}
             </> :
             <>
               <TextField label="Function" value={transaction.action} onChange={(e) => updateTransaction('action', e.target.value)} placeholder="mint"/>
@@ -104,7 +104,7 @@ export function TransactionForm(props) {
                 )
               })}
               <Button startIcon={<AddIcon />} onClick={addParam}>Add Function Param</Button>
-              <TextField type="number" value={transaction.value} onChange={(e) => updateTransaction('value', e.target.value)} label="Value" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">MATIC</InputAdornment>}}/>
+              <TextField type="number" value={transaction.value} onChange={(e) => updateTransaction('value', e.target.value)} label="Value" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end">USD</InputAdornment>}}/>
             </>
         )}
         {foundAbi === false && transaction.address.length == 42 &&

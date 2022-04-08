@@ -1,20 +1,18 @@
 import {ethers} from 'ethers';
-import { initPool } from './init';
+import { httpProvider, initPool, tokenAbi } from './init';
 import { fetchPoolMembers } from './pools';
 import { toEthString } from '/services/formatter';
 
 export function fetchERC20Data(address) {
   return new Promise(async (resolve, reject) => {
-    const abi = ["function name() public view returns(string)", "function symbol() public view returns(string)"];
-    const provider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
-    const token = new ethers.Contract(address, abi, provider);
+    const provider = httpProvider;
+    const token = new ethers.Contract(address, tokenAbi, provider);
     resolve({name: await token.name(), symbol: await token.symbol()});
   })
 }
 
 export function fetchPoolTokens(address) {
   return new Promise(async (resolve, reject) => {
-    const tokenAbi = ["function name() public view returns(string)", "function symbol() public view returns(string)", "function decimals() public view returns(uint)", "function balanceOf(address) public view returns(uint)"];
     const [wunderPool, provider] = initPool(address);
     const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
     
@@ -31,7 +29,6 @@ export function fetchPoolTokens(address) {
 
 export function fetchPoolGovernanceToken(address) {
   return new Promise(async (resolve, reject) => {
-    const tokenAbi = ["function name() public view returns(string)", "function symbol() public view returns(string)", "function totalSupply() public view returns(uint)", "function balanceOf(address) public view returns(uint)", "function price() public view returns(uint)"];
     const [wunderPool, provider] = initPool(address);
     const govTokenAddress = await wunderPool.governanceToken();
     const govToken = new ethers.Contract(govTokenAddress, tokenAbi, provider);

@@ -24,7 +24,7 @@ export default function ApeForm(props) {
   const handleApe = (e) => {
     e.preventDefault();
     setLoading(true);
-    createApeSuggestion(address, tokenAddress, `Let's Ape into ${tokenName} (${tokenSymbol})`, `We will ape ${value} MATIC into ${tokenName}`, value).then(res => {
+    createApeSuggestion(address, tokenAddress, `Let's Ape into ${tokenName} (${tokenSymbol})`, `We will ape ${value} USD into ${tokenName}`, value).then(res => {
       console.log(res);
       handleSuccess(`Created Proposal to Ape into ${tokenSymbol}`);
       fetchProposals();
@@ -69,7 +69,7 @@ export default function ApeForm(props) {
             <Typography variant="h4">{tokenName} ({tokenSymbol})</Typography>
             <FormControl fullWidth variant="outlined">
               <InputLabel>Ape Amount</InputLabel>
-              <OutlinedInput type="number" value={value} onChange={handleValueInput} label="Ape Amount" placeholder="1" endAdornment={<InputAdornment position="end">MATIC</InputAdornment>}/>
+              <OutlinedInput type="number" value={value} onChange={handleValueInput} label="Ape Amount" placeholder="1" endAdornment={<InputAdornment position="end">USD</InputAdornment>}/>
             </FormControl>
           </Stack>
         </Collapse>

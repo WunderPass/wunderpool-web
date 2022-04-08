@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useState } from "react";
 import { toEthString } from "/services/formatter";
 import { joinPool } from "/services/contract/pools";
-import { matic } from "../../services/formatter";
+import { usdc } from "../../services/formatter";
 
 export default function JoinPoolDialog(props) {
   const {open, setOpen, address, handleSuccess, handleError, price, totalSupply, minimumInvest} = props;
@@ -19,7 +19,7 @@ export default function JoinPoolDialog(props) {
   const handleSubmit = () => {
     setLoading(true);
     joinPool(address, amount).then((res) => {
-      handleSuccess(`Joined Pool with ${amount} MATIC`)
+      handleSuccess(`Joined Pool with ${amount} USD`)
       handleClose();
     }).catch((err) => {
       handleError(err);
@@ -27,7 +27,7 @@ export default function JoinPoolDialog(props) {
     })
   }
 
-  const receivedTokens = ethers.BigNumber.from(matic(amount)).div(price);
+  const receivedTokens = ethers.BigNumber.from(usdc(amount)).div(price);
   const shareOfPool = receivedTokens.mul(100).div(totalSupply.add(receivedTokens));
 
   const handleInput = (e) => {
@@ -39,8 +39,8 @@ export default function JoinPoolDialog(props) {
       <DialogTitle>Join the Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>You will receive Governance Tokens proportionally to your invest</DialogContentText>
-        <DialogContentText>Price per Governance Token: {toEthString(price, 18)} MATIC</DialogContentText>
-        <TextField autoFocus type="number" margin="dense" value={amount} onChange={handleInput} label="Invest Amount" placeholder="1" fullWidth inputProps={{min: '0'}} InputProps={{endAdornment: <InputAdornment position="end">MATIC</InputAdornment>}}/>
+        <DialogContentText>Price per Governance Token: {toEthString(price, 6)} USD</DialogContentText>
+        <TextField autoFocus type="number" margin="dense" value={amount} onChange={handleInput} label="Invest Amount" placeholder="1" fullWidth inputProps={{min: '0'}} InputProps={{endAdornment: <InputAdornment position="end">USD</InputAdornment>}}/>
         <DialogContentText>Governance Tokens: {receivedTokens.toString()}</DialogContentText>
         <DialogContentText>Share of Pool: {shareOfPool.toString()}%</DialogContentText>
       </DialogContent>
@@ -51,7 +51,7 @@ export default function JoinPoolDialog(props) {
         </Stack> :
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} color="success" disabled={minimumInvest.gt(matic(amount))}>Join</Button>
+          <Button onClick={handleSubmit} color="success" disabled={minimumInvest.gt(usdc(amount))}>Join</Button>
         </DialogActions>
       }
     </Dialog>

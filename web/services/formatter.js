@@ -14,7 +14,9 @@ export function encodeParams(types, values) {
   const abiCoder = new ethers.utils.AbiCoder();
   const vals = [];
   types.forEach((type, i) => {
-    if (type.match(/\[\]/)) {
+    if (type.match(/bool/)) {
+      vals.push(values[i])
+    } else if (type.match(/\[\]/)) {
       vals.push(JSON.parse(values[i]).map(val => `${val}`))
     } else {
       vals.push(`${values[i]}`)
@@ -31,4 +33,8 @@ export function toEthString(num, decimals) {
 export function matic(num) {
   num = typeof(num) == 'string' ? num : `${num}`;
   return ethers.utils.parseEther(num || "0");
+}
+
+export function usdc(num) {
+  return ethers.utils.parseUnits(`${num || 0}`, 6);
 }

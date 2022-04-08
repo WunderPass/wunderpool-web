@@ -19,6 +19,11 @@ export default function usePoolListener(handleInfo) {
       handleInfo(`New Proposal: ${title}`);
     });
 
+    wunderPool.on("NewMember", async (address, stake) => {
+      console.log("NewMember:", id, creator, title)
+      handleInfo(`${address} joined the Pool with ${stake}$`);
+    });
+
     wunderPool.on("Voted", async (proposalId, voter, mode) => {
       console.log("Voted:", proposalId, voter, mode)
       const modeLookup = ["NONE", "YES", "NO"]
@@ -30,9 +35,9 @@ export default function usePoolListener(handleInfo) {
       handleInfo(`Proposal #${proposalId.toNumber()} was executed by ${executor}`);
     });
 
-    wunderPool.on("TokenAdded", async (tokenAddress, balance) => {
-      console.log("TokenAdded:", tokenAddress, balance)
-      handleInfo(`New Token Added to the Pool: ${tokenAddress}`);
+    wunderPool.on("TokenAdded", async (tokenAddress, isERC721, tokenId) => {
+      console.log("TokenAdded:", tokenAddress, isERC721, tokenId)
+      handleInfo(`New ${isERC721 ? 'NFT' : 'Token'} Added to the Pool: ${tokenAddress}`);
     });
 
     wunderPool.on("MaticWithdrawed", async (receiver, amount) => {

@@ -37,8 +37,8 @@ export default function TokenList(props) {
       <Paper elevation={3} sx={{p: 2}}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack spacing={1}>
-            <Typography variant="h6">MATIC</Typography>
-            <Typography variant="subtitle1">Balance: {typeof(poolBalance) == 'number' ? poolBalance : toEthString(poolBalance, 18)}</Typography>
+            <Typography variant="h6">USD</Typography>
+            <Typography variant="subtitle1">Balance: {typeof(poolBalance) == 'number' ? poolBalance : toEthString(poolBalance, 6)}</Typography>
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="center">
             <IconButton color="success" onClick={handleFund}><AttachMoneyIcon /></IconButton>

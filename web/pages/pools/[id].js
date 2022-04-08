@@ -138,7 +138,7 @@ export default function Pool(props) {
           <Paper elevation={4} sx={{width: '100%', p: 3}}>
             <Stack spacing={2}>
               <Typography variant="h5">Do you want to join this Pool?</Typography>
-              <Typography variant="subtitle1">Minimum Invest: {governanceTokenData ? toEthString(governanceTokenData.entryBarrier, 18) : '...'} MATIC</Typography>
+              <Typography variant="subtitle1">Minimum Invest: {governanceTokenData ? toEthString(governanceTokenData.entryBarrier, 6) : '...'} USD</Typography>
               <Button variant="contained" onClick={() => setJoinPool(true)}>Join</Button>
             </Stack>
           </Paper>

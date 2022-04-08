@@ -24,7 +24,7 @@ export default function PoolInfoDialog(props) {
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap">
             <Typography variant="subtitle1">Entry Barrier:</Typography>
-            <Typography variant="subtitle1">{toEthString(governanceTokenData.entryBarrier, 18)} MATIC</Typography>
+            <Typography variant="subtitle1">{toEthString(governanceTokenData.entryBarrier, 6)} USD</Typography>
           </Stack>
           <Typography variant="h6" textAlign="center">Governance Token</Typography>
           <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap">
@@ -33,7 +33,7 @@ export default function PoolInfoDialog(props) {
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap">
             <Typography variant="subtitle1">Price Per Token:</Typography>
-            <Typography variant="subtitle1">{toEthString(governanceTokenData.price, 18)} MATIC</Typography>
+            <Typography variant="subtitle1">{toEthString(governanceTokenData.price, 6)} USD</Typography>
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap">
             <Typography variant="subtitle1">Total Supply:</Typography>

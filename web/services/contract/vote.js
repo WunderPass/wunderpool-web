@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { initPool } from './init';
 import useWunderPass from '/hooks/useWunderPass';
 

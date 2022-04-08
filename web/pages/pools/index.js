@@ -18,7 +18,7 @@ function PoolList(props) {
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Stack spacing={1}>
                 <Typography variant="h6">{pool.name}</Typography>
-                {pool.entryBarrier && <Typography variant="subtitle1">Minimum Invest: {toEthString(pool.entryBarrier, 18)} MATIC</Typography>}
+                {pool.entryBarrier && <Typography variant="subtitle1">Minimum Invest: {toEthString(pool.entryBarrier, 6)} USD</Typography>}
               </Stack>
               <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
                 <IconButton>

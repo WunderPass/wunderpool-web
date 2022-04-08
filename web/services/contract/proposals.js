@@ -1,6 +1,6 @@
 import {ethers} from 'ethers';
-import { encodeParams } from '../formatter';
-import { initPool } from './init';
+import { encodeParams, usdc } from '../formatter';
+import { httpProvider, initPool, usdcAddress, wunderSwapperAddress } from './init';
 import useWunderPass from '/hooks/useWunderPass';
 
 export function fetchPoolProposals(address) {
@@ -89,13 +89,11 @@ export function createCustomProposal(poolAddress, title, description, contractAd
 }
 
 export function createApeSuggestion(poolAddress, tokenAddress, title, description, value) {
-  const wunderSwapperAddress = '0xbD4b2807dDaBF2bCb7A8555D98861A958c11435b';
-  return createMultiActionProposal(poolAddress, title, description, [wunderSwapperAddress, poolAddress], ["buyTokens(address)", "addToken(address)"], [encodeParams(["address"], [tokenAddress]), encodeParams(["address"], [tokenAddress])], [ethers.utils.parseEther(String(value)), 0], 1846183041);
+  return createSwapSuggestion(poolAddress, usdcAddress, tokenAddress, title, description, usdc(value));
 }
 
 export function createFudSuggestion(poolAddress, tokenAddress, title, description, value) {
-  const wunderSwapperAddress = '0xbD4b2807dDaBF2bCb7A8555D98861A958c11435b';
-  return createMultiActionProposal(poolAddress, title, description, [tokenAddress, wunderSwapperAddress], ["transfer(address,uint256)", "sellTokens(address,uint256)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, value]), encodeParams(["address", "uint"], [tokenAddress, value])], [0, 0], 1846183041);
+  return createSwapSuggestion(poolAddress, tokenAddress, usdcAddress, title, description, value);
 }
 
 export function createLiquidateSuggestion(poolAddress, title, description) {
@@ -103,20 +101,19 @@ export function createLiquidateSuggestion(poolAddress, title, description) {
 }
 
 export async function createSwapSuggestion(poolAddress, tokenIn, tokenOut, title, description, amount) {
-  const wunderSwapperAddress = '0xbD4b2807dDaBF2bCb7A8555D98861A958c11435b';
   const [wunderPool] = initPool(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
   if (tokenAddresses.includes(tokenOut)) {
     return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]), encodeParams(["address", "address", "uint256"], [tokenIn, tokenOut, amount])], [0, 0], 1846183041);
   } else {
-    return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress, poolAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)", "addToken(address)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]), encodeParams(["address", "address", "uint256"], [tokenIn, tokenOut, amount]), encodeParams(["address"], [tokenOut])], [0, 0, 0], 1846183041);
+    return createMultiActionProposal(poolAddress, title, description, [tokenIn, wunderSwapperAddress, poolAddress], ["transfer(address,uint256)", "swapTokens(address,address,uint256)", "addToken(address,bool,uint256)"], [encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]), encodeParams(["address", "address", "uint256"], [tokenIn, tokenOut, amount]), encodeParams(["address", "bool", "uint256"], [tokenOut, false, 0])], [0, 0, 0], 1846183041);
   }
 }
 
 export function testExecute(poolAddress, contractAddress, action, params, transactionValue) {
   const abi = [`function ${action}${transactionValue == 0 ? '' : ' payable'}`];
-  const provider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
+  const provider = httpProvider;
   const contract = new ethers.Contract(contractAddress, abi, provider);
   const fun = contract.callStatic[action];
   const overrides = {from: poolAddress};
