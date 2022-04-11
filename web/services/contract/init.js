@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
-export const httpProvider = new ethers.providers.AlchemyProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
-export const wsProvider = ethers.providers.AlchemyProvider.getWebSocketProvider("matic", "0MP-IDcE4civg4aispshnYoOKIMobN-A");
+export const httpProvider = new ethers.providers.AlchemyProvider(process.env.BLOCKCHAIN_NAME, process.env.ALCHEMY_API_KEY);
+export const wsProvider = ethers.providers.AlchemyProvider.getWebSocketProvider(process.env.BLOCKCHAIN_NAME, process.env.ALCHEMY_API_KEY);
 export const wunderSwapperAddress = '0xB2BfcfA4d937ac850edCBeC7BaeC7A1b68f2ccfd';
 export const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 export const tokenAbi = ["function name() public view returns(string)", "function symbol() public view returns(string)", "function decimals() public view returns(uint)", "function balanceOf(address) public view returns(uint)", "function totalSupply() public view returns(uint)", "function price() public view returns(uint)"];

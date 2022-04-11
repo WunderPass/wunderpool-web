@@ -20,7 +20,7 @@ export default function usePoolListener(handleInfo) {
     });
 
     wunderPool.on("NewMember", async (address, stake) => {
-      console.log("NewMember:", id, creator, title)
+      console.log("NewMember:", address, stake)
       handleInfo(`${address} joined the Pool with ${stake}$`);
     });
 
