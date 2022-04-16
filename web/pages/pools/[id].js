@@ -115,18 +115,15 @@ export default function Pool(props) {
   }, [address, user.address]);
 
   useEffect(() => {
+    if (!address || !user.address) return;
     fetchTokens();
   }, [tokenAddedEvent]);
 
   useEffect(() => {
-    if (votedEvent?.voter && votedEvent.voter == user.address) return;
-    if (newProposalEvent?.creator && newProposalEvent.creator == user.address)
-      return;
-    if (
-      proposalExecutedEvent?.executor &&
-      proposalExecutedEvent.executor == user.address
-    )
-      return;
+    if (!address || !user.address) return;
+    if (votedEvent?.voter == user.address) return;
+    if (newProposalEvent?.creator == user.address) return;
+    if (proposalExecutedEvent?.executor == user.address) return;
     fetchProposals();
     resetEvents();
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
