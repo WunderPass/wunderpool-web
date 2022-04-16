@@ -119,11 +119,11 @@ export default function Pool(props) {
   }, [tokenAddedEvent]);
 
   useEffect(() => {
-    if (votedEvent.voter && votedEvent.voter == user.address) return;
-    if (newProposalEvent.creator && newProposalEvent.creator == user.address)
+    if (votedEvent?.voter && votedEvent.voter == user.address) return;
+    if (newProposalEvent?.creator && newProposalEvent.creator == user.address)
       return;
     if (
-      proposalExecutedEvent.executor &&
+      proposalExecutedEvent?.executor &&
       proposalExecutedEvent.executor == user.address
     )
       return;
