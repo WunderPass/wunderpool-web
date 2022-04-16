@@ -34,7 +34,7 @@ export default function SellTokenDialog(props) {
   return(
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Sell {name}</DialogTitle>
-      <DialogContent sx={{minWidth: '50vw'}}>
+      <DialogContent>
         <TextField autoFocus type="number" margin="dense" value={amount} onChange={handleInput} label="Amount" placeholder="1" fullWidth InputProps={{endAdornment: <InputAdornment position="end"><Button onClick={() => setAmount(balance)}>MAX</Button></InputAdornment>}}/>
       </DialogContent>
       {loading ? 
