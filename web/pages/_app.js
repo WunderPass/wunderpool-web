@@ -14,6 +14,7 @@ function WunderPool({ Component, pageProps }) {
     newProposalEvent,
     tokenAddedEvent,
     proposalExecutedEvent,
+    resetEvents,
   ] = usePoolListener(handleInfo);
 
   const appProps = Object.assign(
@@ -28,6 +29,7 @@ function WunderPool({ Component, pageProps }) {
       newProposalEvent,
       tokenAddedEvent,
       proposalExecutedEvent,
+      resetEvents,
     },
     pageProps
   );

@@ -43,6 +43,7 @@ export default function Pool(props) {
     votedEvent,
     newProposalEvent,
     proposalExecutedEvent,
+    resetEvents,
   } = props;
   const [ape, setApe] = useState(false);
   const [customProposal, setCustomProposal] = useState(false);
@@ -118,7 +119,16 @@ export default function Pool(props) {
   }, [tokenAddedEvent]);
 
   useEffect(() => {
+    if (votedEvent.voter && votedEvent.voter == user.address) return;
+    if (newProposalEvent.creator && newProposalEvent.creator == user.address)
+      return;
+    if (
+      proposalExecutedEvent.executor &&
+      proposalExecutedEvent.executor == user.address
+    )
+      return;
     fetchProposals();
+    resetEvents();
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   return (

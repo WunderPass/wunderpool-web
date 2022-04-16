@@ -9,6 +9,13 @@ export default function usePoolListener(handleInfo) {
   const [tokenAddedEvent, setTokenAddedEvent] = useState(null);
   const [proposalExecutedEvent, setProposalExecutedEvent] = useState(null);
 
+  const reset = () => {
+    setVotedEvent(null);
+    setNewProposalEvent(null);
+    setTokenAddedEvent(null);
+    setProposalExecutedEvent(null);
+  };
+
   const setupPoolListener = (address) => {
     setPoolAddress(address);
   };
@@ -21,7 +28,7 @@ export default function usePoolListener(handleInfo) {
     wunderPool.on("NewProposal", async (id, creator, title) => {
       console.log("NewProposal:", id, creator, title);
       handleInfo(`New Proposal: ${title}`);
-      setNewProposalEvent(id.toNumber());
+      setNewProposalEvent({ id: id.toNumber(), creator });
     });
 
     wunderPool.on("NewMember", async (address, stake) => {
@@ -37,7 +44,7 @@ export default function usePoolListener(handleInfo) {
           modeLookup[mode.toNumber()]
         } for Proposal #${proposalId.toNumber()}`
       );
-      setVotedEvent(proposalId.toNumber());
+      setVotedEvent({ id: proposalId.toNumber(), voter });
     });
 
     wunderPool.on("ProposalExecuted", async (proposalId, executor, result) => {
@@ -45,7 +52,7 @@ export default function usePoolListener(handleInfo) {
       handleInfo(
         `Proposal #${proposalId.toNumber()} was executed by ${executor}`
       );
-      setProposalExecutedEvent(proposalId.toNumber());
+      setProposalExecutedEvent({ id: proposalId.toNumber(), executor });
     });
 
     wunderPool.on("TokenAdded", async (tokenAddress, isERC721, tokenId) => {
@@ -82,5 +89,6 @@ export default function usePoolListener(handleInfo) {
     newProposalEvent,
     tokenAddedEvent,
     proposalExecutedEvent,
+    reset,
   ];
 }
