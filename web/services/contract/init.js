@@ -19,6 +19,12 @@ export const tokenAbi = [
   "function totalSupply() public view returns(uint)",
   "function price() public view returns(uint)",
 ];
+export const nftAbi = [
+  "function name() public view returns(string)",
+  "function symbol() public view returns(string)",
+  "function balanceOf(address) public view returns(uint)",
+  "function tokenURI(uint) public view returns(string)",
+];
 
 export function initLauncher() {
   const address = "0xAE32217Dc2d87c07C0885D69121B968C96d3E693";
