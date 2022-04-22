@@ -56,7 +56,7 @@ export default function TokenInput(props) {
 
   useEffect(() => {
     axios({ url: "/api/tokens/all" }).then((res) => {
-      setOptions(res.data);
+      setOptions(res.data.filter((tkn) => tkn.tradable));
       setLoading(false);
     });
   }, []);
