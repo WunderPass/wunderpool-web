@@ -128,9 +128,7 @@ export default function Pools(props) {
           </Stack>
 
           <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5">
-
             <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
-
               <div className="flex w-7 rounded-full border-2">
                 <Image
                   src={USDCIcon}
@@ -167,7 +165,7 @@ export default function Pools(props) {
             alignItems="center"
             justifyContent="space-between"
           >
-            <div className="flex flex-col justify-start">
+            <div className="flex flex-col w-full justify-start">
               <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1  rounded-md bg-white p-2 sm:mr-8 w-full shadow-xl">
                 <Typography variant="h3" className="font-bold">
                   {user?.wunderId}
@@ -177,11 +175,10 @@ export default function Pools(props) {
             </div>
           </Stack>
           <div></div>
+
           <div className="flex flex-row justify-between">
-
-
-            <div className="w-full pr-1 md:pr-3">
-              <Typography className="text-xl font-bold" >Your WunderPools</Typography>
+            <div className="w-full  pr-1 md:mr-3 ">
+              <Typography className="text-xl text-black font-bold pb-2" >Your WunderPools</Typography>
               {loadingUser ? (
                 <Skeleton
                   variant="rectangular"
@@ -189,11 +186,11 @@ export default function Pools(props) {
                   sx={{ height: '100px', borderRadius: 3 }}
                 />
               ) : (
-                <PoolList pools={userPools} setOpen={setOpen} />
+                <PoolList className="mx-4" pools={userPools} setOpen={setOpen} />
               )}
             </div>
-            <div className="w-full pl-1 md:pl-3">
-              <Typography className="text-xl font-bold ">All WunderPools</Typography>
+            <div className="w-full  pl-1 md:pl-3 ">
+              <Typography className="text-xl text-black font-bold pb-2">All WunderPools</Typography>
               {loadingAll ? (
                 <Skeleton
 
