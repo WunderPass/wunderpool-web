@@ -9,10 +9,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { createApeSuggestion } from "/services/contract/proposals";
 import TokenInput from "../tokens/input";
+import axios from "axios";
+import { currency } from "../../services/formatter";
 
 export default function ApeForm(props) {
   const { setApe, address, fetchProposals, handleSuccess, handleError } = props;
@@ -20,8 +22,10 @@ export default function ApeForm(props) {
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
   const [tokenImage, setTokenImage] = useState(null);
+  const [tokenPrice, setTokenPrice] = useState(false);
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [waitingForPrice, setWaitingForPrice] = useState(false);
 
   const handleClose = () => {
     setTokenAddress("");
@@ -57,6 +61,19 @@ export default function ApeForm(props) {
       });
   };
 
+  useEffect(() => {
+    if (tokenAddress && tokenAddress.length == 42) {
+      setWaitingForPrice(true);
+      axios({
+        url: `/api/tokens/price`,
+        params: { address: tokenAddress },
+      }).then((res) => {
+        setTokenPrice(res.data?.price);
+        setWaitingForPrice(false);
+      });
+    }
+  }, [tokenAddress]);
+
   const handleValueInput = (e) => {
     setValue(e.target.value);
   };
@@ -91,6 +108,9 @@ export default function ApeForm(props) {
               <img height="100%" src={tokenImage || "/favicon.ico"} />
               <Typography variant="h4">
                 {tokenName} ({tokenSymbol})
+              </Typography>
+              <Typography variant="h4">
+                {!waitingForPrice && currency(tokenPrice / 100, {})}
               </Typography>
             </Stack>
             <FormControl fullWidth variant="outlined">
