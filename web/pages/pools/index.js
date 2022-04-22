@@ -94,8 +94,14 @@ export default function Pools(props) {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Typography variant="h3">{user?.wunderId}'s WunderPools</Typography>
-          <Typography variant="h3">{user.address}'s WunderPools</Typography>
+          <div className="flex flex-col">
+            <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1 mt-0 rounded-xl bg-white p-2 m-1 w-[100%] sm:mr-8 w-screen shadow-xl">
+              <Typography variant="h3" className="font-bold">
+                {user?.wunderId}
+              </Typography>
+              <Typography variant="h6">Address: {user.address}</Typography>
+            </div>
+          </div>
 
           <Stack direction="row" spacing={1}>
             <Button
