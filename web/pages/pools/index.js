@@ -6,14 +6,21 @@ import {
   Skeleton,
   Stack,
   Typography,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
+import USDCIcon from "/public/usdc-logo.svg";
 import LogoutIcon from '@mui/icons-material/Logout';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import NewPoolDialog from '/components/dialogs/newPool';
 import { toEthString } from '/services/formatter';
+import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
+
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -87,62 +94,122 @@ export default function Pools(props) {
   }, [user.address]);
 
   return (
-    <Container maxWidth="md">
-      <Stack spacing={3} paddingTop={2}>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <div className="flex flex-col">
-            <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1 mt-0 rounded-xl bg-white p-2 m-1 w-[100%] sm:mr-8 w-screen shadow-xl">
-              <Typography variant="h3" className="font-bold">
-                {user?.wunderId}
-              </Typography>
-              <Typography variant="h6">Address: {user.address}</Typography>
+    <>
+      <Head>
+        <title>WunderPass NFT</title>
+        <meta
+          name="viewport"
+          content="initial-scale=1.0, width=device-width"
+        />
+      </Head>
+      <AppBar
+        className="bg-gradient-to-r from-cyan-500 to-blue-600"
+        position="static"
+      >
+        <Toolbar>
+          <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
+            <Link href="/">
+              <a>
+                <div className="flex flex-row">
+                  <div className="pt-0.5 w-44 pr-3">
+                    <Image
+                      src={WunderPoolIcon}
+                      alt="WunderPassIcon"
+                      layout="responsive"
+                    />
+
+                  </div>
+
+                </div>
+              </a>
+            </Link>
+
+          </Stack>
+
+          <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-1">
+
+            <div className="flex flex-row justify-between pr-1">
+
+              <div className="flex w-7 p-0.5 mb-0.5 rounded-full border-2">
+                <Image
+                  src={USDCIcon}
+                  alt="fill"
+                  layout="intrinsic"
+
+                />
+              </div>
+              <div className="text-center" //TODO GET BALANCE HERE
+              >
+                &nbsp;
+                5000.5
+              </div>
+              <div className="text-center">&nbsp;USDC</div>
             </div>
+
           </div>
 
-          <Stack direction="row" spacing={1}>
-            <Button
-              onClick={() => setOpen(true)}
-              variant="contained"
-              color="success"
-            >
-              New
-            </Button>
-            <IconButton onClick={user?.logOut} color="error">
-              <LogoutIcon />
-            </IconButton>
+
+        </Toolbar>
+      </AppBar>
+
+      <Container >
+        <Stack spacing={3} paddingTop={2}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <div className="flex flex-col">
+              <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1 mt-0 rounded-md bg-white p-2 m-1 sm:mr-8 w-full shadow-xl">
+                <Typography variant="h3" className="font-bold">
+                  {user?.wunderId}
+                </Typography>
+                <Typography variant="h6">Address: {user.address}</Typography>
+              </div>
+            </div>
+
+            <Stack direction="row" spacing={1}>
+              <Button
+                onClick={() => setOpen(true)}
+                variant="contained"
+                color="success"
+              >
+                New
+              </Button>
+              <IconButton onClick={user?.logOut} color="error">
+                <LogoutIcon />
+              </IconButton>
+            </Stack>
           </Stack>
+          <Typography variant="h6">Your WunderPools</Typography>
+          {loadingUser ? (
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              sx={{ height: '100px', borderRadius: 3 }}
+            />
+          ) : (
+            <PoolList pools={userPools} setOpen={setOpen} />
+          )}
+          <Typography variant="h6">All WunderPools</Typography>
+          {loadingAll ? (
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              sx={{ height: '100px', borderRadius: 3 }}
+            />
+          ) : (
+            <PoolList pools={allPools} setOpen={setOpen} />
+          )}
         </Stack>
-        <Typography variant="h6">Your WunderPools</Typography>
-        {loadingUser ? (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            sx={{ height: '100px', borderRadius: 3 }}
-          />
-        ) : (
-          <PoolList pools={userPools} setOpen={setOpen} />
-        )}
-        <Typography variant="h6">All WunderPools</Typography>
-        {loadingAll ? (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            sx={{ height: '100px', borderRadius: 3 }}
-          />
-        ) : (
-          <PoolList pools={allPools} setOpen={setOpen} />
-        )}
-      </Stack>
-      <NewPoolDialog
-        open={open}
-        setOpen={setOpen}
-        fetchPools={fetchPools}
-        {...props}
-      />
-    </Container>
+        <NewPoolDialog
+          open={open}
+          setOpen={setOpen}
+          fetchPools={fetchPools}
+          {...props}
+        />
+      </Container>
+    </>
+
   );
 }
