@@ -1,4 +1,6 @@
+import axios from "axios";
 import { ethers } from "ethers";
+import { currency } from "../formatter";
 import { httpProvider, initPool, nftAbi, tokenAbi } from "./init";
 import { fetchPoolMembers } from "./pools";
 import { toEthString } from "/services/formatter";
@@ -22,13 +24,24 @@ export function fetchPoolTokens(address) {
         const balance = await token.balanceOf(address);
         const decimals = await token.decimals();
         const formattedBalance = toEthString(balance, decimals);
+        const { price, image_url } = (
+          await axios({ url: `/api/tokens/data`, params: { address: addr } })
+        ).data;
+        const usdValue = balance
+          .mul(price)
+          .div(ethers.BigNumber.from(10).pow(decimals))
+          .toNumber();
+
         return {
           address: addr,
           name: await token.name(),
           symbol: await token.symbol(),
-          balance: balance,
+          balance: balance.toString(),
           decimals: decimals,
           formattedBalance: formattedBalance,
+          image: image_url,
+          price: price,
+          usdValue: currency(usdValue / 100, {}),
         };
       })
     );
