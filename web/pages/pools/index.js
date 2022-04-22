@@ -28,17 +28,18 @@ function PoolList(props) {
   return pools.length > 0 ? (
     pools.map((pool, i) => {
       return (
-        <Paper elevation={3} key={`pool-${i}`} sx={{ p: 2 }}>
+        <Paper className="mb-4 pb-6" elevation={3} key={`pool-${i}`} sx={{ p: 2 }}>
           <Stack
+
             direction="row"
             alignItems="center"
             justifyContent="space-between"
           >
-            <Stack spacing={1}>
+            <Stack spacing={1} >
               <Typography variant="h6">{pool.name}</Typography>
               {pool.entryBarrier && (
                 <Typography variant="subtitle1">
-                  Minimum Invest: {toEthString(pool.entryBarrier, 6)} USD
+                  Minimum Invest: {toEthString(pool.entryBarrier, 6)} USDC
                 </Typography>
               )}
             </Stack>
@@ -54,14 +55,14 @@ function PoolList(props) {
   ) : (
     <Paper elevation={3} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
-        <Typography variant="h5">There are no Pools</Typography>
-        <Typography variant="subtitle1">Create one now!</Typography>
+        <Typography className="pb-2" variant="h5">There are no Pools</Typography>
         <Button
+          className="btn"
           onClick={() => setOpen(true)}
           variant="contained"
           color="success"
         >
-          New
+          Create new pool
         </Button>
       </Stack>
     </Paper>
@@ -96,7 +97,7 @@ export default function Pools(props) {
   return (
     <>
       <Head>
-        <title>WunderPass NFT</title>
+        <title>WunderPool</title>
         <meta
           name="viewport"
           content="initial-scale=1.0, width=device-width"
@@ -114,7 +115,7 @@ export default function Pools(props) {
                   <div className="pt-0.5 w-44 pr-3">
                     <Image
                       src={WunderPoolIcon}
-                      alt="WunderPassIcon"
+                      alt="WunderPoolIcon"
                       layout="responsive"
                     />
 
@@ -126,11 +127,11 @@ export default function Pools(props) {
 
           </Stack>
 
-          <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-1">
+          <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5">
 
-            <div className="flex flex-row justify-between pr-1">
+            <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
 
-              <div className="flex w-7 p-0.5 mb-0.5 rounded-full border-2">
+              <div className="flex w-7 rounded-full border-2">
                 <Image
                   src={USDCIcon}
                   alt="fill"
@@ -141,13 +142,20 @@ export default function Pools(props) {
               <div className="text-center" //TODO GET BALANCE HERE
               >
                 &nbsp;
-                5000.5
+                5000.50
+                {user?.balance}
               </div>
-              <div className="text-center">&nbsp;USDC</div>
+              <div className="text-center mr-0.5">&nbsp;USDC</div>
             </div>
 
           </div>
-
+          <Button
+            className="btn ml-2 hover:bg-[#ff0000]"
+            onClick={user?.logOut}
+            variant="contained"
+          >
+            Log out
+          </Button>
 
         </Toolbar>
       </AppBar>
@@ -159,49 +167,50 @@ export default function Pools(props) {
             alignItems="center"
             justifyContent="space-between"
           >
-            <div className="flex flex-col">
-              <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1 mt-0 rounded-md bg-white p-2 m-1 sm:mr-8 w-full shadow-xl">
+            <div className="flex flex-col justify-start">
+              <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1  rounded-md bg-white p-2 sm:mr-8 w-full shadow-xl">
                 <Typography variant="h3" className="font-bold">
                   {user?.wunderId}
                 </Typography>
-                <Typography variant="h6">Address: {user.address}</Typography>
+                <Typography variant="h6">Address: {user?.address}</Typography>
               </div>
             </div>
-
-            <Stack direction="row" spacing={1}>
-              <Button
-                onClick={() => setOpen(true)}
-                variant="contained"
-                color="success"
-              >
-                New
-              </Button>
-              <IconButton onClick={user?.logOut} color="error">
-                <LogoutIcon />
-              </IconButton>
-            </Stack>
           </Stack>
-          <Typography variant="h6">Your WunderPools</Typography>
-          {loadingUser ? (
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              sx={{ height: '100px', borderRadius: 3 }}
-            />
-          ) : (
-            <PoolList pools={userPools} setOpen={setOpen} />
-          )}
-          <Typography variant="h6">All WunderPools</Typography>
-          {loadingAll ? (
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              sx={{ height: '100px', borderRadius: 3 }}
-            />
-          ) : (
-            <PoolList pools={allPools} setOpen={setOpen} />
-          )}
+          <div></div>
+          <div className="flex flex-row justify-between">
+
+
+            <div className="w-full pr-1 md:pr-3">
+              <Typography className="text-xl font-bold" >Your WunderPools</Typography>
+              {loadingUser ? (
+                <Skeleton
+                  variant="rectangular"
+                  width="100%"
+                  sx={{ height: '100px', borderRadius: 3 }}
+                />
+              ) : (
+                <PoolList pools={userPools} setOpen={setOpen} />
+              )}
+            </div>
+            <div className="w-full pl-1 md:pl-3">
+              <Typography className="text-xl font-bold ">All WunderPools</Typography>
+              {loadingAll ? (
+                <Skeleton
+
+                  variant="rectangular"
+                  width="100%"
+                  sx={{ height: '100px', borderRadius: 3 }}
+                />
+              ) : (
+                <PoolList pools={allPools} setOpen={setOpen} />
+              )}
+            </div>
+          </div>
+
+
         </Stack>
+
+
         <NewPoolDialog
           open={open}
           setOpen={setOpen}
