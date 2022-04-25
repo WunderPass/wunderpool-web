@@ -1,3 +1,14 @@
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
+import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
+import NewPoolDialog from '/components/dialogs/newPool';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { toEthString } from '/services/formatter';
+import USDCIcon from '/public/usdc-logo.svg';
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
   Button,
   Container,
@@ -9,18 +20,6 @@ import {
   AppBar,
   Toolbar,
 } from '@mui/material';
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
-import USDCIcon from "/public/usdc-logo.svg";
-import LogoutIcon from '@mui/icons-material/Logout';
-import { useEffect, useState } from 'react';
-import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
-import NewPoolDialog from '/components/dialogs/newPool';
-import { toEthString } from '/services/formatter';
-import Head from "next/head";
-import Link from "next/link";
-import Image from "next/image";
-
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -28,18 +27,27 @@ function PoolList(props) {
   return pools.length > 0 ? (
     pools.map((pool, i) => {
       return (
-        <Paper className="mb-4 pb-6" elevation={3} key={`pool-${i}`} sx={{ p: 2 }}>
+        <Paper
+          className="mb-4 pb-6"
+          elevation={3}
+          key={`pool-${i}`}
+          sx={{ p: 2 }}
+        >
           <Stack
-
             direction="row"
             alignItems="center"
             justifyContent="space-between"
           >
-            <Stack spacing={1} >
+            <Stack spacing={1}>
               <Typography variant="h6">{pool.name}</Typography>
               {pool.entryBarrier && (
                 <Typography variant="subtitle1">
                   Minimum Invest: {toEthString(pool.entryBarrier, 6)} USDC
+                </Typography>
+              )}
+              {pool.invested && (
+                <Typography variant="subtitle1">
+                  Invested: {toEthString(pool.invested, 6)} USDC
                 </Typography>
               )}
             </Stack>
@@ -55,15 +63,9 @@ function PoolList(props) {
   ) : (
     <Paper elevation={3} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
-        <Typography className="pb-2" variant="h5">There are no Pools</Typography>
-        <Button
-          className="btn"
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="success"
-        >
-          Create new pool
-        </Button>
+        <Typography className="pb-2" variant="h5">
+          There are no Pools
+        </Typography>
       </Stack>
     </Paper>
   );
@@ -98,10 +100,7 @@ export default function Pools(props) {
     <>
       <Head>
         <title>WunderPool</title>
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, width=device-width"
-        />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <AppBar
         className="bg-gradient-to-r from-cyan-500 to-blue-600"
@@ -118,34 +117,25 @@ export default function Pools(props) {
                       alt="WunderPoolIcon"
                       layout="responsive"
                     />
-
                   </div>
-
                 </div>
               </a>
             </Link>
-
           </Stack>
 
           <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5">
             <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
               <div className="flex w-7 rounded-full border-2">
-                <Image
-                  src={USDCIcon}
-                  alt="fill"
-                  layout="intrinsic"
-
-                />
+                <Image src={USDCIcon} alt="fill" layout="intrinsic" />
               </div>
-              <div className="text-center" //TODO GET BALANCE HERE
+              <div
+                className="text-center" //TODO GET BALANCE HERE
               >
-                &nbsp;
-                5000.50
+                &nbsp; 5000.50
                 {user?.balance}
               </div>
               <div className="text-center mr-0.5">&nbsp;USDC</div>
             </div>
-
           </div>
           <Button
             className="btn ml-2 hover:bg-[#ff0000]"
@@ -154,11 +144,10 @@ export default function Pools(props) {
           >
             Log out
           </Button>
-
         </Toolbar>
       </AppBar>
 
-      <Container >
+      <Container>
         <Stack spacing={3} paddingTop={2}>
           <Stack
             direction="row"
@@ -176,9 +165,22 @@ export default function Pools(props) {
           </Stack>
           <div></div>
 
-          <div className="flex flex-row justify-between">
-            <div className="w-full  pr-1 md:mr-3 ">
-              <Typography className="text-xl text-black font-bold pb-2" >Your WunderPools</Typography>
+          <div className="flex flex-col md:flex-row justify-between">
+            <div className="w-full pr-1 mb-8 md:mr-3 md:mb-0">
+              <div className="flex flex-row justify-between">
+                <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
+                  Your WunderPools
+                </Typography>
+                <Button
+                  className="btn mb-4"
+                  onClick={() => setOpen(true)}
+                  variant="contained"
+                  color="success"
+                >
+                  Create new pool
+                </Button>
+              </div>
+
               {loadingUser ? (
                 <Skeleton
                   variant="rectangular"
@@ -186,14 +188,19 @@ export default function Pools(props) {
                   sx={{ height: '100px', borderRadius: 3 }}
                 />
               ) : (
-                <PoolList className="mx-4" pools={userPools} setOpen={setOpen} />
+                <PoolList
+                  className="mx-4"
+                  pools={userPools}
+                  setOpen={setOpen}
+                />
               )}
             </div>
-            <div className="w-full  pl-1 md:pl-3 ">
-              <Typography className="text-xl text-black font-bold pb-2">All WunderPools</Typography>
+            <div className="w-full pl-1 md:pl-3 ">
+              <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
+                All WunderPools
+              </Typography>
               {loadingAll ? (
                 <Skeleton
-
                   variant="rectangular"
                   width="100%"
                   sx={{ height: '100px', borderRadius: 3 }}
@@ -203,10 +210,7 @@ export default function Pools(props) {
               )}
             </div>
           </div>
-
-
         </Stack>
-
 
         <NewPoolDialog
           open={open}
@@ -216,6 +220,5 @@ export default function Pools(props) {
         />
       </Container>
     </>
-
   );
 }
