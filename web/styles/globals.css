@@ -21,5 +21,9 @@ a {
 }
 
 .btn {
-  @apply rounded-lg py-2.5 px-3 text-xs font-bold cursor-pointer bg-black uppercase
+  @apply rounded-lg py-2.5 px-3 text-xs font-bold cursor-pointer bg-black uppercase;
+}
+
+.shadow-custom {
+  box-shadow: 0 15px 50px 15px rgba(0, 0, 0, 0.25);
 }
