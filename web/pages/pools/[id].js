@@ -91,6 +91,13 @@ export default function Pool(props) {
     return fetchPoolName(address);
   };
 
+  const loginCallback = () => {
+    setUserIsMember(true);
+    setupPoolListener(address);
+    fetchProposals();
+    fetchTokens();
+  };
+
   useEffect(() => {
     if (address && user.address) {
       checkPoolExistence()
@@ -99,10 +106,7 @@ export default function Pool(props) {
           fetchBalance();
           isMember(address, user.address).then((res) => {
             if (res) {
-              setUserIsMember(true);
-              setupPoolListener(address);
-              fetchProposals();
-              fetchTokens();
+              loginCallback();
             } else {
               setUserIsMember(false);
             }
@@ -285,6 +289,7 @@ export default function Pool(props) {
         <JoinPoolDialog
           open={joinPool}
           setOpen={setJoinPool}
+          loginCallback={loginCallback}
           address={address}
           price={governanceTokenData.price}
           totalSupply={governanceTokenData.totalSupply}

@@ -6,7 +6,7 @@ export function bytesToValue(bytes, types) {
 }
 
 export function decodeParams(action, params) {
-  const types = action.match(/\((.*)\)/)[1].split(',');
+  const types = action.match(/\((.*)\)/)[1].split(",");
   return bytesToValue(params, types);
 }
 
@@ -37,10 +37,41 @@ export function displayWithDecimalPlaces(num, decimals) {
 }
 
 export function matic(num) {
-  num = typeof num == 'string' ? num : `${num}`;
-  return ethers.utils.parseEther(num || '0');
+  num = typeof num == "string" ? num : `${num}`;
+  return ethers.utils.parseEther(num || "0");
 }
 
 export function usdc(num) {
   return ethers.utils.parseUnits(`${num || 0}`, 6);
 }
+
+export function round(num, precision = 0) {
+  return Math.round(Number(num) * 10 ** precision) / 10 ** precision;
+}
+
+const localeOptions = {
+  en: { symbol: "$", separator: ",", decimals: "." },
+  de: { symbol: "€", separator: ".", decimals: "," },
+};
+
+export function currency(num, { symbol, locale, seperator, decimalSeperator }) {
+  const sep = seperator || localeOptions[locale]?.separator || ",";
+  const decSep = decimalSeperator || localeOptions[locale]?.decimals || ".";
+  const sym = symbol || localeOptions[locale]?.symbol || "$";
+
+  const str = String(round(num, 2));
+  const amount = str.split(".")[0] || "0";
+  const decimals = str.split(".")[1] || "00";
+  const formattedAmount = amount
+    .split("")
+    .reverse()
+    .map((n, i) => n + (i % 3 == 0 ? sep : ""))
+    .reverse()
+    .join("")
+    .slice(0, -1);
+
+  return `${formattedAmount}${decSep}${decimals}${
+    decimals.length == 1 ? "0" : ""
+  } ${sym}`;
+}
+
