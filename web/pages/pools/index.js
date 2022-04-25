@@ -3,7 +3,7 @@ import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { toEthString } from '/services/formatter';
+import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import USDCIcon from '/public/usdc-logo.svg';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -42,12 +42,12 @@ function PoolList(props) {
               <Typography variant="h6">{pool.name}</Typography>
               {pool.entryBarrier && (
                 <Typography variant="subtitle1">
-                  Minimum Invest: {toEthString(pool.entryBarrier, 6)} USDC
-                </Typography>
-              )}
-              {pool.invested && (
-                <Typography variant="subtitle1">
-                  Invested: {toEthString(pool.invested, 6)} USDC
+                  Minimum Invest:{' '}
+                  {displayWithDecimalPlaces(
+                    toEthString(pool.entryBarrier, 6),
+                    2
+                  )}{' '}
+                  $
                 </Typography>
               )}
             </Stack>
