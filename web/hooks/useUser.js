@@ -28,6 +28,6 @@ export default function useUser() {
     setWunderId(localStorage.getItem('wunderId'))
     setAddress(localStorage.getItem('address'))
   }, [])
-  
-  return {wunderId, address, updateWunderId, updateAddress, logOut}
+
+  return { wunderId, address, updateWunderId, updateAddress, logOut }
 }

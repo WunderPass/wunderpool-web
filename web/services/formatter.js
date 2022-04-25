@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
 export function bytesToValue(bytes, types) {
   const abiCoder = new ethers.utils.AbiCoder();
@@ -27,9 +27,13 @@ export function encodeParams(types, values) {
 
 export function toEthString(num, decimals) {
   const weiBalance = num.mul(
-    ethers.BigNumber.from("10").pow(ethers.BigNumber.from(`${18 - decimals}`))
+    ethers.BigNumber.from('10').pow(ethers.BigNumber.from(`${18 - decimals}`))
   );
   return ethers.utils.formatEther(`${weiBalance}`);
+}
+
+export function displayWithDecimalPlaces(num, decimals) {
+  return (Math.round(num * 100) / 100).toFixed(decimals);
 }
 
 export function matic(num) {
@@ -70,3 +74,4 @@ export function currency(num, { symbol, locale, seperator, decimalSeperator }) {
     decimals.length == 1 ? "0" : ""
   } ${sym}`;
 }
+
