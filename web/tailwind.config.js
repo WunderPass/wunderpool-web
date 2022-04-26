@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontSize: {
+        'xs-mobile': '.25rem',
+        mobile: '.50rem',
+      },
       colors: {
         'wunder-blue': '#0096FE',
         'wunder-light-blue': '#01BFFF',
