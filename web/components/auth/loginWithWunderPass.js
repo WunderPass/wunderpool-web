@@ -58,7 +58,7 @@ export default function LoginWithWunderPass(props) {
   return (
     <>
       <a href={process.env.WUNDERPASS_URL} onClick={handleClick}>
-        <div className="flex text-center items-center justify-center bg-wunder-blue hover:bg-wunder-light-blue rounded-md lg:px-2 py-1 font-bold text-md">
+        <div className="flex text-center items-center justify-center bg-wunder-blue hover:bg-wunder-light-blue rounded-md lg:px-2 py-2 font-bold text-md">
           <svg
             className="fill-white"
             xmlns="http://www.w3.org/2000/svg"
