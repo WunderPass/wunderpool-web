@@ -2,6 +2,7 @@ import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import { Container, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,13 +14,45 @@ import { FaTwitter, FaDiscord } from 'react-icons/fa';
 export default function Home(props) {
   const { user } = props;
   const router = useRouter();
+  const [popup, setPopup] = useState(null);
 
   const handleSuccess = (data) => {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
 
-  const doNothing = () => {};
+  const handleClick = (e) => {
+    e.preventDefault();
+    const authPopup =
+      popup ||
+      window.open(
+        encodeURI(
+          `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
+        ),
+        'WunderPassAuth',
+        'popup'
+      );
+    setPopup(authPopup);
+
+    const requestInterval = setInterval(() => {
+      authPopup.postMessage(
+        { accountId: 'ABCDE', intent: intent },
+        process.env.WUNDERPASS_URL
+      );
+    }, 1000);
+
+    window.addEventListener('message', (event) => {
+      if (event.origin == process.env.WUNDERPASS_URL) {
+        clearInterval(requestInterval);
+
+        if (event.data?.wunderId) {
+          onSuccess(event.data);
+          event.source.window.close();
+          setPopup(null);
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     if (user.wunderId && user.address) {
@@ -80,7 +113,10 @@ export default function Home(props) {
                     />
                   </div>
                   <p className="text-gray-400 text-xs my-2 mb-1 lg:mb-1">or</p>
-                  <p className="text-xs text-wunder-blue  pt-0.5 underline cursor-pointer lg:mb-10">
+                  <p
+                    className="text-xs text-wunder-blue  pt-0.5 underline cursor-pointer lg:mb-10"
+                    onClick={handleClick}
+                  >
                     Create your WunderPass now
                   </p>
 
@@ -97,7 +133,7 @@ export default function Home(props) {
                     <FaTwitter className="text-sm "></FaTwitter>
                   </a>
                   <a
-                    href="#"
+                    href="https://discord.gg/8dvbpJBS"
                     className="p-2 mx-1 rounded-full border-2 border-gray-200 lg:p-3 "
                   >
                     <FaDiscord className="text-sm "></FaDiscord>
