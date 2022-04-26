@@ -137,7 +137,7 @@ export default function Pools(props) {
                 <div
                   className="text-center" //TODO GET BALANCE HERE
                 >
-                  &nbsp; 5000.50
+                  &nbsp; 0.00
                   {user?.balance}
                 </div>
                 <div className="text-center mr-0.5">&nbsp;USDC</div>

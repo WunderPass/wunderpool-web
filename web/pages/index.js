@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Head from 'next/Head';
+import Head from 'next/head';
 import { Button } from '@mui/material';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 //import { FaFacebookF } from 'react-icons/fa';
@@ -95,7 +95,7 @@ export default function Home(props) {
                 <h2 className="text-3xl font-bold text-wunder-blue mb-6">
                   Sign in with WunderPass
                 </h2>
-                <div className="border-2 w-6 border-wunder-blue inline-block mb-2 lg:w-10"></div>
+                <div className="border-2 w-6 border-wunder-blue bg-wunder-blue inline-block mb-2 lg:w-10"></div>
                 <p className="text-gray-400 text-xs my-3 mb-10 lg:mb-20">
                   Use your WunderPass or connect a exisiting wallet to a new
                   WunderPass wallet!
