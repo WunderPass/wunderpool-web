@@ -103,7 +103,7 @@ export default function Pools(props) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <AppBar
-        className="bg-gradient-to-r from-cyan-500 to-blue-600"
+        className="bg-gradient-to-r from-wunder-light-blue to-wunder-blue"
         position="static"
       >
         <Toolbar>

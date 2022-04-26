@@ -5,9 +5,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'wunder-blue': '#0096FE',
+        'wunder-light-blue': '#01BFFF',
+        'wunder-dark-blue': '#020D30',
+      },
       backgroundImage: {
         'split-blue-white':
-          'linear-gradient(to left, white 60% , #0ea5e9 40%);',
+          'linear-gradient(to left, #E5E7EB 60% , #01BFFF 40%);',
       },
       width: {
         '40-%': '40%',
