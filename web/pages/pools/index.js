@@ -130,19 +130,19 @@ export default function Pools(props) {
               </Link>
             </Stack>
 
-            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 xs:py-1.5">
+            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 sm:py-1.5 py-3.5">
               <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
                 <div
-                  className="text-center" //TODO GET BALANCE HERE
+                  className="text-center justify-center items-center align-center " //TODO GET BALANCE HERE
                 >
-                  &nbsp; 0.00
+                  <p className="ml-1">00.00</p>
                   {user?.balance}
                 </div>
                 <div className="text-center mr-0.5">&nbsp;USDC</div>
               </div>
             </div>
             <Button
-              className="btn ml-2 hover:bg-[#ff0000]"
+              className="btn ml-2 my-2 sm:py-2.5 py-3.5 hover:bg-[#ff0000] text-sm"
               onClick={user?.logOut}
               variant="contained"
             >
