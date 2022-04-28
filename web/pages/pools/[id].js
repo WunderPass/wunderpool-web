@@ -33,6 +33,7 @@ import CustomForm from "/components/proposals/customForm";
 import TokenList from "/components/tokens/list";
 import { toEthString } from "/services/formatter";
 import { fetchPoolNfts } from "../../services/contract/token";
+import NftList from "../../components/tokens/nfts";
 
 export default function Pool(props) {
   const router = useRouter();
@@ -255,6 +256,12 @@ export default function Pool(props) {
                   handleFund={() => setFundDialog(true)}
                   handleWithdraw={() => setWithdrawDialog(true)}
                   poolBalance={poolBalance}
+                  {...props}
+                />
+                <NftList
+                  nfts={nfts}
+                  poolAddress={address}
+                  fetchProposals={fetchProposals}
                   {...props}
                 />
               </Collapse>
