@@ -59,7 +59,7 @@ export default function LoginWithWunderPass(props) {
     <>
       <a href={process.env.WUNDERPASS_URL} onClick={handleClick}>
         <p
-          className="text-xs text-wunder-blue pt-0.5underline cursor-pointer lg:mb-10"
+          className="text-xs text-wunder-blue pt-0.5 underline cursor-pointer lg:mb-10"
           onClick={handleClick}
         >
           Create your WunderPass now
