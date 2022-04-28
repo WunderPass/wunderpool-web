@@ -3,8 +3,10 @@ import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import USDCIcon from '/public/usdc-logo.svg';
 import { useEffect, useState } from 'react';
+import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -41,12 +43,11 @@ function PoolList(props) {
               <Typography variant="h6">{pool.name}</Typography>
               {pool.entryBarrier && (
                 <Typography variant="subtitle1">
-                  Minimum Invest:{' '}
+                  Minimum Invest: $
                   {displayWithDecimalPlaces(
                     toEthString(pool.entryBarrier, 6),
                     2
-                  )}{' '}
-                  $
+                  )}
                 </Typography>
               )}
             </Stack>
@@ -77,6 +78,7 @@ export default function Pools(props) {
   const [open, setOpen] = useState(false);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
+  const alert = useAlert();
 
   const fetchPools = () => {
     setLoadingAll(true);
@@ -128,11 +130,8 @@ export default function Pools(props) {
               </Link>
             </Stack>
 
-            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5">
+            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 xs:py-1.5">
               <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
-                <div className="flex w-7 rounded-full border-2">
-                  <Image src={USDCIcon} alt="USDCIcon" layout="intrinsic" />
-                </div>
                 <div
                   className="text-center" //TODO GET BALANCE HERE
                 >
@@ -164,7 +163,18 @@ export default function Pools(props) {
                   <Typography variant="h3" className="font-bold">
                     {user?.wunderId}
                   </Typography>
-                  <Typography variant="h6">Address: {user?.address}</Typography>
+                  <CopyToClipboard
+                    text={user?.address}
+                    onCopy={() => alert.show('address copied!')}
+                  >
+                    <span className="truncate ... cursor-pointer text-md">
+                      {user?.address}
+                    </span>
+                  </CopyToClipboard>
+                  <Typography
+                    className="truncate ... "
+                    variant="h6"
+                  ></Typography>{' '}
                 </div>
               </div>
             </Stack>
