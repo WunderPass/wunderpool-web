@@ -86,7 +86,6 @@ export default function Home(props) {
                     redirect={'pools'}
                     intent={['wunderId', 'address']}
                     onSuccess={handleSuccess}
-                    image="https://img.ifunny.co/images/f360247a15cf0bed362b8e9ddbe9786c0465023c969906d57f3f5bf85aa2656e_1.webp"
                   />
 
                   <p className="text-xs text-wunder-blue rounded-full border-wunder-blue border-2 p-1 px-2 mt-10">

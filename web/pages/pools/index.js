@@ -2,7 +2,6 @@ import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOu
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import USDCIcon from '/public/usdc-logo.svg';
 import { useEffect, useState } from 'react';
