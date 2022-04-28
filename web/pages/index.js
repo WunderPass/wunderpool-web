@@ -1,4 +1,5 @@
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
+import CreateYourWunderPass from '/components/auth/createYourWunderPass';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import { Container, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -19,39 +20,6 @@ export default function Home(props) {
   const handleSuccess = (data) => {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
-  };
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    const authPopup =
-      popup ||
-      window.open(
-        encodeURI(
-          `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
-        ),
-        'WunderPassAuth',
-        'popup'
-      );
-    setPopup(authPopup);
-
-    const requestInterval = setInterval(() => {
-      authPopup.postMessage(
-        { accountId: 'ABCDE', intent: intent },
-        process.env.WUNDERPASS_URL
-      );
-    }, 1000);
-
-    window.addEventListener('message', (event) => {
-      if (event.origin == process.env.WUNDERPASS_URL) {
-        clearInterval(requestInterval);
-
-        if (event.data?.wunderId) {
-          onSuccess(event.data);
-          event.source.window.close();
-          setPopup(null);
-        }
-      }
-    });
   };
 
   useEffect(() => {
@@ -113,14 +81,14 @@ export default function Home(props) {
                     />
                   </div>
                   <p className="text-gray-400 text-xs my-2 mb-1 lg:mb-1">or</p>
-                  <p
-                    className="text-xs text-wunder-blue  pt-0.5 underline cursor-pointer lg:mb-10"
-                    onClick={handleClick}
-                  >
-                    Create your WunderPass now
-                  </p>
+                  <CreateYourWunderPass
+                    name="WunderPool"
+                    redirect={'pools'}
+                    intent={['wunderId', 'address']}
+                    onSuccess={handleSuccess}
+                  />
 
-                  <p className="text-mobile text-wunder-blue rounded-full border-wunder-blue border-2 p-1 px-2 mt-10">
+                  <p className="text-xs text-wunder-blue rounded-full border-wunder-blue border-2 p-1 px-2 mt-10">
                     WalletConnect is coming soon!
                   </p>
                 </div>
