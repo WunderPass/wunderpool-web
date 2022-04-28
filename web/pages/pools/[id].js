@@ -121,6 +121,7 @@ export default function Pool(props) {
   useEffect(() => {
     if (!address || !user.address) return;
     fetchTokens();
+    resetEvents();
   }, [tokenAddedEvent]);
 
   useEffect(() => {
