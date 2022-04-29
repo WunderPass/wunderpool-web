@@ -5,6 +5,8 @@ import Notification from '/components/utils/notification';
 import usePoolListener from '/hooks/usePoolListener';
 import AlertTemplate from 'react-alert-template-basic';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import muiTheme from '../theme/mui';
 
 function WunderPool({ Component, pageProps }) {
   const user = useUser();
@@ -45,10 +47,14 @@ function WunderPool({ Component, pageProps }) {
 
   return (
     <>
-      <AlertProvider template={AlertTemplate} {...options}>
-        <Component {...appProps} />
-        <Notification notification={notification} />
-      </AlertProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={muiTheme}>
+          <AlertProvider template={AlertTemplate} {...options}>
+            <Component {...appProps} />
+            <Notification notification={notification} />
+          </AlertProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </>
   );
 }

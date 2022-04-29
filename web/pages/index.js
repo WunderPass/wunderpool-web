@@ -49,7 +49,7 @@ export default function Home(props) {
               <div className="px-6 lg:px-12">
                 <div className="text-center w-full pb-4"></div>
                 <h6 className="text-1xl font-bold mb-0">
-                  Invest with Friends, loose money together!
+                  Invest with friends, get rich together!
                 </h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
                 <p className="text-xs pb-12 lg:mb-0 mt-6 ">
