@@ -78,3 +78,8 @@ export function initPoolSocket(poolAddress) {
 
   return [wunderPool, provider];
 }
+
+export async function gasPrice() {
+  const currentPrice = await httpProvider.getGasPrice();
+  return currentPrice.mul(3);
+}
