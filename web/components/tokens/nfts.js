@@ -44,7 +44,7 @@ export default function NftList(props) {
           <Typography variant="h5">Do you own an NFT?</Typography>
           <Typography variant="subtitle1">
             Then you can sell it to the Pool. If all members agree that you made
-            them a fair offer, they might agree to buy yout NFT
+            them a fair offer, they might agree to buy your NFT
           </Typography>
           <Button fullWidth variant="contained" onClick={() => setOpen(true)}>
             Sell Your NFT
