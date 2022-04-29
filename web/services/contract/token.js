@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ethers } from "ethers";
 import { currency } from "../formatter";
-import { httpProvider, initPool, nftAbi, tokenAbi } from "./init";
+import { httpProvider, initPool, nftAbi, tokenAbi, usdcAddress } from "./init";
 import { fetchPoolMembers } from "./pools";
 import { toEthString } from "/services/formatter";
 
@@ -139,4 +139,33 @@ export function fetchPoolGovernanceToken(address) {
       });
     });
   });
+}
+
+export function tokenBalanceOf(address, tokenAddress, decimals = null) {
+  return new Promise(async (resolve, reject) => {
+    const token = new ethers.Contract(tokenAddress, tokenAbi, httpProvider);
+    token
+      .balanceOf(address)
+      .then((balance) => {
+        if (decimals) {
+          resolve(toEthString(balance, decimals));
+        } else {
+          token
+            .decimals()
+            .then((dec) => {
+              resolve(toEthString(balance, dec));
+            })
+            .catch((err) => {
+              resolve(0);
+            });
+        }
+      })
+      .catch((err) => {
+        resolve(0);
+      });
+  });
+}
+
+export async function usdcBalanceOf(address) {
+  return await tokenBalanceOf(address, usdcAddress, 6);
 }

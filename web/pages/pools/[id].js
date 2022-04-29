@@ -10,6 +10,7 @@ import {
   Paper,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -51,7 +52,7 @@ export default function Pool(props) {
   const [fundDialog, setFundDialog] = useState(false);
   const [poolInfo, setPoolInfo] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
-  const [userIsMember, setUserIsMember] = useState(false);
+  const [userIsMember, setUserIsMember] = useState(null);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [proposals, setProposals] = useState([]);
@@ -169,21 +170,25 @@ export default function Pool(props) {
             <Stack direction="row" alignItems="center" justifyContent="center">
               <Typography variant="h4">{name}</Typography>
               {governanceTokenData && (
-                <IconButton color="info" onClick={() => setPoolInfo(true)}>
-                  <InfoOutlinedIcon />
-                </IconButton>
+                <Tooltip title="Pool Info">
+                  <IconButton color="info" onClick={() => setPoolInfo(true)}>
+                    <InfoOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
               )}
             </Stack>
           </Grid>
           {userIsMember && (
             <Grid item xs={12} sm={2}>
               <Stack direction="row" alignItems="center" justifyContent="right">
-                <IconButton
-                  color="error"
-                  onClick={() => setDestroyDialog(true)}
-                >
-                  <DangerousIcon />
-                </IconButton>
+                <Tooltip title="Liquidate Pool">
+                  <IconButton
+                    color="error"
+                    onClick={() => setDestroyDialog(true)}
+                  >
+                    <DangerousIcon />
+                  </IconButton>
+                </Tooltip>
               </Stack>
             </Grid>
           )}
@@ -266,7 +271,7 @@ export default function Pool(props) {
               </Collapse>
             )}
           </>
-        ) : (
+        ) : userIsMember === false ? (
           <Paper elevation={4} sx={{ width: "100%", p: 3 }}>
             <Stack spacing={2}>
               <Typography variant="h5">
@@ -284,6 +289,8 @@ export default function Pool(props) {
               </Button>
             </Stack>
           </Paper>
+        ) : (
+          <Skeleton width="100%" height={100} />
         )}
       </Stack>
       <FundPoolDialog
