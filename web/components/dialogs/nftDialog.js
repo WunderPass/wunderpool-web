@@ -89,7 +89,7 @@ export default function NftDialog(props) {
               autoFocus
               type="number"
               value={amount}
-              onChange={(_, val) => setAmount(val)}
+              onChange={(e) => setAmount(e.target.value)}
               label="Buy Amount"
               placeholder="1"
               inputProps={{ min: "0" }}
