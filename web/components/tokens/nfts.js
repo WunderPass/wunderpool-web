@@ -50,19 +50,16 @@ export default function NftList(props) {
           })}
         </Stack>
       ) : (
-        <>
-          <Button
-            variant="contained"
-            sx={{ my: 4 }}
-            fullWidth
-            onClick={() => setOpen(true)}
-          >
-            Sell Your NFT
-          </Button>
-          <SellNftDialog open={open} setOpen={setOpen} {...props} />
-        </>
+        <Button
+          variant="contained"
+          sx={{ my: 4 }}
+          fullWidth
+          onClick={() => setOpen(true)}
+        >
+          Sell Your NFT
+        </Button>
       )}
-      ;
+      <SellNftDialog open={open} setOpen={setOpen} {...props} />
     </>
   );
 }
