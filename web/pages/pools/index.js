@@ -21,6 +21,7 @@ import {
   AppBar,
   Toolbar,
 } from "@mui/material";
+import { usdcBalanceOf } from "../../services/contract/token";
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -78,6 +79,7 @@ export default function Pools(props) {
   const [open, setOpen] = useState(false);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [usdcBalance, setUsdcBalance] = useState(true);
   const alert = useAlert();
 
   const fetchPools = () => {
@@ -94,7 +96,11 @@ export default function Pools(props) {
   };
 
   useEffect(() => {
-    if (user.address) fetchPools();
+    if (!user.address) return;
+    fetchPools();
+    usdcBalanceOf(user.address).then((balance) => {
+      setUsdcBalance(balance);
+    });
   }, [user.address]);
 
   return (
@@ -135,7 +141,7 @@ export default function Pools(props) {
                 <div
                   className="text-center justify-center items-center align-center " //TODO GET BALANCE HERE
                 >
-                  <p className="ml-1">00.00</p>
+                  <p className="ml-1">{usdcBalance}</p>
                   {user?.balance}
                 </div>
                 <div className="text-center mr-0.5">&nbsp;USDC</div>
