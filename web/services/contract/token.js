@@ -1,5 +1,7 @@
+import axios from "axios";
 import { ethers } from "ethers";
-import { httpProvider, initPool, nftAbi, tokenAbi } from "./init";
+import { currency } from "../formatter";
+import { httpProvider, initPool, nftAbi, tokenAbi, usdcAddress } from "./init";
 import { fetchPoolMembers } from "./pools";
 import { toEthString } from "/services/formatter";
 
@@ -22,13 +24,24 @@ export function fetchPoolTokens(address) {
         const balance = await token.balanceOf(address);
         const decimals = await token.decimals();
         const formattedBalance = toEthString(balance, decimals);
+        const { price, image_url } = (
+          await axios({ url: `/api/tokens/data`, params: { address: addr } })
+        ).data;
+        const usdValue = balance
+          .mul(price)
+          .div(ethers.BigNumber.from(10).pow(decimals))
+          .toNumber();
+
         return {
           address: addr,
           name: await token.name(),
           symbol: await token.symbol(),
-          balance: balance,
+          balance: balance.toString(),
           decimals: decimals,
           formattedBalance: formattedBalance,
+          image: image_url,
+          price: price,
+          usdValue: currency(usdValue / 100, {}),
         };
       })
     );
@@ -126,4 +139,33 @@ export function fetchPoolGovernanceToken(address) {
       });
     });
   });
+}
+
+export function tokenBalanceOf(address, tokenAddress, decimals = null) {
+  return new Promise(async (resolve, reject) => {
+    const token = new ethers.Contract(tokenAddress, tokenAbi, httpProvider);
+    token
+      .balanceOf(address)
+      .then((balance) => {
+        if (decimals) {
+          resolve(toEthString(balance, decimals));
+        } else {
+          token
+            .decimals()
+            .then((dec) => {
+              resolve(toEthString(balance, dec));
+            })
+            .catch((err) => {
+              resolve(0);
+            });
+        }
+      })
+      .catch((err) => {
+        resolve(0);
+      });
+  });
+}
+
+export async function usdcBalanceOf(address) {
+  return await tokenBalanceOf(address, usdcAddress, 6);
 }

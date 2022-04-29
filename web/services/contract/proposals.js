@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { encodeParams, usdc } from "../formatter";
 import {
+  gasPrice,
   httpProvider,
   initPool,
   usdcAddress,
@@ -73,7 +74,6 @@ export function createSingleActionProposal(
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.createProposal(
       title,
       description,
@@ -82,7 +82,7 @@ export function createSingleActionProposal(
       params,
       transactionValue,
       deadline,
-      { gasPrice: gasPrice.mul(5).div(2) }
+      { gasPrice: await gasPrice() }
     );
 
     smartContractTransaction(tx).then(async (transaction) => {
@@ -112,7 +112,6 @@ export function createMultiActionProposal(
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.createMultiActionProposal(
       title,
       description,
@@ -121,7 +120,7 @@ export function createMultiActionProposal(
       params,
       transactionValues,
       deadline,
-      { gasPrice: gasPrice.mul(5).div(2) }
+      { gasPrice: await gasPrice() }
     );
 
     smartContractTransaction(tx).then(async (transaction) => {
@@ -409,9 +408,8 @@ export function execute(poolAddress, id) {
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.executeProposal(id, {
-      gasPrice: gasPrice.mul(5).div(2),
+      gasPrice: await gasPrice(),
     });
 
     smartContractTransaction(tx).then(async (transaction) => {
