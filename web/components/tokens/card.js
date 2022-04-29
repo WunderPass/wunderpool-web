@@ -7,7 +7,7 @@ export default function TokenCard(props) {
     <Paper elevation={3} sx={{ p: 2 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack spacing={2} direction="row" alignItems="center">
-          <img height="40" src={token.image || "/favicon.ico"} alt="TKN" />
+          <img width="50" src={token.image || "/favicon.ico"} alt="TKN" />
           <Stack spacing={1}>
             <Typography variant="h6">
               {token.name} ({token.symbol})

@@ -1,4 +1,4 @@
-import { initPool } from "./init";
+import { gasPrice, initPool } from "./init";
 import useWunderPass from "/hooks/useWunderPass";
 
 export function vote(poolAddress, proposalId, mode) {
@@ -8,9 +8,8 @@ export function vote(poolAddress, proposalId, mode) {
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.vote(proposalId, mode, {
-      gasPrice: gasPrice.mul(5).div(2),
+      gasPrice: await gasPrice(),
     });
 
     smartContractTransaction(tx).then(async (transaction) => {
