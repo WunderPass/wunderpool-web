@@ -20,7 +20,7 @@ import FundPoolDialog from "/components/dialogs/fundPoolDialog";
 import PoolInfoDialog from "/components/dialogs/poolInfo";
 import JoinPoolDialog from "/components/dialogs/joinPool";
 import { fetchPoolProposals } from "/services/contract/proposals";
-import { fetchPoolTokens } from "/services/contract/token";
+import { fetchPoolTokens, fetchPoolNfts } from "/services/contract/token";
 import {
   fetchPoolName,
   fetchPoolBalance,
@@ -32,8 +32,7 @@ import ApeForm from "/components/proposals/apeForm";
 import CustomForm from "/components/proposals/customForm";
 import TokenList from "/components/tokens/list";
 import { toEthString } from "/services/formatter";
-import { fetchPoolNfts } from "../../services/contract/token";
-import NftList from "../../components/tokens/nfts";
+import NftList from "/components/tokens/nfts";
 
 export default function Pool(props) {
   const router = useRouter();
