@@ -70,7 +70,7 @@ export default function ProposalCard(props) {
   };
 
   return (
-    <Paper elevation={3} sx={{ overflowY: "hidden" }}>
+    <Paper elevation={1} sx={{ overflowY: "hidden" }}>
       <Box p={2}>
         <Stack
           direction="row"

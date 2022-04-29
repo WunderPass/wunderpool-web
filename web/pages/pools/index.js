@@ -1,15 +1,15 @@
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
-import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
-import NewPoolDialog from '/components/dialogs/newPool';
-import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import USDCIcon from '/public/usdc-logo.svg';
-import { useEffect, useState } from 'react';
-import { useAlert } from 'react-alert';
-import Head from 'next/head';
-import Link from 'next/link';
-import Image from 'next/image';
+import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
+import { fetchAllPools, fetchUserPools } from "/services/contract/pools";
+import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
+import NewPoolDialog from "/components/dialogs/newPool";
+import { toEthString, displayWithDecimalPlaces } from "/services/formatter";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import USDCIcon from "/public/usdc-logo.svg";
+import { useEffect, useState } from "react";
+import { useAlert } from "react-alert";
+import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
 import {
   Button,
   Container,
@@ -20,7 +20,7 @@ import {
   Typography,
   AppBar,
   Toolbar,
-} from '@mui/material';
+} from "@mui/material";
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -30,7 +30,7 @@ function PoolList(props) {
       return (
         <Paper
           className="mb-4 pb-6"
-          elevation={3}
+          elevation={1}
           key={`pool-${i}`}
           sx={{ p: 2 }}
         >
@@ -61,8 +61,8 @@ function PoolList(props) {
       );
     })
   ) : (
-    <Paper elevation={3} sx={{ p: 2 }}>
-      <Stack sx={{ textAlign: 'center' }}>
+    <Paper elevation={1} sx={{ p: 2 }}>
+      <Stack sx={{ textAlign: "center" }}>
         <Typography className="pb-2" variant="h5">
           There are no Pools
         </Typography>
@@ -165,7 +165,7 @@ export default function Pools(props) {
                   </Typography>
                   <CopyToClipboard
                     text={user?.address}
-                    onCopy={() => alert.show('address copied!')}
+                    onCopy={() => alert.show("address copied!")}
                   >
                     <span className="truncate ... cursor-pointer text-md">
                       {user?.address}
@@ -174,7 +174,7 @@ export default function Pools(props) {
                   <Typography
                     className="truncate ... "
                     variant="h6"
-                  ></Typography>{' '}
+                  ></Typography>{" "}
                 </div>
               </div>
             </Stack>
@@ -200,7 +200,7 @@ export default function Pools(props) {
                   <Skeleton
                     variant="rectangular"
                     width="100%"
-                    sx={{ height: '100px', borderRadius: 3 }}
+                    sx={{ height: "100px", borderRadius: 3 }}
                   />
                 ) : (
                   <PoolList
@@ -218,7 +218,7 @@ export default function Pools(props) {
                   <Skeleton
                     variant="rectangular"
                     width="100%"
-                    sx={{ height: '100px', borderRadius: 3 }}
+                    sx={{ height: "100px", borderRadius: 3 }}
                   />
                 ) : (
                   <PoolList pools={allPools} setOpen={setOpen} />

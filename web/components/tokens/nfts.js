@@ -12,7 +12,7 @@ export default function NftList(props) {
       <Typography variant="h4">NFTs</Typography>
       {nfts.map((nft) => {
         return (
-          <Paper elevation={3} key={`nft-${nft.address}`} sx={{ p: 2 }}>
+          <Paper elevation={1} key={`nft-${nft.address}`} sx={{ p: 2 }}>
             <Typography variant="h6">{nft.name}</Typography>
             <Grid container>
               {nft.tokens.map((token) => {
@@ -39,7 +39,7 @@ export default function NftList(props) {
           </Paper>
         );
       })}
-      <Paper elevation={3} sx={{ p: 2 }}>
+      <Paper elevation={1} sx={{ p: 2 }}>
         <Stack spacing={2}>
           <Typography variant="h5">Do you own an NFT?</Typography>
           <Typography variant="subtitle1">

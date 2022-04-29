@@ -13,7 +13,7 @@ export default function TokenCard(props) {
   const { token, handleSell, handleSwap } = props;
 
   return (
-    <Paper elevation={3} sx={{ p: 2 }}>
+    <Paper elevation={1} sx={{ p: 2 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack spacing={2} direction="row" alignItems="center">
           <img width="50" src={token.image || "/favicon.ico"} alt="TKN" />
