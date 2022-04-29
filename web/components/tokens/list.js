@@ -8,8 +8,7 @@ import SwapTokenDialog from "/components/dialogs/swapTokenDialog";
 import TokenCard from "./card";
 
 export default function TokenList(props) {
-  const { tokens, poolAddress, handleFund, handleWithdraw, poolBalance } =
-    props;
+  const { tokens, poolAddress, handleFund, handleWithdraw } = props;
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
   const [name, setName] = useState("");
@@ -36,40 +35,18 @@ export default function TokenList(props) {
   return (
     <Stack spacing={3} pt={2}>
       <Typography variant="h4">Tokens</Typography>
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Stack spacing={1}>
-            <Typography variant="h6">USD</Typography>
-            <Typography variant="subtitle1">
-              Balance:{" "}
-              {typeof poolBalance == "number"
-                ? poolBalance
-                : toEthString(poolBalance, 6)}
-            </Typography>
-          </Stack>
-          <Stack direction="row" alignItems="center" justifyContent="center">
-            <IconButton color="success" onClick={handleFund}>
-              <AttachMoneyIcon />
-            </IconButton>
-            <IconButton
-              color="error"
-              disabled={poolBalance == 0}
-              onClick={handleWithdraw}
-            >
-              <CallReceivedIcon />
-            </IconButton>
-          </Stack>
-        </Stack>
-      </Paper>
       {tokens.length > 0 &&
         tokens
           .filter((tkn) => tkn.balance > 0)
           .map((token) => {
-            return <TokenCard token={token} key={`token-${token.address}`} />;
+            return (
+              <TokenCard
+                token={token}
+                key={`token-${token.address}`}
+                handleSell={handleSell}
+                handleSwap={handleSwap}
+              />
+            );
           })}
       <SellTokenDialog
         open={openSell}
