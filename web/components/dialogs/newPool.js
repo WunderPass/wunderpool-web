@@ -40,30 +40,23 @@ export default function NewPoolDialog(props) {
 
   const handleSubmit = () => {
     setWaitingForPool(true);
-    console.log(
+    createPool(
       poolName,
       entryBarrier || value,
       tokenName || `${poolName} Token`,
       tokenSymbol || "PGT",
       value
-    );
-    // createPool(
-    //   poolName,
-    //   entryBarrier || value,
-    //   tokenName || `${poolName} Token`,
-    //   tokenSymbol || "PGT",
-    //   value
-    // )
-    //   .then((res) => {
-    //     console.log(res);
-    //     handleSuccess(`Created Pool "${poolName}"`);
-    //     handleClose();
-    //     fetchPools();
-    //   })
-    //   .catch((err) => {
-    //     handleError(err);
-    //     setWaitingForPool(false);
-    //   });
+    )
+      .then((res) => {
+        console.log(res);
+        handleSuccess(`Created Pool "${poolName}"`);
+        handleClose();
+        fetchPools();
+      })
+      .catch((err) => {
+        handleError(err);
+        setWaitingForPool(false);
+      });
   };
 
   return (
