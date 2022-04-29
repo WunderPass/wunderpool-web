@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import {
   Button,
   Collapse,
@@ -11,27 +11,27 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from "@mui/material";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import DangerousIcon from "@mui/icons-material/Dangerous";
-import DestroyPoolDialog from "/components/dialogs/destroyPool";
-import FundPoolDialog from "/components/dialogs/fundPoolDialog";
-import PoolInfoDialog from "/components/dialogs/poolInfo";
-import JoinPoolDialog from "/components/dialogs/joinPool";
-import { fetchPoolProposals } from "/services/contract/proposals";
-import { fetchPoolTokens } from "/services/contract/token";
+} from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import DangerousIcon from '@mui/icons-material/Dangerous';
+import DestroyPoolDialog from '/components/dialogs/destroyPool';
+import FundPoolDialog from '/components/dialogs/fundPoolDialog';
+import PoolInfoDialog from '/components/dialogs/poolInfo';
+import JoinPoolDialog from '/components/dialogs/joinPool';
+import { fetchPoolProposals } from '/services/contract/proposals';
+import { fetchPoolTokens } from '/services/contract/token';
 import {
   fetchPoolName,
   fetchPoolBalance,
   isMember,
-} from "/services/contract/pools";
-import { fetchPoolGovernanceToken } from "/services/contract/token";
-import ProposalList from "/components/proposals/list";
-import ApeForm from "/components/proposals/apeForm";
-import CustomForm from "/components/proposals/customForm";
-import TokenList from "/components/tokens/list";
-import { toEthString } from "/services/formatter";
+} from '/services/contract/pools';
+import { fetchPoolGovernanceToken } from '/services/contract/token';
+import ProposalList from '/components/proposals/list';
+import ApeForm from '/components/proposals/apeForm';
+import CustomForm from '/components/proposals/customForm';
+import TokenList from '/components/tokens/list';
+import { toEthString } from '/services/formatter';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -113,7 +113,7 @@ export default function Pool(props) {
           });
         })
         .catch(() => {
-          router.push("/pools");
+          router.push('/pools');
         });
     }
   }, [address, user.address]);
@@ -139,7 +139,7 @@ export default function Pool(props) {
         spacing={3}
         alignItems="center"
         paddingTop={2}
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
       >
         <Grid container alignItems="center">
           <Grid item xs={12} sm={2}>
@@ -172,15 +172,15 @@ export default function Pool(props) {
         </Grid>
         {userIsMember ? (
           <>
-            <Collapse in={!ape && !customProposal} sx={{ width: "100%" }}>
-              <Stack direction="row" spacing={3} sx={{ width: "100%" }}>
+            <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
+              <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
                 <Button
                   onClick={() => {
                     setApe(true);
                   }}
                   color="success"
                   variant="contained"
-                  sx={{ width: "100%", minHeight: 150, aspectRatio: "2/1" }}
+                  sx={{ width: '100%', minHeight: 150, aspectRatio: '2/1' }}
                 >
                   So richtig Reinapen
                 </Button>
@@ -189,13 +189,13 @@ export default function Pool(props) {
                     setCustomProposal(true);
                   }}
                   variant="contained"
-                  sx={{ width: "100%", minHeight: 150, aspectRatio: "2/1" }}
+                  sx={{ width: '100%', minHeight: 150, aspectRatio: '2/1' }}
                 >
                   Eigenes Proposal
                 </Button>
               </Stack>
             </Collapse>
-            <Collapse in={ape} sx={{ width: "100%" }}>
+            <Collapse in={ape} sx={{ width: '100%' }}>
               <ApeForm
                 setApe={setApe}
                 address={address}
@@ -203,7 +203,7 @@ export default function Pool(props) {
                 {...props}
               />
             </Collapse>
-            <Collapse in={customProposal} sx={{ width: "100%" }}>
+            <Collapse in={customProposal} sx={{ width: '100%' }}>
               <CustomForm
                 customProposal={customProposal}
                 setCustomProposal={setCustomProposal}
@@ -216,10 +216,10 @@ export default function Pool(props) {
               <Skeleton
                 variant="rectangular"
                 width="100%"
-                sx={{ height: "100px", borderRadius: 3 }}
+                sx={{ height: '100px', borderRadius: 3 }}
               />
             ) : (
-              <Collapse in={!customProposal && !ape} sx={{ width: "100%" }}>
+              <Collapse in={!customProposal && !ape} sx={{ width: '100%' }}>
                 <ProposalList
                   proposals={proposals}
                   totalGovernanceTokens={totalGovernanceTokens}
@@ -243,16 +243,16 @@ export default function Pool(props) {
             )}
           </>
         ) : (
-          <Paper elevation={4} sx={{ width: "100%", p: 3 }}>
+          <Paper elevation={4} sx={{ width: '100%', p: 3 }}>
             <Stack spacing={2}>
               <Typography variant="h5">
                 Do you want to join this Pool?
               </Typography>
               <Typography variant="subtitle1">
-                Minimum Invest:{" "}
+                Minimum Invest:{' '}
                 {governanceTokenData
                   ? toEthString(governanceTokenData.entryBarrier, 6)
-                  : "..."}{" "}
+                  : '...'}{' '}
                 USD
               </Typography>
               <Button variant="contained" onClick={() => setJoinPool(true)}>
