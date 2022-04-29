@@ -310,6 +310,72 @@ export async function createSwapSuggestion(
   }
 }
 
+export async function createNftBuyProposal(
+  poolAddress,
+  nftAddress,
+  tokenId,
+  buyerAddress,
+  title,
+  description,
+  amount
+) {
+  return createMultiActionProposal(
+    poolAddress,
+    title,
+    description,
+    [usdcAddress, nftAddress],
+    [
+      "transferFrom(address,address,uint256)",
+      "transferFrom(address,address,uint256)",
+    ],
+    [
+      encodeParams(
+        ["address", "address", "uint256"],
+        [buyerAddress, poolAddress, amount]
+      ),
+      encodeParams(
+        ["address", "address", "uint256"],
+        [poolAddress, buyerAddress, tokenId]
+      ),
+    ],
+    [0, 0],
+    1846183041
+  );
+}
+
+export async function createNftSellProposal(
+  poolAddress,
+  nftAddress,
+  tokenId,
+  sellerAddress,
+  title,
+  description,
+  amount
+) {
+  return createMultiActionProposal(
+    poolAddress,
+    title,
+    description,
+    [usdcAddress, nftAddress],
+    [
+      "transferFrom(address,address,uint256)",
+      "transferFrom(address,address,uint256)",
+    ],
+    [
+      encodeParams(
+        ["address", "address", "uint256"],
+        [poolAddress, sellerAddress, amount]
+      ),
+      encodeParams(
+        ["address", "address", "uint256"],
+        [sellerAddress, poolAddress, tokenId]
+      ),
+    ],
+    [0, 0],
+    1846183041
+  );
+}
+
 export function testExecute(
   poolAddress,
   contractAddress,
