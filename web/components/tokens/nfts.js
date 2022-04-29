@@ -1,12 +1,23 @@
 import { Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import { useState } from "react";
+import SellNftDialog from "../dialogs/sellNftDialog";
 import Nft from "./nft";
 
 export default function NftList(props) {
   const { nfts } = props;
+  const [open, setOpen] = useState(false);
+
   return (
     nfts.length > 0 && (
       <Stack spacing={3} pt={2}>
-        <Typography variant="h4">NFTs</Typography>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="h4">NFTs</Typography>
+          <Button onClick={() => setOpen(true)}>Sell Your NFT</Button>
+        </Stack>
         {nfts.map((nft) => {
           return (
             <Paper elevation={3} key={`nft-${nft.address}`} sx={{ p: 2 }}>
@@ -36,6 +47,7 @@ export default function NftList(props) {
             </Paper>
           );
         })}
+        <SellNftDialog open={open} setOpen={setOpen} {...props} />
       </Stack>
     )
   );
