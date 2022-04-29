@@ -20,7 +20,7 @@ import FundPoolDialog from "/components/dialogs/fundPoolDialog";
 import PoolInfoDialog from "/components/dialogs/poolInfo";
 import JoinPoolDialog from "/components/dialogs/joinPool";
 import { fetchPoolProposals } from "/services/contract/proposals";
-import { fetchPoolTokens } from "/services/contract/token";
+import { fetchPoolTokens, fetchPoolNfts } from "/services/contract/token";
 import {
   fetchPoolName,
   fetchPoolBalance,
@@ -32,6 +32,7 @@ import ApeForm from "/components/proposals/apeForm";
 import CustomForm from "/components/proposals/customForm";
 import TokenList from "/components/tokens/list";
 import { toEthString } from "/services/formatter";
+import NftList from "/components/tokens/nfts";
 
 export default function Pool(props) {
   const router = useRouter();
@@ -55,6 +56,7 @@ export default function Pool(props) {
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [tokens, setTokens] = useState([]);
+  const [nfts, setNfts] = useState([]);
   const [governanceTokenData, setGovernanceTokenData] = useState(null);
   const [totalGovernanceTokens, setTotalGovernanceTokens] = useState(null);
   const [poolBalance, setPoolBalance] = useState(0);
@@ -81,6 +83,12 @@ export default function Pool(props) {
     });
   };
 
+  const fetchNfts = () => {
+    fetchPoolNfts(address).then((ts) => {
+      setNfts(ts);
+    });
+  };
+
   const fetchBalance = () => {
     fetchPoolBalance(address).then((res) => {
       setPoolBalance(res);
@@ -96,6 +104,7 @@ export default function Pool(props) {
     setupPoolListener(address);
     fetchProposals();
     fetchTokens();
+    fetchNfts();
   };
 
   useEffect(() => {
@@ -120,14 +129,24 @@ export default function Pool(props) {
 
   useEffect(() => {
     if (!address || !user.address) return;
-    fetchTokens();
+    if (!tokenAddedEvent) return;
+    if (tokenAddedEvent.nft) {
+      fetchNfts();
+    } else {
+      fetchTokens();
+    }
+    resetEvents();
   }, [tokenAddedEvent]);
 
   useEffect(() => {
     if (!address || !user.address) return;
-    if (votedEvent?.voter == user.address) return;
-    if (newProposalEvent?.creator == user.address) return;
-    if (proposalExecutedEvent?.executor == user.address) return;
+    if (!votedEvent || votedEvent?.voter == user.address) return;
+    if (!newProposalEvent || newProposalEvent?.creator == user.address) return;
+    if (
+      !proposalExecutedEvent ||
+      proposalExecutedEvent?.executor == user.address
+    )
+      return;
     fetchProposals();
     resetEvents();
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
@@ -236,6 +255,12 @@ export default function Pool(props) {
                   handleFund={() => setFundDialog(true)}
                   handleWithdraw={() => setWithdrawDialog(true)}
                   poolBalance={poolBalance}
+                  {...props}
+                />
+                <NftList
+                  nfts={nfts}
+                  poolAddress={address}
+                  fetchProposals={fetchProposals}
                   {...props}
                 />
               </Collapse>

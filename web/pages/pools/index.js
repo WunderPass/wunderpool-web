@@ -1,3 +1,15 @@
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
+import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
+import NewPoolDialog from '/components/dialogs/newPool';
+import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import USDCIcon from '/public/usdc-logo.svg';
+import { useEffect, useState } from 'react';
+import { useAlert } from 'react-alert';
+import Head from 'next/head';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
   Button,
   Container,
@@ -6,14 +18,9 @@ import {
   Skeleton,
   Stack,
   Typography,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import LogoutIcon from '@mui/icons-material/Logout';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
-import NewPoolDialog from '/components/dialogs/newPool';
-import { toEthString } from '/services/formatter';
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -21,7 +28,12 @@ function PoolList(props) {
   return pools.length > 0 ? (
     pools.map((pool, i) => {
       return (
-        <Paper elevation={3} key={`pool-${i}`} sx={{ p: 2 }}>
+        <Paper
+          className="mb-4 pb-6"
+          elevation={3}
+          key={`pool-${i}`}
+          sx={{ p: 2 }}
+        >
           <Stack
             direction="row"
             alignItems="center"
@@ -31,7 +43,11 @@ function PoolList(props) {
               <Typography variant="h6">{pool.name}</Typography>
               {pool.entryBarrier && (
                 <Typography variant="subtitle1">
-                  Minimum Invest: {toEthString(pool.entryBarrier, 6)} USD
+                  Minimum Invest: $
+                  {displayWithDecimalPlaces(
+                    toEthString(pool.entryBarrier, 6),
+                    2
+                  )}
                 </Typography>
               )}
             </Stack>
@@ -47,15 +63,9 @@ function PoolList(props) {
   ) : (
     <Paper elevation={3} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
-        <Typography variant="h5">There are no Pools</Typography>
-        <Typography variant="subtitle1">Create one now!</Typography>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="success"
-        >
-          New
-        </Button>
+        <Typography className="pb-2" variant="h5">
+          There are no Pools
+        </Typography>
       </Stack>
     </Paper>
   );
@@ -68,6 +78,7 @@ export default function Pools(props) {
   const [open, setOpen] = useState(false);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
+  const alert = useAlert();
 
   const fetchPools = () => {
     setLoadingAll(true);
@@ -87,56 +98,143 @@ export default function Pools(props) {
   }, [user.address]);
 
   return (
-    <Container maxWidth="md">
-      <Stack spacing={3} paddingTop={2}>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
+    <>
+      <div
+      //className="bg-gradient-to-b from-wunder-blue via-white to-[#f0ffff]"  //PLAY AROUND HERE AND CHECK IF BACKGROUND IS NICE
+      >
+        <Head>
+          <title>WunderPool</title>
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
+        </Head>
+        <AppBar
+          className="bg-gradient-to-r from-wunder-light-blue to-wunder-blue"
+          position="static"
         >
-          <Typography variant="h3">{user?.wunderId}'s WunderPools</Typography>
-          <Typography variant="h3">{user.address}'s WunderPools</Typography>
+          <Toolbar>
+            <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
+              <Link href="/">
+                <a>
+                  <div className="flex flex-row">
+                    <div className="pt-0.5 w-44 pr-3">
+                      <Image
+                        src={WunderPoolIcon}
+                        alt="WunderPoolIcon"
+                        layout="responsive"
+                      />
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </Stack>
 
-          <Stack direction="row" spacing={1}>
+            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 sm:py-1.5 py-3.5">
+              <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
+                <div
+                  className="text-center justify-center items-center align-center " //TODO GET BALANCE HERE
+                >
+                  <p className="ml-1">00.00</p>
+                  {user?.balance}
+                </div>
+                <div className="text-center mr-0.5">&nbsp;USDC</div>
+              </div>
+            </div>
             <Button
-              onClick={() => setOpen(true)}
+              className="btn ml-2 my-2 sm:py-2.5 py-3.5 hover:bg-[#ff0000] text-sm"
+              onClick={user?.logOut}
               variant="contained"
-              color="success"
             >
-              New
+              Log out
             </Button>
-            <IconButton onClick={user?.logOut} color="error">
-              <LogoutIcon />
-            </IconButton>
+          </Toolbar>
+        </AppBar>
+
+        <Container>
+          <Stack spacing={3} paddingTop={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <div className="flex flex-col w-full justify-start">
+                <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1  rounded-md bg-white p-2 sm:mr-8 w-full shadow-xl">
+                  <Typography variant="h3" className="font-bold">
+                    {user?.wunderId}
+                  </Typography>
+                  <CopyToClipboard
+                    text={user?.address}
+                    onCopy={() => alert.show('address copied!')}
+                  >
+                    <span className="truncate ... cursor-pointer text-md">
+                      {user?.address}
+                    </span>
+                  </CopyToClipboard>
+                  <Typography
+                    className="truncate ... "
+                    variant="h6"
+                  ></Typography>{' '}
+                </div>
+              </div>
+            </Stack>
+            <div></div>
+
+            <div className="flex flex-col md:flex-row justify-between">
+              <div className="w-full pr-1 mb-8 md:mr-3 md:mb-0">
+                <div className="flex flex-row justify-between">
+                  <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
+                    Your WunderPools
+                  </Typography>
+                  <Button
+                    className="btn mb-4"
+                    onClick={() => setOpen(true)}
+                    variant="contained"
+                    color="success"
+                  >
+                    Create new pool
+                  </Button>
+                </div>
+
+                {loadingUser ? (
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    sx={{ height: '100px', borderRadius: 3 }}
+                  />
+                ) : (
+                  <PoolList
+                    className="mx-4"
+                    pools={userPools}
+                    setOpen={setOpen}
+                  />
+                )}
+              </div>
+              <div className="w-full pl-1 md:pl-3 ">
+                <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
+                  All WunderPools
+                </Typography>
+                {loadingAll ? (
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    sx={{ height: '100px', borderRadius: 3 }}
+                  />
+                ) : (
+                  <PoolList pools={allPools} setOpen={setOpen} />
+                )}
+              </div>
+            </div>
           </Stack>
-        </Stack>
-        <Typography variant="h6">Your WunderPools</Typography>
-        {loadingUser ? (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            sx={{ height: '100px', borderRadius: 3 }}
+
+          <NewPoolDialog
+            open={open}
+            setOpen={setOpen}
+            fetchPools={fetchPools}
+            {...props}
           />
-        ) : (
-          <PoolList pools={userPools} setOpen={setOpen} />
-        )}
-        <Typography variant="h6">All WunderPools</Typography>
-        {loadingAll ? (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            sx={{ height: '100px', borderRadius: 3 }}
-          />
-        ) : (
-          <PoolList pools={allPools} setOpen={setOpen} />
-        )}
-      </Stack>
-      <NewPoolDialog
-        open={open}
-        setOpen={setOpen}
-        fetchPools={fetchPools}
-        {...props}
-      />
-    </Container>
+        </Container>
+      </div>
+    </>
   );
 }
