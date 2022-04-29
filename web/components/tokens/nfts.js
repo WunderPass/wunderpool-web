@@ -1,5 +1,5 @@
-import { Button, IconButton, Paper, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import Nft from "./nft";
 
 export default function NftList(props) {
   const { nfts } = props;
@@ -10,34 +10,29 @@ export default function NftList(props) {
         {nfts.map((nft) => {
           return (
             <Paper elevation={3} key={`nft-${nft.address}`} sx={{ p: 2 }}>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Stack spacing={1}>
-                  <Typography variant="h6">{nft.name}</Typography>
-                  {nft.uris.map((tokenUri) => {
-                    return (
-                      <Typography
-                        key={`nft-uri-${tokenUri}`}
-                        variant="subtitle1"
-                      >
-                        {tokenUri}
-                      </Typography>
-                    );
-                  })}
-                </Stack>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Button color="error" disabled={token.balance == 0}>
-                    Sell
-                  </Button>
-                </Stack>
-              </Stack>
+              <Typography variant="h6">{nft.name}</Typography>
+              <Grid container>
+                {nft.tokens.map((token) => {
+                  return (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      lg={4}
+                      xl={3}
+                      p={1}
+                      key={`nft-${token.uri}`}
+                    >
+                      <Nft
+                        uri={token.uri}
+                        address={nft.address}
+                        tokenId={token.id}
+                        {...props}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
             </Paper>
           );
         })}
