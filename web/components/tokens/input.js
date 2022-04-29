@@ -90,7 +90,7 @@ export default function TokenInput(props) {
               sx={{ height: "50px" }}
             >
               <img
-                height="100%"
+                width="50px"
                 src={option.image_url || "/favicon.ico"}
                 alt="TKN"
               />

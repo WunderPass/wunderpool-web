@@ -1,15 +1,15 @@
-import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
-import CreateYourWunderPass from '/components/auth/createYourWunderPass';
-import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
-import { Container, Stack, Typography } from '@mui/material';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Head from 'next/head';
-import { Button } from '@mui/material';
-import { FaTwitter, FaDiscord } from 'react-icons/fa';
+import LoginWithWunderPass from "/components/auth/loginWithWunderPass";
+import CreateYourWunderPass from "/components/auth/createYourWunderPass";
+import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
+import { Container, Stack, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import Head from "next/head";
+import { Button } from "@mui/material";
+import { FaTwitter, FaDiscord } from "react-icons/fa";
 //import { FaFacebookF } from 'react-icons/fa';
 
 export default function Home(props) {
@@ -24,7 +24,7 @@ export default function Home(props) {
 
   useEffect(() => {
     if (user.wunderId && user.address) {
-      router.push('/pools');
+      router.push("/pools");
     }
   }, [user]);
 
@@ -74,17 +74,16 @@ export default function Home(props) {
                     <LoginWithWunderPass
                       className="text-xs"
                       name="WunderPool"
-                      redirect={'pools'}
-                      intent={['wunderId', 'address']}
+                      redirect={"pools"}
+                      intent={["wunderId", "address"]}
                       onSuccess={handleSuccess}
-                      image="https://img.ifunny.co/images/f360247a15cf0bed362b8e9ddbe9786c0465023c969906d57f3f5bf85aa2656e_1.webp"
                     />
                   </div>
                   <p className="text-gray-400 text-xs my-2 mb-1 lg:mb-1">or</p>
                   <CreateYourWunderPass
                     name="WunderPool"
-                    redirect={'pools'}
-                    intent={['wunderId', 'address']}
+                    redirect={"pools"}
+                    intent={["wunderId", "address"]}
                     onSuccess={handleSuccess}
                   />
 
