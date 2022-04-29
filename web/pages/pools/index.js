@@ -141,13 +141,13 @@ export default function Pools(props) {
                 <div className="text-center mr-0.5">&nbsp;USDC</div>
               </div>
             </div>
-            <Button
+            <button
               className="btn ml-2 my-2 sm:py-2.5 py-3.5 hover:bg-[#ff0000] text-sm"
               onClick={user?.logOut}
               variant="contained"
             >
               Log out
-            </Button>
+            </button>
           </Toolbar>
         </AppBar>
 
@@ -186,14 +186,14 @@ export default function Pools(props) {
                   <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
                     Your WunderPools
                   </Typography>
-                  <Button
-                    className="btn mb-4"
+                  <button
+                    className="text-white btn mb-4 hover:bg-[#228B22]"
                     onClick={() => setOpen(true)}
                     variant="contained"
                     color="success"
                   >
                     Create new pool
-                  </Button>
+                  </button>
                 </div>
 
                 {loadingUser ? (
