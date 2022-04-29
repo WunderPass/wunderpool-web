@@ -60,7 +60,7 @@ export default function usePoolListener(handleInfo) {
       handleInfo(
         `New ${isERC721 ? "NFT" : "Token"} Added to the Pool: ${tokenAddress}`
       );
-      setTokenAddedEvent(tokenAddress);
+      setTokenAddedEvent({ tokenAddress, nft: isERC721 });
     });
 
     wunderPool.on("MaticWithdrawed", async (receiver, amount) => {
