@@ -2,16 +2,19 @@ import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOu
 import { fetchAllPools, fetchUserPools } from "/services/contract/pools";
 import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
 import NewPoolDialog from "/components/dialogs/newPool";
-import { toEthString, displayWithDecimalPlaces } from "/services/formatter";
+import {
+  toEthString,
+  displayWithDecimalPlaces,
+  currency,
+} from "/services/formatter";
+import { usdcBalanceOf } from "/services/contract/token";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import USDCIcon from "/public/usdc-logo.svg";
 import { useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Button,
   Container,
   IconButton,
   Paper,
@@ -21,7 +24,6 @@ import {
   AppBar,
   Toolbar,
 } from "@mui/material";
-import { usdcBalanceOf } from "../../services/contract/token";
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -138,13 +140,7 @@ export default function Pools(props) {
 
             <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 sm:py-1.5 py-3.5">
               <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
-                <div
-                  className="text-center justify-center items-center align-center " //TODO GET BALANCE HERE
-                >
-                  <p className="ml-1">{usdcBalance}</p>
-                  {user?.balance}
-                </div>
-                <div className="text-center mr-0.5">&nbsp;USDC</div>
+                <p className="mx-2">{currency(usdcBalance, {})}</p>
               </div>
             </div>
             <button
