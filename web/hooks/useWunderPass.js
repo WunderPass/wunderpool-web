@@ -8,17 +8,9 @@ export default function useWunderPass(config) {
           encodeURI(
             `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
           ),
-          'WunderPassSign',
-          'popup'
-        );
-        /*
-        const popup = window.open(
-          encodeURI(
-            `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
-          ),
           'transactionFrame'
         );
-*/
+
         const requestInterval = setInterval(() => {
           popup.postMessage(
             { accountId: accountId, data: data },
@@ -45,14 +37,6 @@ export default function useWunderPass(config) {
   const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
     return new Promise(async (resolve, reject) => {
       try {
-        /*const popup = window.open(
-          encodeURI(
-            `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
-          ),
-          'WunderPassSign',
-          'popup'
-        );*/
-
         const popup = window.open(
           encodeURI(
             `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`

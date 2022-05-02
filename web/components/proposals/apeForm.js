@@ -1,4 +1,5 @@
 import {
+  Dialog,
   Button,
   Collapse,
   FormControl,
@@ -8,17 +9,18 @@ import {
   OutlinedInput,
   Stack,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import { createApeSuggestion } from "/services/contract/proposals";
-import TokenInput from "../tokens/input";
-import axios from "axios";
-import { currency } from "../../services/formatter";
+  LinearProgress,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { createApeSuggestion } from '/services/contract/proposals';
+import TokenInput from '../tokens/input';
+import axios from 'axios';
+import { currency } from '../../services/formatter';
 
 export default function ApeForm(props) {
   const { setApe, address, fetchProposals, handleSuccess, handleError } = props;
-  const [tokenAddress, setTokenAddress] = useState("");
+  const [tokenAddress, setTokenAddress] = useState('');
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
   const [tokenImage, setTokenImage] = useState(null);
@@ -28,7 +30,7 @@ export default function ApeForm(props) {
   const [waitingForPrice, setWaitingForPrice] = useState(false);
 
   const handleClose = () => {
-    setTokenAddress("");
+    setTokenAddress('');
     setTokenName(null);
     setTokenSymbol(null);
     setTokenImage(null);
@@ -103,9 +105,9 @@ export default function ApeForm(props) {
               spacing={2}
               alignItems="center"
               direction="row"
-              sx={{ height: "50px" }}
+              sx={{ height: '50px' }}
             >
-              <img height="100%" src={tokenImage || "/favicon.ico"} />
+              <img height="100%" src={tokenImage || '/favicon.ico'} />
               <Typography variant="h4">
                 {tokenName} ({tokenSymbol})
               </Typography>
@@ -129,9 +131,25 @@ export default function ApeForm(props) {
           </Stack>
         </Collapse>
         {loading ? (
-          <Button disabled variant="contained">
-            Submitting Proposal...
-          </Button>
+          <>
+            <Button disabled variant="contained">
+              Submitting Proposal...
+            </Button>
+            <Dialog open={open} onClose={handleClose}>
+              <iframe
+                id="fr"
+                name="transactionFrame"
+                width="600"
+                height="600"
+                allow=""
+              >
+                {' '}
+              </iframe>
+              <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                <LinearProgress />
+              </Stack>
+            </Dialog>
+          </>
         ) : (
           <Button
             type="submit"
