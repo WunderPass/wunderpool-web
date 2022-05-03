@@ -41,14 +41,6 @@ export default function JoinPoolDialog(props) {
   const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
     return new Promise(async (resolve, reject) => {
       try {
-        /* const popup = window.open(
-          encodeURI(
-            `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
-          ),
-          '_blank',
-          'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350'
-        );
-*/
         const popup = window.open(
           encodeURI(
             `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
