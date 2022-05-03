@@ -1,20 +1,20 @@
-import { Button, IconButton, Paper, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import SellTokenDialog from "../dialogs/sellTokenDialog";
-import CallReceivedIcon from "@mui/icons-material/CallReceived";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { toEthString } from "/services/formatter";
-import SwapTokenDialog from "/components/dialogs/swapTokenDialog";
-import TokenCard from "./card";
+import { Button, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import SellTokenDialog from '../dialogs/sellTokenDialog';
+import CallReceivedIcon from '@mui/icons-material/CallReceived';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { toEthString } from '/services/formatter';
+import SwapTokenDialog from '/components/dialogs/swapTokenDialog';
+import TokenCard from './card';
 
 export default function TokenList(props) {
   const { tokens, poolAddress, handleFund, handleWithdraw } = props;
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [balance, setBalance] = useState("");
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [symbol, setSymbol] = useState('');
+  const [balance, setBalance] = useState('');
 
   const handleSell = (token) => {
     setOpenSell(true);
@@ -33,7 +33,7 @@ export default function TokenList(props) {
   };
 
   return (
-    <Stack spacing={3} pt={2}>
+    <Stack spacing={2}>
       <Typography variant="h4">Tokens</Typography>
       {tokens.length > 0 &&
         tokens
