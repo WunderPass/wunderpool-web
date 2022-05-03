@@ -1,14 +1,14 @@
-import { Button, Grid, Paper, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import SellNftDialog from "../dialogs/sellNftDialog";
-import Nft from "./nft";
+import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import SellNftDialog from '../dialogs/sellNftDialog';
+import Nft from './nft';
 
 export default function NftList(props) {
   const { nfts } = props;
   const [open, setOpen] = useState(false);
 
   return (
-    <Stack spacing={3} pt={2}>
+    <Stack spacing={2}>
       <Typography variant="h4">NFTs</Typography>
       {nfts.map((nft) => {
         return (
