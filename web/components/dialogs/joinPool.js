@@ -10,12 +10,12 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { ethers } from "ethers";
-import { useState } from "react";
-import { toEthString } from "/services/formatter";
-import { joinPool } from "/services/contract/pools";
-import { usdc } from "../../services/formatter";
+} from '@mui/material';
+import { ethers } from 'ethers';
+import { useState } from 'react';
+import { toEthString } from '/services/formatter';
+import { joinPool } from '/services/contract/pools';
+import { usdc } from '../../services/formatter';
 
 export default function JoinPoolDialog(props) {
   const {
@@ -29,13 +29,55 @@ export default function JoinPoolDialog(props) {
     totalSupply,
     minimumInvest,
   } = props;
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    setAmount("");
+    setAmount('');
     setOpen(false);
     setLoading(false);
+  };
+
+  const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const popup = window.open(
+          encodeURI(
+            `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
+          ),
+          'myFrame',
+          'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350'
+        );
+        setTimeout = (() => {}, 1000);
+
+        const requestInterval = setInterval(() => {
+          popup.postMessage(
+            JSON.parse(
+              JSON.stringify({
+                accountId: accountId,
+                tx: tx,
+                network: network,
+                usdc: usdc,
+              })
+            ),
+            process.env.WUNDERPASS_URL
+          );
+        }, 1000);
+
+        window.addEventListener('message', (event) => {
+          if (event.origin == process.env.WUNDERPASS_URL) {
+            clearInterval(requestInterval);
+
+            if (event.data && typeof event.data == 'object') {
+              event.source.window.close();
+              resolve(event.data.response);
+            }
+          }
+        });
+      } catch (error) {
+        reject(error?.error?.error?.error?.message || error);
+      }
+    });
   };
 
   const handleSubmit = () => {
@@ -80,7 +122,7 @@ export default function JoinPoolDialog(props) {
           label="Invest Amount"
           placeholder="1"
           fullWidth
-          inputProps={{ min: "0" }}
+          inputProps={{ min: '0' }}
           InputProps={{
             endAdornment: <InputAdornment position="end">USD</InputAdornment>,
           }}
@@ -93,7 +135,7 @@ export default function JoinPoolDialog(props) {
         </DialogContentText>
       </DialogContent>
       {loading ? (
-        <Stack spacing={2} sx={{ textAlign: "center" }}>
+        <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Joining Pool...</Typography>
           <LinearProgress />
         </Stack>
@@ -108,6 +150,11 @@ export default function JoinPoolDialog(props) {
             Join
           </Button>
         </DialogActions>
+      )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
       )}
     </Dialog>
   );

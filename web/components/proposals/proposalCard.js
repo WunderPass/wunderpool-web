@@ -95,47 +95,47 @@ export default function ProposalCard(props) {
             <Divider />
             <Typography
               variant="subtitle1"
-              sx={{ display: "flex", justifyContent: "space-between" }}
+              sx={{ display: 'flex', justifyContent: 'space-between' }}
             >
               <Typography variant="span" fontStyle="italic">
                 Zustimmungen
               </Typography>
-              {proposal.yesVotes.toString()} /{" "}
+              {proposal.yesVotes.toString()} /{' '}
               {totalGovernanceTokens?.toString()} Stimmen
             </Typography>
             <Divider />
             <Typography
               variant="subtitle1"
-              sx={{ display: "flex", justifyContent: "space-between" }}
+              sx={{ display: 'flex', justifyContent: 'space-between' }}
             >
               <Typography variant="span" fontStyle="italic">
                 Ablehnungen
               </Typography>
-              {proposal.noVotes.toString()} /{" "}
+              {proposal.noVotes.toString()} /{' '}
               {totalGovernanceTokens?.toString()} Stimmen
             </Typography>
             <Divider />
             <Typography
               variant="subtitle1"
-              sx={{ display: "flex", justifyContent: "space-between" }}
+              sx={{ display: 'flex', justifyContent: 'space-between' }}
             >
               <Typography variant="span" fontStyle="italic">
                 Deadline
               </Typography>
               {new Date(proposal.deadline.mul(1000).toNumber()).toLocaleString(
-                "de"
+                'de'
               )}
             </Typography>
             <Divider />
             <Typography
               variant="subtitle1"
-              sx={{ display: "flex", justifyContent: "space-between" }}
+              sx={{ display: 'flex', justifyContent: 'space-between' }}
             >
               <Typography variant="span" fontStyle="italic">
                 Created At
               </Typography>
               {new Date(proposal.createdAt.mul(1000).toNumber()).toLocaleString(
-                "de"
+                'de'
               )}
             </Typography>
             {loading ? (
@@ -155,8 +155,8 @@ export default function ProposalCard(props) {
                         <Typography
                           variant="subtitle1"
                           sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
+                            display: 'flex',
+                            justifyContent: 'space-between',
                           }}
                         >
                           <Typography variant="span" fontStyle="italic">
@@ -168,8 +168,8 @@ export default function ProposalCard(props) {
                         <Typography
                           variant="subtitle1"
                           sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
+                            display: 'flex',
+                            justifyContent: 'space-between',
                           }}
                         >
                           <Typography variant="span" fontStyle="italic">
@@ -186,7 +186,7 @@ export default function ProposalCard(props) {
                             {decodeParams(data.action, data.params).map(
                               (param, j) => {
                                 const formattedParam =
-                                  typeof param == "string"
+                                  typeof param == 'string'
                                     ? param
                                     : param?.toString() || null;
                                 return (
@@ -205,14 +205,14 @@ export default function ProposalCard(props) {
                         <Typography
                           variant="subtitle1"
                           sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
+                            display: 'flex',
+                            justifyContent: 'space-between',
                           }}
                         >
                           <Typography variant="span" fontStyle="italic">
                             Value
                           </Typography>
-                          {ethers.utils.formatUnits(data.transactionValue)}{" "}
+                          {ethers.utils.formatUnits(data.transactionValue)}{' '}
                           MATIC
                         </Typography>
                       </Box>

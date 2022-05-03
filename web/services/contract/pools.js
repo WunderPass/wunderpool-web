@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
-import { usdc } from "/services/formatter";
+import { ethers } from 'ethers';
+import { usdc } from '/services/formatter';
 import {
   httpProvider,
   initLauncher,
@@ -19,8 +19,8 @@ export function createPool(
 ) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
     });
     const [poolLauncher, provider] = initLauncher();
     const tx = await poolLauncher.populateTransaction.createNewPool(
@@ -91,8 +91,8 @@ export function fetchAllPools() {
 export function joinPool(poolAddress, value) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
     const tx = await wunderPool.populateTransaction.joinPool(usdc(value), {
@@ -119,7 +119,7 @@ export function fetchPoolName(poolAddress) {
     wunderPool
       .name()
       .then((res) => resolve(res))
-      .catch((err) => reject("Pool Not Found"));
+      .catch((err) => reject('Pool Not Found'));
   });
 }
 
@@ -148,8 +148,8 @@ export function fetchPoolBalance(poolAddress) {
 export function fundPool(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
     const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {

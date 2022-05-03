@@ -1,4 +1,5 @@
 import {
+  Dialog,
   Button,
   Collapse,
   FormControl,
@@ -8,6 +9,7 @@ import {
   OutlinedInput,
   Stack,
   Typography,
+  LinearProgress,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -107,6 +109,9 @@ export default function ApeForm(props) {
               direction="row"
               sx={{ height: '50px' }}
             >
+              <img height="100%" src={tokenImage || '/favicon.ico'} />
+              <Typography variant="h4">
+                {tokenName} ({tokenSymbol})
               <img width="50px" src={tokenImage || '/favicon.ico'} />
               <Typography variant="h4" flexGrow={1}>
                 {tokenName}
@@ -135,9 +140,25 @@ export default function ApeForm(props) {
           </Stack>
         </Collapse>
         {loading ? (
-          <Button disabled variant="contained">
-            Submitting Proposal...
-          </Button>
+          <>
+            <Button disabled variant="contained">
+              Submitting Proposal...
+            </Button>
+            <Dialog open={open} onClose={handleClose}>
+              <iframe
+                id="fr"
+                name="transactionFrame"
+                width="600"
+                height="600"
+                allow=""
+              >
+                {' '}
+              </iframe>
+              <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                <LinearProgress />
+              </Stack>
+            </Dialog>
+          </>
         ) : (
           <Button
             type="submit"
