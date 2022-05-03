@@ -1,10 +1,13 @@
-import useUser from '/hooks/useUser';
-import '../styles/globals.css';
-import useNotification from '/hooks/useNotification';
-import Notification from '/components/utils/notification';
-import usePoolListener from '/hooks/usePoolListener';
-import AlertTemplate from 'react-alert-template-basic';
-import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import useUser from "/hooks/useUser";
+import "../styles/globals.css";
+import useNotification from "/hooks/useNotification";
+import Notification from "/components/utils/notification";
+import usePoolListener from "/hooks/usePoolListener";
+import AlertTemplate from "react-alert-template-basic";
+import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+import muiTheme from "/theme/mui";
+import Navbar from "/components/layout/navbar";
 
 function WunderPool({ Component, pageProps }) {
   const user = useUser();
@@ -39,16 +42,21 @@ function WunderPool({ Component, pageProps }) {
   const options = {
     position: positions.BOTTOM_CENTER,
     timeout: 5000,
-    offset: '30px',
+    offset: "30px",
     transition: transitions.SCALE,
   };
 
   return (
     <>
-      <AlertProvider template={AlertTemplate} {...options}>
-        <Component {...appProps} />
-        <Notification notification={notification} />
-      </AlertProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={muiTheme}>
+          <AlertProvider template={AlertTemplate} {...options}>
+            <Navbar {...appProps} />
+            <Component {...appProps} />
+            <Notification notification={notification} />
+          </AlertProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </>
   );
 }

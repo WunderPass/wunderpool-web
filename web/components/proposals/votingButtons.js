@@ -4,6 +4,7 @@ import {
   Stack,
   Dialog,
   LinearProgress,
+  Tooltip,
 } from '@mui/material';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
@@ -81,25 +82,37 @@ export default function VotingButtons(props) {
   }
 
   if (proposal.executed) {
-    return <CheckCircleOutlineIcon fontSize="large" color="success" />;
+    return (
+      <Tooltip title="Proposal has been Executed">
+        <CheckCircleOutlineIcon fontSize="large" color="success" />
+      </Tooltip>
+    );
   }
 
   if (userHasVoted) {
     return userHasVoted == 1 ? (
-      <ThumbUpOutlinedIcon color="success" />
+      <Tooltip title="You voted Yes">
+        <ThumbUpOutlinedIcon color="success" />
+      </Tooltip>
     ) : (
-      <ThumbDownOutlinedIcon color="error" />
+      <Tooltip title="You voted No">
+        <ThumbDownOutlinedIcon color="error" />
+      </Tooltip>
     );
   }
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="center">
-      <IconButton color="success" onClick={() => handleVote(1)}>
-        <ThumbUpOutlinedIcon />
-      </IconButton>
-      <IconButton color="error" onClick={() => handleVote(2)}>
-        <ThumbDownOutlinedIcon />
-      </IconButton>
+      <Tooltip title="Agree">
+        <IconButton color="success" onClick={() => handleVote(1)}>
+          <ThumbUpOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Disagree">
+        <IconButton color="error" onClick={() => handleVote(2)}>
+          <ThumbDownOutlinedIcon />
+        </IconButton>
+      </Tooltip>
     </Stack>
   );
 }

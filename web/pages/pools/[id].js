@@ -10,6 +10,7 @@ import {
   Paper,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -20,7 +21,7 @@ import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import PoolInfoDialog from '/components/dialogs/poolInfo';
 import JoinPoolDialog from '/components/dialogs/joinPool';
 import { fetchPoolProposals } from '/services/contract/proposals';
-import { fetchPoolTokens } from '/services/contract/token';
+import { fetchPoolTokens, fetchPoolNfts } from '/services/contract/token';
 import {
   fetchPoolName,
   fetchPoolBalance,
@@ -32,6 +33,7 @@ import ApeForm from '/components/proposals/apeForm';
 import CustomForm from '/components/proposals/customForm';
 import TokenList from '/components/tokens/list';
 import { toEthString } from '/services/formatter';
+import NftList from '/components/tokens/nfts';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -50,11 +52,12 @@ export default function Pool(props) {
   const [fundDialog, setFundDialog] = useState(false);
   const [poolInfo, setPoolInfo] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
-  const [userIsMember, setUserIsMember] = useState(false);
+  const [userIsMember, setUserIsMember] = useState(null);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [tokens, setTokens] = useState([]);
+  const [nfts, setNfts] = useState([]);
   const [governanceTokenData, setGovernanceTokenData] = useState(null);
   const [totalGovernanceTokens, setTotalGovernanceTokens] = useState(null);
   const [poolBalance, setPoolBalance] = useState(0);
@@ -81,6 +84,12 @@ export default function Pool(props) {
     });
   };
 
+  const fetchNfts = () => {
+    fetchPoolNfts(address).then((ts) => {
+      setNfts(ts);
+    });
+  };
+
   const fetchBalance = () => {
     fetchPoolBalance(address).then((res) => {
       setPoolBalance(res);
@@ -96,6 +105,7 @@ export default function Pool(props) {
     setupPoolListener(address);
     fetchProposals();
     fetchTokens();
+    fetchNfts();
   };
 
   useEffect(() => {
@@ -120,15 +130,24 @@ export default function Pool(props) {
 
   useEffect(() => {
     if (!address || !user.address) return;
-    fetchTokens();
+    if (!tokenAddedEvent) return;
+    if (tokenAddedEvent.nft) {
+      fetchNfts();
+    } else {
+      fetchTokens();
+    }
     resetEvents();
   }, [tokenAddedEvent]);
 
   useEffect(() => {
     if (!address || !user.address) return;
-    if (votedEvent?.voter == user.address) return;
-    if (newProposalEvent?.creator == user.address) return;
-    if (proposalExecutedEvent?.executor == user.address) return;
+    if (!votedEvent || votedEvent?.voter == user.address) return;
+    if (!newProposalEvent || newProposalEvent?.creator == user.address) return;
+    if (
+      !proposalExecutedEvent ||
+      proposalExecutedEvent?.executor == user.address
+    )
+      return;
     fetchProposals();
     resetEvents();
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
@@ -151,21 +170,25 @@ export default function Pool(props) {
             <Stack direction="row" alignItems="center" justifyContent="center">
               <Typography variant="h4">{name}</Typography>
               {governanceTokenData && (
-                <IconButton color="info" onClick={() => setPoolInfo(true)}>
-                  <InfoOutlinedIcon />
-                </IconButton>
+                <Tooltip title="Pool Info">
+                  <IconButton color="info" onClick={() => setPoolInfo(true)}>
+                    <InfoOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
               )}
             </Stack>
           </Grid>
           {userIsMember && (
             <Grid item xs={12} sm={2}>
               <Stack direction="row" alignItems="center" justifyContent="right">
-                <IconButton
-                  color="error"
-                  onClick={() => setDestroyDialog(true)}
-                >
-                  <DangerousIcon />
-                </IconButton>
+                <Tooltip title="Liquidate Pool">
+                  <IconButton
+                    color="error"
+                    onClick={() => setDestroyDialog(true)}
+                  >
+                    <DangerousIcon />
+                  </IconButton>
+                </Tooltip>
               </Stack>
             </Grid>
           )}
@@ -195,7 +218,7 @@ export default function Pool(props) {
                 </Button>
               </Stack>
             </Collapse>
-            <Collapse in={ape} sx={{ width: '100%' }}>
+            <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
               <ApeForm
                 setApe={setApe}
                 address={address}
@@ -203,7 +226,10 @@ export default function Pool(props) {
                 {...props}
               />
             </Collapse>
-            <Collapse in={customProposal} sx={{ width: '100%' }}>
+            <Collapse
+              in={customProposal}
+              sx={{ width: '100%', margin: '0 !important' }}
+            >
               <CustomForm
                 customProposal={customProposal}
                 setCustomProposal={setCustomProposal}
@@ -220,29 +246,37 @@ export default function Pool(props) {
               />
             ) : (
               <Collapse in={!customProposal && !ape} sx={{ width: '100%' }}>
-                <ProposalList
-                  proposals={proposals}
-                  totalGovernanceTokens={totalGovernanceTokens}
-                  poolAddress={address}
-                  setApe={setApe}
-                  fetchProposals={fetchProposals}
-                  fetchTokens={fetchTokens}
-                  fetchBalance={fetchBalance}
-                  {...props}
-                />
-                <TokenList
-                  tokens={tokens}
-                  poolAddress={address}
-                  fetchProposals={fetchProposals}
-                  handleFund={() => setFundDialog(true)}
-                  handleWithdraw={() => setWithdrawDialog(true)}
-                  poolBalance={poolBalance}
-                  {...props}
-                />
+                <Stack spacing={3}>
+                  <TokenList
+                    tokens={tokens}
+                    poolAddress={address}
+                    fetchProposals={fetchProposals}
+                    handleFund={() => setFundDialog(true)}
+                    handleWithdraw={() => setWithdrawDialog(true)}
+                    poolBalance={poolBalance}
+                    {...props}
+                  />
+                  <NftList
+                    nfts={nfts}
+                    poolAddress={address}
+                    fetchProposals={fetchProposals}
+                    {...props}
+                  />
+                  <ProposalList
+                    proposals={proposals}
+                    totalGovernanceTokens={totalGovernanceTokens}
+                    poolAddress={address}
+                    setApe={setApe}
+                    fetchProposals={fetchProposals}
+                    fetchTokens={fetchTokens}
+                    fetchBalance={fetchBalance}
+                    {...props}
+                  />
+                </Stack>
               </Collapse>
             )}
           </>
-        ) : (
+        ) : userIsMember === false ? (
           <Paper elevation={4} sx={{ width: '100%', p: 3 }}>
             <Stack spacing={2}>
               <Typography variant="h5">
@@ -260,6 +294,8 @@ export default function Pool(props) {
               </Button>
             </Stack>
           </Paper>
+        ) : (
+          <Skeleton width="100%" height={100} />
         )}
       </Stack>
       <FundPoolDialog

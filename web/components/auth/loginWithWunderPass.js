@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function LoginWithWunderPass(props) {
   const { dev, name, image, intent = [], onSuccess } = props;
@@ -12,19 +12,19 @@ export default function LoginWithWunderPass(props) {
         encodeURI(
           `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
         ),
-        'WunderPassAuth',
-        'popup'
+        "WunderPassAuth",
+        "popup"
       );
     setPopup(authPopup);
 
     const requestInterval = setInterval(() => {
       authPopup.postMessage(
-        { accountId: 'ABCDE', intent: intent },
+        { accountId: "ABCDE", intent: intent },
         process.env.WUNDERPASS_URL
       );
     }, 1000);
 
-    window.addEventListener('message', (event) => {
+    window.addEventListener("message", (event) => {
       if (event.origin == process.env.WUNDERPASS_URL) {
         clearInterval(requestInterval);
 
@@ -78,18 +78,18 @@ export default function LoginWithWunderPass(props) {
       {popup && (
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             margin: 0,
             padding: 0,
-            width: '100vw',
-            height: '100vh',
-            background: '#000C',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            width: "100vw",
+            height: "100vh",
+            background: "#000C",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <a href="#" onClick={goBack}>

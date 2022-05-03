@@ -1,25 +1,19 @@
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
-import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import USDCIcon from '/public/usdc-logo.svg';
 import { useEffect, useState } from 'react';
 import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
-  Button,
   Container,
   IconButton,
   Paper,
   Skeleton,
   Stack,
   Typography,
-  AppBar,
-  Toolbar,
 } from '@mui/material';
 
 function PoolList(props) {
@@ -30,7 +24,7 @@ function PoolList(props) {
       return (
         <Paper
           className="mb-4 pb-6"
-          elevation={3}
+          elevation={1}
           key={`pool-${i}`}
           sx={{ p: 2 }}
         >
@@ -61,7 +55,7 @@ function PoolList(props) {
       );
     })
   ) : (
-    <Paper elevation={3} sx={{ p: 2 }}>
+    <Paper elevation={1} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
         <Typography className="pb-2" variant="h5">
           There are no Pools
@@ -83,18 +77,19 @@ export default function Pools(props) {
   const fetchPools = () => {
     setLoadingAll(true);
     setLoadingUser(true);
-    fetchUserPools(user.address).then((pools) => {
+    user.fetchPools().then((pools) => {
       setUserPools(pools);
       setLoadingUser(false);
     });
-    fetchAllPools(user.address).then((pools) => {
+    fetchAllPools().then((pools) => {
       setAllPools(pools);
       setLoadingAll(false);
     });
   };
 
   useEffect(() => {
-    if (user.address) fetchPools();
+    if (!user.address) return;
+    fetchPools();
   }, [user.address]);
 
   return (
@@ -150,7 +145,6 @@ export default function Pools(props) {
             </button>
           </Toolbar>
         </AppBar>
-
         <Container>
           <Stack spacing={3} paddingTop={2}>
             <Stack

@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { encodeParams, usdc } from "../formatter";
 import {
+  gasPrice,
   httpProvider,
   initPool,
   usdcAddress,
@@ -73,7 +74,6 @@ export function createSingleActionProposal(
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.createProposal(
       title,
       description,
@@ -82,7 +82,7 @@ export function createSingleActionProposal(
       params,
       transactionValue,
       deadline,
-      { gasPrice: gasPrice.mul(5).div(2) }
+      { gasPrice: await gasPrice() }
     );
 
     smartContractTransaction(tx).then(async (transaction) => {
@@ -112,7 +112,6 @@ export function createMultiActionProposal(
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.createMultiActionProposal(
       title,
       description,
@@ -121,7 +120,7 @@ export function createMultiActionProposal(
       params,
       transactionValues,
       deadline,
-      { gasPrice: gasPrice.mul(5).div(2) }
+      { gasPrice: await gasPrice() }
     );
 
     smartContractTransaction(tx).then(async (transaction) => {
@@ -310,6 +309,72 @@ export async function createSwapSuggestion(
   }
 }
 
+export async function createNftBuyProposal(
+  poolAddress,
+  nftAddress,
+  tokenId,
+  buyerAddress,
+  title,
+  description,
+  amount
+) {
+  return createMultiActionProposal(
+    poolAddress,
+    title,
+    description,
+    [usdcAddress, nftAddress],
+    [
+      "transferFrom(address,address,uint256)",
+      "transferFrom(address,address,uint256)",
+    ],
+    [
+      encodeParams(
+        ["address", "address", "uint256"],
+        [buyerAddress, poolAddress, amount]
+      ),
+      encodeParams(
+        ["address", "address", "uint256"],
+        [poolAddress, buyerAddress, tokenId]
+      ),
+    ],
+    [0, 0],
+    1846183041
+  );
+}
+
+export async function createNftSellProposal(
+  poolAddress,
+  nftAddress,
+  tokenId,
+  sellerAddress,
+  title,
+  description,
+  amount
+) {
+  return createMultiActionProposal(
+    poolAddress,
+    title,
+    description,
+    [usdcAddress, nftAddress],
+    [
+      "transferFrom(address,address,uint256)",
+      "transferFrom(address,address,uint256)",
+    ],
+    [
+      encodeParams(
+        ["address", "address", "uint256"],
+        [poolAddress, sellerAddress, amount]
+      ),
+      encodeParams(
+        ["address", "address", "uint256"],
+        [sellerAddress, poolAddress, tokenId]
+      ),
+    ],
+    [0, 0],
+    1846183041
+  );
+}
+
 export function testExecute(
   poolAddress,
   contractAddress,
@@ -343,9 +408,8 @@ export function execute(poolAddress, id) {
       accountId: "ABCDEF",
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.executeProposal(id, {
-      gasPrice: gasPrice.mul(5).div(2),
+      gasPrice: await gasPrice(),
     });
 
     smartContractTransaction(tx).then(async (transaction) => {

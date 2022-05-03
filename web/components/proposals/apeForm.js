@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { createApeSuggestion } from '/services/contract/proposals';
 import TokenInput from '../tokens/input';
 import axios from 'axios';
-import { currency } from '../../services/formatter';
+import { currency, round } from '../../services/formatter';
 
 export default function ApeForm(props) {
   const { setApe, address, fetchProposals, handleSuccess, handleError } = props;
@@ -28,6 +28,8 @@ export default function ApeForm(props) {
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
   const [waitingForPrice, setWaitingForPrice] = useState(false);
+
+  const receivedTokens = value / (tokenPrice / 100);
 
   const handleClose = () => {
     setTokenAddress('');
@@ -110,8 +112,11 @@ export default function ApeForm(props) {
               <img height="100%" src={tokenImage || '/favicon.ico'} />
               <Typography variant="h4">
                 {tokenName} ({tokenSymbol})
+              <img width="50px" src={tokenImage || '/favicon.ico'} />
+              <Typography variant="h4" flexGrow={1}>
+                {tokenName}
               </Typography>
-              <Typography variant="h4">
+              <Typography variant="h4" color="GrayText">
                 {!waitingForPrice && currency(tokenPrice / 100, {})}
               </Typography>
             </Stack>
@@ -127,6 +132,10 @@ export default function ApeForm(props) {
                   <InputAdornment position="end">USD</InputAdornment>
                 }
               />
+              <Typography variant="subtitle1" textAlign="right">
+                {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
+                {tokenSymbol}
+              </Typography>
             </FormControl>
           </Stack>
         </Collapse>

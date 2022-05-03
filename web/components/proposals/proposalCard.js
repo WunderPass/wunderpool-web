@@ -7,15 +7,16 @@ import {
   Paper,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
-} from '@mui/material';
-import { useState } from 'react';
-import LoupeIcon from '@mui/icons-material/Loupe';
-import { fetchTransactionData, execute } from '/services/contract/proposals';
-import { ethers } from 'ethers';
-import { decodeParams } from '/services/formatter';
-import VotingBar from '/components/proposals/votingBar';
-import VotingButtons from './votingButtons';
+} from "@mui/material";
+import { useState } from "react";
+import LoupeIcon from "@mui/icons-material/Loupe";
+import { fetchTransactionData, execute } from "/services/contract/proposals";
+import { ethers } from "ethers";
+import { decodeParams } from "/services/formatter";
+import VotingBar from "/components/proposals/votingBar";
+import VotingButtons from "./votingButtons";
 
 export default function ProposalCard(props) {
   const {
@@ -69,7 +70,7 @@ export default function ProposalCard(props) {
   };
 
   return (
-    <Paper elevation={3} sx={{ overflowY: 'hidden' }}>
+    <Paper elevation={1} sx={{ overflowY: "hidden" }}>
       <Box p={2}>
         <Stack
           direction="row"
@@ -79,9 +80,11 @@ export default function ProposalCard(props) {
           <Stack spacing={1}>
             <Stack direction="row" alignItems="center">
               <Typography variant="h6">{proposal.title}</Typography>
-              <IconButton color="info" onClick={handleOpen}>
-                <LoupeIcon />
-              </IconButton>
+              <Tooltip title="Show details">
+                <IconButton color="info" onClick={handleOpen}>
+                  <LoupeIcon />
+                </IconButton>
+              </Tooltip>
             </Stack>
             <Typography variant="subtitle1">{proposal.description}</Typography>
           </Stack>

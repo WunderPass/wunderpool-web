@@ -6,8 +6,9 @@ import {
   initPool,
   usdcAddress,
   tokenAbi,
-} from './init';
-import useWunderPass from '/hooks/useWunderPass';
+  gasPrice,
+} from "./init";
+import useWunderPass from "/hooks/useWunderPass";
 
 export function createPool(
   poolName,
@@ -22,14 +23,13 @@ export function createPool(
       accountId: 'ABCDEF',
     });
     const [poolLauncher, provider] = initLauncher();
-    const gasPrice = await provider.getGasPrice();
     const tx = await poolLauncher.populateTransaction.createNewPool(
       poolName,
       usdc(entryBarrier),
       tokenName,
       tokenSymbol,
       usdc(value),
-      { gasPrice: gasPrice.mul(5).div(2) }
+      { gasPrice: await gasPrice() }
     );
 
     smartContractTransaction(tx, {
@@ -95,9 +95,8 @@ export function joinPool(poolAddress, value) {
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.joinPool(usdc(value), {
-      gasPrice: gasPrice.mul(5).div(2),
+      gasPrice: await gasPrice(),
     });
 
     smartContractTransaction(tx, {
@@ -153,9 +152,8 @@ export function fundPool(poolAddress, amount) {
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
-    const gasPrice = await provider.getGasPrice();
     const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {
-      gasPrice: gasPrice.mul(5).div(2),
+      gasPrice: await gasPrice(),
     });
 
     smartContractTransaction(tx, {
