@@ -71,7 +71,6 @@ export default function SellNftDialog(props) {
             placeholder="0x4109DE064763d38D757a68265df9F84A09988b30"
           />
           <TextField
-            autoFocus
             type="number"
             value={tokenId}
             onChange={(e) => setTokenId(e.target.value)}
@@ -80,11 +79,10 @@ export default function SellNftDialog(props) {
             inputProps={{ min: "0" }}
           />
           <TextField
-            autoFocus
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            label="Buy Amount"
+            label="Sell Amount"
             placeholder="1"
             inputProps={{ min: "0" }}
             InputProps={{
