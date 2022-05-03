@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
-import { AppBar, Link, Stack, Toolbar } from "@mui/material";
-import Image from "next/image";
-import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
-import { usdcBalanceOf } from "/services/contract/token";
-import { currency } from "/services/formatter";
+import { useEffect, useState, useRef } from 'react';
+import { AppBar, Link, Menu, MenuItem, Stack, Toolbar } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Image from 'next/image';
+import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
+import { usdcBalanceOf } from '/services/contract/token';
+import { currency } from '/services/formatter';
 
 export default function Navbar(props) {
   const { user } = props;
   const [usdcBalance, setUsdcBalance] = useState(true);
+  const [poolListOpen, setPoolListOpen] = useState(null);
+
+  const handleMenuClose = () => {
+    setPoolListOpen(null);
+  };
 
   useEffect(() => {
     if (!user.address) return;
@@ -36,6 +42,32 @@ export default function Navbar(props) {
               </div>
             </a>
           </Link>
+          {user.loggedIn && (
+            <>
+              <button onClick={(e) => setPoolListOpen(e.currentTarget)}>
+                My Pools
+                <ArrowDropDownIcon />
+              </button>
+              <Menu
+                open={Boolean(poolListOpen)}
+                onClose={handleMenuClose}
+                anchorEl={poolListOpen}
+              >
+                {user.pools.length > 0 &&
+                  user.pools.map((pool, i) => {
+                    return (
+                      <Link
+                        href={`/pools/${pool.address}?name=${pool.name}`}
+                        sx={{ textDecoration: 'none', color: 'inherit' }}
+                        passHref
+                      >
+                        <MenuItem key={`user-pool-${i}`}>{pool.name}</MenuItem>
+                      </Link>
+                    );
+                  })}
+              </Menu>
+            </>
+          )}
         </Stack>
         {user.loggedIn && (
           <>
