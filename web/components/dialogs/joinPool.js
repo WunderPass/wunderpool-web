@@ -152,13 +152,7 @@ export default function JoinPoolDialog(props) {
         </DialogActions>
       )}
       {loading && (
-        <iframe
-          id="fr"
-          name="transactionFrame"
-          width="600"
-          height="600"
-          allow=""
-        >
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
           {' '}
         </iframe>
       )}
