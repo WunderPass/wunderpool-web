@@ -167,9 +167,9 @@ export default function CustomForm(props) {
             {signing && (
               <Dialog open={open} onClose={dialogClose}>
                 <iframe
+                  className="w-auto"
                   id="fr"
                   name="transactionFrame"
-                  width="600"
                   height="600"
                 ></iframe>
                 <Stack spacing={2} sx={{ textAlign: 'center' }}>

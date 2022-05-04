@@ -143,14 +143,11 @@ export default function ApeForm(props) {
             </button>
             <Dialog open={open} onClose={handleClose}>
               <iframe
+                className="w-auto"
                 id="fr"
                 name="transactionFrame"
-                width="600"
                 height="600"
-                allow=""
-              >
-                {' '}
-              </iframe>
+              ></iframe>
               <Stack spacing={2} sx={{ textAlign: 'center' }}>
                 <LinearProgress />
               </Stack>
