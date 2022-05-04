@@ -109,9 +109,6 @@ export default function ApeForm(props) {
               direction="row"
               sx={{ height: '50px' }}
             >
-              <img height="100%" src={tokenImage || '/favicon.ico'} />
-              <Typography variant="h4">
-                {tokenName} ({tokenSymbol})
               <img width="50px" src={tokenImage || '/favicon.ico'} />
               <Typography variant="h4" flexGrow={1}>
                 {tokenName}
