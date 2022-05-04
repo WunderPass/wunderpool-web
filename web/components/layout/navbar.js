@@ -65,6 +65,9 @@ export default function Navbar(props) {
                       </Link>
                     );
                   })}
+                {user.pools.length == 0 && (
+                  <MenuItem key="noPools">- no pools -</MenuItem>
+                )}
               </Menu>
             </>
           )}
