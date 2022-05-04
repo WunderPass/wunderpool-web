@@ -1,5 +1,6 @@
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
+import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -104,47 +105,6 @@ export default function Pools(props) {
             content="initial-scale=1.0, width=device-width"
           />
         </Head>
-        <AppBar
-          className="bg-gradient-to-r from-wunder-light-blue to-wunder-blue"
-          position="static"
-        >
-          <Toolbar>
-            <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
-              <Link href="/">
-                <a>
-                  <div className="flex flex-row">
-                    <div className="pt-0.5 w-44 pr-3">
-                      <Image
-                        src={WunderPoolIcon}
-                        alt="WunderPoolIcon"
-                        layout="responsive"
-                      />
-                    </div>
-                  </div>
-                </a>
-              </Link>
-            </Stack>
-
-            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 sm:py-1.5 py-3.5">
-              <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
-                <div
-                  className="text-center justify-center items-center align-center " //TODO GET BALANCE HERE
-                >
-                  <p className="ml-1">00.00</p>
-                  {user?.balance}
-                </div>
-                <div className="text-center mr-0.5">&nbsp;USDC</div>
-              </div>
-            </div>
-            <button
-              className="btn ml-2 my-2 sm:py-2.5 py-3.5 hover:bg-[#ff0000] text-sm"
-              onClick={user?.logOut}
-              variant="contained"
-            >
-              Log out
-            </button>
-          </Toolbar>
-        </AppBar>
         <Container>
           <Stack spacing={3} paddingTop={2}>
             <Stack

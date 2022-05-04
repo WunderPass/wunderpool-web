@@ -109,9 +109,6 @@ export default function ApeForm(props) {
               direction="row"
               sx={{ height: '50px' }}
             >
-              <img height="100%" src={tokenImage || '/favicon.ico'} />
-              <Typography variant="h4">
-                {tokenName} ({tokenSymbol})
               <img width="50px" src={tokenImage || '/favicon.ico'} />
               <Typography variant="h4" flexGrow={1}>
                 {tokenName}
@@ -145,13 +142,7 @@ export default function ApeForm(props) {
               Submitting Proposal...
             </Button>
             <Dialog open={open} onClose={handleClose}>
-              <iframe
-                id="fr"
-                name="transactionFrame"
-                width="600"
-                height="600"
-                allow=""
-              >
+              <iframe id="fr" name="transactionFrame" width="600" height="600">
                 {' '}
               </iframe>
               <Stack spacing={2} sx={{ textAlign: 'center' }}>

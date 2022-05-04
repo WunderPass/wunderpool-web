@@ -1,8 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from 'react';
+import { Dialog, LinearProgress, Stack } from '@mui/material';
 
 export default function LoginWithWunderPass(props) {
-  const { dev, name, image, intent = [], onSuccess } = props;
+  const { name, image, intent = [], onSuccess } = props;
   const [popup, setPopup] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleClose = () => {
+    setLoading(false);
+  };
+
+  const newHandleClick = (e, tx, usdc = {}, network = 'polygon') => {
+    e.preventDefault();
+    setLoading(true);
+    return new Promise(async (resolve, reject) => {
+      try {
+        const authPopup =
+          popup ||
+          window.open(
+            encodeURI(
+              `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
+            ),
+            'loginFrame'
+          );
+
+        const requestInterval = setInterval(() => {
+          authPopup.postMessage(
+            { accountId: 'ABCDE', intent: intent },
+            process.env.WUNDERPASS_URL
+          );
+        }, 1000);
+
+        window.addEventListener('message', (event) => {
+          if (event.origin == process.env.WUNDERPASS_URL) {
+            clearInterval(requestInterval);
+
+            if (event.data && typeof event.data == 'object') {
+              event.source.window.close();
+              resolve(event.data.response);
+            }
+          }
+        });
+      } catch (error) {
+        reject(error?.error?.error?.error?.message || error);
+      }
+    });
+  };
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -12,19 +55,18 @@ export default function LoginWithWunderPass(props) {
         encodeURI(
           `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
         ),
-        "WunderPassAuth",
-        "popup"
+        'loginFrame'
       );
     setPopup(authPopup);
 
     const requestInterval = setInterval(() => {
       authPopup.postMessage(
-        { accountId: "ABCDE", intent: intent },
+        { accountId: 'ABCDE', intent: intent },
         process.env.WUNDERPASS_URL
       );
     }, 1000);
 
-    window.addEventListener("message", (event) => {
+    window.addEventListener('message', (event) => {
       if (event.origin == process.env.WUNDERPASS_URL) {
         clearInterval(requestInterval);
 
@@ -57,7 +99,7 @@ export default function LoginWithWunderPass(props) {
 
   return (
     <>
-      <a href={process.env.WUNDERPASS_URL} onClick={handleClick}>
+      <a onClick={newHandleClick}>
         <div className="flex text-center items-center justify-center bg-wunder-blue hover:bg-wunder-light-blue rounded-md lg:px-2 py-2 font-bold text-md">
           <svg
             className="fill-white"
@@ -75,30 +117,14 @@ export default function LoginWithWunderPass(props) {
           <p className="pl-2 lg:pl-4 text-white">Login with WunderPass</p>
         </div>
       </a>
-      {popup && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            margin: 0,
-            padding: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "#000C",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <a href="#" onClick={goBack}>
-            Go Back
-          </a>
-          <a href="#" onClick={cancelAuth}>
-            Cancel
-          </a>
-        </div>
+
+      {loading && (
+        <Dialog open={open} onClose={handleClose}>
+          <iframe id="fr" name="loginFrame" width="600" height="600"></iframe>
+          <Stack spacing={2} sx={{ textAlign: 'center' }}>
+            <LinearProgress />
+          </Stack>
+        </Dialog>
       )}
     </>
   );
