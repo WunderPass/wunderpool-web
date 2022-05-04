@@ -21,7 +21,7 @@ export default function Notification(props) {
       open={open}
       autoHideDuration={9000}
       onClose={handleClose}
-      sx={{ bottom: { xs: 90, sm: 90, md: 30 } }}
+      sx={{ bottom: 30 }}
     >
       <Alert
         onClose={handleClose}
