@@ -6,10 +6,10 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { usdc } from "../../services/formatter";
-import { createNftSellProposal } from "/services/contract/proposals";
+} from '@mui/material';
+import { useState } from 'react';
+import { usdc } from '../../services/formatter';
+import { createNftSellProposal } from '/services/contract/proposals';
 
 export default function SellNftDialog(props) {
   const {
@@ -21,13 +21,13 @@ export default function SellNftDialog(props) {
     handleSuccess,
     handleError,
   } = props;
-  const [amount, setAmount] = useState("");
-  const [address, setAddress] = useState("");
-  const [tokenId, setTokenId] = useState("");
+  const [amount, setAmount] = useState('');
+  const [address, setAddress] = useState('');
+  const [tokenId, setTokenId] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    setAmount("");
+    setAmount('');
     setOpen(false);
   };
 
@@ -76,7 +76,7 @@ export default function SellNftDialog(props) {
             onChange={(e) => setTokenId(e.target.value)}
             label="TokenId"
             placeholder="1"
-            inputProps={{ min: "0" }}
+            inputProps={{ min: '0' }}
           />
           <TextField
             type="number"
@@ -84,14 +84,19 @@ export default function SellNftDialog(props) {
             onChange={(e) => setAmount(e.target.value)}
             label="Sell Amount"
             placeholder="1"
-            inputProps={{ min: "0" }}
+            inputProps={{ min: '0' }}
             InputProps={{
               endAdornment: <InputAdornment position="end">USD</InputAdornment>,
             }}
           />
-          <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-            {loading ? "Wating..." : "Make an Offer"}
-          </Button>
+          <button
+            className="btn-default"
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? 'Wating...' : 'Make an Offer'}
+          </button>
         </Stack>
       </DialogContent>
     </Dialog>

@@ -152,14 +152,18 @@ export default function CustomForm(props) {
             />
           );
         })}
-        <Button startIcon={<AddIcon />} onClick={addTransaction}>
+        <button
+          className="btn-default"
+          startIcon={<AddIcon />}
+          onClick={addTransaction}
+        >
           Add Transaction
-        </Button>
+        </button>
         {loading ? (
           <>
-            <Button disabled variant="contained">
+            <button className="btn-default" disabled variant="contained">
               Submitting Proposal...
-            </Button>
+            </button>
             {signing && (
               <Dialog open={open} onClose={dialogClose}>
                 <iframe
@@ -176,14 +180,15 @@ export default function CustomForm(props) {
           </>
         ) : (
           <>
-            <Button
+            <button
+              className="btn-default"
               type="submit"
               disabled={false}
               onClick={handleSubmit}
               variant="contained"
             >
               Submit Proposal
-            </Button>
+            </button>
           </>
         )}
       </Stack>

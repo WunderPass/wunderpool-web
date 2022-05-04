@@ -163,7 +163,9 @@ export default function Pool(props) {
         <Grid container alignItems="center">
           <Grid item xs={12} sm={2}>
             <Link href={`/pools`} passHref>
-              <Button startIcon={<ArrowBackIosIcon />}>All Pools</Button>
+              <Button className="btn-default" startIcon={<ArrowBackIosIcon />}>
+                All Pools
+              </Button>
             </Link>
           </Grid>
           <Grid item xs={12} sm={8} textAlign="center">
@@ -197,7 +199,8 @@ export default function Pool(props) {
           <>
             <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
               <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
-                <Button
+                <button
+                  className="btn-default"
                   onClick={() => {
                     setApe(true);
                   }}
@@ -206,8 +209,9 @@ export default function Pool(props) {
                   sx={{ width: '100%', minHeight: 150, aspectRatio: '2/1' }}
                 >
                   So richtig Reinapen
-                </Button>
-                <Button
+                </button>
+                <button
+                  className="btn-default"
                   onClick={() => {
                     setCustomProposal(true);
                   }}
@@ -215,7 +219,7 @@ export default function Pool(props) {
                   sx={{ width: '100%', minHeight: 150, aspectRatio: '2/1' }}
                 >
                   Eigenes Proposal
-                </Button>
+                </button>
               </Stack>
             </Collapse>
             <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
@@ -289,9 +293,13 @@ export default function Pool(props) {
                   : '...'}{' '}
                 USD
               </Typography>
-              <Button variant="contained" onClick={() => setJoinPool(true)}>
+              <button
+                className="btn-default "
+                variant="contained"
+                onClick={() => setJoinPool(true)}
+              >
                 Join
-              </Button>
+              </button>
             </Stack>
           </Paper>
         ) : (

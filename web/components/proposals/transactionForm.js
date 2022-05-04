@@ -7,12 +7,12 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import ParamInput from "./paramsInput";
-import { fetchContractAbi } from "/services/contract/abi";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import ParamInput from './paramsInput';
+import { fetchContractAbi } from '/services/contract/abi';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 export function TransactionForm(props) {
   const {
@@ -30,38 +30,38 @@ export function TransactionForm(props) {
     setAction(val);
     const params = [
       val.inputs.map((input) => input.type),
-      val.inputs.map((input) => ""),
+      val.inputs.map((input) => ''),
     ];
-    updateTransaction("params", params);
-    updateTransaction("action", val?.name);
+    updateTransaction('params', params);
+    updateTransaction('action', val?.name);
   };
 
   const handleParamChange = (index, value) => {
     transaction.params[1][index] = value;
-    updateTransaction("params", transaction.params);
+    updateTransaction('params', transaction.params);
   };
 
   const handleTypeChange = (index, value) => {
     transaction.params[0][index] = value;
     if (transaction.action.match(/\(.*\)/)) {
       updateTransaction(
-        "action",
+        'action',
         transaction.action.replace(/\((.*)\)/, (_, grp) => `(${grp},${value})`)
       );
     } else {
-      updateTransaction("action", `${transaction.action}(${value})`);
+      updateTransaction('action', `${transaction.action}(${value})`);
     }
-    updateTransaction("params", transaction.params);
+    updateTransaction('params', transaction.params);
   };
 
   const addParam = () => {
-    transaction.params[0].push("");
-    transaction.params[1].push("");
-    updateTransaction("params", transaction.params);
+    transaction.params[0].push('');
+    transaction.params[1].push('');
+    updateTransaction('params', transaction.params);
   };
 
   const setCustomAbi = (type) => {
-    if (type == "custom") {
+    if (type == 'custom') {
       setFoundAbi(true);
       setContractAbi([]);
     } else {
@@ -69,10 +69,10 @@ export function TransactionForm(props) {
         res.json().then((json) => {
           const formattedAbi = json.map((elem) => ({
             name: `${elem.name}(${
-              elem.inputs ? elem.inputs.map((input) => input.type) : ""
+              elem.inputs ? elem.inputs.map((input) => input.type) : ''
             })`,
             inputs: elem.inputs,
-            payable: elem.stateMutability == "payable",
+            payable: elem.stateMutability == 'payable',
           }));
           handleActionChange(formattedAbi[0]);
           setContractAbi(formattedAbi);
@@ -88,15 +88,15 @@ export function TransactionForm(props) {
         .then((res) => {
           const filteredAbi = res.filter(
             (obj) =>
-              obj.type == "function" &&
-              ["payable", "nonpayable"].includes(obj.stateMutability)
+              obj.type == 'function' &&
+              ['payable', 'nonpayable'].includes(obj.stateMutability)
           );
           const formattedAbi = filteredAbi.map((elem) => ({
             name: `${elem.name}(${
-              elem.inputs ? elem.inputs.map((input) => input.type) : ""
+              elem.inputs ? elem.inputs.map((input) => input.type) : ''
             })`,
             inputs: elem.inputs,
-            payable: elem.stateMutability == "payable",
+            payable: elem.stateMutability == 'payable',
           }));
           handleActionChange(formattedAbi[0]);
           setContractAbi(formattedAbi);
@@ -124,7 +124,7 @@ export function TransactionForm(props) {
         <TextField
           label="Contract Address"
           value={transaction.address}
-          onChange={(e) => updateTransaction("address", e.target.value)}
+          onChange={(e) => updateTransaction('address', e.target.value)}
           placeholder="0x845812905256FFA8B16b355Bc11A3f3e63c55aB8"
         />
         {foundAbi === true &&
@@ -162,7 +162,7 @@ export function TransactionForm(props) {
                 <TextField
                   type="number"
                   value={transaction.value}
-                  onChange={(e) => updateTransaction("value", e.target.value)}
+                  onChange={(e) => updateTransaction('value', e.target.value)}
                   label="Value"
                   placeholder="1"
                   fullWidth
@@ -179,7 +179,7 @@ export function TransactionForm(props) {
               <TextField
                 label="Function"
                 value={transaction.action}
-                onChange={(e) => updateTransaction("action", e.target.value)}
+                onChange={(e) => updateTransaction('action', e.target.value)}
                 placeholder="mint"
               />
               {transaction.params[0].length > 0 && (
@@ -199,13 +199,17 @@ export function TransactionForm(props) {
                   />
                 );
               })}
-              <Button startIcon={<AddIcon />} onClick={addParam}>
+              <button
+                className="btn-default"
+                startIcon={<AddIcon />}
+                onClick={addParam}
+              >
                 Add Function Param
-              </Button>
+              </button>
               <TextField
                 type="number"
                 value={transaction.value}
-                onChange={(e) => updateTransaction("value", e.target.value)}
+                onChange={(e) => updateTransaction('value', e.target.value)}
                 label="Value"
                 placeholder="1"
                 fullWidth
@@ -223,21 +227,27 @@ export function TransactionForm(props) {
               ABI not found. Choose an Option:
             </Typography>
             <Stack direction="row" justifyContent="space-evenly">
-              <Button onClick={() => setCustomAbi("erc20")} variant="contained">
+              <button
+                className="btn-default"
+                onClick={() => setCustomAbi('erc20')}
+                variant="contained"
+              >
                 ERC20 (Token)
-              </Button>
-              <Button
-                onClick={() => setCustomAbi("erc721")}
+              </button>
+              <button
+                className="btn-default"
+                onClick={() => setCustomAbi('erc721')}
                 variant="contained"
               >
                 ERC721 (NFT)
-              </Button>
-              <Button
-                onClick={() => setCustomAbi("custom")}
+              </button>
+              <button
+                className="btn-default"
+                onClick={() => setCustomAbi('custom')}
                 variant="contained"
               >
                 Custom
-              </Button>
+              </button>
             </Stack>
           </>
         )}

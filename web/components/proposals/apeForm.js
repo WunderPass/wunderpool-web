@@ -138,9 +138,9 @@ export default function ApeForm(props) {
         </Collapse>
         {loading ? (
           <>
-            <Button disabled variant="contained">
+            <button className="btn-default" disabled variant="contained">
               Submitting Proposal...
-            </Button>
+            </button>
             <Dialog open={open} onClose={handleClose}>
               <iframe
                 id="fr"
@@ -157,14 +157,15 @@ export default function ApeForm(props) {
             </Dialog>
           </>
         ) : (
-          <Button
+          <button
+            className="btn-default"
             type="submit"
             disabled={!tokenName || !tokenSymbol || value == 0}
             onClick={handleApe}
             variant="contained"
           >
             Ape Empfehlung abgeben
-          </Button>
+          </button>
         )}
       </Stack>
     </form>

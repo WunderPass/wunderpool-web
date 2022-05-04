@@ -102,7 +102,12 @@ export default function SwapTokenDialog(props) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button onClick={() => setAmount(balance)}>MAX</Button>
+                  <button
+                    className="btn-default"
+                    onClick={() => setAmount(balance)}
+                  >
+                    MAX
+                  </button>
                 </InputAdornment>
               ),
             }}
@@ -136,8 +141,11 @@ export default function SwapTokenDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
+          <button className="btn-red btn-default" onClick={handleClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-default"
             onClick={handleSubmit}
             color="success"
             disabled={
@@ -145,7 +153,7 @@ export default function SwapTokenDialog(props) {
             }
           >
             Swap
-          </Button>
+          </button>
         </DialogActions>
       )}
       {loading && (

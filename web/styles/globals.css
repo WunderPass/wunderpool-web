@@ -32,3 +32,15 @@ a {
 .shadow-custom {
   box-shadow: 0 15px 50px 15px rgba(0, 0, 0, 0.25);
 }
+
+.btn-default {
+  @apply cursor-pointer rounded-md py-1.5 font-bold text-sm px-3 text-black bg-gray-100 hover:bg-gray-200 border-2 border-gray-400 uppercase shadow;
+}
+
+.btn-red {
+  @apply bg-[#ffbacd] hover:bg-[#ff6163];
+}
+
+.btn-green {
+  @apply bg-[#d1ffbd] hover:bg-[#0add08];
+}

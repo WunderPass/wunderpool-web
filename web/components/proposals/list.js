@@ -76,13 +76,14 @@ export default function ProposalList(props) {
       <Stack sx={{ textAlign: 'center' }}>
         <Typography variant="h5">There are no Proposals</Typography>
         <Typography variant="subtitle1">Create one now!</Typography>
-        <Button
+        <button
+          className="btn-default"
           onClick={() => setApe(true)}
           variant="contained"
           color="success"
         >
           New
-        </Button>
+        </button>
       </Stack>
     </Paper>
   );

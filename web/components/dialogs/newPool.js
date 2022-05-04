@@ -13,26 +13,26 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { createPool } from "/services/contract/pools";
+} from '@mui/material';
+import { useState } from 'react';
+import { createPool } from '/services/contract/pools';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, fetchPools, handleSuccess, handleError, user } = props;
-  const [poolName, setPoolName] = useState("");
-  const [tokenName, setTokenName] = useState("");
-  const [tokenSymbol, setTokenSymbol] = useState("");
-  const [entryBarrier, setEntryBarrier] = useState("");
-  const [value, setValue] = useState("");
+  const [poolName, setPoolName] = useState('');
+  const [tokenName, setTokenName] = useState('');
+  const [tokenSymbol, setTokenSymbol] = useState('');
+  const [entryBarrier, setEntryBarrier] = useState('');
+  const [value, setValue] = useState('');
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const handleClose = () => {
-    setPoolName("");
-    setTokenName("");
-    setTokenSymbol("");
-    setEntryBarrier("");
-    setValue("");
+    setPoolName('');
+    setTokenName('');
+    setTokenSymbol('');
+    setEntryBarrier('');
+    setValue('');
     setWaitingForPool(false);
     setOpen(false);
     setShowMoreOptions(false);
@@ -44,7 +44,7 @@ export default function NewPoolDialog(props) {
       poolName,
       entryBarrier || value,
       tokenName || `${poolName} Token`,
-      tokenSymbol || "PGT",
+      tokenSymbol || 'PGT',
       value
     )
       .then((res) => {
@@ -86,7 +86,7 @@ export default function NewPoolDialog(props) {
               endAdornment: <InputAdornment position="end">USD</InputAdornment>,
             }}
           />
-          <Collapse in={!showMoreOptions} sx={{ marginTop: "0px !important" }}>
+          <Collapse in={!showMoreOptions} sx={{ marginTop: '0px !important' }}>
             <Button
               onClick={() => setShowMoreOptions(true)}
               sx={{ marginTop: 1 }}
@@ -135,20 +135,23 @@ export default function NewPoolDialog(props) {
         </Stack>
       </DialogContent>
       {waitingForPool ? (
-        <Stack spacing={2} sx={{ textAlign: "center" }}>
+        <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Creating your Pool...</Typography>
           <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
+          <button className="btn-default btn-red" onClick={handleClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-default btn-green"
             onClick={handleSubmit}
             color="success"
             disabled={poolName.length < 3}
           >
             Create
-          </Button>
+          </button>
         </DialogActions>
       )}
     </Dialog>

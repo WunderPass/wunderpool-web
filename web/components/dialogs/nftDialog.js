@@ -6,10 +6,10 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { usdc } from "../../services/formatter";
-import { createNftBuyProposal } from "/services/contract/proposals";
+} from '@mui/material';
+import { useState } from 'react';
+import { usdc } from '../../services/formatter';
+import { createNftBuyProposal } from '/services/contract/proposals';
 
 export default function NftDialog(props) {
   const {
@@ -26,11 +26,11 @@ export default function NftDialog(props) {
     handleSuccess,
     handleError,
   } = props;
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    setAmount("");
+    setAmount('');
     setOpen(false);
   };
 
@@ -67,7 +67,7 @@ export default function NftDialog(props) {
             spacing={2}
             alignItems="center"
             justifyContent="start"
-            direction={{ xs: "column", sm: "row" }}
+            direction={{ xs: 'column', sm: 'row' }}
           >
             <img
               src={imageUrl}
@@ -84,7 +84,7 @@ export default function NftDialog(props) {
           <Typography variant="subtitle1" textAlign="center">
             Make an Offer to buy the NFT from the Pool
           </Typography>
-          <Stack spacing={1} direction={{ xs: "column", sm: "row" }}>
+          <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }}>
             <TextField
               autoFocus
               type="number"
@@ -92,7 +92,7 @@ export default function NftDialog(props) {
               onChange={(e) => setAmount(e.target.value)}
               label="Buy Amount"
               placeholder="1"
-              inputProps={{ min: "0" }}
+              inputProps={{ min: '0' }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">USD</InputAdornment>
@@ -100,13 +100,14 @@ export default function NftDialog(props) {
               }}
               sx={{ flexGrow: 1 }}
             />
-            <Button
+            <button
+              className="btn-default"
               variant="contained"
               onClick={handleSubmit}
               disabled={loading}
             >
-              {loading ? "Wating..." : "Make an Offer"}
-            </Button>
+              {loading ? 'Wating...' : 'Make an Offer'}
+            </button>
           </Stack>
         </Stack>
       </DialogContent>

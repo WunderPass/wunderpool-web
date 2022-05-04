@@ -73,14 +73,17 @@ export default function FundPoolDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
+          <button className="btn-default btn-red" onClick={handleClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-default btn-green"
             onClick={handleSubmit}
             color="success"
             disabled={Number(amount) <= 0}
           >
             Send
-          </Button>
+          </button>
         </DialogActions>
       )}
       {loading && (

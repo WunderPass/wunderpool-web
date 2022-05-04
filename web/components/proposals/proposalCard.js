@@ -9,14 +9,14 @@ import {
   Stack,
   Tooltip,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import LoupeIcon from "@mui/icons-material/Loupe";
-import { fetchTransactionData, execute } from "/services/contract/proposals";
-import { ethers } from "ethers";
-import { decodeParams } from "/services/formatter";
-import VotingBar from "/components/proposals/votingBar";
-import VotingButtons from "./votingButtons";
+} from '@mui/material';
+import { useState } from 'react';
+import LoupeIcon from '@mui/icons-material/Loupe';
+import { fetchTransactionData, execute } from '/services/contract/proposals';
+import { ethers } from 'ethers';
+import { decodeParams } from '/services/formatter';
+import VotingBar from '/components/proposals/votingBar';
+import VotingButtons from './votingButtons';
 
 export default function ProposalCard(props) {
   const {
@@ -70,7 +70,7 @@ export default function ProposalCard(props) {
   };
 
   return (
-    <Paper elevation={1} sx={{ overflowY: "hidden" }}>
+    <Paper elevation={1} sx={{ overflowY: 'hidden' }}>
       <Box p={2}>
         <Stack
           direction="row"
@@ -221,9 +221,13 @@ export default function ProposalCard(props) {
               </>
             )}
             {proposal.executed == false && (
-              <Button disabled={waitingForExec} onClick={executeProposal}>
+              <button
+                className="btn-default"
+                disabled={waitingForExec}
+                onClick={executeProposal}
+              >
                 Execute
-              </Button>
+              </button>
             )}
           </Stack>
         </Collapse>

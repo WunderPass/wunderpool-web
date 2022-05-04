@@ -46,9 +46,14 @@ export default function NftList(props) {
             Then you can sell it to the Pool. If all members agree that you made
             them a fair offer, they might agree to buy your NFT
           </Typography>
-          <Button fullWidth variant="contained" onClick={() => setOpen(true)}>
+          <button
+            className="btn-default"
+            fullWidth
+            variant="contained"
+            onClick={() => setOpen(true)}
+          >
             Sell Your NFT
-          </Button>
+          </button>
         </Stack>
       </Paper>
       <SellNftDialog open={open} setOpen={setOpen} {...props} />
