@@ -168,7 +168,7 @@ export default function Pools(props) {
               </div>
               <div className="w-full pl-1 md:pl-3 ">
                 <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
-                  All WunderPools
+                  Public WunderPools
                 </Typography>
                 {loadingAll ? (
                   <Skeleton
