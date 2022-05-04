@@ -66,9 +66,9 @@ export default function VotingButtons(props) {
         {signing && (
           <Dialog open={open} onClose={handleClose}>
             <iframe
+              className="w-auto"
               id="fr"
               name="transactionFrame"
-              width="600"
               height="600"
             ></iframe>
             <Stack spacing={2} sx={{ textAlign: 'center' }}>
@@ -76,7 +76,7 @@ export default function VotingButtons(props) {
             </Stack>
           </Dialog>
         )}
-        <CircularProgress />;
+        <CircularProgress />
       </>
     );
   }

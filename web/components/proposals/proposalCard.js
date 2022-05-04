@@ -1,4 +1,6 @@
 import {
+  Dialog,
+  LinearProgress,
   Box,
   Button,
   Collapse,
@@ -228,6 +230,19 @@ export default function ProposalCard(props) {
               >
                 Execute
               </button>
+            )}
+            {proposal.execute && (
+              <Dialog open={open} onClose={handleClose}>
+                <iframe
+                  className="w-auto"
+                  id="fr"
+                  name="transactionFrame"
+                  height="600"
+                ></iframe>
+                <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                  <LinearProgress />
+                </Stack>
+              </Dialog>
             )}
           </Stack>
         </Collapse>

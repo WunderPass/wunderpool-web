@@ -87,9 +87,12 @@ export default function FundPoolDialog(props) {
         </DialogActions>
       )}
       {loading && (
-        <iframe id="fr" name="transactionFrame" width="600" height="600">
-          {' '}
-        </iframe>
+        <iframe
+          className="w-auto"
+          id="fr"
+          name="transactionFrame"
+          height="600"
+        ></iframe>
       )}
     </Dialog>
   );
