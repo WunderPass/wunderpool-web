@@ -22,10 +22,12 @@ export default function RemoveMemberDialog(props) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
+    setLoading(false);
     setOpen(false);
   };
 
   const handleRemove = (address) => {
+    setLoading(true);
     handleError('Deprecated');
   };
 
@@ -67,6 +69,11 @@ export default function RemoveMemberDialog(props) {
             Cancel
           </button>
         </DialogActions>
+      )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
       )}
     </Dialog>
   );

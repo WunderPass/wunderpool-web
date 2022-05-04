@@ -80,6 +80,11 @@ export default function DestroyPoolDialog(props) {
           </button>
         </DialogActions>
       )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
+      )}
     </Dialog>
   );
 }

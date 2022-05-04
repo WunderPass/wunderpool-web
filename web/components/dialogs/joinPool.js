@@ -33,7 +33,6 @@ export default function JoinPoolDialog(props) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    setAmount('');
     setOpen(false);
     setLoading(false);
   };

@@ -26,6 +26,7 @@ export default function NewPoolDialog(props) {
   const [value, setValue] = useState('');
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setPoolName('');
@@ -36,9 +37,11 @@ export default function NewPoolDialog(props) {
     setWaitingForPool(false);
     setOpen(false);
     setShowMoreOptions(false);
+    setLoading(false);
   };
 
   const handleSubmit = () => {
+    setLoading(true);
     setWaitingForPool(true);
     createPool(
       poolName,
@@ -153,6 +156,11 @@ export default function NewPoolDialog(props) {
             Create
           </button>
         </DialogActions>
+      )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
       )}
     </Dialog>
   );

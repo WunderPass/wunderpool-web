@@ -21,6 +21,7 @@ export default function AddMemberDialog(props) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
+    setLoading(false);
     setAddress('');
     setIsMember(true);
     setIsAdmin(false);
@@ -28,6 +29,7 @@ export default function AddMemberDialog(props) {
   };
 
   const handleSubmit = () => {
+    setLoading(true);
     handleError('Deprecated');
   };
 
@@ -88,6 +90,11 @@ export default function AddMemberDialog(props) {
             Add
           </button>
         </DialogActions>
+      )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
       )}
     </Dialog>
   );
