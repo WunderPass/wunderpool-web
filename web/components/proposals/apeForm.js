@@ -1,4 +1,5 @@
 import {
+  Dialog,
   Button,
   Collapse,
   FormControl,
@@ -8,17 +9,18 @@ import {
   OutlinedInput,
   Stack,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import { createApeSuggestion } from "/services/contract/proposals";
-import TokenInput from "../tokens/input";
-import axios from "axios";
-import { currency, round } from "../../services/formatter";
+  LinearProgress,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { createApeSuggestion } from '/services/contract/proposals';
+import TokenInput from '../tokens/input';
+import axios from 'axios';
+import { currency, round } from '../../services/formatter';
 
 export default function ApeForm(props) {
   const { setApe, address, fetchProposals, handleSuccess, handleError } = props;
-  const [tokenAddress, setTokenAddress] = useState("");
+  const [tokenAddress, setTokenAddress] = useState('');
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
   const [tokenImage, setTokenImage] = useState(null);
@@ -30,7 +32,7 @@ export default function ApeForm(props) {
   const receivedTokens = value / (tokenPrice / 100);
 
   const handleClose = () => {
-    setTokenAddress("");
+    setTokenAddress('');
     setTokenName(null);
     setTokenSymbol(null);
     setTokenImage(null);
@@ -105,9 +107,9 @@ export default function ApeForm(props) {
               spacing={2}
               alignItems="center"
               direction="row"
-              sx={{ height: "50px" }}
+              sx={{ height: '50px' }}
             >
-              <img height="100%" src={tokenImage || "/favicon.ico"} />
+              <img width="50px" src={tokenImage || '/favicon.ico'} />
               <Typography variant="h4" flexGrow={1}>
                 {tokenName}
               </Typography>
@@ -128,25 +130,42 @@ export default function ApeForm(props) {
                 }
               />
               <Typography variant="subtitle1" textAlign="right">
-                {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{" "}
+                {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
                 {tokenSymbol}
               </Typography>
             </FormControl>
           </Stack>
         </Collapse>
         {loading ? (
-          <Button disabled variant="contained">
-            Submitting Proposal...
-          </Button>
+          <>
+            <button className="btn-default" disabled variant="contained">
+              Submitting Proposal...
+            </button>
+            <Dialog open={open} onClose={handleClose}>
+              <iframe
+                id="fr"
+                name="transactionFrame"
+                width="600"
+                height="600"
+                allow=""
+              >
+                {' '}
+              </iframe>
+              <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                <LinearProgress />
+              </Stack>
+            </Dialog>
+          </>
         ) : (
-          <Button
+          <button
+            className="btn-default"
             type="submit"
             disabled={!tokenName || !tokenSymbol || value == 0}
             onClick={handleApe}
             variant="contained"
           >
             Ape Empfehlung abgeben
-          </Button>
+          </button>
         )}
       </Stack>
     </form>

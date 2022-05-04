@@ -12,11 +12,11 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { fetchERC20Data } from "/services/contract/token";
-import { createSwapSuggestion } from "/services/contract/proposals";
-import TokenInput from "../tokens/input";
+} from '@mui/material';
+import { useState } from 'react';
+import { fetchERC20Data } from '/services/contract/token';
+import { createSwapSuggestion } from '/services/contract/proposals';
+import TokenInput from '../tokens/input';
 
 export default function SwapTokenDialog(props) {
   const {
@@ -31,18 +31,18 @@ export default function SwapTokenDialog(props) {
     handleError,
     handleSuccess,
   } = props;
-  const [amount, setAmount] = useState("");
-  const [receiveName, setReceiveName] = useState("");
-  const [receiveSymbol, setReceiveSymbol] = useState("");
-  const [receiveAddress, setReceiveAddress] = useState("");
+  const [amount, setAmount] = useState('');
+  const [receiveName, setReceiveName] = useState('');
+  const [receiveSymbol, setReceiveSymbol] = useState('');
+  const [receiveAddress, setReceiveAddress] = useState('');
   const [receiveImage, setReceiveImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    setAmount("");
-    setReceiveName("");
-    setReceiveSymbol("");
-    setReceiveAddress("");
+    setAmount('');
+    setReceiveName('');
+    setReceiveSymbol('');
+    setReceiveAddress('');
     setLoading(false);
     setOpen(false);
   };
@@ -86,7 +86,7 @@ export default function SwapTokenDialog(props) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="md">
       <DialogTitle>Swap {name}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
@@ -102,7 +102,12 @@ export default function SwapTokenDialog(props) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button onClick={() => setAmount(balance)}>MAX</Button>
+                  <button
+                    className="btn-default"
+                    onClick={() => setAmount(balance)}
+                  >
+                    MAX
+                  </button>
                 </InputAdornment>
               ),
             }}
@@ -119,9 +124,9 @@ export default function SwapTokenDialog(props) {
               spacing={2}
               alignItems="center"
               direction="row"
-              sx={{ height: "50px" }}
+              sx={{ height: '50px' }}
             >
-              <img height="100%" src={receiveImage || "/favicon.ico"} />
+              <img height="100%" src={receiveImage || '/favicon.ico'} />
               <Typography variant="h6">
                 {receiveName} ({receiveSymbol})
               </Typography>
@@ -130,14 +135,17 @@ export default function SwapTokenDialog(props) {
         </Stack>
       </DialogContent>
       {loading ? (
-        <Stack spacing={2} sx={{ textAlign: "center" }}>
+        <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Creating your Proposal...</Typography>
           <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
+          <button className="btn-red btn-default" onClick={handleClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-default"
             onClick={handleSubmit}
             color="success"
             disabled={
@@ -145,8 +153,13 @@ export default function SwapTokenDialog(props) {
             }
           >
             Swap
-          </Button>
+          </button>
         </DialogActions>
+      )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
       )}
     </Dialog>
   );

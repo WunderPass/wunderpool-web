@@ -30,7 +30,7 @@ export default function Home(props) {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2">
+      <div className="flex flex-col items-center justify-center pt-7">
         <Head>
           <title>WunderPool</title>
           <link rel="icon" href="/favicon.ico" />
@@ -52,7 +52,7 @@ export default function Home(props) {
                   Invest with friends, get rich together!
                 </h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
-                <p className="text-xs pb-12 lg:mb-0 mt-6 ">
+                <p className="text-xs lg:pb-12 lg:mb-0 mt-6 ">
                   Choose a way to connect and start aping!
                 </p>
               </div>

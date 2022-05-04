@@ -7,10 +7,10 @@ import {
   Tab,
   Tabs,
   Typography,
-} from "@mui/material";
-import { useRef } from "react";
-import { useState } from "react";
-import ProposalCard from "./proposalCard";
+} from '@mui/material';
+import { useRef } from 'react';
+import { useState } from 'react';
+import ProposalCard from './proposalCard';
 
 export default function ProposalList(props) {
   const { proposals, setApe } = props;
@@ -21,8 +21,8 @@ export default function ProposalList(props) {
     <Stack spacing={1}>
       <Typography variant="h4">Proposals</Typography>
       <Tabs value={tab} onChange={(_, val) => setTab(val)}>
-        <Tab label="Open" sx={{ maxWidth: "unset", flexGrow: 1 }} />
-        <Tab label="Closed" sx={{ maxWidth: "unset", flexGrow: 1 }} />
+        <Tab label="Open" sx={{ maxWidth: 'unset', flexGrow: 1 }} />
+        <Tab label="Closed" sx={{ maxWidth: 'unset', flexGrow: 1 }} />
       </Tabs>
       <Box ref={slidingContainer} p={1} overflow="hidden">
         {tab == 0 && (
@@ -73,16 +73,17 @@ export default function ProposalList(props) {
     </Stack>
   ) : (
     <Paper elevation={1} sx={{ p: 2 }}>
-      <Stack sx={{ textAlign: "center" }}>
+      <Stack sx={{ textAlign: 'center' }}>
         <Typography variant="h5">There are no Proposals</Typography>
         <Typography variant="subtitle1">Create one now!</Typography>
-        <Button
+        <button
+          className="btn-default"
           onClick={() => setApe(true)}
           variant="contained"
           color="success"
         >
           New
-        </Button>
+        </button>
       </Stack>
     </Paper>
   );

@@ -1,29 +1,22 @@
-import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
-import { fetchAllPools, fetchUserPools } from "/services/contract/pools";
-import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
-import NewPoolDialog from "/components/dialogs/newPool";
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
+import NewPoolDialog from '/components/dialogs/newPool';
+import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useEffect, useState } from 'react';
+import { useAlert } from 'react-alert';
+import Head from 'next/head';
+import Link from 'next/link';
 import {
-  toEthString,
-  displayWithDecimalPlaces,
-  currency,
-} from "/services/formatter";
-import { usdcBalanceOf } from "/services/contract/token";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useEffect, useState } from "react";
-import { useAlert } from "react-alert";
-import Head from "next/head";
-import Link from "next/link";
-import Image from "next/image";
-import {
+  Toolbar,
+  AppBar,
   Container,
   IconButton,
   Paper,
   Skeleton,
   Stack,
   Typography,
-  AppBar,
-  Toolbar,
-} from "@mui/material";
+} from '@mui/material';
 
 function PoolList(props) {
   const { pools, setOpen } = props;
@@ -65,7 +58,7 @@ function PoolList(props) {
     })
   ) : (
     <Paper elevation={1} sx={{ p: 2 }}>
-      <Stack sx={{ textAlign: "center" }}>
+      <Stack sx={{ textAlign: 'center' }}>
         <Typography className="pb-2" variant="h5">
           There are no Pools
         </Typography>
@@ -81,17 +74,16 @@ export default function Pools(props) {
   const [open, setOpen] = useState(false);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [usdcBalance, setUsdcBalance] = useState(true);
   const alert = useAlert();
 
   const fetchPools = () => {
     setLoadingAll(true);
     setLoadingUser(true);
-    fetchUserPools(user.address).then((pools) => {
+    user.fetchPools().then((pools) => {
       setUserPools(pools);
       setLoadingUser(false);
     });
-    fetchAllPools(user.address).then((pools) => {
+    fetchAllPools().then((pools) => {
       setAllPools(pools);
       setLoadingAll(false);
     });
@@ -100,9 +92,6 @@ export default function Pools(props) {
   useEffect(() => {
     if (!user.address) return;
     fetchPools();
-    usdcBalanceOf(user.address).then((balance) => {
-      setUsdcBalance(balance);
-    });
   }, [user.address]);
 
   return (
@@ -117,41 +106,6 @@ export default function Pools(props) {
             content="initial-scale=1.0, width=device-width"
           />
         </Head>
-        <AppBar
-          className="bg-gradient-to-r from-wunder-light-blue to-wunder-blue"
-          position="static"
-        >
-          <Toolbar>
-            <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
-              <Link href="/">
-                <a>
-                  <div className="flex flex-row">
-                    <div className="pt-0.5 w-44 pr-3">
-                      <Image
-                        src={WunderPoolIcon}
-                        alt="WunderPoolIcon"
-                        layout="responsive"
-                      />
-                    </div>
-                  </div>
-                </a>
-              </Link>
-            </Stack>
-
-            <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 sm:py-1.5 py-3.5">
-              <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
-                <p className="mx-2">{currency(usdcBalance, {})}</p>
-              </div>
-            </div>
-            <button
-              className="btn ml-2 my-2 sm:py-2.5 py-3.5 hover:bg-[#ff0000] text-sm"
-              onClick={user?.logOut}
-              variant="contained"
-            >
-              Log out
-            </button>
-          </Toolbar>
-        </AppBar>
 
         <Container>
           <Stack spacing={3} paddingTop={2}>
@@ -167,7 +121,7 @@ export default function Pools(props) {
                   </Typography>
                   <CopyToClipboard
                     text={user?.address}
-                    onCopy={() => alert.show("address copied!")}
+                    onCopy={() => alert.show('address copied!')}
                   >
                     <span className="truncate ... cursor-pointer text-md">
                       {user?.address}
@@ -176,7 +130,7 @@ export default function Pools(props) {
                   <Typography
                     className="truncate ... "
                     variant="h6"
-                  ></Typography>{" "}
+                  ></Typography>{' '}
                 </div>
               </div>
             </Stack>
@@ -189,7 +143,7 @@ export default function Pools(props) {
                     Your WunderPools
                   </Typography>
                   <button
-                    className="text-white btn mb-4 hover:bg-[#228B22]"
+                    className="text-white hover:bg-[#00b100] btn mb-4"
                     onClick={() => setOpen(true)}
                     variant="contained"
                     color="success"
@@ -202,7 +156,7 @@ export default function Pools(props) {
                   <Skeleton
                     variant="rectangular"
                     width="100%"
-                    sx={{ height: "100px", borderRadius: 3 }}
+                    sx={{ height: '100px', borderRadius: 3 }}
                   />
                 ) : (
                   <PoolList
@@ -214,13 +168,13 @@ export default function Pools(props) {
               </div>
               <div className="w-full pl-1 md:pl-3 ">
                 <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
-                  All WunderPools
+                  Public WunderPools
                 </Typography>
                 {loadingAll ? (
                   <Skeleton
                     variant="rectangular"
                     width="100%"
-                    sx={{ height: "100px", borderRadius: 3 }}
+                    sx={{ height: '100px', borderRadius: 3 }}
                   />
                 ) : (
                   <PoolList pools={allPools} setOpen={setOpen} />

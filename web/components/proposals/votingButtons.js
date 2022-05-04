@@ -1,10 +1,17 @@
-import { CircularProgress, IconButton, Stack, Tooltip } from "@mui/material";
-import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
-import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { useState, useEffect } from "react";
-import { vote } from "/services/contract/vote";
-import { hasVoted } from "/services/contract/vote";
+import {
+  CircularProgress,
+  IconButton,
+  Stack,
+  Dialog,
+  LinearProgress,
+  Tooltip,
+} from '@mui/material';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useState, useEffect } from 'react';
+import { vote } from '/services/contract/vote';
+import { hasVoted } from '/services/contract/vote';
 
 export default function VotingButtons(props) {
   const {
@@ -15,15 +22,22 @@ export default function VotingButtons(props) {
     handleSuccess,
     handleError,
   } = props;
-  const [waitingForVote, setWaitingForVote] = useState(true);
+  const [waitingForVote, setWaitingForVote] = useState(false);
   const [userHasVoted, setUserHasVoted] = useState(null);
+  const [signing, setSigning] = useState(false);
+
+  const handleClose = () => {
+    setSigning(false);
+    setWaitingForVote(false);
+  };
 
   const handleVote = (mode) => {
     setWaitingForVote(true);
+    setSigning(true);
     vote(poolAddress, proposal.id, mode)
       .then((res) => {
         handleSuccess(
-          `Voted ${mode == 1 ? "YES" : "NO"} for Proposal "${proposal.title}"`
+          `Voted ${mode == 1 ? 'YES' : 'NO'} for Proposal "${proposal.title}"`
         );
         setUserHasVoted(mode);
         fetchProposals();
@@ -47,7 +61,24 @@ export default function VotingButtons(props) {
   }, [user.address]);
 
   if (waitingForVote) {
-    return <CircularProgress />;
+    return (
+      <>
+        {signing && (
+          <Dialog open={open} onClose={handleClose}>
+            <iframe
+              id="fr"
+              name="transactionFrame"
+              width="600"
+              height="600"
+            ></iframe>
+            <Stack spacing={2} sx={{ textAlign: 'center' }}>
+              <LinearProgress />
+            </Stack>
+          </Dialog>
+        )}
+        <CircularProgress />;
+      </>
+    );
   }
 
   if (proposal.executed) {

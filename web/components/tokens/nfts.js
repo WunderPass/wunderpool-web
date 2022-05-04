@@ -1,14 +1,14 @@
-import { Button, Grid, Paper, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import SellNftDialog from "../dialogs/sellNftDialog";
-import Nft from "./nft";
+import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import SellNftDialog from '../dialogs/sellNftDialog';
+import Nft from './nft';
 
 export default function NftList(props) {
   const { nfts } = props;
   const [open, setOpen] = useState(false);
 
   return (
-    <Stack spacing={3} pt={2}>
+    <Stack spacing={2}>
       <Typography variant="h4">NFTs</Typography>
       {nfts.map((nft) => {
         return (
@@ -46,9 +46,14 @@ export default function NftList(props) {
             Then you can sell it to the Pool. If all members agree that you made
             them a fair offer, they might agree to buy your NFT
           </Typography>
-          <Button fullWidth variant="contained" onClick={() => setOpen(true)}>
+          <button
+            className="btn-default"
+            fullWidth
+            variant="contained"
+            onClick={() => setOpen(true)}
+          >
             Sell Your NFT
-          </Button>
+          </button>
         </Stack>
       </Paper>
       <SellNftDialog open={open} setOpen={setOpen} {...props} />

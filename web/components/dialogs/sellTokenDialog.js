@@ -9,9 +9,9 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { createFudSuggestion } from "/services/contract/proposals";
+} from '@mui/material';
+import { useState } from 'react';
+import { createFudSuggestion } from '/services/contract/proposals';
 
 export default function SellTokenDialog(props) {
   const {
@@ -26,11 +26,11 @@ export default function SellTokenDialog(props) {
     handleError,
     handleSuccess,
   } = props;
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    setAmount("");
+    setAmount('');
     setLoading(false);
     setOpen(false);
   };
@@ -63,9 +63,9 @@ export default function SellTokenDialog(props) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="md">
       <DialogTitle>Sell {name}</DialogTitle>
-      <DialogContent>
+      <DialogContent className="min-h-10">
         <TextField
           autoFocus
           type="number"
@@ -78,28 +78,41 @@ export default function SellTokenDialog(props) {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Button onClick={() => setAmount(balance)}>MAX</Button>
+                <button
+                  className="btn-default"
+                  onClick={() => setAmount(balance)}
+                >
+                  MAX
+                </button>
               </InputAdornment>
             ),
           }}
         />
       </DialogContent>
       {loading ? (
-        <Stack spacing={2} sx={{ textAlign: "center" }}>
+        <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Creating your Proposal...</Typography>
           <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
+          <button className="btn-default" onClick={handleClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-default"
             onClick={handleSubmit}
             color="success"
             disabled={Number(amount) > Number(balance)}
           >
             Sell
-          </Button>
+          </button>
         </DialogActions>
+      )}
+      {loading && (
+        <iframe id="fr" name="transactionFrame" width="600" height="600">
+          {' '}
+        </iframe>
       )}
     </Dialog>
   );
