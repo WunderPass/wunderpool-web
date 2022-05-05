@@ -250,7 +250,7 @@ export default function Pool(props) {
                 USD
               </Typography>
               <button
-                className="btn-default "
+                className="btn btn-info"
                 variant="contained"
                 onClick={() => setJoinPool(true)}
               >
