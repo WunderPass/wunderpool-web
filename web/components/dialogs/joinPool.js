@@ -93,7 +93,10 @@ export default function JoinPoolDialog(props) {
       });
   };
 
-  const receivedTokens = ethers.BigNumber.from(usdc(amount)).div(price);
+  const receivedTokens =
+    price > 0
+      ? ethers.BigNumber.from(usdc(amount)).div(price)
+      : ethers.BigNumber.from(100);
   const shareOfPool = receivedTokens
     .mul(100)
     .div(totalSupply.add(receivedTokens));
