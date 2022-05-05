@@ -34,10 +34,15 @@ export default function ProposalCard(props) {
   const [loading, setLoading] = useState(false);
   const [waitingForExec, setWaitingForExec] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
-  const [open, setOpen] = useState(null);
+  const [opening, setOpen] = useState(null);
+  const [signing, setSigning] = useState(false);
+
+  const handleClose = () => {
+    setSigning(false);
+  };
 
   const handleOpen = () => {
-    if (open == proposal.id) {
+    if (opening == proposal.id) {
       setOpen(null);
     } else {
       setOpen(proposal.id);
@@ -54,6 +59,7 @@ export default function ProposalCard(props) {
   };
 
   const executeProposal = () => {
+    setSigning(true);
     setWaitingForExec(true);
     execute(poolAddress, proposal.id)
       .then((res) => {
@@ -100,12 +106,27 @@ export default function ProposalCard(props) {
                 Execute
               </button>
             )}
+            {signing && (
+              <>
+                <Dialog open={open} onClose={handleClose}>
+                  <iframe
+                    className="w-auto"
+                    id="fr"
+                    name="transactionFrame"
+                    height="600"
+                  ></iframe>
+                  <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                    <LinearProgress />
+                  </Stack>
+                </Dialog>
+              </>
+            )}
             <div className="pl-4 pt-1">
               <VotingButtons {...props} />
             </div>
           </div>
         </Stack>
-        <Collapse in={open == proposal.id}>
+        <Collapse in={opening == proposal.id}>
           <Stack spacing={1}>
             <Divider />
             <Typography

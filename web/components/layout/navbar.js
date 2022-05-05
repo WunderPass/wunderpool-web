@@ -5,11 +5,13 @@ import Image from 'next/image';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import { usdcBalanceOf } from '/services/contract/token';
 import { currency } from '/services/formatter';
+import { useRouter } from 'next/router';
 
 export default function Navbar(props) {
   const { user } = props;
   const [usdcBalance, setUsdcBalance] = useState(true);
   const [poolListOpen, setPoolListOpen] = useState(null);
+  const { asPath } = useRouter();
 
   const handleMenuClose = () => {
     setPoolListOpen(null);
@@ -21,6 +23,8 @@ export default function Navbar(props) {
       setUsdcBalance(balance);
     });
   }, [user.address]);
+
+  if (asPath === '/') return null;
 
   return (
     <AppBar
