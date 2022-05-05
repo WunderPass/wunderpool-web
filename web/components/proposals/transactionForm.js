@@ -200,7 +200,7 @@ export function TransactionForm(props) {
                 );
               })}
               <button
-                className="btn-default"
+                className="btn btn-default"
                 startIcon={<AddIcon />}
                 onClick={addParam}
               >
@@ -228,21 +228,21 @@ export function TransactionForm(props) {
             </Typography>
             <Stack direction="row" justifyContent="space-evenly">
               <button
-                className="btn-default"
+                className="btn btn-default"
                 onClick={() => setCustomAbi('erc20')}
                 variant="contained"
               >
                 ERC20 (Token)
               </button>
               <button
-                className="btn-default"
+                className="btn btn-default"
                 onClick={() => setCustomAbi('erc721')}
                 variant="contained"
               >
                 ERC721 (NFT)
               </button>
               <button
-                className="btn-default"
+                className="btn btn-default"
                 onClick={() => setCustomAbi('custom')}
                 variant="contained"
               >

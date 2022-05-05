@@ -101,7 +101,7 @@ export default function NftDialog(props) {
               sx={{ flexGrow: 1 }}
             />
             <button
-              className="btn-default"
+              className="btn btn-default"
               variant="contained"
               onClick={handleSubmit}
               disabled={loading}

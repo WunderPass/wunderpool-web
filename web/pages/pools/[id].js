@@ -1,24 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
-  Button,
   Collapse,
   Container,
-  Grid,
-  IconButton,
   Paper,
   Skeleton,
   Stack,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import DangerousIcon from '@mui/icons-material/Dangerous';
-import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
-import PoolInfoDialog from '/components/dialogs/poolInfo';
 import JoinPoolDialog from '/components/dialogs/joinPool';
 import { fetchPoolProposals } from '/services/contract/proposals';
 import { fetchPoolTokens, fetchPoolNfts } from '/services/contract/token';
@@ -34,6 +24,7 @@ import CustomForm from '/components/proposals/customForm';
 import TokenList from '/components/tokens/list';
 import { toEthString } from '/services/formatter';
 import NftList from '/components/tokens/nfts';
+import PoolHeader from '/components/pool/header';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -50,11 +41,9 @@ export default function Pool(props) {
   const [ape, setApe] = useState(false);
   const [customProposal, setCustomProposal] = useState(false);
   const [fundDialog, setFundDialog] = useState(false);
-  const [poolInfo, setPoolInfo] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
   const [userIsMember, setUserIsMember] = useState(null);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
-  const [destroyDialog, setDestroyDialog] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [tokens, setTokens] = useState([]);
   const [nfts, setNfts] = useState([]);
@@ -160,65 +149,32 @@ export default function Pool(props) {
         paddingTop={2}
         sx={{ width: '100%' }}
       >
-        <Grid container alignItems="center">
-          <Grid item xs={12} sm={2}>
-            <Link href={`/pools`} passHref>
-              <Button className="btn-default" startIcon={<ArrowBackIosIcon />}>
-                All Pools
-              </Button>
-            </Link>
-          </Grid>
-          <Grid item xs={12} sm={8} textAlign="center">
-            <Stack direction="row" alignItems="center" justifyContent="center">
-              <Typography variant="h4">{name}</Typography>
-              {governanceTokenData && (
-                <Tooltip title="Pool Info">
-                  <IconButton color="info" onClick={() => setPoolInfo(true)}>
-                    <InfoOutlinedIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </Stack>
-          </Grid>
-          {userIsMember && (
-            <Grid item xs={12} sm={2}>
-              <Stack direction="row" alignItems="center" justifyContent="right">
-                <Tooltip title="Liquidate Pool">
-                  <IconButton
-                    color="error"
-                    onClick={() => setDestroyDialog(true)}
-                  >
-                    <DangerousIcon />
-                  </IconButton>
-                </Tooltip>
-              </Stack>
-            </Grid>
-          )}
-        </Grid>
+        <PoolHeader
+          name={name}
+          address={address}
+          governanceTokenData={governanceTokenData}
+          userIsMember={userIsMember}
+          fetchProposals={fetchProposals}
+        />
         {userIsMember ? (
           <>
             <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
               <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
                 <button
-                  className="btn-default"
+                  className="btn btn-success w-full"
                   onClick={() => {
                     setApe(true);
                   }}
-                  color="success"
-                  variant="contained"
-                  sx={{ width: '100%', minHeight: 150, aspectRatio: '2/1' }}
                 >
-                  So richtig Reinapen
+                  Buy New Token
                 </button>
                 <button
-                  className="btn-default"
+                  className="btn btn-default w-full"
                   onClick={() => {
                     setCustomProposal(true);
                   }}
-                  variant="contained"
-                  sx={{ width: '100%', minHeight: 150, aspectRatio: '2/1' }}
                 >
-                  Eigenes Proposal
+                  Custom Proposal
                 </button>
               </Stack>
             </Collapse>
@@ -312,24 +268,6 @@ export default function Pool(props) {
         address={address}
         {...props}
       />
-      <DestroyPoolDialog
-        open={destroyDialog}
-        setOpen={setDestroyDialog}
-        address={address}
-        name={name}
-        fetchProposals={fetchProposals}
-        {...props}
-      />
-      {governanceTokenData && (
-        <PoolInfoDialog
-          open={poolInfo}
-          setOpen={setPoolInfo}
-          name={name}
-          address={address}
-          governanceTokenData={governanceTokenData}
-          {...props}
-        />
-      )}
       {governanceTokenData && (
         <JoinPoolDialog
           open={joinPool}

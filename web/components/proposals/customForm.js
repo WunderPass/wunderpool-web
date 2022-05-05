@@ -153,7 +153,7 @@ export default function CustomForm(props) {
           );
         })}
         <button
-          className="btn-default"
+          className="btn btn-default"
           startIcon={<AddIcon />}
           onClick={addTransaction}
         >
@@ -161,7 +161,7 @@ export default function CustomForm(props) {
         </button>
         {loading ? (
           <>
-            <button className="btn-default" disabled variant="contained">
+            <button className="btn btn-default" disabled variant="contained">
               Submitting Proposal...
             </button>
             {signing && (
@@ -181,7 +181,7 @@ export default function CustomForm(props) {
         ) : (
           <>
             <button
-              className="btn-default"
+              className="btn btn-default"
               type="submit"
               disabled={false}
               onClick={handleSubmit}
