@@ -77,7 +77,7 @@ export default function ProposalList(props) {
         <Typography variant="h5">There are no Proposals</Typography>
         <Typography variant="subtitle1">Create one now!</Typography>
         <button
-          className="btn-default"
+          className="btn btn-default"
           onClick={() => setApe(true)}
           variant="contained"
           color="success"

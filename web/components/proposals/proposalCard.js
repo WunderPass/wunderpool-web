@@ -174,6 +174,15 @@ export default function ProposalCard(props) {
                 'de'
               )}
             </Typography>
+            {proposal.executed == false && (
+              <button
+                className="btn btn-warning"
+                disabled={waitingForExec}
+                onClick={executeProposal}
+              >
+                Execute
+              </button>
+            )}
             {loading ? (
               <Skeleton
                 variant="rectangular"

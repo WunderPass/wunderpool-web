@@ -138,15 +138,13 @@ export default function Pools(props) {
 
             <div className="flex flex-col md:flex-row justify-between">
               <div className="w-full pr-1 mb-8 md:mr-3 md:mb-0">
-                <div className="flex flex-row justify-between">
-                  <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
+                <div className="flex flex-row justify-between pb-4">
+                  <Typography className="text-xl text-black font-bold lg:text-2xl">
                     Your WunderPools
                   </Typography>
                   <button
-                    className="text-white hover:bg-[#00b100] btn mb-4"
+                    className="btn btn-success"
                     onClick={() => setOpen(true)}
-                    variant="contained"
-                    color="success"
                   >
                     Create new pool
                   </button>

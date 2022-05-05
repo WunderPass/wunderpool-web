@@ -21,7 +21,7 @@ export default function Notification(props) {
       open={open}
       autoHideDuration={9000}
       onClose={handleClose}
-      sx={{ bottom: { xs: 90, sm: 90, md: 30 } }}
+      sx={{ bottom: 30 }}
     >
       <Alert
         onClose={handleClose}
@@ -31,7 +31,7 @@ export default function Notification(props) {
           notification.url && (
             <Link href={notification.url} passHref>
               <button
-                className="btn-default"
+                className="btn btn-default"
                 color={color}
                 variant="outlined"
                 size="small"

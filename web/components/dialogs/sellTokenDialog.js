@@ -79,7 +79,7 @@ export default function SellTokenDialog(props) {
             endAdornment: (
               <InputAdornment position="end">
                 <button
-                  className="btn-default"
+                  className="btn btn-default"
                   onClick={() => setAmount(balance)}
                 >
                   MAX
@@ -96,11 +96,11 @@ export default function SellTokenDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <button className="btn-default" onClick={handleClose}>
+          <button className="btn btn-default" onClick={handleClose}>
             Cancel
           </button>
           <button
-            className="btn-default"
+            className="btn btn-default"
             onClick={handleSubmit}
             color="success"
             disabled={Number(amount) > Number(balance)}
