@@ -126,7 +126,7 @@ export default function SwapTokenDialog(props) {
               direction="row"
               sx={{ height: '50px' }}
             >
-              <img height="100%" src={receiveImage || '/favicon.ico'} />
+              <img width="50px" src={receiveImage || '/favicon.ico'} />
               <Typography variant="h6">
                 {receiveName} ({receiveSymbol})
               </Typography>
