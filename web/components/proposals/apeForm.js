@@ -155,13 +155,13 @@ export default function ApeForm(props) {
           </>
         ) : (
           <button
-            className="btn btn-default"
+            className="btn btn-success"
             type="submit"
             disabled={!tokenName || !tokenSymbol || value == 0}
             onClick={handleApe}
             variant="contained"
           >
-            Ape Empfehlung abgeben
+            Create Token proposal
           </button>
         )}
       </Stack>

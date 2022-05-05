@@ -141,11 +141,11 @@ export default function SwapTokenDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <button className="btn-red btn-default" onClick={handleClose}>
+          <button className="btn btn-default" onClick={handleClose}>
             Cancel
           </button>
           <button
-            className="btn btn-default"
+            className="btn btn-danger"
             onClick={handleSubmit}
             color="success"
             disabled={

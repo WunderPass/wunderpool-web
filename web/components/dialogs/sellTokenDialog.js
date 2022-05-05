@@ -100,7 +100,7 @@ export default function SellTokenDialog(props) {
             Cancel
           </button>
           <button
-            className="btn btn-default"
+            className="btn btn-danger"
             onClick={handleSubmit}
             color="success"
             disabled={Number(amount) > Number(balance)}

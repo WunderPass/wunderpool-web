@@ -65,7 +65,7 @@ export default function RemoveMemberDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <button className="btn btn-default" onClick={handleClose}>
+          <button className="btn btn-danger" onClick={handleClose}>
             Cancel
           </button>
         </DialogActions>

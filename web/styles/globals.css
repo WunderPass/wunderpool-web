@@ -34,7 +34,7 @@ a {
 }
 
 .btn-default {
-  @apply bg-[#ededed] hover:bg-[#d9dbdb];
+  @apply bg-[#ededed] hover:bg-[#d9dbdb] text-black;
 }
 
 .btn-primary {

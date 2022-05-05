@@ -18,7 +18,7 @@ export default function PoolHeader(props) {
       <Grid container alignItems="center">
         <Grid item xs={12} sm={2}>
           <Link href={`/pools`} passHref>
-            <button className="btn btn-default">
+            <button className="">
               <ArrowBackIosIcon fontSize="inherit" />
               All Pools
             </button>
