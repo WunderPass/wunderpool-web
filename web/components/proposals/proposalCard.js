@@ -96,10 +96,10 @@ export default function ProposalCard(props) {
             </Stack>
             <Typography variant="subtitle1">{proposal.description}</Typography>
           </Stack>
-          <div className="flex flex-row align-items-right">
+          <div className="flex flex-col md:flex-row h-32 md:h-10 ml-4 md:ml-0 md:mt-8">
             {!proposal.executed && (
               <button
-                className="btn-default place-self-start"
+                className="p-8 btn btn-warning"
                 disabled={waitingForExec}
                 onClick={executeProposal}
               >
@@ -121,8 +121,10 @@ export default function ProposalCard(props) {
                 </Dialog>
               </>
             )}
-            <div className="pl-4 pt-1">
-              <VotingButtons {...props} />
+            <div className="md:pl-4 pl-0 md:pt-1 pt-8 self-center ">
+              <div className="">
+                <VotingButtons {...props} />
+              </div>
             </div>
           </div>
         </Stack>
@@ -174,15 +176,7 @@ export default function ProposalCard(props) {
                 'de'
               )}
             </Typography>
-            {proposal.executed == false && (
-              <button
-                className="btn btn-warning"
-                disabled={waitingForExec}
-                onClick={executeProposal}
-              >
-                Execute
-              </button>
-            )}
+
             {loading ? (
               <Skeleton
                 variant="rectangular"
