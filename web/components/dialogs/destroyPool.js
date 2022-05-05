@@ -68,14 +68,10 @@ export default function DestroyPoolDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <button className="btn-default btn-red" onClick={handleClose}>
+          <button className="btn btn-default" onClick={handleClose}>
             Cancel
           </button>
-          <button
-            className="btn-default btn-green"
-            onClick={handleSubmit}
-            color="warning"
-          >
+          <button className="btn btn-danger" onClick={handleSubmit}>
             Submit Proposal
           </button>
         </DialogActions>

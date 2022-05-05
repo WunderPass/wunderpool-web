@@ -103,7 +103,7 @@ export default function SwapTokenDialog(props) {
               endAdornment: (
                 <InputAdornment position="end">
                   <button
-                    className="btn-default"
+                    className="btn btn-default"
                     onClick={() => setAmount(balance)}
                   >
                     MAX
@@ -145,7 +145,7 @@ export default function SwapTokenDialog(props) {
             Cancel
           </button>
           <button
-            className="btn-default"
+            className="btn btn-default"
             onClick={handleSubmit}
             color="success"
             disabled={
