@@ -75,7 +75,7 @@ export default function ProposalCard(props) {
     <Paper elevation={1} sx={{ overflowY: 'hidden' }}>
       <Box p={2}>
         <Stack
-          direction="row"
+          className="flex flex-row"
           alignItems="center"
           justifyContent="space-between"
         >
@@ -90,7 +90,20 @@ export default function ProposalCard(props) {
             </Stack>
             <Typography variant="subtitle1">{proposal.description}</Typography>
           </Stack>
-          <VotingButtons {...props} />
+          <div className="flex flex-row align-items-right">
+            {!proposal.executed && (
+              <button
+                className="btn-default place-self-start"
+                disabled={waitingForExec}
+                onClick={executeProposal}
+              >
+                Execute
+              </button>
+            )}
+            <div className="pl-4 pt-1">
+              <VotingButtons {...props} />
+            </div>
+          </div>
         </Stack>
         <Collapse in={open == proposal.id}>
           <Stack spacing={1}>
@@ -221,15 +234,6 @@ export default function ProposalCard(props) {
                     );
                   })}
               </>
-            )}
-            {proposal.executed == false && (
-              <button
-                className="btn-default"
-                disabled={waitingForExec}
-                onClick={executeProposal}
-              >
-                Execute
-              </button>
             )}
             {proposal.execute && (
               <Dialog open={open} onClose={handleClose}>
