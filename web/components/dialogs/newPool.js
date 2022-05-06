@@ -27,6 +27,7 @@ export default function NewPoolDialog(props) {
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   const handleClose = () => {
     setPoolName('');
@@ -38,6 +39,16 @@ export default function NewPoolDialog(props) {
     setOpen(false);
     setShowMoreOptions(false);
     setLoading(false);
+  };
+
+  const checkIfInputEnough = () => {
+    if (value < 3) setDisableButton(true);
+    else setDisableButton(false);
+  };
+
+  const validateInput = (input) => {
+    console.log(input);
+    if (input >= 3) setValue(input);
   };
 
   const handleSubmit = () => {
@@ -82,6 +93,7 @@ export default function NewPoolDialog(props) {
             type="number"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            //onChange={(e) => validateInput(e.target.value)}
             label="Your Invest"
             placeholder="1"
             fullWidth
@@ -89,6 +101,7 @@ export default function NewPoolDialog(props) {
               endAdornment: <InputAdornment position="end">USD</InputAdornment>,
             }}
           />
+          <div></div>
           <Collapse in={!showMoreOptions} sx={{ marginTop: '0px !important' }}>
             <Button
               onClick={() => setShowMoreOptions(true)}
@@ -96,6 +109,16 @@ export default function NewPoolDialog(props) {
             >
               More Options
             </Button>
+            {value < 3 && (
+              <div className="text-red-600">
+                "Your Invest" must atleast be $3.00!
+              </div>
+            )}
+            {poolName.length < 3 && (
+              <div className="text-red-600">
+                "Pool name" must atleast be 3 letters!
+              </div>
+            )}
           </Collapse>
           <Collapse in={showMoreOptions}>
             <Stack spacing={2}>
@@ -148,10 +171,10 @@ export default function NewPoolDialog(props) {
             Cancel
           </button>
           <button
-            className="btn btn-success"
+            className=" btn btn-success"
             onClick={handleSubmit}
             color="success"
-            disabled={poolName.length < 3}
+            disabled={poolName.length < 3 || value < 3}
           >
             Create
           </button>

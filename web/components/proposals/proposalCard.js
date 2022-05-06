@@ -96,7 +96,7 @@ export default function ProposalCard(props) {
             </Stack>
             <Typography variant="subtitle1">{proposal.description}</Typography>
           </Stack>
-          <div className="flex flex-col md:flex-row h-32 md:h-10 ml-4 md:ml-0 md:mt-8">
+          <div className="flex flex-col md:flex-row h-32 md:h-10 ml-4 md:ml-0">
             {!proposal.executed && (
               <button
                 className="p-8 btn btn-warning"

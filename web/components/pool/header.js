@@ -6,12 +6,21 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import PoolInfoDialog from '/components/dialogs/poolInfo';
+import { currency, usdc } from '/services/formatter';
 
 export default function PoolHeader(props) {
-  const { name, address, governanceTokenData, userIsMember, fetchProposals } =
-    props;
+  const {
+    name,
+    address,
+    governanceTokenData,
+    userIsMember,
+    fetchProposals,
+    poolBalance,
+  } = props;
   const [poolInfo, setPoolInfo] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
+
+  console.log({ poolBalance });
 
   return (
     <>
@@ -36,6 +45,7 @@ export default function PoolHeader(props) {
             )}
           </Stack>
         </Grid>
+
         {userIsMember && (
           <Grid item xs={12} sm={2}>
             <Stack direction="row" alignItems="center" justifyContent="right">
@@ -50,6 +60,13 @@ export default function PoolHeader(props) {
             </Stack>
           </Grid>
         )}
+        <Grid item className="w-full ">
+          <Stack direction="row" className=" justify-center">
+            <Typography className="self-center " variant="h4">
+              Pool Balance: {currency(poolBalance.toString() / 1000000, {})}
+            </Typography>
+          </Stack>
+        </Grid>
       </Grid>
       {governanceTokenData && (
         <PoolInfoDialog
