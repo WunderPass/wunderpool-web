@@ -155,6 +155,7 @@ export default function Pool(props) {
           governanceTokenData={governanceTokenData}
           userIsMember={userIsMember}
           fetchProposals={fetchProposals}
+          poolBalance={poolBalance}
         />
         {userIsMember ? (
           <>
