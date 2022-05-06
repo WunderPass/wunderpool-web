@@ -46,11 +46,6 @@ export default function NewPoolDialog(props) {
     else setDisableButton(false);
   };
 
-  const validateInput = (input) => {
-    console.log(input);
-    if (input >= 3) setValue(input);
-  };
-
   const handleSubmit = () => {
     setLoading(true);
     setWaitingForPool(true);
