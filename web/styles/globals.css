@@ -22,7 +22,7 @@ a {
 }
 
 .btn {
-  @apply rounded-lg py-2.5 px-3 text-xs font-bold cursor-pointer bg-black uppercase;
+  @apply rounded-lg py-2.5 px-3 text-xs font-bold cursor-pointer bg-black uppercase transition-colors;
 }
 
 .btn-connect {
@@ -34,13 +34,25 @@ a {
 }
 
 .btn-default {
-  @apply cursor-pointer rounded-md py-1.5 font-bold text-sm px-3 text-black bg-gray-100 hover:bg-gray-200 border-2 border-gray-400 uppercase shadow;
+  @apply bg-[#ededed] hover:bg-[#d9dbdb] text-black;
 }
 
-.btn-red {
-  @apply bg-[#ffbacd] hover:bg-[#ff6163];
+.btn-primary {
+  @apply bg-[#1d82f5] hover:bg-[#1668c7] text-white;
 }
 
-.btn-green {
-  @apply bg-[#d1ffbd] hover:bg-[#0add08];
+.btn-success {
+  @apply bg-[#03a32e] hover:bg-[#038a27] text-white;
+}
+
+.btn-danger {
+  @apply bg-[#e60246] hover:bg-[#c9023e] text-white;
+}
+
+.btn-info {
+  @apply bg-[#1aaeed] hover:bg-[#1692c7] text-white;
+}
+
+.btn-warning {
+  @apply bg-[#f7b91b] hover:bg-[#dba418];
 }

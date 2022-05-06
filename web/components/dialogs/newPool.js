@@ -144,11 +144,11 @@ export default function NewPoolDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <button className="btn-default btn-red" onClick={handleClose}>
+          <button className="btn btn-danger" onClick={handleClose}>
             Cancel
           </button>
           <button
-            className="btn-default btn-green"
+            className="btn btn-success"
             onClick={handleSubmit}
             color="success"
             disabled={poolName.length < 3}

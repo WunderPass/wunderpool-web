@@ -31,7 +31,7 @@ export default function Notification(props) {
           notification.url && (
             <Link href={notification.url} passHref>
               <button
-                className="btn-default"
+                className="btn btn-default"
                 color={color}
                 variant="outlined"
                 size="small"

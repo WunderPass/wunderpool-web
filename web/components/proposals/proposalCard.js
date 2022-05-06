@@ -34,10 +34,15 @@ export default function ProposalCard(props) {
   const [loading, setLoading] = useState(false);
   const [waitingForExec, setWaitingForExec] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
-  const [open, setOpen] = useState(null);
+  const [opening, setOpen] = useState(null);
+  const [signing, setSigning] = useState(false);
+
+  const handleClose = () => {
+    setSigning(false);
+  };
 
   const handleOpen = () => {
-    if (open == proposal.id) {
+    if (opening == proposal.id) {
       setOpen(null);
     } else {
       setOpen(proposal.id);
@@ -54,6 +59,7 @@ export default function ProposalCard(props) {
   };
 
   const executeProposal = () => {
+    setSigning(true);
     setWaitingForExec(true);
     execute(poolAddress, proposal.id)
       .then((res) => {
@@ -75,7 +81,7 @@ export default function ProposalCard(props) {
     <Paper elevation={1} sx={{ overflowY: 'hidden' }}>
       <Box p={2}>
         <Stack
-          direction="row"
+          className="flex flex-row"
           alignItems="center"
           justifyContent="space-between"
         >
@@ -90,9 +96,39 @@ export default function ProposalCard(props) {
             </Stack>
             <Typography variant="subtitle1">{proposal.description}</Typography>
           </Stack>
-          <VotingButtons {...props} />
+          <div className="flex flex-col md:flex-row h-32 md:h-10 ml-4 md:ml-0 md:mt-8">
+            {!proposal.executed && (
+              <button
+                className="p-8 btn btn-warning"
+                disabled={waitingForExec}
+                onClick={executeProposal}
+              >
+                Execute
+              </button>
+            )}
+            {signing && (
+              <>
+                <Dialog open={open} onClose={handleClose}>
+                  <iframe
+                    className="w-auto"
+                    id="fr"
+                    name="transactionFrame"
+                    height="600"
+                  ></iframe>
+                  <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                    <LinearProgress />
+                  </Stack>
+                </Dialog>
+              </>
+            )}
+            <div className="md:pl-4 pl-0 md:pt-1 pt-8 self-center ">
+              <div className="">
+                <VotingButtons {...props} />
+              </div>
+            </div>
+          </div>
         </Stack>
-        <Collapse in={open == proposal.id}>
+        <Collapse in={opening == proposal.id}>
           <Stack spacing={1}>
             <Divider />
             <Typography
@@ -140,6 +176,7 @@ export default function ProposalCard(props) {
                 'de'
               )}
             </Typography>
+
             {loading ? (
               <Skeleton
                 variant="rectangular"
@@ -221,15 +258,6 @@ export default function ProposalCard(props) {
                     );
                   })}
               </>
-            )}
-            {proposal.executed == false && (
-              <button
-                className="btn-default"
-                disabled={waitingForExec}
-                onClick={executeProposal}
-              >
-                Execute
-              </button>
             )}
             {proposal.execute && (
               <Dialog open={open} onClose={handleClose}>

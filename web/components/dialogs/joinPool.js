@@ -143,11 +143,11 @@ export default function JoinPoolDialog(props) {
         </Stack>
       ) : (
         <DialogActions>
-          <button className="btn-default btn-red" onClick={handleClose}>
+          <button className="btn btn-danger" onClick={handleClose}>
             Cancel
           </button>
           <button
-            className="btn-default btn-green"
+            className="btn btn-success"
             onClick={handleSubmit}
             disabled={minimumInvest.gt(usdc(amount))}
           >

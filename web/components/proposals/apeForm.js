@@ -138,7 +138,7 @@ export default function ApeForm(props) {
         </Collapse>
         {loading ? (
           <>
-            <button className="btn-default" disabled variant="contained">
+            <button className="btn btn-default" disabled variant="contained">
               Submitting Proposal...
             </button>
             <Dialog open={open} onClose={handleClose}>
@@ -155,13 +155,13 @@ export default function ApeForm(props) {
           </>
         ) : (
           <button
-            className="btn-default"
+            className="btn btn-success"
             type="submit"
             disabled={!tokenName || !tokenSymbol || value == 0}
             onClick={handleApe}
             variant="contained"
           >
-            Ape Empfehlung abgeben
+            Create Token proposal
           </button>
         )}
       </Stack>

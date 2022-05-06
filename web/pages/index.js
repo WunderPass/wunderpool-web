@@ -1,43 +1,47 @@
-import LoginWithWunderPass from "/components/auth/loginWithWunderPass";
-import CreateYourWunderPass from "/components/auth/createYourWunderPass";
-import WunderPoolIcon from "/public/wunderpool_logo_white.svg";
-import { Container, Stack, Typography } from "@mui/material";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import { useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import Head from "next/head";
-import { Button } from "@mui/material";
-import { FaTwitter, FaDiscord } from "react-icons/fa";
+import CreateYourWunderPass from '/components/auth/createYourWunderPass';
+import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
+import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
+import { Dialog, LinearProgress, Stack } from '@mui/material';
+import { FaTwitter, FaDiscord } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import Image from 'next/image';
+import Head from 'next/head';
 //import { FaFacebookF } from 'react-icons/fa';
 
 export default function Home(props) {
   const { user } = props;
   const router = useRouter();
   const [popup, setPopup] = useState(null);
+  const [signing, setSigning] = useState(false);
 
   const handleSuccess = (data) => {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
 
+  const handleClick = () => {
+    setSigning(true);
+    console.log('Test');
+  };
+
   useEffect(() => {
     if (user.wunderId && user.address) {
-      router.push("/pools");
+      router.push('/pools');
     }
   }, [user]);
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center pt-7">
+      <div className="flex flex-col h-screen  pt-7">
         <Head>
           <title>WunderPool</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
           <div className="lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-4xl">
-            <div className="h-2/5 bg-wunder-blue text-white rounded-t-2xl py-12 lg:py-52 lg:w-2/5  lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
+            <div className="h-fit bg-wunder-blue text-white rounded-t-2xl py-12 lg:py-52 lg:w-2/5  lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
               <div className="ml-10 lg:ml-6 flex-1">
                 <Image
                   className=""
@@ -71,19 +75,22 @@ export default function Home(props) {
 
                 <div className="flex flex-col items-center justify-between mb-12 lg:mb-4">
                   <div className="my-2 w-72 items-center mb-1 lg:mt-6">
-                    <LoginWithWunderPass
-                      className="text-xs"
-                      name="WunderPool"
-                      redirect={"pools"}
-                      intent={["wunderId", "address"]}
-                      onSuccess={handleSuccess}
-                    />
+                    <a>
+                      <LoginWithWunderPass
+                        className="text-xs"
+                        name="WunderPool"
+                        redirect={'pools'}
+                        intent={['wunderId', 'address']}
+                        onSuccess={handleSuccess}
+                        onClick={handleClick}
+                      />
+                    </a>
                   </div>
                   <p className="text-gray-400 text-xs my-2 mb-1 lg:mb-1">or</p>
                   <CreateYourWunderPass
                     name="WunderPool"
-                    redirect={"pools"}
-                    intent={["wunderId", "address"]}
+                    redirect={'pools'}
+                    intent={['wunderId', 'address']}
                     onSuccess={handleSuccess}
                   />
 
