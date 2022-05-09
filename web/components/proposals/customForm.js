@@ -152,11 +152,8 @@ export default function CustomForm(props) {
             />
           );
         })}
-        <button
-          className="btn btn-default"
-          startIcon={<AddIcon />}
-          onClick={addTransaction}
-        >
+        <button className="btn btn-default" onClick={addTransaction}>
+          <AddIcon fontSize="small" />
           Add Transaction
         </button>
         {loading ? (

@@ -48,7 +48,6 @@ export default function NftList(props) {
           </Typography>
           <button
             className="btn btn-info"
-            fullWidth
             variant="contained"
             onClick={() => setOpen(true)}
           >

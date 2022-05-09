@@ -18,11 +18,9 @@ export default function Navbar(props) {
   };
 
   useEffect(() => {
-    if (!user.address) return;
-    usdcBalanceOf(user.address).then((balance) => {
-      setUsdcBalance(balance);
-    });
-  }, [user.address]);
+    if (!user.usdBalance) return;
+    setUsdcBalance(user?.usdBalance);
+  }, [user.usdBalance]);
 
   if (asPath === '/') return null;
 
@@ -36,17 +34,15 @@ export default function Navbar(props) {
         <Toolbar>
           <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
             <Link href="/">
-              <a>
-                <div className="flex flex-row">
-                  <div className="pt-0.5 w-44 pr-3">
-                    <Image
-                      src={WunderPoolIcon}
-                      alt="WunderPoolIcon"
-                      layout="responsive"
-                    />
-                  </div>
+              <div className="flex flex-row">
+                <div className="pt-0.5 w-44 pr-3">
+                  <Image
+                    src={WunderPoolIcon}
+                    alt="WunderPoolIcon"
+                    layout="responsive"
+                  />
                 </div>
-              </a>
+              </div>
             </Link>
             {user.loggedIn && (
               <>
@@ -66,26 +62,26 @@ export default function Navbar(props) {
                     user.pools.map((pool, i) => {
                       return (
                         <Link
+                          key={`user-pool-${i}`}
                           href={`/pools/${pool.address}?name=${pool.name}`}
                           sx={{ textDecoration: 'none', color: 'inherit' }}
                           passHref
                         >
-                          <MenuItem key={`user-pool-${i}`}>
-                            {pool.name}
-                          </MenuItem>
+                          <MenuItem>{pool.name}</MenuItem>
                         </Link>
                       );
                     })}
-                  {user.pools.length == 0 && (
-                    <MenuItem key="noPools">- no pools -</MenuItem>
-                  )}
+                  {user.pools.length == 0 && <MenuItem>- no pools -</MenuItem>}
                 </Menu>
               </>
             )}
           </Stack>
           {user.loggedIn && (
             <>
-              <div className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 py-1.5">
+              <div
+                onClick={() => user.setTopUpRequired(true)}
+                className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 py-1.5 cursor-pointer"
+              >
                 <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
                   <p className="mx-2">{currency(usdcBalance, {})}</p>
                 </div>
@@ -93,7 +89,6 @@ export default function Navbar(props) {
               <button
                 className="hidden sm:block btn ml-2 my-2 py-1.5 hover:bg-[#ff0000] text-sm"
                 onClick={user?.logOut}
-                variant="contained"
               >
                 Log out
               </button>
