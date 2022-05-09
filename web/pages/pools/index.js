@@ -21,7 +21,7 @@ import {
 function PoolList(props) {
   const { pools, setOpen } = props;
 
-  return pools.length > 0 ? (
+  return pools.length === 1 ? (
     pools.map((pool, i) => {
       return (
         <Paper
@@ -60,7 +60,7 @@ function PoolList(props) {
     <Paper elevation={1} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
         <Typography className="pb-2" variant="h5">
-          There are no Pools
+          There are no pools yet
         </Typography>
       </Stack>
     </Paper>
@@ -69,6 +69,7 @@ function PoolList(props) {
 
 export default function Pools(props) {
   const { user } = props;
+  const [demoPools, setDemoPools] = useState([]);
   const [allPools, setAllPools] = useState([]);
   const [userPools, setUserPools] = useState([]);
   const [open, setOpen] = useState(false);
@@ -165,8 +166,8 @@ export default function Pools(props) {
                 )}
               </div>
               <div className="w-full pl-1 md:pl-3 ">
-                <Typography className="text-xl text-black font-bold pb-6 lg:text-2xl">
-                  Public WunderPools
+                <Typography className="text-xl text-black font-bold pb-5 lg:text-2xl">
+                  Demo WunderPool
                 </Typography>
                 {loadingAll ? (
                   <Skeleton
@@ -175,7 +176,7 @@ export default function Pools(props) {
                     sx={{ height: '100px', borderRadius: 3 }}
                   />
                 ) : (
-                  <PoolList pools={allPools} setOpen={setOpen} />
+                  <PoolList pools={demoPools} setOpen={setOpen} />
                 )}
               </div>
             </div>
