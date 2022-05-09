@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPool } from '/services/contract/pools';
 
 export default function NewPoolDialog(props) {
@@ -27,7 +27,12 @@ export default function NewPoolDialog(props) {
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [disableButton, setDisableButton] = useState(false);
+  const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
+
+  useEffect(() => {
+    setHasEnoughBalance(user.usdBalance >= value);
+    console.log(hasEnoughBalance);
+  });
 
   const handleClose = () => {
     setPoolName('');
@@ -39,11 +44,6 @@ export default function NewPoolDialog(props) {
     setOpen(false);
     setShowMoreOptions(false);
     setLoading(false);
-  };
-
-  const checkIfInputEnough = () => {
-    if (value < 3) setDisableButton(true);
-    else setDisableButton(false);
   };
 
   const handleSubmit = () => {
@@ -88,7 +88,6 @@ export default function NewPoolDialog(props) {
             type="number"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            //onChange={(e) => validateInput(e.target.value)}
             label="Your Invest"
             placeholder="1"
             fullWidth
@@ -104,14 +103,19 @@ export default function NewPoolDialog(props) {
             >
               More Options
             </Button>
-            {value < 3 && (
+            {value < 3 && !(value === '') && (
               <div className="text-red-600">
                 "Your Invest" must atleast be $3.00!
               </div>
             )}
-            {poolName.length < 3 && (
+            {poolName.length < 3 && !(poolName === '') && (
               <div className="text-red-600">
                 "Pool name" must atleast be 3 letters!
+              </div>
+            )}
+            {!hasEnoughBalance && (
+              <div className="text-red-600">
+                You dont have that much USD in your wallet!
               </div>
             )}
           </Collapse>

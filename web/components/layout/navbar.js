@@ -71,7 +71,9 @@ export default function Navbar(props) {
                         </Link>
                       );
                     })}
-                  {user.pools.length == 0 && <MenuItem>- no pools -</MenuItem>}
+                  {user.pools.length == 0 && (
+                    <MenuItem> - no pools - </MenuItem>
+                  )}
                 </Menu>
               </>
             )}
