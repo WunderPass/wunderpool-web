@@ -42,7 +42,9 @@ export default function ProposalCard(props) {
   console.log(proposal.yesVotes);
 
   useEffect(() => {
-    setExecutable(proposal.yesVotes.toNumber() > 50);
+    setExecutable(
+      proposal.yesVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2
+    );
   });
 
   const handleClose = () => {
