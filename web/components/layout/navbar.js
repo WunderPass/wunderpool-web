@@ -6,6 +6,7 @@ import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import { usdcBalanceOf } from '/services/contract/token';
 import { currency } from '/services/formatter';
 import { useRouter } from 'next/router';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
 
 export default function Navbar(props) {
   const { user } = props;
@@ -84,6 +85,7 @@ export default function Navbar(props) {
               >
                 <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
                   <p className="mx-2">{currency(usdcBalance, {})}</p>
+                  <BsFillPlusCircleFill className="text-xl mr-1" />
                 </div>
               </div>
               <button
