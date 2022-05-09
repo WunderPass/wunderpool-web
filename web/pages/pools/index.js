@@ -21,7 +21,7 @@ import {
 function PoolList(props) {
   const { pools, setOpen } = props;
 
-  return pools.length === 1 ? (
+  return pools.length > 0 ? (
     pools.map((pool, i) => {
       return (
         <Paper
