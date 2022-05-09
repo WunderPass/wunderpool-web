@@ -12,7 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
 import { fetchTransactionData, execute } from '/services/contract/proposals';
 import { ethers } from 'ethers';
@@ -36,6 +36,14 @@ export default function ProposalCard(props) {
   const [transactionData, setTransactionData] = useState(null);
   const [opening, setOpen] = useState(null);
   const [signing, setSigning] = useState(false);
+  const [executable, setExecutable] = useState(false);
+
+  console.log(proposal.yesVotes.toNumber());
+  console.log(proposal.yesVotes);
+
+  useEffect(() => {
+    setExecutable(proposal.yesVotes.toNumber() > 50);
+  });
 
   const handleClose = () => {
     setSigning(false);
@@ -99,8 +107,8 @@ export default function ProposalCard(props) {
           <div className="flex flex-col md:flex-row h-32 md:h-10 ml-4 md:ml-0">
             {!proposal.executed && (
               <button
-                className="p-8 btn btn-warning"
-                disabled={waitingForExec}
+                className={executable ? 'p-8 btn btn-warning' : 'hidden'}
+                disabled={waitingForExec || executable}
                 onClick={executeProposal}
               >
                 Execute
