@@ -20,8 +20,6 @@ export default function PoolHeader(props) {
   const [poolInfo, setPoolInfo] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
 
-  console.log({ poolBalance });
-
   return (
     <>
       <Grid container alignItems="center">

@@ -140,7 +140,7 @@ export default function Pools(props) {
               <div className="w-full pr-1 mb-8 md:mr-3 md:mb-0">
                 <div className="flex flex-row justify-between pb-4">
                   <Typography className="text-xl text-black font-bold lg:text-2xl">
-                    Your WunderPools
+                    My WunderPools
                   </Typography>
                   <button
                     className="btn btn-success"

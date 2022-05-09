@@ -1,10 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { usdcBalanceOf } from '/services/contract/token';
 import { fetchUserPools } from '/services/contract/pools';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
   const [address, setAddress] = useState(null);
+  const [usdBalance, setUsdBalance] = useState(null);
+  const [topUpRequired, setTopUpRequired] = useState(null);
   const [pools, setPools] = useState([]);
   const router = useRouter();
 
@@ -34,6 +37,15 @@ export default function useUser() {
     });
   };
 
+  const fetchUsdBalance = () => {
+    usdcBalanceOf(address).then((balance) => {
+      setUsdBalance(balance);
+      if (balance < 1) {
+        setTopUpRequired(true);
+      }
+    });
+  };
+
   const logOut = () => {
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
@@ -46,6 +58,7 @@ export default function useUser() {
   useEffect(() => {
     if (address) {
       fetchPools();
+      fetchUsdBalance();
     }
   }, [address]);
 
@@ -63,5 +76,9 @@ export default function useUser() {
     loggedIn,
     pools,
     fetchPools,
+    usdBalance,
+    fetchUsdBalance,
+    topUpRequired,
+    setTopUpRequired,
   };
 }
