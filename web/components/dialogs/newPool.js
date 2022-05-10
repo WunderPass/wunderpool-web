@@ -156,7 +156,7 @@ export default function NewPoolDialog(props) {
                     value={tokenName}
                     onChange={(e) => {
                       setTokenName(e.target.value);
-                      setTokenNameTouched(true);
+                      setTokenNameTouched(e.target.value.length > 0);
                     }}
                   />
                 </Grid>
@@ -168,7 +168,7 @@ export default function NewPoolDialog(props) {
                     value={tokenSymbol}
                     onChange={(e) => {
                       setTokenSymbol(e.target.value);
-                      setTokenSymbolTouched(true);
+                      setTokenSymbolTouched(e.target.value.length > 0);
                     }}
                   />
                 </Grid>
@@ -178,7 +178,7 @@ export default function NewPoolDialog(props) {
                 value={entryBarrier}
                 onChange={(e) => {
                   setEntryBarrier(e.target.value);
-                  setEntryBarrierTouched(true);
+                  setEntryBarrierTouched(e.target.value.length > 0);
                 }}
                 label="Minimum Invest"
                 placeholder="1"
