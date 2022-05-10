@@ -14,20 +14,29 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPool } from '/services/contract/pools';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, fetchPools, handleSuccess, handleError, user } = props;
   const [poolName, setPoolName] = useState('');
+  const [poolNameTouched, setPoolNameTouched] = useState(false);
   const [tokenName, setTokenName] = useState('');
+  const [tokenNameTouched, setTokenNameTouched] = useState(false);
   const [tokenSymbol, setTokenSymbol] = useState('');
+  const [tokenSymbolTouched, setTokenSymbolTouched] = useState(false);
   const [entryBarrier, setEntryBarrier] = useState('');
+  const [entryBarrierTouched, setEntryBarrierTouched] = useState(false);
   const [value, setValue] = useState('');
+  const [valueTouched, setValueTouched] = useState(false);
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [disableButton, setDisableButton] = useState(false);
+  const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
+
+  useEffect(() => {
+    setHasEnoughBalance(Number(user.usdBalance) >= value);
+  });
 
   const handleClose = () => {
     setPoolName('');
@@ -35,6 +44,11 @@ export default function NewPoolDialog(props) {
     setTokenSymbol('');
     setEntryBarrier('');
     setValue('');
+    setValueTouched(false);
+    setPoolNameTouched(false);
+    setTokenNameTouched(false);
+    setTokenSymbolTouched(false);
+    setEntryBarrierTouched(false);
     setWaitingForPool(false);
     setOpen(false);
     setShowMoreOptions(false);
@@ -44,6 +58,26 @@ export default function NewPoolDialog(props) {
   const checkIfInputEnough = () => {
     if (value < 3) setDisableButton(true);
     else setDisableButton(false);
+  };
+
+  const handleValueChange = (e) => {
+    setValue(e.target.value);
+    setValueTouched(true);
+    if (!entryBarrierTouched) setEntryBarrier(e.target.value);
+  };
+
+  const handleNameChange = (e) => {
+    let name = e.target.value;
+    setPoolName(name);
+    setPoolNameTouched(true);
+    if (!tokenNameTouched)
+      setTokenName(
+        `${name.trim()}${
+          name.match(' ') ? ' ' : name.match('-') ? '-' : ''
+        }Token`
+      );
+    if (!tokenSymbolTouched)
+      setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
 
   const handleSubmit = () => {
@@ -82,13 +116,17 @@ export default function NewPoolDialog(props) {
             placeholder="CryptoApes"
             fullWidth
             value={poolName}
-            onChange={(e) => setPoolName(e.target.value)}
+            onChange={handleNameChange}
           />
+          {poolNameTouched && poolName.length < 3 && (
+            <div className="text-red-600" style={{ marginTop: 0 }}>
+              must be 3 letters or more
+            </div>
+          )}
           <TextField
             type="number"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            //onChange={(e) => validateInput(e.target.value)}
+            onChange={handleValueChange}
             label="Your Invest"
             placeholder="1"
             fullWidth
@@ -96,6 +134,16 @@ export default function NewPoolDialog(props) {
               endAdornment: <InputAdornment position="end">USD</InputAdornment>,
             }}
           />
+          {valueTouched && value < 3 && (
+            <div className="text-red-600" style={{ marginTop: 0 }}>
+              must be $3.00 or more
+            </div>
+          )}
+          {!hasEnoughBalance && (
+            <div className="text-red-600" style={{ marginTop: 0 }}>
+              You dont have that much USD in your wallet!
+            </div>
+          )}
           <div></div>
           <Collapse in={!showMoreOptions} sx={{ marginTop: '0px !important' }}>
             <Button
@@ -104,16 +152,6 @@ export default function NewPoolDialog(props) {
             >
               More Options
             </Button>
-            {value < 3 && (
-              <div className="text-red-600">
-                "Your Invest" must atleast be $3.00!
-              </div>
-            )}
-            {poolName.length < 3 && (
-              <div className="text-red-600">
-                "Pool name" must atleast be 3 letters!
-              </div>
-            )}
           </Collapse>
           <Collapse in={showMoreOptions}>
             <Stack spacing={2}>
@@ -125,7 +163,10 @@ export default function NewPoolDialog(props) {
                     placeholder={`${poolName}Token`}
                     fullWidth
                     value={tokenName}
-                    onChange={(e) => setTokenName(e.target.value)}
+                    onChange={(e) => {
+                      setTokenName(e.target.value);
+                      setTokenNameTouched(e.target.value.length > 0);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -134,14 +175,20 @@ export default function NewPoolDialog(props) {
                     placeholder="TKN"
                     fullWidth
                     value={tokenSymbol}
-                    onChange={(e) => setTokenSymbol(e.target.value)}
+                    onChange={(e) => {
+                      setTokenSymbol(e.target.value);
+                      setTokenSymbolTouched(e.target.value.length > 0);
+                    }}
                   />
                 </Grid>
               </Grid>
               <TextField
                 type="number"
                 value={entryBarrier}
-                onChange={(e) => setEntryBarrier(e.target.value)}
+                onChange={(e) => {
+                  setEntryBarrier(e.target.value);
+                  setEntryBarrierTouched(e.target.value.length > 0);
+                }}
                 label="Minimum Invest"
                 placeholder="1"
                 fullWidth
