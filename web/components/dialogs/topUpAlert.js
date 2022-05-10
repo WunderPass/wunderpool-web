@@ -29,7 +29,7 @@ export default function TopUpAlert(props) {
 
   return (
     <Dialog
-      open={open}
+      open={open || false}
       onClose={handleClose}
       TransitionComponent={Transition}
       fullWidth

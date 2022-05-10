@@ -8,6 +8,7 @@ import SwapTokenDialog from '/components/dialogs/swapTokenDialog';
 import TokenCard from './card';
 
 export default function TokenList(props) {
+  const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
   const { tokens, poolAddress, handleFund, handleWithdraw } = props;
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
@@ -32,6 +33,8 @@ export default function TokenList(props) {
     setBalance(token.balance.toString());
   };
 
+  console.log(tokens.address);
+
   return (
     <Stack spacing={2}>
       <Typography variant="h4">Tokens</Typography>
@@ -39,14 +42,16 @@ export default function TokenList(props) {
         tokens
           .filter((tkn) => tkn.balance > 0)
           .map((token) => {
-            return (
-              <TokenCard
-                token={token}
-                key={`token-${token.address}`}
-                handleSell={handleSell}
-                handleSwap={handleSwap}
-              />
-            );
+            if (token.address != usdcAddress) {
+              return (
+                <TokenCard
+                  token={token}
+                  key={`token-${token.address}`}
+                  handleSell={handleSell}
+                  handleSwap={handleSwap}
+                />
+              );
+            }
           })}
       <SellTokenDialog
         open={openSell}
