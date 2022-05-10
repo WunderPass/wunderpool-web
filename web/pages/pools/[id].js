@@ -42,6 +42,7 @@ export default function Pool(props) {
   const [fundDialog, setFundDialog] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
   const [userIsMember, setUserIsMember] = useState(null);
+  const [isDemoPool, setIsDemoPool] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [tokens, setTokens] = useState([]);
   const [nfts, setNfts] = useState([]);
@@ -157,6 +158,7 @@ export default function Pool(props) {
         />
         <PoolBody
           userIsMember={userIsMember}
+          isDemoPool={isDemoPool}
           address={address}
           proposals={proposals}
           tokens={tokens}

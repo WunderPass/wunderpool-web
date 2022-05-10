@@ -38,9 +38,6 @@ export default function ProposalCard(props) {
   const [signing, setSigning] = useState(false);
   const [executable, setExecutable] = useState(false);
 
-  console.log(proposal.yesVotes.toNumber());
-  console.log(proposal.yesVotes);
-
   useEffect(() => {
     setExecutable(
       proposal.yesVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2

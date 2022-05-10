@@ -19,7 +19,14 @@ import axios from 'axios';
 import { currency, round } from '../../services/formatter';
 
 export default function ApeForm(props) {
-  const { setApe, address, fetchProposals, handleSuccess, handleError } = props;
+  const {
+    setApe,
+    address,
+    fetchProposals,
+    handleSuccess,
+    handleError,
+    isDemoPool,
+  } = props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
@@ -45,6 +52,7 @@ export default function ApeForm(props) {
     e.preventDefault();
     setLoading(true);
     createApeSuggestion(
+      isDemoPool,
       address,
       tokenAddress,
       `Let's Ape into ${tokenName} (${tokenSymbol})`,
@@ -83,88 +91,185 @@ export default function ApeForm(props) {
   };
 
   return (
-    <form>
-      <Stack width="100%" spacing={3}>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="h5">APE</Typography>
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </Stack>
-        <TokenInput
-          setTokenAddress={setTokenAddress}
-          setTokenName={setTokenName}
-          setTokenSymbol={setTokenSymbol}
-          setTokenImage={setTokenImage}
-        />
-        <Collapse in={tokenName && tokenSymbol ? true : false}>
-          <Stack spacing={3}>
+    <>
+      {!isDemoPool ? (
+        <form>
+          <Stack width="100%" spacing={3}>
             <Stack
-              spacing={2}
-              alignItems="center"
               direction="row"
-              sx={{ height: '50px' }}
+              alignItems="center"
+              justifyContent="space-between"
             >
-              <img width="50px" src={tokenImage || '/favicon.ico'} />
-              <Typography variant="h4" flexGrow={1}>
-                {tokenName}
-              </Typography>
-              <Typography variant="h4" color="GrayText">
-                {!waitingForPrice && currency(tokenPrice / 100, {})}
-              </Typography>
+              <Typography variant="h5">APE</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
             </Stack>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>Ape Amount</InputLabel>
-              <OutlinedInput
-                type="number"
-                value={value}
-                onChange={handleValueInput}
-                label="Ape Amount"
-                placeholder="1"
-                endAdornment={
-                  <InputAdornment position="end">USD</InputAdornment>
-                }
-              />
-              <Typography variant="subtitle1" textAlign="right">
-                {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
-                {tokenSymbol}
-              </Typography>
-            </FormControl>
-          </Stack>
-        </Collapse>
-        {loading ? (
-          <>
-            <button className="btn btn-default" disabled variant="contained">
-              Submitting Proposal...
-            </button>
-            <Dialog open={open} onClose={handleClose}>
-              <iframe
-                className="w-auto"
-                id="fr"
-                name="transactionFrame"
-                height="600"
-              ></iframe>
-              <Stack spacing={2} sx={{ textAlign: 'center' }}>
-                <LinearProgress />
+            <TokenInput
+              setTokenAddress={setTokenAddress}
+              setTokenName={setTokenName}
+              setTokenSymbol={setTokenSymbol}
+              setTokenImage={setTokenImage}
+            />
+            <Collapse in={tokenName && tokenSymbol ? true : false}>
+              <Stack spacing={3}>
+                <Stack
+                  spacing={2}
+                  alignItems="center"
+                  direction="row"
+                  sx={{ height: '50px' }}
+                >
+                  <img width="50px" src={tokenImage || '/favicon.ico'} />
+                  <Typography variant="h4" flexGrow={1}>
+                    {tokenName}
+                  </Typography>
+                  <Typography variant="h4" color="GrayText">
+                    {!waitingForPrice && currency(tokenPrice / 100, {})}
+                  </Typography>
+                </Stack>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Ape Amount</InputLabel>
+                  <OutlinedInput
+                    type="number"
+                    value={value}
+                    onChange={handleValueInput}
+                    label="Ape Amount"
+                    placeholder="1"
+                    endAdornment={
+                      <InputAdornment position="end">USD</InputAdornment>
+                    }
+                  />
+                  <Typography variant="subtitle1" textAlign="right">
+                    {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
+                    {tokenSymbol}
+                  </Typography>
+                </FormControl>
               </Stack>
-            </Dialog>
-          </>
-        ) : (
-          <button
-            className="btn btn-success"
-            type="submit"
-            disabled={!tokenName || !tokenSymbol || value == 0}
-            onClick={handleApe}
-            variant="contained"
-          >
-            Create Token proposal
-          </button>
-        )}
-      </Stack>
-    </form>
+            </Collapse>
+            {loading ? (
+              <>
+                <button
+                  className="btn btn-default"
+                  disabled
+                  variant="contained"
+                >
+                  Submitting Proposal...
+                </button>
+                <Dialog open={open} onClose={handleClose}>
+                  <iframe
+                    className="w-auto"
+                    id="fr"
+                    name="transactionFrame"
+                    height="600"
+                  ></iframe>
+                  <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                    <LinearProgress />
+                  </Stack>
+                </Dialog>
+              </>
+            ) : (
+              <button
+                className="btn btn-success"
+                type="submit"
+                disabled={!tokenName || !tokenSymbol || value == 0}
+                onClick={handleApe}
+                variant="contained"
+              >
+                Create Token proposal
+              </button>
+            )}
+          </Stack>
+        </form>
+      ) : (
+        //If it is a demo pool
+        <form>
+          <Stack width="100%" spacing={3}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography variant="h5">APE</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+            <TokenInput
+              setTokenAddress={setTokenAddress}
+              setTokenName={setTokenName}
+              setTokenSymbol={setTokenSymbol}
+              setTokenImage={setTokenImage}
+            />
+            <Collapse in={tokenName && tokenSymbol ? true : false}>
+              <Stack spacing={3}>
+                <Stack
+                  spacing={2}
+                  alignItems="center"
+                  direction="row"
+                  sx={{ height: '50px' }}
+                >
+                  <img width="50px" src={tokenImage || '/favicon.ico'} />
+                  <Typography variant="h4" flexGrow={1}>
+                    {tokenName}
+                  </Typography>
+                  <Typography variant="h4" color="GrayText">
+                    {!waitingForPrice && currency(tokenPrice / 100, {})}
+                  </Typography>
+                </Stack>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Ape Amount</InputLabel>
+                  <OutlinedInput
+                    type="number"
+                    value={value}
+                    onChange={handleValueInput}
+                    label="Ape Amount"
+                    placeholder="1"
+                    endAdornment={
+                      <InputAdornment position="end">USD</InputAdornment>
+                    }
+                  />
+                  <Typography variant="subtitle1" textAlign="right">
+                    {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
+                    {tokenSymbol}
+                  </Typography>
+                </FormControl>
+              </Stack>
+            </Collapse>
+            {loading ? (
+              <>
+                <button
+                  className="btn btn-default"
+                  disabled
+                  variant="contained"
+                >
+                  Submitting Proposal...
+                </button>
+                <Dialog open={open} onClose={handleClose}>
+                  <iframe
+                    className="w-auto"
+                    id="fr"
+                    name="transactionFrame"
+                    height="600"
+                  ></iframe>
+                  <Stack spacing={2} sx={{ textAlign: 'center' }}>
+                    <LinearProgress />
+                  </Stack>
+                </Dialog>
+              </>
+            ) : (
+              <button
+                className="btn btn-success"
+                type="submit"
+                disabled={!tokenName || !tokenSymbol || value == 0}
+                onClick={handleApe}
+                variant="contained"
+              >
+                Create Token proposal
+              </button>
+            )}
+          </Stack>
+        </form>
+      )}
+    </>
   );
 }

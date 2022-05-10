@@ -1,13 +1,13 @@
-import { ethers } from "ethers";
-import { encodeParams, usdc } from "../formatter";
+import { ethers } from 'ethers';
+import { encodeParams, usdc } from '../formatter';
 import {
   gasPrice,
   httpProvider,
   initPool,
   usdcAddress,
   wunderSwapperAddress,
-} from "./init";
-import useWunderPass from "/hooks/useWunderPass";
+} from './init';
+import useWunderPass from '/hooks/useWunderPass';
 
 export function fetchPoolProposals(address) {
   return new Promise(async (resolve, reject) => {
@@ -70,8 +70,8 @@ export function createSingleActionProposal(
 ) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
     const tx = await wunderPool.populateTransaction.createProposal(
@@ -108,8 +108,8 @@ export function createMultiActionProposal(
 ) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
     const tx = await wunderPool.populateTransaction.createMultiActionProposal(
@@ -205,11 +205,12 @@ export function createCustomProposal(
       deadline
     );
   } else {
-    return new Promise((resolve, reject) => reject("INVALID PROPOSAL"));
+    return new Promise((resolve, reject) => reject('INVALID PROPOSAL'));
   }
 }
 
 export function createApeSuggestion(
+  isDemoPool,
   poolAddress,
   tokenAddress,
   title,
@@ -217,6 +218,7 @@ export function createApeSuggestion(
   value
 ) {
   return createSwapSuggestion(
+    isDemoPool,
     poolAddress,
     usdcAddress,
     tokenAddress,
@@ -249,14 +251,15 @@ export function createLiquidateSuggestion(poolAddress, title, description) {
     title,
     description,
     poolAddress,
-    "liquidatePool()",
-    "0x",
+    'liquidatePool()',
+    '0x',
     0,
     1846183041
   );
 }
 
 export async function createSwapSuggestion(
+  isDemoPool,
   poolAddress,
   tokenIn,
   tokenOut,
@@ -264,6 +267,9 @@ export async function createSwapSuggestion(
   description,
   amount
 ) {
+  if (isDemo) {
+    return createDemoProposal();
+  }
   const [wunderPool] = initPool(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
@@ -273,11 +279,11 @@ export async function createSwapSuggestion(
       title,
       description,
       [tokenIn, wunderSwapperAddress],
-      ["transfer(address,uint256)", "swapTokens(address,address,uint256)"],
+      ['transfer(address,uint256)', 'swapTokens(address,address,uint256)'],
       [
-        encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]),
+        encodeParams(['address', 'uint256'], [wunderSwapperAddress, amount]),
         encodeParams(
-          ["address", "address", "uint256"],
+          ['address', 'address', 'uint256'],
           [tokenIn, tokenOut, amount]
         ),
       ],
@@ -291,17 +297,17 @@ export async function createSwapSuggestion(
       description,
       [tokenIn, wunderSwapperAddress, poolAddress],
       [
-        "transfer(address,uint256)",
-        "swapTokens(address,address,uint256)",
-        "addToken(address,bool,uint256)",
+        'transfer(address,uint256)',
+        'swapTokens(address,address,uint256)',
+        'addToken(address,bool,uint256)',
       ],
       [
-        encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]),
+        encodeParams(['address', 'uint256'], [wunderSwapperAddress, amount]),
         encodeParams(
-          ["address", "address", "uint256"],
+          ['address', 'address', 'uint256'],
           [tokenIn, tokenOut, amount]
         ),
-        encodeParams(["address", "bool", "uint256"], [tokenOut, false, 0]),
+        encodeParams(['address', 'bool', 'uint256'], [tokenOut, false, 0]),
       ],
       [0, 0, 0],
       1846183041
@@ -324,16 +330,16 @@ export async function createNftBuyProposal(
     description,
     [usdcAddress, nftAddress],
     [
-      "transferFrom(address,address,uint256)",
-      "transferFrom(address,address,uint256)",
+      'transferFrom(address,address,uint256)',
+      'transferFrom(address,address,uint256)',
     ],
     [
       encodeParams(
-        ["address", "address", "uint256"],
+        ['address', 'address', 'uint256'],
         [buyerAddress, poolAddress, amount]
       ),
       encodeParams(
-        ["address", "address", "uint256"],
+        ['address', 'address', 'uint256'],
         [poolAddress, buyerAddress, tokenId]
       ),
     ],
@@ -357,16 +363,16 @@ export async function createNftSellProposal(
     description,
     [usdcAddress, nftAddress],
     [
-      "transferFrom(address,address,uint256)",
-      "transferFrom(address,address,uint256)",
+      'transferFrom(address,address,uint256)',
+      'transferFrom(address,address,uint256)',
     ],
     [
       encodeParams(
-        ["address", "address", "uint256"],
+        ['address', 'address', 'uint256'],
         [poolAddress, sellerAddress, amount]
       ),
       encodeParams(
-        ["address", "address", "uint256"],
+        ['address', 'address', 'uint256'],
         [sellerAddress, poolAddress, tokenId]
       ),
     ],
@@ -382,7 +388,7 @@ export function testExecute(
   params,
   transactionValue
 ) {
-  const abi = [`function ${action}${transactionValue == 0 ? "" : " payable"}`];
+  const abi = [`function ${action}${transactionValue == 0 ? '' : ' payable'}`];
   const provider = httpProvider;
   const contract = new ethers.Contract(contractAddress, abi, provider);
   const fun = contract.callStatic[action];
@@ -404,8 +410,8 @@ export function testExecute(
 export function execute(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPool(poolAddress);
     const tx = await wunderPool.populateTransaction.executeProposal(id, {
