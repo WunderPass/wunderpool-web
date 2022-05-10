@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPool } from '/services/contract/pools';
 
 export default function NewPoolDialog(props) {
@@ -32,7 +32,12 @@ export default function NewPoolDialog(props) {
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [disableButton, setDisableButton] = useState(false);
+  const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
+
+  useEffect(() => {
+    setHasEnoughBalance(user.usdBalance >= value);
+    console.log(hasEnoughBalance);
+  });
 
   const handleClose = () => {
     setPoolName('');
@@ -75,7 +80,7 @@ export default function NewPoolDialog(props) {
     if (!tokenSymbolTouched)
       setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
-
+  
   const handleSubmit = () => {
     setLoading(true);
     setWaitingForPool(true);
@@ -133,6 +138,11 @@ export default function NewPoolDialog(props) {
           {valueTouched && value < 3 && (
             <div className="text-red-600" style={{ marginTop: 0 }}>
               must be $3.00 or more
+            </div>
+          )}
+          {!hasEnoughBalance && (
+            <div className="text-red-600" style={{ marginTop: 0 }}>
+              You dont have that much USD in your wallet!
             </div>
           )}
           <div></div>
