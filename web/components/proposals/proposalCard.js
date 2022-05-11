@@ -110,7 +110,7 @@ export default function ProposalCard(props) {
             {!proposal.executed && (
               <button
                 className={executable ? 'p-8 btn btn-warning' : 'hidden'}
-                disabled={waitingForExec || executable}
+                disabled={waitingForExec}
                 onClick={executeProposal}
               >
                 Execute
