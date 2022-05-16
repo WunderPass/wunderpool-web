@@ -13,6 +13,9 @@ module.exports = {
         'wunder-blue': '#0096FE',
         'wunder-light-blue': '#01BFFF',
         'wunder-dark-blue': '#020D30',
+        'kaico-blue': '#5F45FD',
+        'kaico-dark-blue': '#462cf1',
+        'kaico-light-blue': '#7560ff',
       },
       backgroundImage: {
         'split-blue-white':

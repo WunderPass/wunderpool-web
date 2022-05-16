@@ -56,3 +56,7 @@ a {
 .btn-warning {
   @apply bg-[#f7b91b] hover:bg-[#dba418];
 }
+
+.btn-kaico {
+  @apply bg-[#5F45FD] hover:bg-[#4F41FF] text-white;
+}
