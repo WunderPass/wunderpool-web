@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Menu, MenuItem } from '@mui/material';
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { IoMdNotifications } from 'react-icons/io';
 
 const navigation = (props) => {
   const { user } = props;
@@ -49,9 +50,11 @@ const navigation = (props) => {
           </Menu>{' '}
         </li>
         <li className="px-2">
-          <a href="/">Profile </a>
+          <a href="/pools">Profile </a>
         </li>
-
+        <div className="px-2">
+          <IoMdNotifications className="text-xl" />
+        </div>
         <div
           onClick={() => user.setTopUpRequired(true)}
           className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
