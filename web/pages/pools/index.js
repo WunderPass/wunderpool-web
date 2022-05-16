@@ -1,12 +1,17 @@
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
+import ClipboardIcon from '/public/Vectorclipboard.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
+import { MdContentCopy } from 'react-icons/md';
 import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
+import Image from 'next/image';
+MdContentCopy;
+
 import {
   Toolbar,
   AppBar,
@@ -116,22 +121,39 @@ export default function Pools(props) {
               justifyContent="space-between"
             >
               <div className="flex flex-col w-full justify-start">
-                <div className="flex flex-col justify-between border-solid border-2 border-[#ADD8E6] mb-1  rounded-md bg-white p-2 sm:mr-8 w-full shadow-xl">
-                  <Typography variant="h3" className="font-bold">
-                    {user?.wunderId}
+                <div>
+                  <Typography className="font-bold text-2xl my-3">
+                    Hello {user?.wunderId},
                   </Typography>
-                  <CopyToClipboard
-                    text={user?.address}
-                    onCopy={() => alert.show('address copied!')}
+                  <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 shadow-xl">
+                    <CopyToClipboard
+                      text={user?.address}
+                      onCopy={() => alert.show('address copied!')}
+                    >
+                      <span className=" cursor-pointer text-md">
+                        <div className="flex flex-row items-center">
+                          <div className="truncate ...">{user?.address}</div>
+                          <MdContentCopy className="text-gray-500 ml-4" />
+                        </div>
+                      </span>
+                    </CopyToClipboard>
+                  </div>
+                  <button
+                    className="btn-kaico w-full hover:bg-white my-4 rounded-xl py-4 px-3 text-md font-semibold cursor-pointer transition-colors "
+                    onClick={() => setOpen(true)}
                   >
-                    <span className="truncate ... cursor-pointer text-md">
-                      {user?.address}
-                    </span>
-                  </CopyToClipboard>
-                  <Typography
-                    className="truncate ... "
-                    variant="h6"
-                  ></Typography>{' '}
+                    Create pool
+                  </button>
+                </div>
+                <Typography className="font-bold text-xl my-4">
+                  Balance
+                </Typography>
+                <div className="flex flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
+                  <Typography className="pb-6">Total Balance</Typography>
+                  <Typography className="text-3xl font-bold">
+                    $12,223
+                  </Typography>
+                  <Typography className="">Total Balance</Typography>
                 </div>
               </div>
             </Stack>
@@ -143,12 +165,6 @@ export default function Pools(props) {
                   <Typography className="text-xl text-black font-bold lg:text-2xl">
                     My WunderPools
                   </Typography>
-                  <button
-                    className="btn btn-success"
-                    onClick={() => setOpen(true)}
-                  >
-                    Create new pool
-                  </button>
                 </div>
 
                 {loadingUser ? (
