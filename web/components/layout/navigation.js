@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, Menu, MenuItem } from '@mui/material';
-
 import { currency } from '/services/formatter';
-
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 
 const navigation = (props) => {
   const { user } = props;
-
   const [poolListOpen, setPoolListOpen] = useState(null);
   const [usdcBalance, setUsdcBalance] = useState(true);
 
@@ -52,11 +49,9 @@ const navigation = (props) => {
           </Menu>{' '}
         </li>
         <li className="px-2">
-          <a href="/">Home2 </a>
+          <a href="/">Profile </a>
         </li>
-        <li className="px-2">
-          <a href="/">Home3 </a>
-        </li>
+
         <div
           onClick={() => user.setTopUpRequired(true)}
           className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
