@@ -6,11 +6,11 @@ import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
 import { MdContentCopy } from 'react-icons/md';
+import { MdGroups } from 'react-icons/md';
 import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-MdContentCopy;
 
 import {
   Toolbar,
@@ -62,13 +62,22 @@ function PoolList(props) {
       );
     })
   ) : (
-    <Paper elevation={1} sx={{ p: 2 }}>
-      <Stack sx={{ textAlign: 'center' }}>
-        <Typography className="pb-2" variant="h5">
-          There are no pools yet
+    <div className="container-white">
+      <div className="flex flex-col items-center ">
+        <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mb-4">
+          <MdGroups className="text-4xl" />
+        </div>
+        <Typography className="font-bold my-2" variant="h7">
+          No Pools joined yet
         </Typography>
-      </Stack>
-    </Paper>
+        <button
+          className="items-center w-full bg-white hover:bg-[#ededed] my-5 rounded-xl border-2 border-kaico-extra-light-blue py-3 px-3 text-md font-semibold cursor-pointer transition-colors"
+          onClick={() => setOpen(true)}
+        >
+          Create pool
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -122,7 +131,7 @@ export default function Pools(props) {
             >
               <div className="flex flex-col w-full justify-start">
                 <div>
-                  <Typography className="font-bold text-2xl my-3">
+                  <Typography className="font-bold text-2xl my-5">
                     Hello {user?.wunderId},
                   </Typography>
                   <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 shadow-xl">
@@ -145,9 +154,7 @@ export default function Pools(props) {
                     Create pool
                   </button>
                 </div>
-                <Typography className="font-bold text-xl my-4">
-                  Balance
-                </Typography>
+                <Typography className="subheader my-4">Balance</Typography>
                 <div className="flex flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
                   <Typography className="pb-6">Total Balance</Typography>
                   <Typography className="text-3xl font-bold">
@@ -162,8 +169,8 @@ export default function Pools(props) {
             <div className="flex flex-col md:flex-row justify-between">
               <div className="w-full pr-1 mb-8 md:mr-3 md:mb-0">
                 <div className="flex flex-row justify-between pb-4">
-                  <Typography className="text-xl text-black font-bold lg:text-2xl">
-                    My WunderPools
+                  <Typography className="subheader lg:text-2xl">
+                    My Pools
                   </Typography>
                 </div>
 
@@ -182,7 +189,7 @@ export default function Pools(props) {
                 )}
               </div>
               <div className="w-full pl-1 md:pl-3 ">
-                <Typography className="text-xl text-black font-bold pb-5 lg:text-2xl">
+                <Typography className="subheader pb-5 lg:text-2xl">
                   Demo WunderPool
                 </Typography>
                 {loadingAll ? (
