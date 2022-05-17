@@ -1,21 +1,18 @@
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
-import ClipboardIcon from '/public/Vectorclipboard.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
 import BalanceBox from '/components/pool/balanceBox';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
 import { MdContentCopy } from 'react-icons/md';
+import { PieChart } from 'react-minimal-pie-chart';
 import { MdGroups } from 'react-icons/md';
 import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
 
 import {
-  Toolbar,
-  AppBar,
   Container,
   IconButton,
   Paper,
@@ -30,19 +27,23 @@ function PoolList(props) {
   return pools.length > 0 ? (
     pools.map((pool, i) => {
       return (
-        <Paper
-          className="mb-4 pb-6"
-          elevation={1}
-          key={`pool-${i}`}
-          sx={{ p: 2 }}
-        >
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
+        <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
+          <Paper
+            className="container-white mb-4 pb-6 cursor-pointer"
+            elevation={1}
+            key={`pool-${i}`}
+            sx={{ p: 2 }}
           >
-            <Stack spacing={1}>
-              <Typography variant="h6">{pool.name}</Typography>
+            <div className="flex flex-col">
+              <div className="flex flex-row justify-between items-center">
+                <Typography className="text-md font-semibold">
+                  {pool.name}
+                </Typography>
+                <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
+              </div>
+              <Typography className="text-lg pt-3 font-semibold">
+                $2,500 Balance
+              </Typography>
               {pool.entryBarrier && (
                 <Typography variant="subtitle1">
                   Minimum Invest: $
@@ -52,14 +53,28 @@ function PoolList(props) {
                   )}
                 </Typography>
               )}
-            </Stack>
-            <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
-              <IconButton>
-                <ArrowCircleRightOutlinedIcon color="primary" />
-              </IconButton>
-            </Link>
-          </Stack>
-        </Paper>
+              <div className="flex flex-row justify-between items-center">
+                <div className="flex flex-row justify-start items-center">
+                  <PieChart
+                    className="w-8 my-1 mt-6"
+                    data={[
+                      { title: 'One', value: 43, color: '#E4DFFF' },
+                      { title: 'Two', value: 22, color: '#5F45FD' },
+                    ]}
+                  />
+                  <Typography className="text-md font-semibold pt-5 pl-3">
+                    29%
+                  </Typography>
+                </div>
+
+                <PieChart
+                  className="w-8 my-1 mt-6"
+                  data={[{ title: 'One', value: 100, color: '#5F45FD' }]}
+                />
+              </div>
+            </div>
+          </Paper>
+        </Link>
       );
     })
   ) : (
