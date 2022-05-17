@@ -2,6 +2,7 @@ import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOu
 import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import ClipboardIcon from '/public/Vectorclipboard.svg';
 import NewPoolDialog from '/components/dialogs/newPool';
+import BalanceBox from '/components/pool/balanceBox';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
@@ -148,20 +149,14 @@ export default function Pools(props) {
                     </CopyToClipboard>
                   </div>
                   <button
-                    className="btn-kaico w-full hover:bg-white my-4 rounded-xl py-4 px-3 text-md font-semibold cursor-pointer transition-colors "
+                    className="btn-kaico w-full my-4 rounded-xl py-4 px-3 text-md font-semibold cursor-pointer transition-colors "
                     onClick={() => setOpen(true)}
                   >
                     Create pool
                   </button>
                 </div>
                 <Typography className="subheader my-4">Balance</Typography>
-                <div className="flex flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
-                  <Typography className="pb-6">Total Balance</Typography>
-                  <Typography className="text-3xl font-bold">
-                    $12,223
-                  </Typography>
-                  <Typography className="">Total Balance</Typography>
-                </div>
+                <BalanceBox />
               </div>
             </Stack>
             <div></div>

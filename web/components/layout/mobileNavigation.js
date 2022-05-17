@@ -54,7 +54,7 @@ const mobileNavigation = (props) => {
         </div>
         {open && (
           <div>
-            <ul className="flex flex-col justify-between absolute top-13 left-0 bg-kaico-blue w-full border-t-2 border-white align-right pl-1">
+            <ul className="flex flex-col justify-between absolute top-13 left-0 bg-kaico-blue w-full border-t-2  border-t-white align-right pl-1 shadow-xl">
               <motion.li
                 className="px-2 py-1 pt-2"
                 initial={animateFrom}
@@ -103,7 +103,7 @@ const mobileNavigation = (props) => {
                 transition={{ delay: 0.2 }}
               >
                 <button
-                  className="btn ml-2 my-2 py-1 hover:bg-[#ff0000] text-sm w-20"
+                  className="ml-2 pb-2 py-1 hover:text-[#ff0000]"
                   onClick={user?.logOut}
                 >
                   Log out
