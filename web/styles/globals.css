@@ -66,9 +66,13 @@ a {
 }
 
 .container-white {
-  @apply border-solid text-black rounded-xl bg-white p-5 shadow-xl;
+  @apply border-solid text-black rounded-xl bg-white p-5 shadow-md;
 }
 
 .subheader {
   @apply font-semibold text-black text-xl;
+}
+
+.subheader-sm {
+  @apply sm:font-semibold sm:text-black sm:text-2xl;
 }

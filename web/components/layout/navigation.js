@@ -23,7 +23,7 @@ const navigation = (props) => {
       <ul className="flex flex-row justify-between items-center">
         <li className="px-2">
           <button
-            className="hidden sm:block"
+            className="hidden sm:block font-semibold"
             onClick={(e) => setPoolListOpen(e.currentTarget)}
           >
             My Pools
@@ -49,10 +49,10 @@ const navigation = (props) => {
             {user.pools.length == 0 && <MenuItem> - no pools - </MenuItem>}
           </Menu>{' '}
         </li>
-        <li className="px-2">
+        <li className="px-2 font-semibold">
           <a href="/pools">Profile </a>
         </li>
-        <div className="px-2">
+        <div className="px-2 opacity-50">
           <IoMdNotifications className="text-xl" />
         </div>
         <div
