@@ -34,31 +34,39 @@ a {
 }
 
 .btn-default {
-  @apply bg-[#ededed] hover:bg-[#d9dbdb] text-black cursor-pointer;
+  @apply bg-[#ededed] hover:bg-[#d9dbdb] text-black cursor-pointer rounded-xl;
 }
 
 .btn-primary {
-  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer;
+  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
 }
 
 .btn-success {
-  @apply bg-[#03a32e] hover:bg-[#038a27] text-white cursor-pointer;
+  @apply bg-[#03a32e] hover:bg-[#038a27] text-white cursor-pointer rounded-xl;
 }
 
 .btn-danger {
-  @apply bg-[#e60246] hover:bg-[#c9023e] text-white cursor-pointer;
+  @apply bg-[#e60246] hover:bg-[#c9023e] text-white cursor-pointer rounded-xl;
 }
 
 .btn-info {
-  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer;
+  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
 }
 
 .btn-warning {
-  @apply bg-[#f7b91b] hover:bg-[#dba418] cursor-pointer;
+  @apply bg-[#f7b91b] hover:bg-[#dba418] cursor-pointer rounded-xl;
 }
 
 .btn-kaico {
-  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer;
+  @apply font-semibold bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
+}
+
+.btn-kaico-white {
+  @apply font-semibold bg-white hover:bg-[#ededed] text-black cursor-pointer rounded-xl border-2 border-kaico-extra-light-blue;
+}
+
+.btn-cancel {
+  @apply font-semibold bg-white hover:bg-[#ededed] text-gray-500 cursor-pointer rounded-xl border-2 border-gray-200;
 }
 
 .container-kaico {
@@ -75,4 +83,12 @@ a {
 
 .subheader-sm {
   @apply sm:font-semibold sm:text-black sm:text-2xl;
+}
+
+.textfield {
+  @apply border w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-kaico-extra-light-blue;
+}
+
+.label {
+  @apply text-sm font-semibold;
 }

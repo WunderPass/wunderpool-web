@@ -84,7 +84,7 @@ function PoolList(props) {
           No Pools joined yet
         </Typography>
         <button
-          className="items-center w-full bg-white hover:bg-[#ededed] my-5 rounded-xl border-2 border-kaico-extra-light-blue py-3 px-3 text-md font-semibold cursor-pointer transition-colors"
+          className="btn-kaico-white items-center w-full my-5 py-3 px-3 text-md font-semibold "
           onClick={() => setOpen(true)}
         >
           Create pool
@@ -157,7 +157,7 @@ export default function Pools(props) {
                 </div>
               </div>
               <button
-                className="btn-kaico w-full my-4 rounded-xl py-4 px-3 text-md font-semibold cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:mt-7 sm:py-0 "
+                className="btn-kaico w-full my-4 py-4 px-3 text-md font-semibold cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:mt-7 sm:py-0 "
                 onClick={() => setOpen(true)}
               >
                 Create pool
