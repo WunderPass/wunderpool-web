@@ -20,7 +20,7 @@ function PoolStructure(props) {
     return (
       <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
         <Paper
-          className="container-white mb-4 pb-6 sm:pb-0 sm:mb-0 cursor-pointer"
+          className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
           elevation={1}
           key={`pool-${i}`}
           sx={{ p: 2 }}
@@ -41,10 +41,10 @@ function PoolStructure(props) {
                 {displayWithDecimalPlaces(toEthString(pool.entryBarrier, 6), 2)}
               </Typography>
             )}
-            <div className="flex flex-row justify-between items-center p-1">
-              <div className="flex flex-row justify-start items-center p-1">
+            <div className="flex flex-row justify-between items-center pb-4">
+              <div className="flex flex-row justify-start items-center ">
                 <PieChart
-                  className="w-8 my-1 mt-6"
+                  className="w-8 sm:w-6 my-1 mt-6"
                   data={[
                     { title: 'One', value: 22, color: '#E4DFFF' },
                     { title: 'Two', value: 29, color: '#5F45FD' },
@@ -56,7 +56,7 @@ function PoolStructure(props) {
               </div>
 
               <PieChart
-                className="w-8 my-1 mt-6 m-1"
+                className="w-8 sm:w-6 my-1 mt-6 m-1"
                 data={[{ title: 'One', value: 100, color: '#5F45FD' }]}
               />
             </div>
@@ -71,7 +71,7 @@ function PoolList(props) {
   const { pools, setOpen } = props;
 
   return pools.length > 0 ? (
-    <div className="grid grid-cols-2 gap-8">
+    <div className="md:grid md:grid-cols-2 md:gap-6">
       <PoolStructure pools={pools} />
     </div>
   ) : (
@@ -174,7 +174,7 @@ export default function Pools(props) {
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                 <div className="flex flex-row justify-between pb-4 b">
-                  <Typography className="subheader subheader-sm md:text-red-500 lg:text-blue-500">
+                  <Typography className="subheader subheader-sm">
                     My Pools
                   </Typography>
                 </div>
@@ -195,7 +195,7 @@ export default function Pools(props) {
               </div>
             </div>
 
-            <div className="w-full pl-1 md:pl-3 ">
+            <div className="w-full sm:pb-14 sm:pt-10">
               <Typography className="subheader pb-4 lg:text-2xl">
                 Demo WunderPool
               </Typography>

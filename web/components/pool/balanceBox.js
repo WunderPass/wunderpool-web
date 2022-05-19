@@ -2,22 +2,24 @@ import { Typography } from '@mui/material';
 
 function balanceBox(props) {
   return (
-    <div>
-      <div className="flex flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
+    <div className="sm:h-full sm:max-h-96 ">
+      <div className="flex sm:h-full flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
         <Typography className="pb-6">Total Balance</Typography>
         <Typography className="text-3xl font-bold">$12,223</Typography>
 
         <div className="flex flex-row items-center">
           <div className="h-3 w-3 mt-3 bg-red-500 rounded-sm mr-2" />
-          <Typography className="pt-5 py-2">$14,745 Pool A</Typography>
+          <Typography className="pt-5 py-2 truncate">$14,745 Pool A</Typography>
         </div>
         <div className="flex flex-row items-center">
-          <div className="h-3 w-3 bg-yellow-200 rounded-sm mr-2" />
-          <Typography className="py-2">$7,312 Pool B</Typography>
+          <div className="h-3 w-3 bg-yellow-200 rounded-sm mr-2 " />
+          <Typography className="py-2 truncate">
+            $7,312 Pool BLABLABLABLABLABLABLA
+          </Typography>
         </div>
         <div className="flex flex-row items-center">
           <div className="h-3 w-3 bg-pink-300 rounded-sm mr-2" />
-          <Typography className="py-2">$1,000 Pool C</Typography>
+          <Typography className="py-2 truncate">$1,000 Pool C</Typography>
         </div>
 
         <div className="relative pt-6">
