@@ -34,9 +34,9 @@ export default function Home(props) {
 
   return (
     <>
-      <div className="flex flex-col h-screen  pt-7">
+      <div className="flex flex-col h-screen pt-7">
         <Head>
-          <title>WunderPool</title>
+          <title>Kaico</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">

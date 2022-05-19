@@ -147,16 +147,18 @@ export default function NewPoolDialog(props) {
         style: { borderRadius: 12 },
       }}
     >
-      <DialogTitle className="font-bold">Create a pool</DialogTitle>
-      <DialogContent>
+      <DialogTitle className="font-bold font-graphik tracking-tight">
+        Create a pool
+      </DialogTitle>
+      <DialogContent style={{ scrollbarwidth: 'none' }}>
         <Stack spacing={1}>
-          <DialogContentText className="text-sm mb-7">
+          <DialogContentText className="text-sm mb-7 font-graphik">
             Step 1 of 3 | Pool Details
           </DialogContentText>
 
           <div>
-            <label className="label" for="poolPicture">
-              Upload a profile picture of the Pool
+            <label className="label font-graphik" for="poolPicture">
+              Upload a profile picture for the Pool
             </label>
             <label htmlFor="fileUpload">
               <div
@@ -184,7 +186,6 @@ export default function NewPoolDialog(props) {
               accept="image/*"
               onChange={uploadToClient}
             />
-            <button onClick={uploadToServer}>CLICK</button>
           </div>
 
           <div>
@@ -194,7 +195,7 @@ export default function NewPoolDialog(props) {
             <input
               value={poolName}
               onChange={handleNameChange}
-              className="textfield py-4 px-3 mt-2"
+              className="textfield py-4 px-3 mt-2 "
               id="poolName"
               type="text"
               placeholder="Name of the Pool"
@@ -386,7 +387,7 @@ export default function NewPoolDialog(props) {
       ) : (
         <DialogActions className="flex items-center justify-center mx-4">
           <div className="flex flex-col items-center justify-center w-full">
-            <button className="btn-cancel w-full py-3" onClick={handleClose}>
+            <button className="btn-neutral w-full py-3" onClick={handleClose}>
               Cancel
             </button>
             <button

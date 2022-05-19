@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Graphik', 'sans-serif'],
+        graphik: ['Graphik', 'sans-serif'],
+      },
       fontSize: {
         'xs-mobile': '.25rem',
         mobile: '.50rem',

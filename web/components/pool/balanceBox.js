@@ -5,7 +5,7 @@ function balanceBox(props) {
     <div className="sm:h-full sm:max-h-96 ">
       <div className="flex sm:h-full flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
         <Typography className="pb-6">Total Balance</Typography>
-        <Typography className="text-3xl font-bold">$12,223</Typography>
+        <Typography className="text-3xl ">$12,223</Typography>
 
         <div className="flex flex-row items-center">
           <div className="h-3 w-3 mt-3 bg-red-500 rounded-sm mr-2" />

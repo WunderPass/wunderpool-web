@@ -2,19 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+@layer base {
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikMedium.otf');
+  }
+}
+
+body {
+  font-family: 'Grapik';
+}
 body {
   background-color: #f3f3f3;
 
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  @apply font-graphik tracking-tighter;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  @apply font-graphik tracking-tighter;
 }
 
 * {
@@ -58,15 +67,15 @@ a {
 }
 
 .btn-kaico {
-  @apply font-semibold bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
+  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
 }
 
 .btn-kaico-white {
-  @apply font-semibold bg-white hover:bg-[#ededed] text-black cursor-pointer rounded-xl border-2 border-kaico-extra-light-blue;
+  @apply bg-white hover:bg-[#ededed] text-black cursor-pointer rounded-xl border-2 border-kaico-extra-light-blue;
 }
 
-.btn-cancel {
-  @apply font-semibold bg-white hover:bg-[#ededed] text-gray-500 cursor-pointer rounded-xl border-2 border-gray-200;
+.btn-neutral {
+  @apply bg-white hover:bg-[#ededed] text-gray-500 cursor-pointer rounded-xl border-2 border-gray-200;
 }
 
 .container-kaico {
@@ -78,11 +87,11 @@ a {
 }
 
 .subheader {
-  @apply font-semibold text-black text-xl;
+  @apply text-black text-xl;
 }
 
 .subheader-sm {
-  @apply sm:font-semibold sm:text-black sm:text-2xl;
+  @apply sm:text-black sm:text-2xl;
 }
 
 .textfield {

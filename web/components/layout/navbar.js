@@ -27,7 +27,7 @@ export default function Navbar(props) {
                     layout="responsive"
                   />
                 </div>
-                <div className="flex-col justify-between border-solid w-9 h-9 ml-1 border-white rounded-full bg-white shadow-xl block sm:hidden">
+                <div className="flex-col justify-between border-solid w-9 h-9 ml-1 border-white rounded-full bg-kaico-extra-light-blue shadow-xl block sm:hidden">
                   <Image src={UserIcon} alt="UserIcon" layout="responsive" />
                 </div>
               </div>

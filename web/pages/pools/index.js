@@ -27,9 +27,7 @@ function PoolStructure(props) {
         >
           <div className="flex flex-col">
             <div className="flex flex-row justify-between items-center">
-              <Typography className="text-md font-semibold">
-                {pool.name}
-              </Typography>
+              <Typography className="text-md">{pool.name}</Typography>
               <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
             </div>
             <Typography className="text-lg pt-3 font-semibold">
@@ -50,9 +48,7 @@ function PoolStructure(props) {
                     { title: 'Two', value: 29, color: '#5F45FD' },
                   ]}
                 />
-                <Typography className="text-md font-semibold pt-5 pl-3">
-                  29%
-                </Typography>
+                <Typography className="text-md  pt-5 pl-3">29%</Typography>
               </div>
 
               <PieChart
@@ -80,11 +76,11 @@ function PoolList(props) {
         <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mb-4">
           <MdGroups className="text-4xl" />
         </div>
-        <Typography className="font-bold my-2" variant="h7">
+        <Typography className="my-2" variant="h7">
           No Pools joined yet
         </Typography>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3 px-3 text-md font-semibold "
+          className="btn-kaico-white items-center w-full my-5 py-3 px-3 text-md "
           onClick={() => setOpen(true)}
         >
           Create pool
@@ -125,7 +121,8 @@ export default function Pools(props) {
   return (
     <>
       <div
-      //className="bg-gradient-to-b from-wunder-blue via-white to-[#f0ffff]"  //PLAY AROUND HERE AND CHECK IF BACKGROUND IS NICE
+        className="font-graphik"
+        //className="bg-gradient-to-b from-wunder-blue via-white to-[#f0ffff]"  //PLAY AROUND HERE AND CHECK IF BACKGROUND IS NICE
       >
         <Head>
           <title>WunderPool</title>
@@ -139,10 +136,10 @@ export default function Pools(props) {
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pb-4 sm:pt-10 sm:pb-10">
               <div>
-                <Typography className="font-bold text-2xl my-5 sm:text-4xl">
+                <Typography className=" text-2xl my-5 sm:text-4xl">
                   Hello {user?.wunderId},
                 </Typography>
-                <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 shadow-xl">
+                <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 ">
                   <CopyToClipboard
                     text={user?.address}
                     onCopy={() => alert.show('address copied!')}
@@ -157,7 +154,7 @@ export default function Pools(props) {
                 </div>
               </div>
               <button
-                className="btn-kaico w-full my-4 py-4 px-3 text-md font-semibold cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:mt-7 sm:py-0 "
+                className="btn-kaico w-full my-4 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:mt-7 sm:py-0 "
                 onClick={() => setOpen(true)}
               >
                 Create pool
