@@ -195,7 +195,7 @@ export default function Pools(props) {
               </div>
             </div>
 
-            <div className="w-full sm:pb-14 sm:pt-10">
+            <div className="w-full pb-14 sm:pt-10">
               <Typography className="subheader pb-4 lg:text-2xl">
                 Demo WunderPool
               </Typography>
