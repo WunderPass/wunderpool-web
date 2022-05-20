@@ -29,7 +29,7 @@ export default function ApeForm(props) {
   const [loading, setLoading] = useState(false);
   const [waitingForPrice, setWaitingForPrice] = useState(false);
 
-  const receivedTokens = value / (tokenPrice / 100);
+  const receivedTokens = value / tokenPrice;
 
   const handleClose = () => {
     setTokenAddress('');
@@ -72,7 +72,7 @@ export default function ApeForm(props) {
         url: `/api/tokens/price`,
         params: { address: tokenAddress },
       }).then((res) => {
-        setTokenPrice(res.data?.price);
+        setTokenPrice(res.data?.dollar_price);
         setWaitingForPrice(false);
       });
     }
@@ -114,7 +114,7 @@ export default function ApeForm(props) {
                 {tokenName}
               </Typography>
               <Typography variant="h4" color="GrayText">
-                {!waitingForPrice && currency(tokenPrice / 100, {})}
+                {!waitingForPrice && currency(tokenPrice, {})}
               </Typography>
             </Stack>
             <FormControl fullWidth variant="outlined">
