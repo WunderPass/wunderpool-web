@@ -35,8 +35,7 @@ export default function NewPoolDialog(props) {
   const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
 
   useEffect(() => {
-    setHasEnoughBalance(user.usdBalance >= value);
-    console.log(hasEnoughBalance);
+    setHasEnoughBalance(Number(user.usdBalance) >= value);
   });
 
   const handleClose = () => {
@@ -80,7 +79,7 @@ export default function NewPoolDialog(props) {
     if (!tokenSymbolTouched)
       setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
-  
+
   const handleSubmit = () => {
     setLoading(true);
     setWaitingForPool(true);
