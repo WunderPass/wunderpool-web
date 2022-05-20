@@ -99,5 +99,5 @@ a {
 }
 
 .label {
-  @apply text-sm font-semibold;
+  @apply text-black;
 }
