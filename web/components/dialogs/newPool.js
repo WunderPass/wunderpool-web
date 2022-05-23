@@ -21,6 +21,8 @@ import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { BiUpload } from 'react-icons/bi';
 import CurrencyInput from 'react-currency-input-field';
+import { MdContentCopy } from 'react-icons/md';
+import { BsLink45Deg } from 'react-icons/bs';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, fetchPools, handleSuccess, handleError, user } = props;
@@ -167,12 +169,12 @@ export default function NewPoolDialog(props) {
     >
       {step < 2 && (
         <>
-          <DialogTitle className="font-bold font-graphik tracking-tight">
+          <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
             Create a pool
           </DialogTitle>
           <DialogContent style={{ scrollbarwidth: 'none' }}>
             <Stack spacing={1}>
-              <DialogContentText className="text-sm mb-7 font-graphik">
+              <DialogContentText className="text-sm mb-7 font-graphik ">
                 Step 1 of 3 | Pool Details
               </DialogContentText>
 
@@ -262,7 +264,7 @@ export default function NewPoolDialog(props) {
                       must be $3.00 or more
                     </div>
                   )}
-                  {!hasEnoughBalance && (
+                  {!hasEnoughBalance && ( //THIS IS NOT WOKRING CHECK WHY
                     <div className="text-red-600" style={{ marginTop: 0 }}>
                       You dont have that much USD in your wallet!
                     </div>
@@ -319,6 +321,29 @@ export default function NewPoolDialog(props) {
 
                   <div>
                     <label className="label pb-2" for="value">
+                      Maximum investment to join the Pool
+                    </label>
+                    <CurrencyInput //ADD FUNCTIONALITY
+                      className="textfield py-4 mt-2"
+                      prefix={'$'}
+                      id="entryBarrier"
+                      name="entryBarrier"
+                      placeholder="min - $3,00"
+                      type="text"
+                      decimalsLimit={2}
+                    />
+                    {entryBarrierTouched && entryBarrier < 3 && (
+                      <div className="text-red-600" style={{ marginTop: 0 }}>
+                        must be $3.00 or more
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      className="label pb-2"
+                      for="value" //ADD FUNCTIONALITY
+                    >
                       Maximum members
                     </label>
                     <input
@@ -330,7 +355,10 @@ export default function NewPoolDialog(props) {
                   </div>
 
                   <div>
-                    <label className="label pb-1" for="value">
+                    <label
+                      className="label pb-1"
+                      for="value" //ADD FUNCTIONALITY
+                    >
                       Lifetime of the Pool
                     </label>
                     <div className="flex flex-row textfield py-2 justify-between mt-2">
@@ -349,54 +377,40 @@ export default function NewPoolDialog(props) {
                     </div>
                   </div>
 
-                  <div
-                    ref={end}
-                    /* DISABLE CUSTOM GOVERNANCE TOKEN FOR NOW
+                  <div>
+                    <label className="label pb-2" for="value">
+                      Governance token
+                    </label>
+                    <input
+                      className="textfield py-4 mt-2"
+                      id="governance"
+                      type="text"
+                      placeholder={`${poolName}Token`}
+                      value={tokenName}
+                      onChange={(e) => {
+                        setTokenName(e.target.value);
+                        setTokenNameTouched(e.target.value.length > 0);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="label pb-2" for="value">
+                      Token Symbol
+                    </label>
+                    <input
+                      className="textfield py-4 mt-2"
+                      id="governance"
+                      type="text"
+                      placeholder="TKN"
+                      value={tokenSymbol}
+                      onChange={(e) => {
+                        setTokenSymbol(e.target.value);
+                        setTokenSymbolTouched(e.target.value.length > 0);
+                      }}
+                    />
+                  </div>
 
-              <Grid container gap={{ xs: 2, sm: 0 }}>
-                <Grid item xs={12} sm={9} pr={{ xs: 0, sm: 2 }}>
-                  <TextField
-                    label="Governance Token"
-                    placeholder={`${poolName}Token`}
-                    fullWidth
-                    value={tokenName}
-                    onChange={(e) => {
-                      setTokenName(e.target.value);
-                      setTokenNameTouched(e.target.value.length > 0);
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                  <TextField
-                    label="Symbol"
-                    placeholder="TKN"
-                    fullWidth
-                    value={tokenSymbol}
-                    onChange={(e) => {
-                      setTokenSymbol(e.target.value);
-                      setTokenSymbolTouched(e.target.value.length > 0);
-                    }}
-                  />
-                </Grid>
-              </Grid>
-              <TextField
-                type="number"
-                value={entryBarrier}
-                onChange={(e) => {
-                  setEntryBarrier(e.target.value);
-                  setEntryBarrierTouched(e.target.value.length > 0);
-                }}
-                label="Minimum Invest"
-                placeholder="1"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">USD</InputAdornment>
-                  ),
-                }}
-              />
-              */
-                  />
+                  <div ref={end}></div>
                 </Stack>
               </Collapse>
             </Stack>
@@ -430,16 +444,20 @@ export default function NewPoolDialog(props) {
 
       {step === 2 && (
         <>
-          <DialogTitle className="font-bold font-graphik tracking-tight">
+          <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
             Create a pool
           </DialogTitle>
           <DialogContent style={{ scrollbarwidth: 'none' }}>
             <Stack spacing={1}>
               <DialogContentText className="text-sm mb-7 font-graphik">
-                Step 2 of 3 |Voting Rules
+                Step 2 of 3 | Voting Rules
               </DialogContentText>
 
               <div>
+                <Typography className="text-xl pb-4">Votings</Typography>
+              </div>
+
+              <div className="pb-4">
                 <label className="label pb-1" for="value">
                   Duration of voting
                 </label>
@@ -459,9 +477,9 @@ export default function NewPoolDialog(props) {
                 </div>
               </div>
 
-              <div>
+              <div className="pb-4">
                 <label className="label pb-1" for="value">
-                  Duration of voting
+                  How many % is needed to win a vote
                 </label>
                 <div className="flex flex-row textfield py-2 justify-between mt-2">
                   <div className="flex items-center justify-center  w-full">
@@ -476,135 +494,12 @@ export default function NewPoolDialog(props) {
                   </div>
                 </div>
               </div>
-
-              <div>
-                <label class="label" for="poolName">
-                  Name of the Pool
-                </label>
-                <input
-                  value={poolName}
-                  onChange={handleNameChange}
-                  className="textfield py-4 px-3 mt-2 "
-                  id="poolName"
-                  type="text"
-                  placeholder="Name of the Pool"
-                />
-
-                {poolNameTouched && poolName.length < 3 && (
-                  <div className="text-red-600" style={{ marginTop: 0 }}>
-                    must be 3 letters or more
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="label pb-2" for="poolDescription">
-                  Description of the Pool
-                </label>
-                <input
-                  value={poolDescription}
-                  onChange={handleDescriptionChange}
-                  className="textfield py-4 pb-9 mt-2"
-                  id="poolDescription"
-                  type="text"
-                  placeholder="Description of the Pool"
-                />
-              </div>
-
-              <div>
-                <label className="label pb-2" for="value">
-                  Your Investment
-                </label>
-                <div>
-                  <CurrencyInput
-                    className="textfield py-4 mt-2"
-                    prefix={'$'}
-                    id="value"
-                    name="value"
-                    type="text"
-                    placeholder="min - $3,00"
-                    decimalsLimit={2}
-                    onChange={handleValueChange}
-                  />
-                  {valueTouched && value < 3 && (
-                    <div className="text-red-600" style={{ marginTop: 0 }}>
-                      must be $3.00 or more
-                    </div>
-                  )}
-                  {!hasEnoughBalance && (
-                    <div className="text-red-600" style={{ marginTop: 0 }}>
-                      You dont have that much USD in your wallet!
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <Collapse className="" in={!showMoreOptions}>
-                <button
-                  className="text-black text-sm font-semibold mt-2"
-                  onClick={openAdvanced}
-                >
-                  <div className="flex flex-row items-center">
-                    Advanced Options
-                    <MdOutlineKeyboardArrowDown className="ml-3 text-md" />
-                  </div>
-                </button>
-              </Collapse>
-              <Collapse in={showMoreOptions}>
-                <Stack spacing={2}>
-                  <button
-                    className="text-black text-sm font-semibold mt-2"
-                    onClick={() => setShowMoreOptions(false)}
-                  >
-                    <div className="flex flex-row items-center">
-                      Advanced Options
-                      <MdOutlineKeyboardArrowUp className="ml-3 text-md" />
-                    </div>
-                  </button>
-
-                  <div>
-                    <label className="label pb-2" for="value">
-                      Minimum investment to join the Pool
-                    </label>
-                    <CurrencyInput
-                      className="textfield py-4 mt-2"
-                      prefix={'$'}
-                      id="entryBarrier"
-                      name="entryBarrier"
-                      placeholder="min - $3,00"
-                      type="text"
-                      decimalsLimit={2}
-                      onChange={(e) => {
-                        setEntryBarrier(convertToRawValue(e.target.value));
-                        setEntryBarrierTouched(e.target.value.length > 0);
-                      }}
-                    />
-                    {entryBarrierTouched && entryBarrier < 3 && (
-                      <div className="text-red-600" style={{ marginTop: 0 }}>
-                        must be $3.00 or more
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="label pb-2" for="value">
-                      Maximum members
-                    </label>
-                    <input
-                      className="textfield py-4 mt-2"
-                      id="maxMembers"
-                      type="number"
-                      placeholder="50"
-                    />
-                  </div>
-                </Stack>
-              </Collapse>
             </Stack>
           </DialogContent>
           <DialogActions className="flex items-center justify-center mx-4">
             <div className="flex flex-col items-center justify-center w-full">
-              <button className="btn-neutral w-full py-3" onClick={handleClose}>
-                Cancel
+              <button className="btn-neutral w-full py-3" onClick={stepBack}>
+                Back
               </button>
               <button
                 className="btn-kaico w-full py-3 mt-2 font-semibold"
@@ -617,7 +512,70 @@ export default function NewPoolDialog(props) {
           </DialogActions>
         </>
       )}
-      {step > 2 && <></>}
+
+      {step > 2 && (
+        <>
+          <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
+            Create a pool
+          </DialogTitle>
+          <DialogContent style={{ scrollbarwidth: 'none' }}>
+            <Stack spacing={1}>
+              <DialogContentText className="text-sm mb-7 font-graphik">
+                Step 3 of 3 | Invite members
+              </DialogContentText>
+
+              <div>
+                <label class="label" for="poolName">
+                  Invite your friends via Wunderpass
+                </label>
+                <div className="flex flex-row justify-between textfield mb-8">
+                  <input
+                    onChange={handleNameChange}
+                    className=" w-full  text-gray-700 leading-tight rounded-lg bg-[#F6F6F6]  focus:outline-none"
+                    id="inviteFriends"
+                    type="text"
+                    placeholder="m-muster"
+                  />
+                  <button className="btn-kaico my-3 p-2 px-6">
+                    Invite Friends
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <label className="label  " for="value">
+                  <div className="flex flex-row justify-between items-center">
+                    <BsLink45Deg className="text-xl opacity-60 mr-1" />
+                    <Typography>Invite by link</Typography>
+                  </div>
+                </label>
+                <button
+                  className="btn-neutral bg-[#F6F6F6] sm:w-1/4 py-3"
+                  onClick={handleClose} //ADD functionality
+                >
+                  <div className="flex flex-row justify-between items-center ">
+                    <MdContentCopy className="text-gray-500 mr-2 ml-3" />
+                    <Typography className="mr-3">Copy Link</Typography>
+                  </div>
+                </button>
+              </div>
+            </Stack>
+          </DialogContent>
+          <DialogActions className="flex items-center justify-center mx-4">
+            <div className="flex flex-col items-center justify-center w-full">
+              <button className="btn-neutral w-full py-3" onClick={stepBack}>
+                Back
+              </button>
+              <button
+                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            </div>
+          </DialogActions>
+        </>
+      )}
 
       {loading && (
         <iframe
