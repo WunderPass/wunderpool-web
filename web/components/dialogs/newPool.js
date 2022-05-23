@@ -7,12 +7,10 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  Grid,
-  InputAdornment,
   LinearProgress,
   Stack,
-  TextField,
   Typography,
+  Switch,
 } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
 import { createPool } from '/services/contract/pools';
@@ -44,7 +42,12 @@ export default function NewPoolDialog(props) {
   const [loading, setLoading] = useState(false);
   const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
   const [step, setStep] = useState(1);
+  const [votingsOn, setVotingsOn] = useState(true);
   const end = useRef(null);
+
+  const onToggle = () => {
+    setVotingsOn(!votingsOn);
+  };
 
   const stepBack = () => {
     setStep(step - 1);
@@ -136,6 +139,7 @@ export default function NewPoolDialog(props) {
   };
 
   const handleSubmit = () => {
+    setStep(step + 1);
     setLoading(true);
     setWaitingForPool(true);
     uploadToServer();
@@ -453,44 +457,47 @@ export default function NewPoolDialog(props) {
                 Step 2 of 3 | Voting Rules
               </DialogContentText>
 
-              <div>
-                <Typography className="text-xl pb-4">Votings</Typography>
+              <div className="flex flex-row justify-between  items-center pb-4">
+                <Typography className="text-xl">Votings</Typography>
+                <Switch onClick={onToggle} defaultChecked />
               </div>
 
-              <div className="pb-4">
-                <label className="label pb-1" for="value">
-                  Duration of voting
-                </label>
-                <div className="flex flex-row textfield py-2 justify-between mt-2">
-                  <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
-                    6h
-                  </button>
-                  <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
-                    24h
-                  </button>
-                  <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
-                    3d
-                  </button>
-                  <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
-                    Custom
-                  </button>
-                </div>
-              </div>
-
-              <div className="pb-4">
-                <label className="label pb-1" for="value">
-                  How many % is needed to win a vote
-                </label>
-                <div className="flex flex-row textfield py-2 justify-between mt-2">
-                  <div className="flex items-center justify-center  w-full">
+              <div className={votingsOn ? '' : 'opacity-20'}>
+                <div className="pb-4">
+                  <label className="label pb-1" for="value">
+                    Duration of voting
+                  </label>
+                  <div className="flex flex-row textfield py-2 justify-between mt-2">
                     <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
-                      51%
+                      6h
                     </button>
-                  </div>
-                  <div className="flex w-full items-center justify-center">
+                    <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                      24h
+                    </button>
+                    <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                      3d
+                    </button>
                     <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
                       Custom
                     </button>
+                  </div>
+                </div>
+
+                <div className="pb-4">
+                  <label className="label pb-1" for="value">
+                    How many % is needed to win a vote
+                  </label>
+                  <div className="flex flex-row textfield py-2 justify-between mt-2">
+                    <div className="flex items-center justify-center  w-full">
+                      <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                        51%
+                      </button>
+                    </div>
+                    <div className="flex w-full items-center justify-center">
+                      <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                        Custom
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -513,7 +520,7 @@ export default function NewPoolDialog(props) {
         </>
       )}
 
-      {step > 2 && (
+      {step === 3 && (
         <>
           <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
             Create a pool
@@ -525,10 +532,10 @@ export default function NewPoolDialog(props) {
               </DialogContentText>
 
               <div>
-                <label class="label" for="poolName">
+                <label className="label" for="poolName">
                   Invite your friends via Wunderpass
                 </label>
-                <div className="flex flex-row justify-between textfield mb-8">
+                <div className="flex flex-row justify-between textfield mb-6 mt-2">
                   <input
                     onChange={handleNameChange}
                     className=" w-full  text-gray-700 leading-tight rounded-lg bg-[#F6F6F6]  focus:outline-none"
@@ -542,7 +549,9 @@ export default function NewPoolDialog(props) {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center">
+              <Divider className="" />
+
+              <div className="flex justify-between items-center pt-4">
                 <label className="label  " for="value">
                   <div className="flex flex-row justify-between items-center">
                     <BsLink45Deg className="text-xl opacity-60 mr-1" />
