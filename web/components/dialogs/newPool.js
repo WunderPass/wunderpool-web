@@ -83,10 +83,6 @@ export default function NewPoolDialog(props) {
     });
   };
 
-  useEffect(() => {
-    setHasEnoughBalance(user.usdBalance >= value);
-  });
-
   const handleClose = () => {
     setPoolDescription('');
     setPoolName('');
@@ -113,10 +109,9 @@ export default function NewPoolDialog(props) {
   };
 
   const handleValueChange = (e) => {
+    setHasEnoughBalance(user.usdBalance >= e.target.value);
     setValue(convertToRawValue(e.target.value));
-    console.log('1');
     setValueTouched(true);
-    console.log('2');
   };
 
   const handleNameChange = (e) => {
@@ -254,10 +249,9 @@ export default function NewPoolDialog(props) {
                 </label>
                 <div>
                   <CurrencyInput
+                    value={value}
                     className="textfield py-4 mt-2"
                     prefix={'$'}
-                    id="value"
-                    name="value"
                     type="text"
                     placeholder="min - $3,00"
                     decimalsLimit={2}
@@ -268,7 +262,7 @@ export default function NewPoolDialog(props) {
                       must be $3.00 or more
                     </div>
                   )}
-                  {!hasEnoughBalance && ( //THIS IS NOT WOKRING CHECK WHY
+                  {valueTouched && !hasEnoughBalance && (
                     <div className="text-red-600" style={{ marginTop: 0 }}>
                       You dont have that much USD in your wallet!
                     </div>
