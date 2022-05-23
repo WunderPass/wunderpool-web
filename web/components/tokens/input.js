@@ -1,11 +1,12 @@
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { createFilterOptions } from "@mui/material/Autocomplete";
-import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Stack } from "@mui/material";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import { createFilterOptions } from '@mui/material/Autocomplete';
+import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Stack } from '@mui/material';
+import { currency } from '../../services/formatter';
 
 let timer;
 export default function TokenInput(props) {
@@ -20,17 +21,17 @@ export default function TokenInput(props) {
 
   const handleInput = (e, value, reason) => {
     clearTimeout(timer);
-    if (reason == "input" && value.length > 2) {
+    if (reason == 'input' && value.length > 2) {
       setLoading(true);
       timer = setTimeout(() => {
         axios({
-          method: "get",
-          url: "/api/tokens/search",
+          method: 'get',
+          url: '/api/tokens/search',
           params: { param: value },
         }).then((res) => {
           const newOptions = [
             ...new Map(
-              [...res.data, ...options].map((item) => [item["address"], item])
+              [...res.data, ...options].map((item) => [item['address'], item])
             ).values(),
           ];
           setOptions(newOptions);
@@ -41,8 +42,8 @@ export default function TokenInput(props) {
   };
 
   const handleChange = (e, value, reason) => {
-    if (reason == "clear") {
-      setTokenAddress("");
+    if (reason == 'clear') {
+      setTokenAddress('');
       setTokenName(null);
       setTokenSymbol(null);
       setTokenImage(null);
@@ -55,7 +56,7 @@ export default function TokenInput(props) {
   };
 
   useEffect(() => {
-    axios({ url: "/api/tokens/all" }).then((res) => {
+    axios({ url: '/api/tokens/all' }).then((res) => {
       setOptions(res.data.filter((tkn) => tkn.tradable));
       setLoading(false);
     });
@@ -87,19 +88,34 @@ export default function TokenInput(props) {
               direction="row"
               alignItems="center"
               spacing={2}
-              sx={{ height: "50px" }}
+              sx={{ height: '50px', width: '100%' }}
             >
               <img
                 width="50px"
-                src={option.image_url || "/favicon.ico"}
+                src={option.image_url || '/favicon.ico'}
                 alt="TKN"
               />
-              <Stack>
-                <Typography variant="subtitle1">{option.name}</Typography>
-                <Typography variant="subtitle2" color="GrayText">
+              <Stack flexGrow={1} overflow="hidden">
+                <Typography
+                  variant="subtitle1"
+                  whiteSpace="nowrap"
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                >
+                  {option.name}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="GrayText"
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                >
                   {option.address}
                 </Typography>
               </Stack>
+              <Typography variant="h6" textAlign="end" whiteSpace="nowrap">
+                {currency(option.dollar_price, {})}
+              </Typography>
             </Stack>
           </li>
         );
