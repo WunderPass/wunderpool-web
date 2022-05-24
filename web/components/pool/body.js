@@ -42,14 +42,6 @@ function body(props) {
               >
                 Buy New Token
               </button>
-              <button
-                className="btn btn-default w-full"
-                onClick={() => {
-                  setCustomProposal(true);
-                }}
-              >
-                Custom Proposal
-              </button>
             </Stack>
           </Collapse>
           <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
