@@ -105,7 +105,7 @@ export default function NewPoolDialog(props) {
   };
 
   const convertToRawValue = (value) => {
-    return value.replace(/[^0-9,]/g, '');
+    return value.replace(/[^0-9.]/g, '');
   };
 
   const handleValueChange = (e) => {
@@ -127,7 +127,6 @@ export default function NewPoolDialog(props) {
     if (!tokenSymbolTouched)
       setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
-
 
   const handleDescriptionChange = (e) => {
     let description = e.target.value;
@@ -250,6 +249,7 @@ export default function NewPoolDialog(props) {
                 </label>
                 <div>
                   <CurrencyInput
+                    intlConfig={{ locale: 'en-US', currency: 'USD' }}
                     value={value}
                     className="textfield py-4 mt-2"
                     prefix={'$'}
