@@ -417,7 +417,6 @@ export default function NewPoolDialog(props) {
           {waitingForPool ? (
             <Stack spacing={2} sx={{ textAlign: 'center' }}>
               <Typography variant="subtitle1">Creating your Pool...</Typography>
-              <LinearProgress />
             </Stack>
           ) : (
             <DialogActions className="flex items-center justify-center mx-4">
@@ -586,7 +585,7 @@ export default function NewPoolDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>

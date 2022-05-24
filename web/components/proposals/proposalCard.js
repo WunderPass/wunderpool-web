@@ -38,9 +38,6 @@ export default function ProposalCard(props) {
   const [signing, setSigning] = useState(false);
   const [executable, setExecutable] = useState(false);
 
-  console.log(proposal.yesVotes.toNumber());
-  console.log(proposal.yesVotes);
-
   useEffect(() => {
     setExecutable(
       proposal.yesVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2
@@ -123,11 +120,9 @@ export default function ProposalCard(props) {
                     className="w-auto"
                     id="fr"
                     name="transactionFrame"
-                    height="600"
+                    height="500"
                   ></iframe>
-                  <Stack spacing={2} sx={{ textAlign: 'center' }}>
-                    <LinearProgress />
-                  </Stack>
+                  <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
                 </Dialog>
               </>
             )}
@@ -275,11 +270,9 @@ export default function ProposalCard(props) {
                   className="w-auto"
                   id="fr"
                   name="transactionFrame"
-                  height="600"
+                  height="500"
                 ></iframe>
-                <Stack spacing={2} sx={{ textAlign: 'center' }}>
-                  <LinearProgress />
-                </Stack>
+                <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
               </Dialog>
             )}
           </Stack>

@@ -92,7 +92,6 @@ export default function SellTokenDialog(props) {
       {loading ? (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Creating your Proposal...</Typography>
-          <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
@@ -114,7 +113,7 @@ export default function SellTokenDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>
