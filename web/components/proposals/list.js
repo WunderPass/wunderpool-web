@@ -33,7 +33,9 @@ export default function ProposalList(props) {
           >
             <Stack spacing={2}>
               {proposals
-                .filter((p) => p.executed == false)
+                .filter(
+                  (p) => p.executed == false || p.closed == false //ADD FAILED PROPOSALS HERE TOO
+                )
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
                   return (
@@ -55,7 +57,9 @@ export default function ProposalList(props) {
           >
             <Stack spacing={2}>
               {proposals
-                .filter((p) => p.executed == true)
+                .filter(
+                  (p) => p.executed == true || p.closed == true // || ADD FAILED PROPOSALS HERE
+                )
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
                   return (

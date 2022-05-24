@@ -37,6 +37,7 @@ export default function ProposalCard(props) {
   const [opening, setOpen] = useState(null);
   const [signing, setSigning] = useState(false);
   const [executable, setExecutable] = useState(false);
+  const [closeable, setCloseable] = useState(false);
 
   console.log(proposal.yesVotes.toNumber());
   console.log(proposal.yesVotes);
@@ -44,6 +45,10 @@ export default function ProposalCard(props) {
   useEffect(() => {
     setExecutable(
       proposal.yesVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2
+    );
+    setCloseable(
+      executable ||
+        proposal.noVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2
     );
   });
 
