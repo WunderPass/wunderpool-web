@@ -73,14 +73,14 @@ function PoolList(props) {
   ) : (
     <div className="container-white">
       <div className="flex flex-col items-center ">
-        <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mb-4">
+        <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mt-6 mb-4">
           <MdGroups className="text-4xl" />
         </div>
-        <Typography className="my-2" variant="h7">
+        <Typography className="my-2 mb-10" variant="h7">
           No Pools joined yet
         </Typography>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3 px-3 text-md "
+          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-8 text-md "
           onClick={() => setOpen(true)}
         >
           Create pool
