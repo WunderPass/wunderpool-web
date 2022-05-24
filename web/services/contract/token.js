@@ -34,6 +34,8 @@ export function fetchPoolTokens(address) {
           .div(ethers.BigNumber.from(10).pow(decimals))
           .toNumber();
 
+        balance = ethers.utils.formatUnits(balance, decimals);
+
         return {
           address: addr,
           name: name,

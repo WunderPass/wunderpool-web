@@ -33,8 +33,6 @@ export default function TokenList(props) {
     setBalance(token.balance.toString());
   };
 
-  console.log(tokens.address);
-
   return (
     <Stack spacing={2}>
       <Typography variant="h4">Tokens</Typography>
@@ -61,7 +59,6 @@ export default function TokenList(props) {
         symbol={symbol}
         balance={balance}
         poolAddress={poolAddress}
-        {...props}
       />
       <SwapTokenDialog
         open={openSwap}
@@ -71,7 +68,6 @@ export default function TokenList(props) {
         symbol={symbol}
         balance={balance}
         poolAddress={poolAddress}
-        {...props}
       />
     </Stack>
   );

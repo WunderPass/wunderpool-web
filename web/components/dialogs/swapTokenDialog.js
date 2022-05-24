@@ -30,6 +30,7 @@ export default function SwapTokenDialog(props) {
     fetchProposals,
     handleError,
     handleSuccess,
+    tokenPrice,
   } = props;
   const [amount, setAmount] = useState('');
   const [receiveName, setReceiveName] = useState('');

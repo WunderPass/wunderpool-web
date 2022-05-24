@@ -10,8 +10,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createFudSuggestion } from '/services/contract/proposals';
+import axios from 'axios';
 
 export default function SellTokenDialog(props) {
   const {
@@ -28,6 +29,8 @@ export default function SellTokenDialog(props) {
   } = props;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
+  const [waitingForPrice, setWaitingForPrice] = useState(false);
+  const [tokenPrice, setTokenPrice] = useState(false);
 
   const handleClose = () => {
     setAmount('');
@@ -62,11 +65,28 @@ export default function SellTokenDialog(props) {
     setAmount(e.target.value);
   };
 
+  useEffect(() => {
+    if (address && address.length == 42) {
+      setWaitingForPrice(true);
+      axios({
+        url: `/api/tokens/price`,
+        params: { address: address },
+      }).then((res) => {
+        setTokenPrice(res.data?.dollar_price);
+        console.log(res.data?.dollar_price);
+        setWaitingForPrice(false);
+      });
+    }
+  }, [address]);
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md">
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
+        <Typography>Price per token: {tokenPrice} $</Typography>
+        <Typography>Tokens owned: {balance} </Typography>
         <TextField
+          className="mt-4"
           autoFocus
           type="number"
           margin="dense"
