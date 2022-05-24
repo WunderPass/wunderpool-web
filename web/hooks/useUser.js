@@ -9,6 +9,7 @@ export default function useUser() {
   const [usdBalance, setUsdBalance] = useState(null);
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [pools, setPools] = useState([]);
+  const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
 
   const loggedIn = wunderId || address;
@@ -40,7 +41,7 @@ export default function useUser() {
   const fetchUsdBalance = () => {
     usdcBalanceOf(address).then((balance) => {
       setUsdBalance(balance);
-      if (balance < 1) {
+      if (balance < 1 && !checkedTopUp) {
         setTopUpRequired(true);
       }
     });
@@ -51,6 +52,7 @@ export default function useUser() {
     localStorage.removeItem('wunderId');
     setWunderId(null);
     setAddress(null);
+    setCheckedTopUp(null);
     setPools([]);
     router.push('/');
   };
@@ -65,6 +67,7 @@ export default function useUser() {
   useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
+    setCheckedTopUp(localStorage.getItem('checkedTopUp'));
   }, []);
 
   return {
