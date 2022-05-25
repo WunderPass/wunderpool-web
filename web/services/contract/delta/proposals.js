@@ -72,7 +72,19 @@ export function createMultiActionProposalDelta(
     });
     const [wunderPool] = initPool(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
-    const data = [
+    const types = [
+      'address',
+      'address',
+      'string',
+      'string',
+      'address[]',
+      'string[]',
+      'bytes[]',
+      'uint[]',
+      'uint',
+      'uint',
+    ];
+    const values = [
       userAddress,
       poolAddress,
       title,
@@ -85,7 +97,7 @@ export function createMultiActionProposalDelta(
       proposalId,
     ];
 
-    sendSignatureRequest(data, false)
+    sendSignatureRequest(types, values, false)
       .then(async (signature) => {
         const tx = await wunderPool.createProposalForUser(
           userAddress,

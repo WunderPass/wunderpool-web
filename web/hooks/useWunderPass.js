@@ -1,7 +1,7 @@
 export default function useWunderPass(config) {
   const { name, image, accountId } = config;
 
-  const sendSignatureRequest = (data, packed = true) => {
+  const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
       try {
         const popup = window.open(
@@ -13,7 +13,14 @@ export default function useWunderPass(config) {
 
         const requestInterval = setInterval(() => {
           popup.postMessage(
-            { accountId: accountId, data: data, packed: packed },
+            JSON.parse(
+              JSON.stringify({
+                accountId: accountId,
+                types: types,
+                values: values,
+                packed: packed,
+              })
+            ),
             process.env.WUNDERPASS_URL
           );
         }, 1000);
