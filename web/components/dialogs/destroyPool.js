@@ -51,7 +51,6 @@ export default function DestroyPoolDialog(props) {
       {loading ? (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Submitting Proposal</Typography>
-          <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
@@ -68,7 +67,7 @@ export default function DestroyPoolDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>

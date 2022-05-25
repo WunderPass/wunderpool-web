@@ -61,7 +61,6 @@ export default function RemoveMemberDialog(props) {
       {loading ? (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Removing Member...</Typography>
-          <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
@@ -75,7 +74,7 @@ export default function RemoveMemberDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>

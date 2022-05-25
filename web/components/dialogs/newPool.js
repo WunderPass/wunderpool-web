@@ -114,7 +114,7 @@ export default function NewPoolDialog(props) {
   };
 
   const convertToRawValue = (value) => {
-    return value.replace(/[^0-9]/g, '');
+    return value.replace(/[^0-9.]/g, '');
   };
 
   const handleValueChange = (e) => {
@@ -269,6 +269,7 @@ export default function NewPoolDialog(props) {
                 </label>
                 <div>
                   <CurrencyInput
+                    intlConfig={{ locale: 'en-US', currency: 'USD' }}
                     value={value}
                     className="textfield py-4 mt-2"
                     prefix={'$'}
@@ -436,7 +437,6 @@ export default function NewPoolDialog(props) {
           {waitingForPool ? (
             <Stack spacing={2} sx={{ textAlign: 'center' }}>
               <Typography variant="subtitle1">Creating your Pool...</Typography>
-              <LinearProgress />
             </Stack>
           ) : (
             <DialogActions className="flex items-center justify-center mx-4">
@@ -448,7 +448,7 @@ export default function NewPoolDialog(props) {
                   Cancel
                 </button>
                 <button
-                  className="btn-kaico w-full py-3 mt-2 font-semibold"
+                  className="btn-kaico w-full py-3 mt-2"
                   onClick={stepContinue}
                   disabled={poolName.length < 3 || value < 3}
                 >
@@ -523,7 +523,7 @@ export default function NewPoolDialog(props) {
                 Back
               </button>
               <button
-                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                className="btn-kaico w-full py-3 mt-2"
                 onClick={stepContinue}
                 disabled={poolName.length < 3 || value < 3}
               >
@@ -590,7 +590,7 @@ export default function NewPoolDialog(props) {
                 Back
               </button>
               <button
-                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                className="btn-kaico w-full py-3 mt-2"
                 onClick={handleSubmit}
               >
                 Submit
@@ -605,7 +605,7 @@ export default function NewPoolDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>

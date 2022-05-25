@@ -94,7 +94,6 @@ export default function JoinPoolDialog(props) {
       {loading ? (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Joining Pool...</Typography>
-          <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
@@ -115,7 +114,7 @@ export default function JoinPoolDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>

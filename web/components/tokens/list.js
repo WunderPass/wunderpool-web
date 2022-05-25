@@ -56,7 +56,6 @@ export default function TokenList(props) {
         symbol={symbol}
         balance={balance}
         poolAddress={poolAddress}
-        {...props}
       />
       <SwapTokenDialog
         open={openSwap}
@@ -66,7 +65,6 @@ export default function TokenList(props) {
         symbol={symbol}
         balance={balance}
         poolAddress={poolAddress}
-        {...props}
       />
     </Stack>
   );

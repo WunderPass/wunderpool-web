@@ -1,14 +1,5 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Slide,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
-import { useRef } from 'react';
+import { Box, Paper, Slide, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { useRef, useEffect } from 'react';
 import { useState } from 'react';
 import ProposalCard from './proposalCard';
 
@@ -55,7 +46,11 @@ export default function ProposalList(props) {
           >
             <Stack spacing={2}>
               {wunderPool.proposals
-                .filter((p) => p.executed == true)
+                .filter(
+                  (p) =>
+                    p.executed == true ||
+                    p.noVotes > p.yesVotes + p.abstainVotes
+                )
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
                   return (

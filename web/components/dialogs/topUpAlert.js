@@ -5,6 +5,8 @@ import {
   DialogTitle,
   Slide,
   Stack,
+  Checkbox,
+  Typography,
 } from '@mui/material';
 import Link from 'next/link';
 import { forwardRef, useState, useEffect } from 'react';
@@ -16,15 +18,21 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function TopUpAlert(props) {
   const { open, setOpen, user } = props;
   const [redirectUrl, setRedirectUrl] = useState(null);
+  const [checked, setChecked] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleChange = () => {
+    setChecked(!checked);
   };
 
   useEffect(() => {
     if (open) {
       setRedirectUrl(new URL(document.URL));
     }
+    localStorage.setItem('checkedTopUp', checked);
   }, [open]);
 
   return (
@@ -49,6 +57,12 @@ export default function TopUpAlert(props) {
           >
             <button className="btn btn-info">TopUp Now</button>
           </Link>
+          <div className="flex flex-row justify-start items-center mt-2">
+            <Checkbox checked={checked} onChange={handleChange} />
+            <Typography className="pt-1">
+              Don't show this info again.
+            </Typography>
+          </div>
         </Stack>
       </DialogContent>
     </Dialog>
