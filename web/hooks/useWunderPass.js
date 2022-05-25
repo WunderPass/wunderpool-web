@@ -1,19 +1,19 @@
 export default function useWunderPass(config) {
   const { name, image, accountId } = config;
 
-  const sendSignatureRequest = (data) => {
+  const sendSignatureRequest = (data, packed = true) => {
     return new Promise((resolve, reject) => {
       try {
         const popup = window.open(
           encodeURI(
-            `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
+            `${process.env.WUNDERPASS_URL}/sign?name=${name}&imageUrl=${image}`
           ),
           'transactionFrame'
         );
 
         const requestInterval = setInterval(() => {
           popup.postMessage(
-            { accountId: accountId, data: data },
+            { accountId: accountId, data: data, packed: packed },
             process.env.WUNDERPASS_URL
           );
         }, 1000);
