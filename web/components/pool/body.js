@@ -8,7 +8,7 @@ import NftList from '/components/tokens/nfts';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
-
+import JoinPoolDialog from '/components/dialogs/joinPool';
 
 function body(props) {
   const { address, loading, wunderPool, loginCallback } = props;
@@ -19,8 +19,8 @@ function body(props) {
   const [joinPool, setJoinPool] = useState(false);
 
   return (
-{wunderPool.isMember ? (
     <>
+      {wunderPool.isMember ? (
         <>
           <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
             <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
@@ -84,11 +84,10 @@ function body(props) {
             </Collapse>
           )}
         </>
-       ) : wunderPool.isMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
+      ) : wunderPool.isMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
         <div className="flex container-white justify-start sm:justify-center mb-4 ">
           <div className="flex flex-col items-center justify-center ">
             <Typography className="text-xl w-full">Members</Typography>
-
             <div className="flex flex-col ">
               <div className="flex flex-row w-full mt-2">
                 <div className="flex border-solid text-black rounded-full bg-green-400 w-10 h-10 items-center justify-center border-2 border-white">
@@ -119,7 +118,7 @@ function body(props) {
       ) : (
         //DEFAULT
         <Skeleton width="100%" height={100} />
-      )} 
+      )}
       {wunderPool.governanceToken && (
         <JoinPoolDialog
           open={joinPool}
@@ -129,8 +128,7 @@ function body(props) {
           {...props}
         />
       )}
-    </div>
-
+    </>
   );
 }
 

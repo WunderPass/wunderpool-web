@@ -33,7 +33,6 @@ export default function PoolHeader(props) {
 
   return (
     <>
-
       <div className="flex flex-col container-white-p-0 w-full">
         <div className="flex flex-col border-solid text-black  rounded-2xl bg-kaico-extra-light-blue h-36  w-full items-center justify-center cursor-pointer">
           <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
@@ -63,7 +62,7 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              {currency(wunderPool.poolBalance.toString() / 1000000, {})}
+              {currency(wunderPool.usdcBalance?.toString() / 1000000, {})}
             </Typography>
           </div>
 
@@ -108,7 +107,10 @@ export default function PoolHeader(props) {
                 </Typography>
                 <Typography className="text-sm opacity-90 py-1">
                   {wunderPool.governanceToken &&
-                    toEthString(wunderPool.governanceToken.entryBarrier, 6)}{' '}
+                    toEthString(
+                      wunderPool.governanceToken.entryBarrier,
+                      6
+                    )}{' '}
                   $
                 </Typography>
               </div>
@@ -163,7 +165,8 @@ export default function PoolHeader(props) {
                       Pool Token Name
                     </Typography>
                     <Typography className="text-sm opacity-90 py-1">
-                      {wunderPool.governanceToken.name} ({wunderPool.governanceToken.symbol})
+                      {wunderPool.governanceToken.name} (
+                      {wunderPool.governanceToken.symbol})
                     </Typography>
                   </div>
                   <div>

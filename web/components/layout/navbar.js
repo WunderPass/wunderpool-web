@@ -18,7 +18,7 @@ export default function Navbar(props) {
       <AppBar className="bg-kaico-blue" position="fixed" sx={{ top: 0 }}>
         <Toolbar>
           <Stack className="flex flex-row w-full justify-between items-center">
-            <Link href="/">
+            <Link href="/pools">
               <div className="flex flex-row">
                 <div className="hidden pt-0.5 w-44 pr-3 sm:block">
                   <Image

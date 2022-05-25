@@ -25,7 +25,6 @@ import {
   fetchTransactionDataGamma,
 } from './gamma/proposals';
 
-
 export function fetchPoolProposals(address, version) {
   if (version > 3) {
     return fetchPoolProposalsDelta(address);
@@ -40,7 +39,7 @@ export function fetchTransactionData(address, id, transactionCount, version) {
   } else {
     return fetchTransactionDataGamma(address, id, transactionCount);
   }
-
+}
 
 export function createMultiActionProposal(
   poolAddress,
@@ -54,7 +53,6 @@ export function createMultiActionProposal(
   userAddress,
   version
 ) {
-
   if (version > 3) {
     return createMultiActionProposalDelta(
       poolAddress,
@@ -177,7 +175,6 @@ export function createFudSuggestion(
     );
   }
 }
-
 
 export function createLiquidateSuggestion(
   poolAddress,
