@@ -28,6 +28,7 @@ export default function SwapTokenDialog(props) {
     handleError,
     handleSuccess,
     tokenPrice,
+    formattedBalance,
   } = props;
   const [amount, setAmount] = useState('');
   const [receiveName, setReceiveName] = useState('');
@@ -102,7 +103,7 @@ export default function SwapTokenDialog(props) {
                 <InputAdornment position="end">
                   <button
                     className="btn btn-default"
-                    onClick={() => setAmount(balance)}
+                    onClick={() => setAmount(formattedBalance)}
                   >
                     MAX
                   </button>
@@ -146,7 +147,8 @@ export default function SwapTokenDialog(props) {
             onClick={handleSubmit}
             color="success"
             disabled={
-              Number(amount) > Number(balance) || receiveName.length < 1
+              Number(amount) > Number(formattedBalance) ||
+              receiveName.length < 1
             }
           >
             Swap

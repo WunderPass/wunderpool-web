@@ -13,6 +13,7 @@ export default function TokenList(props) {
   const [address, setAddress] = useState('');
   const [symbol, setSymbol] = useState('');
   const [balance, setBalance] = useState('');
+  const [formattedBalance, setFormattedBalance] = useState('');
 
   const handleSell = (token) => {
     setOpenSell(true);
@@ -20,6 +21,7 @@ export default function TokenList(props) {
     setName(token.name);
     setSymbol(token.symbol);
     setBalance(token.balance.toString());
+    setFormattedBalance(token.formattedBalance.toString());
   };
 
   const handleSwap = (token) => {
@@ -28,6 +30,7 @@ export default function TokenList(props) {
     setName(token.name);
     setSymbol(token.symbol);
     setBalance(token.balance.toString());
+    setFormattedBalance(token.formattedBalance.toString());
   };
 
   return (
@@ -56,6 +59,7 @@ export default function TokenList(props) {
         symbol={symbol}
         balance={balance}
         poolAddress={poolAddress}
+        formattedBalance={formattedBalance}
       />
       <SwapTokenDialog
         open={openSwap}
@@ -65,6 +69,7 @@ export default function TokenList(props) {
         symbol={symbol}
         balance={balance}
         poolAddress={poolAddress}
+        formattedBalance
       />
     </Stack>
   );

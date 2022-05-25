@@ -25,6 +25,7 @@ export default function SellTokenDialog(props) {
     wunderPool,
     handleError,
     handleSuccess,
+    formattedBalance,
   } = props;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
@@ -72,7 +73,6 @@ export default function SellTokenDialog(props) {
         params: { address: address },
       }).then((res) => {
         setTokenPrice(res.data?.dollar_price);
-        console.log(res.data?.dollar_price);
         setWaitingForPrice(false);
       });
     }
@@ -83,7 +83,7 @@ export default function SellTokenDialog(props) {
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
         <Typography>Price per token: {tokenPrice} $</Typography>
-        <Typography>Tokens owned: {balance} </Typography>
+        <Typography>Tokens owned: {formattedBalance} </Typography>
         <TextField
           className="mt-4"
           autoFocus
@@ -99,7 +99,7 @@ export default function SellTokenDialog(props) {
               <InputAdornment position="end">
                 <button
                   className="btn btn-default"
-                  onClick={() => setAmount(balance)}
+                  onClick={() => setAmount(formattedBalance)}
                 >
                   MAX
                 </button>
@@ -121,7 +121,7 @@ export default function SellTokenDialog(props) {
             className="btn btn-danger"
             onClick={handleSubmit}
             color="success"
-            disabled={Number(amount) > Number(balance)}
+            disabled={Number(amount) > Number(formattedBalance)}
           >
             Sell
           </button>
