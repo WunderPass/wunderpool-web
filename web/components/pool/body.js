@@ -19,7 +19,7 @@ function body(props) {
   const [joinPool, setJoinPool] = useState(false);
 
   return (
-    <>
+    <div className="sm:ml-4">
       {wunderPool.isMember ? (
         <>
           <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
@@ -85,7 +85,7 @@ function body(props) {
           )}
         </>
       ) : wunderPool.isMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
-        <div className="flex container-white justify-start sm:justify-center mb-4 ">
+        <div className="flex container-white justify-start sm:justify-center mb-4">
           <div className="flex flex-col items-center justify-center ">
             <Typography className="text-xl w-full">Members</Typography>
             <div className="flex flex-col ">
@@ -128,7 +128,7 @@ function body(props) {
           {...props}
         />
       )}
-    </>
+    </div>
   );
 }
 
