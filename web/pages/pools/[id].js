@@ -1,35 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import {
-  Collapse,
-  Container,
-  Paper,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Container, Stack } from '@mui/material';
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
-import JoinPoolDialog from '/components/dialogs/joinPool';
-import { fetchPoolProposals } from '/services/contract/proposals';
-import { fetchPoolTokens, fetchPoolNfts } from '/services/contract/token';
-import {
-  fetchPoolName,
-  fetchPoolBalance,
-  isMember,
-} from '/services/contract/pools';
-import { fetchPoolGovernanceToken } from '/services/contract/token';
-import ProposalList from '/components/proposals/list';
-import ApeForm from '/components/proposals/apeForm';
-import CustomForm from '/components/proposals/customForm';
-import TokenList from '/components/tokens/list';
-import { toEthString } from '/services/formatter';
-import NftList from '/components/tokens/nfts';
 import PoolHeader from '/components/pool/header';
 import PoolBody from '/components/pool/body';
+import usePool from '/hooks/usePool';
 
 export default function Pool(props) {
   const router = useRouter();
-  const { id: address, name } = router.query;
   const {
     setupPoolListener,
     user,
@@ -39,89 +17,44 @@ export default function Pool(props) {
     proposalExecutedEvent,
     resetEvents,
   } = props;
+  const [address, setAddress] = useState(null);
+  const [name, setName] = useState('');
   const [fundDialog, setFundDialog] = useState(false);
-  const [joinPool, setJoinPool] = useState(false);
-  const [userIsMember, setUserIsMember] = useState(null);
-  const [proposals, setProposals] = useState([]);
-  const [tokens, setTokens] = useState([]);
-  const [nfts, setNfts] = useState([]);
-  const [governanceTokenData, setGovernanceTokenData] = useState(null);
-  const [totalGovernanceTokens, setTotalGovernanceTokens] = useState(null);
-  const [poolBalance, setPoolBalance] = useState(0);
   const [loading, setLoading] = useState(true);
-
-  const fetchGovernanceTokenData = () => {
-    fetchPoolGovernanceToken(address, user.address).then((gt) => {
-      setGovernanceTokenData(gt);
-      setTotalGovernanceTokens(gt.totalSupply);
-    });
-  };
-
-  const fetchProposals = () => {
-    setLoading(true);
-    fetchPoolProposals(address).then((ps) => {
-      setProposals(ps);
-      setLoading(false);
-    });
-  };
-
-  const fetchTokens = () => {
-    fetchPoolTokens(address).then((ts) => {
-      setTokens(ts);
-    });
-  };
-
-  const fetchNfts = () => {
-    fetchPoolNfts(address).then((ts) => {
-      setNfts(ts);
-    });
-  };
-
-  const fetchBalance = () => {
-    fetchPoolBalance(address).then((res) => {
-      setPoolBalance(res);
-    });
-  };
-
-  const checkPoolExistence = () => {
-    return fetchPoolName(address);
-  };
+  const wunderPool = usePool(user.address, address);
 
   const loginCallback = () => {
-    setUserIsMember(true);
     setupPoolListener(address);
-    fetchProposals();
-    fetchTokens();
-    fetchNfts();
   };
 
   useEffect(() => {
-    if (address && user.address) {
-      checkPoolExistence()
-        .then(() => {
-          fetchGovernanceTokenData();
-          fetchBalance();
-          isMember(address, user.address).then((res) => {
-            if (res) {
-              loginCallback();
-            } else {
-              setUserIsMember(false);
-            }
-          });
-        })
-        .catch(() => {
-          router.push('/pools');
-        });
+    if (wunderPool.isReady && wunderPool.poolAddress) {
+      if (wunderPool.exists) {
+        if (wunderPool.isMember) {
+          loginCallback();
+          setLoading(false);
+        }
+      } else {
+        router.push('/pools');
+      }
     }
-  }, [address, user.address]);
+  }, [wunderPool.isReady, wunderPool.isMember]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      setAddress(router.query.id);
+      setName(router.query.name);
+      wunderPool.setPoolAddress(router.query.id);
+    }
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!address || !user.address) return;
     if (!tokenAddedEvent) return;
     if (tokenAddedEvent.nft) {
-      fetchNfts();
+      wunderPool.determineNfts();
     } else {
-      fetchTokens();
+      wunderPool.determineTokens();
     }
     resetEvents();
   }, [tokenAddedEvent]);
@@ -135,7 +68,7 @@ export default function Pool(props) {
       proposalExecutedEvent?.executor == user.address
     )
       return;
-    fetchProposals();
+    wunderPool.determineProposals();
     resetEvents();
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
@@ -147,27 +80,12 @@ export default function Pool(props) {
         paddingTop={2}
         sx={{ width: '100%' }}
       >
-        <PoolHeader
-          name={name}
-          address={address}
-          governanceTokenData={governanceTokenData}
-          userIsMember={userIsMember}
-          fetchProposals={fetchProposals}
-          poolBalance={poolBalance}
-        />
+        <PoolHeader name={name} address={address} wunderPool={wunderPool} />
         <PoolBody
-          userIsMember={userIsMember}
           address={address}
-          proposals={proposals}
-          tokens={tokens}
-          nfts={nfts}
           loading={loading}
-          governanceTokenData={governanceTokenData}
-          totalGovernanceTokens={totalGovernanceTokens}
-          poolBalance={poolBalance}
-          fetchProposals={fetchProposals}
-          fetchTokens={fetchTokens}
-          fetchBalance={fetchBalance}
+          wunderPool={wunderPool}
+          loginCallback={loginCallback}
           {...props}
         />
       </Stack>
@@ -177,18 +95,6 @@ export default function Pool(props) {
         address={address}
         {...props}
       />
-      {governanceTokenData && (
-        <JoinPoolDialog
-          open={joinPool}
-          setOpen={setJoinPool}
-          loginCallback={loginCallback}
-          address={address}
-          price={governanceTokenData.price}
-          totalSupply={governanceTokenData.totalSupply}
-          minimumInvest={governanceTokenData.entryBarrier}
-          {...props}
-        />
-      )}
     </Container>
   );
 }
