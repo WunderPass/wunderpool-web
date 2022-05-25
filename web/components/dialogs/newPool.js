@@ -69,7 +69,7 @@ export default function NewPoolDialog(props) {
 
   const openAdvanced = () => {
     setShowMoreOptions(true);
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       end.current.scrollIntoView({ behavior: 'smooth' });
     }, 250);
   };
@@ -345,8 +345,6 @@ export default function NewPoolDialog(props) {
                     <CurrencyInput //ADD FUNCTIONALITY
                       className="textfield py-4 mt-2"
                       prefix={'$'}
-                      id="entryBarrier"
-                      name="entryBarrier"
                       placeholder="min - $3,00"
                       type="text"
                       decimalsLimit={2}
