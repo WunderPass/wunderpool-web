@@ -21,9 +21,18 @@ import { BiUpload } from 'react-icons/bi';
 import CurrencyInput from 'react-currency-input-field';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
+import { waitForTransaction } from '../../services/contract/provider';
 
 export default function NewPoolDialog(props) {
-  const { open, setOpen, fetchPools, handleSuccess, handleError, user } = props;
+  const {
+    open,
+    setOpen,
+    fetchPools,
+    handleSuccess,
+    handleInfo,
+    handleError,
+    user,
+  } = props;
   const [poolName, setPoolName] = useState('');
   const [poolDescription, setPoolDescription] = useState('');
   const [image, setImage] = useState(null);
@@ -105,11 +114,13 @@ export default function NewPoolDialog(props) {
   };
 
   const convertToRawValue = (value) => {
-    return value.replace(/[^0-9,]/g, '');
+    return value.replace(/[^0-9]/g, '');
   };
 
   const handleValueChange = (e) => {
-    setHasEnoughBalance(user.usdBalance >= e.target.value);
+    setHasEnoughBalance(
+      user.usdBalance >= Number(convertToRawValue(e.target.value))
+    );
     setValue(convertToRawValue(e.target.value));
     setValueTouched(true);
   };
@@ -128,7 +139,6 @@ export default function NewPoolDialog(props) {
       setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
 
-
   const handleDescriptionChange = (e) => {
     let description = e.target.value;
     setPoolDescription(description);
@@ -141,15 +151,24 @@ export default function NewPoolDialog(props) {
     uploadToServer();
     createPool(
       poolName,
-      entryBarrier || value,
-      tokenName || `${poolName} Token`,
-      tokenSymbol || 'PGT',
-      value
+      entryBarrier,
+      tokenName,
+      tokenSymbol,
+      value / 100,
+      user.address
     )
       .then((res) => {
         console.log(res);
-        handleSuccess(`Created Pool "${poolName}"`);
         handleClose();
+        handleInfo('Waiting for Blockchain Transaction');
+        waitForTransaction(res)
+          .then((tx) => {
+            handleSuccess(`Created Pool "${poolName}"`);
+          })
+          .catch((err) => {
+            console.log(err);
+            handleError('Pool Creation failed');
+          });
         fetchPools();
       })
       .catch((err) => {

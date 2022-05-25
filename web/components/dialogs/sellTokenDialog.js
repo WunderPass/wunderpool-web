@@ -21,8 +21,7 @@ export default function SellTokenDialog(props) {
     address,
     symbol,
     balance,
-    poolAddress,
-    fetchProposals,
+    wunderPool,
     handleError,
     handleSuccess,
   } = props;
@@ -37,17 +36,17 @@ export default function SellTokenDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    createFudSuggestion(
-      poolAddress,
-      address,
-      `Let's Sell ${name} (${symbol})`,
-      `We will sell ${amount} ${symbol}`,
-      amount
-    )
+    wunderPool
+      .fudSuggestion(
+        address,
+        `Let's Sell ${name} (${symbol})`,
+        `We will sell ${amount} ${symbol}`,
+        amount
+      )
       .then((res) => {
         console.log(res);
         handleSuccess(`Created Proposal to sell ${name}`);
-        fetchProposals();
+        wunderPool.determineProposals();
         handleClose();
       })
       .catch((err) => {

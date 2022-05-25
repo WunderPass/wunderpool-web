@@ -16,10 +16,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { createApeSuggestion } from '/services/contract/proposals';
 import TokenInput from '../tokens/input';
 import axios from 'axios';
-import { currency, round } from '../../services/formatter';
+import { currency, round } from '/services/formatter';
 
 export default function ApeForm(props) {
-  const { setApe, address, fetchProposals, handleSuccess, handleError } = props;
+  const { setApe, wunderPool, handleSuccess, handleError } = props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
@@ -44,17 +44,17 @@ export default function ApeForm(props) {
   const handleApe = (e) => {
     e.preventDefault();
     setLoading(true);
-    createApeSuggestion(
-      address,
-      tokenAddress,
-      `Let's Ape into ${tokenName} (${tokenSymbol})`,
-      `We will ape ${value} USD into ${tokenName}`,
-      value
-    )
+    wunderPool
+      .apeSuggestion(
+        tokenAddress,
+        `Let's Ape into ${tokenName} (${tokenSymbol})`,
+        `We will ape ${value} USD into ${tokenName}`,
+        value
+      )
       .then((res) => {
         console.log(res);
         handleSuccess(`Created Proposal to Ape into ${tokenSymbol}`);
-        fetchProposals();
+        wunderPool.determineProposals();
         handleClose();
       })
       .catch((err) => {

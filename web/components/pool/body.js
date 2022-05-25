@@ -7,30 +7,19 @@ import { toEthString } from '/services/formatter';
 import NftList from '/components/tokens/nfts';
 import { useState, useEffect } from 'react';
 import React from 'react';
+import JoinPoolDialog from '/components/dialogs/joinPool';
 
 function body(props) {
-  const {
-    userIsMember,
-    address,
-    proposals,
-    tokens,
-    nfts,
-    loading,
-    governanceTokenData,
-    totalGovernanceTokens,
-    poolBalance,
-    fetchProposals,
-    fetchTokens,
-    fetchBalance,
-  } = props;
+  const { address, loading, wunderPool, loginCallback } = props;
 
   const [ape, setApe] = useState(false);
   const [customProposal, setCustomProposal] = useState(false);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
+  const [joinPool, setJoinPool] = useState(false);
 
   return (
     <>
-      {userIsMember ? (
+      {wunderPool.isMember ? (
         <>
           <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
             <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
@@ -53,12 +42,7 @@ function body(props) {
             </Stack>
           </Collapse>
           <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
-            <ApeForm
-              setApe={setApe}
-              address={address}
-              fetchProposals={fetchProposals}
-              {...props}
-            />
+            <ApeForm setApe={setApe} wunderPool={wunderPool} {...props} />
           </Collapse>
           <Collapse
             in={customProposal}
@@ -68,7 +52,7 @@ function body(props) {
               customProposal={customProposal}
               setCustomProposal={setCustomProposal}
               poolAddress={address}
-              fetchProposals={fetchProposals}
+              fetchProposals={wunderPool.determineProposals}
               {...props}
             />
           </Collapse>
@@ -83,42 +67,38 @@ function body(props) {
             <Collapse in={!customProposal && !ape} sx={{ width: '100%' }}>
               <Stack spacing={3}>
                 <TokenList
-                  tokens={tokens}
+                  tokens={wunderPool.tokens}
                   poolAddress={address}
-                  fetchProposals={fetchProposals}
+                  fetchProposals={wunderPool.determineProposals}
                   handleFund={() => setFundDialog(true)}
                   handleWithdraw={() => setWithdrawDialog(true)}
-                  poolBalance={poolBalance}
+                  poolBalance={wunderPool.usdcBalance}
                   {...props}
                 />
                 <NftList
-                  nfts={nfts}
+                  nfts={wunderPool.nfts}
                   poolAddress={address}
-                  fetchProposals={fetchProposals}
+                  fetchProposals={wunderPool.determineProposals}
                   {...props}
                 />
                 <ProposalList
-                  proposals={proposals}
-                  totalGovernanceTokens={totalGovernanceTokens}
                   poolAddress={address}
                   setApe={setApe}
-                  fetchProposals={fetchProposals}
-                  fetchTokens={fetchTokens}
-                  fetchBalance={fetchBalance}
+                  wunderPool={wunderPool}
                   {...props}
                 />
               </Stack>
             </Collapse>
           )}
         </>
-      ) : userIsMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
+      ) : wunderPool.isMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
         <Paper elevation={4} sx={{ width: '100%', p: 3 }}>
           <Stack spacing={2}>
             <Typography variant="h5">Do you want to join this Pool?</Typography>
             <Typography variant="subtitle1">
               Minimum Invest:{' '}
-              {governanceTokenData
-                ? toEthString(governanceTokenData.entryBarrier, 6)
+              {wunderPool.governanceToken
+                ? toEthString(wunderPool.governanceToken.entryBarrier, 6)
                 : '...'}{' '}
               USD
             </Typography>
@@ -134,6 +114,15 @@ function body(props) {
       ) : (
         //DEFAULT
         <Skeleton width="100%" height={100} />
+      )}
+      {wunderPool.governanceToken && (
+        <JoinPoolDialog
+          open={joinPool}
+          setOpen={setJoinPool}
+          loginCallback={loginCallback}
+          wunderPool={wunderPool}
+          {...props}
+        />
       )}
     </>
   );

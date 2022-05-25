@@ -10,15 +10,13 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useState, useEffect } from 'react';
-import { vote } from '/services/contract/vote';
-import { hasVoted } from '/services/contract/vote';
 
 export default function VotingButtons(props) {
   const {
     proposal,
     user,
     poolAddress,
-    fetchProposals,
+    wunderPool,
     handleSuccess,
     handleError,
   } = props;
@@ -34,13 +32,14 @@ export default function VotingButtons(props) {
   const handleVote = (mode) => {
     setWaitingForVote(true);
     setSigning(true);
-    vote(poolAddress, proposal.id, mode)
+    wunderPool
+      .vote(proposal.id, mode)
       .then((res) => {
         handleSuccess(
           `Voted ${mode == 1 ? 'YES' : 'NO'} for Proposal "${proposal.title}"`
         );
         setUserHasVoted(mode);
-        fetchProposals();
+        wunderPool.determineProposals();
         console.log(res);
       })
       .catch((err) => {
@@ -53,7 +52,7 @@ export default function VotingButtons(props) {
 
   useEffect(() => {
     if (user.address) {
-      hasVoted(poolAddress, proposal.id, user.address).then((res) => {
+      wunderPool.userHasVoted(proposal.id).then((res) => {
         setWaitingForVote(false);
         setUserHasVoted(res.toNumber());
       });

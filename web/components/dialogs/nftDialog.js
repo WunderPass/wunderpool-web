@@ -1,5 +1,4 @@
 import {
-  Button,
   Dialog,
   DialogContent,
   InputAdornment,
@@ -8,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { usdc } from '../../services/formatter';
+import { usdc } from '/services/formatter';
 import { createNftBuyProposal } from '/services/contract/proposals';
 
 export default function NftDialog(props) {
