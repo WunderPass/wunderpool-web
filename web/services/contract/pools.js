@@ -1,119 +1,83 @@
 import { ethers } from 'ethers';
-import { usdc } from '/services/formatter';
+import { initPool, usdcAddress, tokenAbi, versionLookup } from './init';
 import {
-  httpProvider,
-  initLauncher,
-  initPool,
-  usdcAddress,
-  tokenAbi,
-  gasPrice,
-} from './init';
-import useWunderPass from '/hooks/useWunderPass';
+  fetchAllPoolsDelta,
+  fetchPoolIsClosedDelta,
+  fetchUserPoolsDelta,
+  fundPoolDelta,
+  joinPoolDelta,
+} from './delta/pools';
+import {
+  fetchAllPoolsGamma,
+  fetchUserPoolsGamma,
+  fundPoolGamma,
+  joinPoolGamma,
+} from './gamma/pools';
+import axios from 'axios';
+import { httpProvider } from './provider';
+
+export function poolVersion(poolAddress) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool] = initPool(poolAddress);
+    resolve(versionLookup[await wunderPool.launcherAddress()]);
+  });
+}
 
 export function createPool(
   poolName,
   entryBarrier,
   tokenName,
   tokenSymbol,
-  value
+  tokenPrice,
+  userAddress
 ) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-    });
-    const [poolLauncher, provider] = initLauncher();
-    const tx = await poolLauncher.populateTransaction.createNewPool(
-      poolName,
-      usdc(entryBarrier),
-      tokenName,
-      tokenSymbol,
-      usdc(value),
-      { gasPrice: await gasPrice() }
-    );
+    const body = {
+      version: 'Delta',
+      network: 'POLYGON_MAINNET',
+      creator: userAddress,
+      name: poolName,
+      minInvest: entryBarrier,
+      tokenName: tokenName,
+      tokenSymbol: tokenSymbol,
+      price: tokenPrice,
+    };
 
-    smartContractTransaction(tx, {
-      amount: usdc(value),
-      spender: poolLauncher.address,
-    }).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    axios({ method: 'POST', url: '/api/proxy/pools/create', data: body })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
 export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
-    const [poolLauncher] = initLauncher();
-    const poolAddresses = await poolLauncher.poolsOfMember(userAddress);
-
-    const pools = await Promise.all(
-      poolAddresses.map(async (addr) => {
-        const [wunderPool] = initPool(addr);
-        try {
-          return { address: addr, name: await wunderPool.name() };
-        } catch (err) {
-          return null;
-        }
-      })
-    );
-    resolve(pools.filter((elem) => elem));
+    const deltaPools = await fetchUserPoolsDelta(userAddress);
+    const gammaPools = await fetchUserPoolsGamma(userAddress);
+    resolve([...deltaPools, ...gammaPools]);
   });
 }
 
-export function fetchAllPools() {
-  return new Promise(async (resolve, reject) => {
-    const [poolLauncher] = initLauncher();
-    const poolAddresses = await poolLauncher.allPools();
-
-    const pools = await Promise.all(
-      poolAddresses.map(async (addr) => {
-        const [wunderPool] = initPool(addr);
-        try {
-          return {
-            address: addr,
-            name: await wunderPool.name(),
-            entryBarrier: await wunderPool.entryBarrier(),
-          };
-        } catch (err) {
-          return null;
-        }
-      })
-    );
-    resolve(pools.filter((elem) => elem));
-  });
+export function fetchAllPools(version) {
+  if (version > 3) {
+    return fetchAllPoolsDelta();
+  } else {
+    return fetchAllPoolsGamma();
+  }
 }
 
-export function joinPool(poolAddress, value) {
-  return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-    });
-    const [wunderPool, provider] = initPool(poolAddress);
-    const tx = await wunderPool.populateTransaction.joinPool(usdc(value), {
-      gasPrice: await gasPrice(),
-    });
-
-    smartContractTransaction(tx, {
-      amount: usdc(value),
-      spender: poolAddress,
-    }).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
-  });
+export function joinPool(poolAddress, userAddress, value, version) {
+  if (version > 3) {
+    return joinPoolDelta(poolAddress, userAddress, value);
+  } else {
+    return joinPoolGamma(poolAddress, value);
+  }
 }
 
-export function fetchPoolName(poolAddress) {
+export function fetchPoolName(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPool(poolAddress);
     wunderPool
@@ -123,21 +87,31 @@ export function fetchPoolName(poolAddress) {
   });
 }
 
-export function fetchPoolMembers(poolAddress) {
+export function fetchPoolIsClosed(poolAddress, version) {
+  if (version > 3) {
+    return fetchPoolIsClosedDelta(poolAddress);
+  } else {
+    return new Promise((resolve, reject) => {
+      resolve(false);
+    });
+  }
+}
+
+export function fetchPoolMembers(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPool(poolAddress);
     resolve(await wunderPool.poolMembers());
   });
 }
 
-export function isMember(poolAddress, user) {
+export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.isMember(user));
+    resolve(await wunderPool.isMember(userAddress));
   });
 }
 
-export function fetchPoolBalance(poolAddress) {
+export function fetchPoolBalance(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     const provider = httpProvider;
     const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
@@ -145,27 +119,10 @@ export function fetchPoolBalance(poolAddress) {
   });
 }
 
-export function fundPool(poolAddress, amount) {
-  return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-    });
-    const [wunderPool, provider] = initPool(poolAddress);
-    const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {
-      gasPrice: await gasPrice(),
-    });
-
-    smartContractTransaction(tx, {
-      amount: usdc(amount),
-      spender: poolAddress,
-    }).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
-  });
+export function fundPool(poolAddress, amount, version) {
+  if (version > 3) {
+    return fundPoolDelta(poolAddress, amount);
+  } else {
+    return fundPoolGamma(poolAddress, amount);
+  }
 }

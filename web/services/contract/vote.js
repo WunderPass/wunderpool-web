@@ -1,40 +1,44 @@
-import { gasPrice, initPool } from "./init";
-import useWunderPass from "/hooks/useWunderPass";
+import {
+  hasVotedDelta,
+  voteAgainstDelta,
+  voteDelta,
+  voteForDelta,
+} from './delta/vote';
+import {
+  hasVotedGamma,
+  voteAgainstGamma,
+  voteForGamma,
+  voteGamma,
+} from './gamma/vote';
 
-export function vote(poolAddress, proposalId, mode) {
-  return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
-    });
-    const [wunderPool, provider] = initPool(poolAddress);
-    const tx = await wunderPool.populateTransaction.vote(proposalId, mode, {
-      gasPrice: await gasPrice(),
-    });
-
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        console.log(transaction);
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
-  });
+export function vote(poolAddress, proposalId, mode, userAddress, version) {
+  if (version > 3) {
+    return voteDelta(poolAddress, proposalId, mode, userAddress);
+  } else {
+    return voteGamma(poolAddress, proposalId, mode);
+  }
 }
 
-export function voteFor(address, proposalId) {
-  return vote(address, proposalId, 1);
+export function voteFor(address, proposalId, userAddress, version) {
+  if (version > 3) {
+    return voteForDelta(address, proposalId, userAddress);
+  } else {
+    return voteForGamma(address, proposalId);
+  }
 }
 
-export function voteAgainst(address, proposalId) {
-  return vote(address, proposalId, 2);
+export function voteAgainst(address, proposalId, userAddress, version) {
+  if (version > 3) {
+    return voteAgainstDelta(address, proposalId, userAddress);
+  } else {
+    return voteAgainstGamma(address, proposalId);
+  }
 }
 
-export function hasVoted(poolAddress, proposalId, address) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.hasVoted(proposalId, address));
-  });
+export function hasVoted(poolAddress, proposalId, address, version) {
+  if (version > 3) {
+    return hasVotedDelta(poolAddress, proposalId, address);
+  } else {
+    return hasVotedGamma(poolAddress, proposalId, address);
+  }
 }

@@ -4,15 +4,11 @@ import { useState } from 'react';
 import ProposalCard from './proposalCard';
 
 export default function ProposalList(props) {
-  const { proposals, setApe } = props;
+  const { wunderPool, setApe } = props;
   const [tab, setTab] = useState(0);
   const slidingContainer = useRef(null);
 
-  useEffect(() => {
-    console.log('proposal.ProposalCard.closed.props');
-  });
-
-  return proposals.length > 0 ? (
+  return wunderPool.proposals.length > 0 ? (
     <Stack spacing={1}>
       <Typography variant="h4">Proposals</Typography>
       <Tabs value={tab} onChange={(_, val) => setTab(val)}>
@@ -27,7 +23,7 @@ export default function ProposalList(props) {
             in={tab == 0}
           >
             <Stack spacing={2}>
-              {proposals
+              {wunderPool.proposals
                 .filter((p) => p.executed == false)
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
@@ -49,7 +45,7 @@ export default function ProposalList(props) {
             in={tab == 1}
           >
             <Stack spacing={2}>
-              {proposals
+              {wunderPool.proposals
                 .filter(
                   (p) =>
                     p.executed == true ||

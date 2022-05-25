@@ -1,15 +1,12 @@
-import { Button, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import SellTokenDialog from '../dialogs/sellTokenDialog';
-import CallReceivedIcon from '@mui/icons-material/CallReceived';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { toEthString } from '/services/formatter';
 import SwapTokenDialog from '/components/dialogs/swapTokenDialog';
 import TokenCard from './card';
 
 export default function TokenList(props) {
   const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
-  const { tokens, poolAddress, handleFund, handleWithdraw } = props;
+  const { tokens, poolAddress } = props;
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
   const [name, setName] = useState('');

@@ -9,14 +9,7 @@ import PoolInfoDialog from '/components/dialogs/poolInfo';
 import { currency, usdc } from '/services/formatter';
 
 export default function PoolHeader(props) {
-  const {
-    name,
-    address,
-    governanceTokenData,
-    userIsMember,
-    fetchProposals,
-    poolBalance,
-  } = props;
+  const { name, address, wunderPool } = props;
   const [poolInfo, setPoolInfo] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
 
@@ -34,7 +27,7 @@ export default function PoolHeader(props) {
         <Grid item xs={12} sm={8} textAlign="center">
           <Stack direction="row" alignItems="center" justifyContent="center">
             <Typography variant="h4">{name}</Typography>
-            {governanceTokenData && (
+            {wunderPool.governanceToken && (
               <Tooltip title="Pool Info">
                 <IconButton color="info" onClick={() => setPoolInfo(true)}>
                   <InfoOutlinedIcon />
@@ -44,7 +37,7 @@ export default function PoolHeader(props) {
           </Stack>
         </Grid>
 
-        {userIsMember && (
+        {wunderPool.isMember && (
           <Grid item xs={12} sm={2}>
             <Stack direction="row" alignItems="center" justifyContent="right">
               <Tooltip title="Liquidate Pool">
@@ -61,18 +54,19 @@ export default function PoolHeader(props) {
         <Grid item className="w-full ">
           <Stack direction="row" className=" justify-center">
             <Typography className="self-center " variant="h4">
-              Pool Balance: {currency(poolBalance.toString() / 1000000, {})}
+              Pool Balance:{' '}
+              {currency(wunderPool.usdcBalance?.toString() / 1000000, {})}
             </Typography>
           </Stack>
         </Grid>
       </Grid>
-      {governanceTokenData && (
+      {wunderPool.governanceToken && (
         <PoolInfoDialog
           open={poolInfo}
           setOpen={setPoolInfo}
           name={name}
           address={address}
-          governanceTokenData={governanceTokenData}
+          governanceTokenData={wunderPool.governanceToken}
           {...props}
         />
       )}
@@ -81,7 +75,7 @@ export default function PoolHeader(props) {
         setOpen={setDestroyDialog}
         address={address}
         name={name}
-        fetchProposals={fetchProposals}
+        wunderPool={wunderPool}
         {...props}
       />
     </>

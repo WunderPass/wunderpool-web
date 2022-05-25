@@ -72,11 +72,11 @@ export default function useUser() {
 
   return {
     wunderId,
-    address,
     updateWunderId,
+    address,
     updateAddress,
-    logOut,
     loggedIn,
+    logOut,
     pools,
     fetchPools,
     usdBalance,

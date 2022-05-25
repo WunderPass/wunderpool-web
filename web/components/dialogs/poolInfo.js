@@ -1,9 +1,7 @@
 import {
   Dialog,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  Divider,
   Grid,
   Link,
   Slide,
