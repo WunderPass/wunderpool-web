@@ -80,16 +80,14 @@ export default function Pool(props) {
         paddingTop={2}
         style={{ maxWidth: '100%' }}
       >
-        <div className="flex flex-col sm:flex-row">
-          <PoolHeader name={name} address={address} wunderPool={wunderPool} />
-          <PoolBody
-            address={address}
-            loading={loading}
-            wunderPool={wunderPool}
-            loginCallback={loginCallback}
-            {...props}
-          />
-        </div>
+        <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+        <PoolBody
+          address={address}
+          loading={loading}
+          wunderPool={wunderPool}
+          loginCallback={loginCallback}
+          {...props}
+        />
       </Stack>
       <FundPoolDialog
         open={fundDialog}
