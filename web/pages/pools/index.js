@@ -93,23 +93,16 @@ function PoolList(props) {
 export default function Pools(props) {
   const { user } = props;
   const [demoPools, setDemoPools] = useState([]);
-  const [allPools, setAllPools] = useState([]);
   const [userPools, setUserPools] = useState([]);
   const [open, setOpen] = useState(false);
-  const [loadingAll, setLoadingAll] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
   const alert = useAlert();
 
   const fetchPools = () => {
-    setLoadingAll(true);
     setLoadingUser(true);
     user.fetchPools().then((pools) => {
       setUserPools(pools);
       setLoadingUser(false);
-    });
-    fetchAllPools().then((pools) => {
-      setAllPools(pools);
-      setLoadingAll(false);
     });
   };
 
@@ -196,15 +189,7 @@ export default function Pools(props) {
               <Typography className="subheader pb-4 lg:text-2xl">
                 Demo WunderPool
               </Typography>
-              {loadingAll ? (
-                <Skeleton
-                  variant="rectangular"
-                  width="100%"
-                  sx={{ height: '100px', borderRadius: 3 }}
-                />
-              ) : (
-                <PoolList pools={demoPools} setOpen={setOpen} />
-              )}
+              <PoolList pools={demoPools} setOpen={setOpen} />
             </div>
           </div>
 
