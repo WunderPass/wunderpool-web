@@ -428,7 +428,7 @@ export default function NewPoolDialog(props) {
                   Cancel
                 </button>
                 <button
-                  className="btn-kaico w-full py-3 mt-2 font-semibold"
+                  className="btn-kaico w-full py-3 mt-2"
                   onClick={stepContinue}
                   disabled={poolName.length < 3 || value < 3}
                 >
@@ -503,7 +503,7 @@ export default function NewPoolDialog(props) {
                 Back
               </button>
               <button
-                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                className="btn-kaico w-full py-3 mt-2"
                 onClick={stepContinue}
                 disabled={poolName.length < 3 || value < 3}
               >
@@ -570,7 +570,7 @@ export default function NewPoolDialog(props) {
                 Back
               </button>
               <button
-                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                className="btn-kaico w-full py-3 mt-2"
                 onClick={handleSubmit}
               >
                 Submit
