@@ -2,7 +2,6 @@ import {
   Dialog,
   LinearProgress,
   Box,
-  Button,
   Collapse,
   Divider,
   IconButton,
@@ -14,23 +13,14 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
-import { fetchTransactionData, execute } from '/services/contract/proposals';
 import { ethers } from 'ethers';
 import { decodeParams } from '/services/formatter';
 import VotingBar from '/components/proposals/votingBar';
 import VotingButtons from './votingButtons';
 
 export default function ProposalCard(props) {
-  const {
-    proposal,
-    poolAddress,
-    handleSuccess,
-    handleError,
-    totalGovernanceTokens,
-    fetchProposals,
-    fetchTokens,
-    fetchBalance,
-  } = props;
+  const { proposal, wunderPool, handleSuccess, handleError } = props;
+  const { totalSupply } = wunderPool.governanceToken;
   const [loading, setLoading] = useState(false);
   const [waitingForExec, setWaitingForExec] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
@@ -39,16 +29,13 @@ export default function ProposalCard(props) {
   const [executable, setExecutable] = useState(false);
   const [closeable, setCloseable] = useState(false);
 
-  console.log(proposal.yesVotes.toNumber());
-  console.log(proposal.yesVotes);
-
   useEffect(() => {
     setExecutable(
-      proposal.yesVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2
+      proposal.yesVotes.toNumber() > totalSupply?.toNumber() / 2
     );
     setCloseable(
       executable ||
-        proposal.noVotes.toNumber() > totalGovernanceTokens?.toNumber() / 2
+        proposal.noVotes.toNumber() > totalSupply?.toNumber() / 2
     );
   });
 
@@ -62,27 +49,26 @@ export default function ProposalCard(props) {
     } else {
       setOpen(proposal.id);
       setLoading(true);
-      fetchTransactionData(
-        poolAddress,
-        proposal.id,
-        proposal.transactionCount.toNumber()
-      ).then((res) => {
-        setLoading(false);
-        setTransactionData(res);
-      });
+      wunderPool
+        .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
+        .then((res) => {
+          setLoading(false);
+          setTransactionData(res);
+        });
     }
   };
 
   const executeProposal = () => {
     setSigning(true);
     setWaitingForExec(true);
-    execute(poolAddress, proposal.id)
+    wunderPool
+      .execute(proposal.id)
       .then((res) => {
         console.log(res);
         handleSuccess(`Proposal "${proposal.title}" executed`);
-        fetchProposals();
-        fetchTokens();
-        fetchBalance();
+        wunderPool.determineProposals();
+        wunderPool.determineTokens();
+        wunderPool.determineBalance();
       })
       .catch((err) => {
         handleError(err);
@@ -128,11 +114,9 @@ export default function ProposalCard(props) {
                     className="w-auto"
                     id="fr"
                     name="transactionFrame"
-                    height="600"
+                    height="500"
                   ></iframe>
-                  <Stack spacing={2} sx={{ textAlign: 'center' }}>
-                    <LinearProgress />
-                  </Stack>
+                  <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
                 </Dialog>
               </>
             )}
@@ -153,8 +137,7 @@ export default function ProposalCard(props) {
               <Typography variant="span" fontStyle="italic">
                 Zustimmungen
               </Typography>
-              {proposal.yesVotes.toString()} /{' '}
-              {totalGovernanceTokens?.toString()} Stimmen
+              {proposal.yesVotes.toString()} / {totalSupply?.toString()} Stimmen
             </Typography>
             <Divider />
             <Typography
@@ -164,8 +147,7 @@ export default function ProposalCard(props) {
               <Typography variant="span" fontStyle="italic">
                 Ablehnungen
               </Typography>
-              {proposal.noVotes.toString()} /{' '}
-              {totalGovernanceTokens?.toString()} Stimmen
+              {proposal.noVotes.toString()} / {totalSupply?.toString()} Stimmen
             </Typography>
             <Divider />
             <Typography
@@ -280,11 +262,9 @@ export default function ProposalCard(props) {
                   className="w-auto"
                   id="fr"
                   name="transactionFrame"
-                  height="600"
+                  height="500"
                 ></iframe>
-                <Stack spacing={2} sx={{ textAlign: 'center' }}>
-                  <LinearProgress />
-                </Stack>
+                <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
               </Dialog>
             )}
           </Stack>
@@ -293,7 +273,7 @@ export default function ProposalCard(props) {
       <VotingBar
         yes={proposal.yesVotes.toNumber()}
         no={proposal.noVotes.toNumber()}
-        total={totalGovernanceTokens?.toNumber()}
+        total={totalSupply?.toNumber()}
       />
     </Paper>
   );

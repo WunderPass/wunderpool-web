@@ -1,6 +1,5 @@
 import {
   Alert,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,18 +10,9 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { createLiquidateSuggestion } from '/services/contract/proposals';
 
 export default function DestroyPoolDialog(props) {
-  const {
-    open,
-    setOpen,
-    address,
-    name,
-    fetchProposals,
-    handleSuccess,
-    handleError,
-  } = props;
+  const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -32,15 +22,12 @@ export default function DestroyPoolDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    createLiquidateSuggestion(
-      address,
-      "Let's Liquidate the Pool",
-      'I want my money back'
-    )
+    wunderPool
+      .liquidateSuggestion("Let's Liquidate the Pool", 'I want my money back')
       .then((res) => {
         console.log(res);
         handleSuccess(`Created new Proposal to Liquidate the Pool ${name}`);
-        fetchProposals();
+        wunderPool.determineProposals();
         handleClose();
       })
       .catch((err) => {
@@ -64,7 +51,6 @@ export default function DestroyPoolDialog(props) {
       {loading ? (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Typography variant="subtitle1">Submitting Proposal</Typography>
-          <LinearProgress />
         </Stack>
       ) : (
         <DialogActions>
@@ -81,7 +67,7 @@ export default function DestroyPoolDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>

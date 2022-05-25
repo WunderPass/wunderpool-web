@@ -73,14 +73,14 @@ function PoolList(props) {
   ) : (
     <div className="container-white">
       <div className="flex flex-col items-center ">
-        <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mb-4">
+        <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mt-6 mb-4">
           <MdGroups className="text-4xl" />
         </div>
-        <Typography className="my-2" variant="h7">
+        <Typography className="my-2 mb-10" variant="h7">
           No Pools joined yet
         </Typography>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3 px-3 text-md "
+          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-8 text-md "
           onClick={() => setOpen(true)}
         >
           Create pool
@@ -93,23 +93,16 @@ function PoolList(props) {
 export default function Pools(props) {
   const { user } = props;
   const [demoPools, setDemoPools] = useState([]);
-  const [allPools, setAllPools] = useState([]);
   const [userPools, setUserPools] = useState([]);
   const [open, setOpen] = useState(false);
-  const [loadingAll, setLoadingAll] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
   const alert = useAlert();
 
   const fetchPools = () => {
-    setLoadingAll(true);
     setLoadingUser(true);
     user.fetchPools().then((pools) => {
       setUserPools(pools);
       setLoadingUser(false);
-    });
-    fetchAllPools().then((pools) => {
-      setAllPools(pools);
-      setLoadingAll(false);
     });
   };
 
@@ -193,15 +186,7 @@ export default function Pools(props) {
               <Typography className="subheader pb-4 lg:text-2xl">
                 Demo WunderPool
               </Typography>
-              {loadingAll ? (
-                <Skeleton
-                  variant="rectangular"
-                  width="100%"
-                  sx={{ height: '100px', borderRadius: 3 }}
-                />
-              ) : (
-                <PoolList pools={demoPools} setOpen={setOpen} />
-              )}
+              <PoolList pools={demoPools} setOpen={setOpen} />
             </div>
           </div>
 

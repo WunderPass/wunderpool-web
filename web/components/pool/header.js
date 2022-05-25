@@ -21,14 +21,7 @@ import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider } from '@mui/material';
 
 export default function PoolHeader(props) {
-  const {
-    name,
-    address,
-    governanceTokenData,
-    userIsMember,
-    fetchProposals,
-    poolBalance,
-  } = props;
+  const { name, address, wunderPool } = props;
   const [poolInfo, setPoolInfo] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
@@ -40,6 +33,7 @@ export default function PoolHeader(props) {
 
   return (
     <>
+
       <div className="flex flex-col container-white-p-0 w-full">
         <div className="flex flex-col border-solid text-black  rounded-2xl bg-kaico-extra-light-blue h-36  w-full items-center justify-center cursor-pointer">
           <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
@@ -69,7 +63,7 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              {currency(poolBalance.toString() / 1000000, {})}
+              {currency(wunderPool.poolBalance.toString() / 1000000, {})}
             </Typography>
           </div>
 
@@ -113,8 +107,8 @@ export default function PoolHeader(props) {
                   Min
                 </Typography>
                 <Typography className="text-sm opacity-90 py-1">
-                  {governanceTokenData &&
-                    toEthString(governanceTokenData.entryBarrier, 6)}{' '}
+                  {wunderPool.governanceToken &&
+                    toEthString(wunderPool.governanceToken.entryBarrier, 6)}{' '}
                   $
                 </Typography>
               </div>
@@ -157,7 +151,7 @@ export default function PoolHeader(props) {
                 </div>
               </div>
               <Divider className="my-8 opacity-70" />
-              {governanceTokenData && (
+              {wunderPool.governanceToken && (
                 <>
                   <div>
                     <Typography className="text-lg font-semi py-1">
@@ -169,7 +163,7 @@ export default function PoolHeader(props) {
                       Pool Token Name
                     </Typography>
                     <Typography className="text-sm opacity-90 py-1">
-                      {governanceTokenData.name} ({governanceTokenData.symbol})
+                      {wunderPool.governanceToken.name} ({wunderPool.governanceToken.symbol})
                     </Typography>
                   </div>
                   <div>
@@ -177,7 +171,7 @@ export default function PoolHeader(props) {
                       Price per Token
                     </Typography>
                     <Typography className="text-sm opacity-90 py-1">
-                      {toEthString(governanceTokenData.price, 6)} USD
+                      {toEthString(wunderPool.governanceToken.price, 6)} USD
                     </Typography>
                   </div>
                   <div>
@@ -185,7 +179,7 @@ export default function PoolHeader(props) {
                       Total Supply
                     </Typography>
                     <Typography className="text-sm opacity-90 py-1">
-                      {governanceTokenData.totalSupply.toString()}
+                      {wunderPool.governanceToken.totalSupply.toString()}
                     </Typography>
                   </div>
                   <div>
@@ -195,14 +189,14 @@ export default function PoolHeader(props) {
                     <Link
                       className="cursor-pointer"
                       target="_blank"
-                      href={`https://polygonscan.com/token/${governanceTokenData.address}`}
+                      href={`https://polygonscan.com/token/${wunderPool.governanceToken.address}`}
                     >
                       <div className="flex flex-row items-center">
                         <Typography>
                           <BsLink45Deg className="text-lg opacity-60 mr-1" />
                         </Typography>
                         <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
-                          {governanceTokenData.address}
+                          {wunderPool.governanceToken.address}
                         </Typography>
                       </div>
                     </Link>
@@ -251,13 +245,12 @@ export default function PoolHeader(props) {
           </div>
         </div>
       </div>
-
       <DestroyPoolDialog
         open={destroyDialog}
         setOpen={setDestroyDialog}
         address={address}
         name={name}
-        fetchProposals={fetchProposals}
+        wunderPool={wunderPool}
         {...props}
       />
     </>

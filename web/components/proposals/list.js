@@ -1,23 +1,14 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Slide,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
-import { useRef } from 'react';
+import { Box, Paper, Slide, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { useRef, useEffect } from 'react';
 import { useState } from 'react';
 import ProposalCard from './proposalCard';
 
 export default function ProposalList(props) {
-  const { proposals, setApe } = props;
+  const { wunderPool, setApe } = props;
   const [tab, setTab] = useState(0);
   const slidingContainer = useRef(null);
 
-  return proposals.length > 0 ? (
+  return wunderPool.proposals.length > 0 ? (
     <Stack spacing={1}>
       <Typography variant="h4">Proposals</Typography>
       <Tabs value={tab} onChange={(_, val) => setTab(val)}>
@@ -32,7 +23,7 @@ export default function ProposalList(props) {
             in={tab == 0}
           >
             <Stack spacing={2}>
-              {proposals
+              {wunderPool.proposals
                 .filter(
                   (p) => p.executed == false || p.closed == false //ADD FAILED PROPOSALS HERE TOO
                 )
@@ -56,9 +47,16 @@ export default function ProposalList(props) {
             in={tab == 1}
           >
             <Stack spacing={2}>
-              {proposals
+              {wunderPool.proposals
                 .filter(
-                  (p) => p.executed == true || p.closed == true // || ADD FAILED PROPOSALS HERE
+                  (p) =>
+                    p.executed == true ||
+                    p.noVotes > p.yesVotes + p.abstainVotes
+              {wunderPool.proposals
+                .filter(
+                  (p) =>
+                    p.executed == true ||
+                    p.noVotes > p.yesVotes + p.abstainVotes
                 )
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {

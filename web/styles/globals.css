@@ -31,7 +31,7 @@ a {
 }
 
 .btn {
-  @apply rounded-lg py-2.5 px-3 text-xs font-bold cursor-pointer bg-black uppercase transition-colors;
+  @apply rounded-lg py-2.5 px-3 text-xs cursor-pointer bg-black  transition-colors;
 }
 
 .btn-connect {

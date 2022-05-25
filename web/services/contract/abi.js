@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
-import { httpProvider } from "./init";
+import { ethers } from 'ethers';
+import { httpProvider } from './provider';
 
 export function fetchContractAbi(address) {
   return new Promise((resolve, reject) => {
@@ -11,11 +11,11 @@ export function fetchContractAbi(address) {
           res.json().then((json) => {
             const abi = JSON.parse(json.result);
             if (
-              abi.filter((func) => func.name == "implementation").length >= 1
+              abi.filter((func) => func.name == 'implementation').length >= 1
             ) {
               const proxyContract = new ethers.Contract(
                 address,
-                ["function implementation() public view returns(address)"],
+                ['function implementation() public view returns(address)'],
                 httpProvider
               );
               proxyContract.implementation().then((proxyAddress) => {

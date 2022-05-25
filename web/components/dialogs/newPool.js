@@ -21,9 +21,18 @@ import { BiUpload } from 'react-icons/bi';
 import CurrencyInput from 'react-currency-input-field';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
+import { waitForTransaction } from '../../services/contract/provider';
 
 export default function NewPoolDialog(props) {
-  const { open, setOpen, fetchPools, handleSuccess, handleError, user } = props;
+  const {
+    open,
+    setOpen,
+    fetchPools,
+    handleSuccess,
+    handleInfo,
+    handleError,
+    user,
+  } = props;
   const [poolName, setPoolName] = useState('');
   const [poolDescription, setPoolDescription] = useState('');
   const [image, setImage] = useState(null);
@@ -109,7 +118,9 @@ export default function NewPoolDialog(props) {
   };
 
   const handleValueChange = (e) => {
-    setHasEnoughBalance(user.usdBalance >= e.target.value);
+    setHasEnoughBalance(
+      user.usdBalance >= Number(convertToRawValue(e.target.value))
+    );
     setValue(convertToRawValue(e.target.value));
     setValueTouched(true);
   };
@@ -140,15 +151,24 @@ export default function NewPoolDialog(props) {
     uploadToServer();
     createPool(
       poolName,
-      entryBarrier || value,
-      tokenName || `${poolName} Token`,
-      tokenSymbol || 'PGT',
-      value
+      entryBarrier,
+      tokenName,
+      tokenSymbol,
+      value / 100,
+      user.address
     )
       .then((res) => {
         console.log(res);
-        handleSuccess(`Created Pool "${poolName}"`);
         handleClose();
+        handleInfo('Waiting for Blockchain Transaction');
+        waitForTransaction(res)
+          .then((tx) => {
+            handleSuccess(`Created Pool "${poolName}"`);
+          })
+          .catch((err) => {
+            console.log(err);
+            handleError('Pool Creation failed');
+          });
         fetchPools();
       })
       .catch((err) => {
@@ -415,7 +435,6 @@ export default function NewPoolDialog(props) {
           {waitingForPool ? (
             <Stack spacing={2} sx={{ textAlign: 'center' }}>
               <Typography variant="subtitle1">Creating your Pool...</Typography>
-              <LinearProgress />
             </Stack>
           ) : (
             <DialogActions className="flex items-center justify-center mx-4">
@@ -427,7 +446,7 @@ export default function NewPoolDialog(props) {
                   Cancel
                 </button>
                 <button
-                  className="btn-kaico w-full py-3 mt-2 font-semibold"
+                  className="btn-kaico w-full py-3 mt-2"
                   onClick={stepContinue}
                   disabled={poolName.length < 3 || value < 3}
                 >
@@ -502,7 +521,7 @@ export default function NewPoolDialog(props) {
                 Back
               </button>
               <button
-                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                className="btn-kaico w-full py-3 mt-2"
                 onClick={stepContinue}
                 disabled={poolName.length < 3 || value < 3}
               >
@@ -569,7 +588,7 @@ export default function NewPoolDialog(props) {
                 Back
               </button>
               <button
-                className="btn-kaico w-full py-3 mt-2 font-semibold"
+                className="btn-kaico w-full py-3 mt-2"
                 onClick={handleSubmit}
               >
                 Submit
@@ -584,7 +603,7 @@ export default function NewPoolDialog(props) {
           className="w-auto"
           id="fr"
           name="transactionFrame"
-          height="600"
+          height="500"
         ></iframe>
       )}
     </Dialog>
