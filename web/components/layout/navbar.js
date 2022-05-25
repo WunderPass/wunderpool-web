@@ -1,103 +1,44 @@
-import { useEffect, useState, useRef } from 'react';
-import { AppBar, Link, Menu, MenuItem, Stack, Toolbar } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useEffect, useState } from 'react';
+import { AppBar, Link, Stack, Toolbar } from '@mui/material';
 import Image from 'next/image';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
-import { usdcBalanceOf } from '/services/contract/token';
-import { currency } from '/services/formatter';
+import UserIcon from '/public/user.png';
 import { useRouter } from 'next/router';
-import { BsFillPlusCircleFill } from 'react-icons/bs';
+import MobileNavigation from './mobileNavigation';
+import Navigation from './navigation';
 
 export default function Navbar(props) {
   const { user } = props;
-  const [usdcBalance, setUsdcBalance] = useState(true);
-  const [poolListOpen, setPoolListOpen] = useState(null);
   const { asPath } = useRouter();
-
-  const handleMenuClose = () => {
-    setPoolListOpen(null);
-  };
-
-  useEffect(() => {
-    if (!user.usdBalance) return;
-    setUsdcBalance(user?.usdBalance);
-  }, [user.usdBalance]);
 
   if (asPath === '/') return null;
 
   return (
     <>
-      <AppBar
-        className="bg-gradient-to-r from-wunder-light-blue to-wunder-blue"
-        position="fixed"
-        sx={{ top: 0 }}
-      >
+      <AppBar className="bg-kaico-blue" position="fixed" sx={{ top: 0 }}>
         <Toolbar>
-          <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
+          <Stack className="flex flex-row w-full justify-between items-center">
             <Link href="/">
               <div className="flex flex-row">
-                <div className="pt-0.5 w-44 pr-3">
+                <div className="hidden pt-0.5 w-44 pr-3 sm:block">
                   <Image
                     src={WunderPoolIcon}
                     alt="WunderPoolIcon"
                     layout="responsive"
                   />
                 </div>
+                <div className="flex-col justify-between border-solid w-9 h-9 ml-1 border-white rounded-full bg-kaico-extra-light-blue shadow-xl block sm:hidden">
+                  <Image src={UserIcon} alt="UserIcon" layout="responsive" />
+                </div>
               </div>
             </Link>
             {user.loggedIn && (
               <>
-                <button
-                  className="hidden sm:block"
-                  onClick={(e) => setPoolListOpen(e.currentTarget)}
-                >
-                  My Pools
-                  <ArrowDropDownIcon />
-                </button>
-                <Menu
-                  open={Boolean(poolListOpen)}
-                  onClose={handleMenuClose}
-                  anchorEl={poolListOpen}
-                >
-                  {user.pools.length > 0 &&
-                    user.pools.map((pool, i) => {
-                      return (
-                        <Link
-                          key={`user-pool-${i}`}
-                          href={`/pools/${pool.address}?name=${pool.name}`}
-                          sx={{ textDecoration: 'none', color: 'inherit' }}
-                          passHref
-                        >
-                          <MenuItem>{pool.name}</MenuItem>
-                        </Link>
-                      );
-                    })}
-                  {user.pools.length == 0 && (
-                    <MenuItem> - no pools - </MenuItem>
-                  )}
-                </Menu>
+                <Navigation {...props} />
+                <MobileNavigation {...props} />
               </>
             )}
           </Stack>
-          {user.loggedIn && (
-            <>
-              <div
-                onClick={() => user.setTopUpRequired(true)}
-                className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit p-0.5 my-2 py-1.5 cursor-pointer"
-              >
-                <div className="flex flex-row pr-1 text-center items-center text-sm font-bold">
-                  <p className="mx-2">{currency(usdcBalance, {})}</p>
-                  <BsFillPlusCircleFill className="text-xl mr-1" />
-                </div>
-              </div>
-              <button
-                className="hidden sm:block btn ml-2 my-2 py-1.5 hover:bg-[#ff0000] text-sm"
-                onClick={user?.logOut}
-              >
-                Log out
-              </button>
-            </>
-          )}
         </Toolbar>
       </AppBar>
       <Toolbar />
