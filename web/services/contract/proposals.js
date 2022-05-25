@@ -1,99 +1,44 @@
-import { ethers } from "ethers";
-import { encodeParams, usdc } from "../formatter";
 import {
-  gasPrice,
-  httpProvider,
-  initPool,
-  usdcAddress,
-  wunderSwapperAddress,
-} from "./init";
-import useWunderPass from "/hooks/useWunderPass";
+  createApeSuggestionDelta,
+  createCustomProposalDelta,
+  createFudSuggestionDelta,
+  createLiquidateSuggestionDelta,
+  createMultiActionProposalDelta,
+  createNftBuyProposalDelta,
+  createNftSellProposalDelta,
+  createSwapSuggestionDelta,
+  executeProposalDelta,
+  fetchPoolProposalsDelta,
+  fetchTransactionDataDelta,
+} from './delta/proposals';
+import {
+  createApeSuggestionGamma,
+  createCustomProposalGamma,
+  createFudSuggestionGamma,
+  createLiquidateSuggestionGamma,
+  createMultiActionProposalGamma,
+  createNftBuyProposalGamma,
+  createNftSellProposalGamma,
+  createSwapSuggestionGamma,
+  executeProposalGamma,
+  fetchPoolProposalsGamma,
+  fetchTransactionDataGamma,
+} from './gamma/proposals';
 
-export function fetchPoolProposals(address) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(address);
-    const proposalIds = await wunderPool.getAllProposalIds();
-    const proposals = await Promise.all(
-      proposalIds.map(async (id) => {
-        const {
-          title,
-          description,
-          transactionCount,
-          deadline,
-          yesVotes,
-          noVotes,
-          abstainVotes,
-          createdAt,
-          executed,
-        } = await wunderPool.getProposal(id);
-        return {
-          id: id,
-          title,
-          description,
-          transactionCount,
-          deadline,
-          yesVotes,
-          noVotes,
-          abstainVotes,
-          createdAt,
-          executed,
-        };
-      })
-    );
-    resolve(proposals);
-  });
+export function fetchPoolProposals(address, version) {
+  if (version > 3) {
+    return fetchPoolProposalsDelta(address);
+  } else {
+    return fetchPoolProposalsGamma(address);
+  }
 }
 
-export function fetchTransactionData(address, id, transactionCount) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(address);
-    const transactions = await Promise.all(
-      [...Array(transactionCount).keys()].map(async (index) => {
-        const { action, param, transactionValue, contractAddress } =
-          await wunderPool.getProposalTransaction(id, index);
-        return { action, params: param, transactionValue, contractAddress };
-      })
-    );
-    resolve(transactions);
-  });
-}
-
-export function createSingleActionProposal(
-  poolAddress,
-  title,
-  description,
-  contractAddress,
-  action,
-  params,
-  transactionValue,
-  deadline
-) {
-  return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
-    });
-    const [wunderPool, provider] = initPool(poolAddress);
-    const tx = await wunderPool.populateTransaction.createProposal(
-      title,
-      description,
-      contractAddress,
-      action,
-      params,
-      transactionValue,
-      deadline,
-      { gasPrice: await gasPrice() }
-    );
-
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
-  });
+export function fetchTransactionData(address, id, transactionCount, version) {
+  if (version > 3) {
+    return fetchTransactionDataDelta(address, id, transactionCount);
+  } else {
+    return fetchTransactionDataGamma(address, id, transactionCount);
+  }
 }
 
 export function createMultiActionProposal(
@@ -104,15 +49,13 @@ export function createMultiActionProposal(
   actions,
   params,
   transactionValues,
-  deadline
+  deadline,
+  userAddress,
+  version
 ) {
-  return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
-    });
-    const [wunderPool, provider] = initPool(poolAddress);
-    const tx = await wunderPool.populateTransaction.createMultiActionProposal(
+  if (version > 3) {
+    return createMultiActionProposalDelta(
+      poolAddress,
       title,
       description,
       contractAddresses,
@@ -120,18 +63,20 @@ export function createMultiActionProposal(
       params,
       transactionValues,
       deadline,
-      { gasPrice: await gasPrice() }
+      userAddress
     );
-
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
-  });
+  } else {
+    return createMultiActionProposalGamma(
+      poolAddress,
+      title,
+      description,
+      contractAddresses,
+      actions,
+      params,
+      transactionValues,
+      deadline
+    );
+  }
 }
 
 export function createCustomProposal(
@@ -142,70 +87,33 @@ export function createCustomProposal(
   actions,
   params,
   transactionValues,
-  deadline
+  deadline,
+  userAddress,
+  version
 ) {
-  if (
-    contractAddresses?.length > 1 &&
-    actions?.length > 1 &&
-    params?.length > 1 &&
-    transactionValues?.length > 1
-  ) {
-    const formattedValues = transactionValues.map((val) =>
-      ethers.utils.parseEther(String(val))
-    );
-    const encodedParams = params.map((param) =>
-      encodeParams(
-        param[0],
-        param[1].map((par) => {
-          try {
-            return JSON.parse(par);
-          } catch {
-            return par;
-          }
-        })
-      )
-    );
-    return createMultiActionProposal(
+  if (version > 3) {
+    return createCustomProposalDelta(
       poolAddress,
       title,
       description,
       contractAddresses,
       actions,
-      encodedParams,
-      formattedValues,
-      deadline
+      params,
+      transactionValues,
+      deadline,
+      userAddress
     );
-  } else if (
-    contractAddresses?.length == 1 &&
-    actions?.length == 1 &&
-    params?.length == 1 &&
-    transactionValues?.length == 1
-  ) {
-    const formattedValue = ethers.utils.parseEther(
-      String(transactionValues[0] || 0)
-    );
-    const encodedParams = encodeParams(
-      params[0][0],
-      params[0][1].map((par) => {
-        try {
-          return JSON.parse(par);
-        } catch {
-          return par;
-        }
-      })
-    );
-    return createSingleActionProposal(
+  } else {
+    return createCustomProposalGamma(
       poolAddress,
       title,
       description,
-      contractAddresses[0],
-      actions[0],
-      encodedParams,
-      formattedValue,
+      contractAddresses,
+      actions,
+      params,
+      transactionValues,
       deadline
     );
-  } else {
-    return new Promise((resolve, reject) => reject("INVALID PROPOSAL"));
   }
 }
 
@@ -214,16 +122,28 @@ export function createApeSuggestion(
   tokenAddress,
   title,
   description,
-  value
+  value,
+  userAddress,
+  version
 ) {
-  return createSwapSuggestion(
-    poolAddress,
-    usdcAddress,
-    tokenAddress,
-    title,
-    description,
-    usdc(value)
-  );
+  if (version > 3) {
+    return createApeSuggestionDelta(
+      poolAddress,
+      tokenAddress,
+      title,
+      description,
+      value,
+      userAddress
+    );
+  } else {
+    return createApeSuggestionGamma(
+      poolAddress,
+      tokenAddress,
+      title,
+      description,
+      value
+    );
+  }
 }
 
 export function createFudSuggestion(
@@ -231,29 +151,47 @@ export function createFudSuggestion(
   tokenAddress,
   title,
   description,
-  value
+  value,
+  userAddress,
+  version
 ) {
-  return createSwapSuggestion(
-    poolAddress,
-    tokenAddress,
-    usdcAddress,
-    title,
-    description,
-    value
-  );
+  if (version > 3) {
+    return createFudSuggestionDelta(
+      poolAddress,
+      tokenAddress,
+      title,
+      description,
+      value,
+      userAddress
+    );
+  } else {
+    return createFudSuggestionGamma(
+      poolAddress,
+      tokenAddress,
+      title,
+      description,
+      value
+    );
+  }
 }
 
-export function createLiquidateSuggestion(poolAddress, title, description) {
-  return createSingleActionProposal(
-    poolAddress,
-    title,
-    description,
-    poolAddress,
-    "liquidatePool()",
-    "0x",
-    0,
-    1846183041
-  );
+export function createLiquidateSuggestion(
+  poolAddress,
+  title,
+  description,
+  userAddress,
+  version
+) {
+  if (version > 3) {
+    return createLiquidateSuggestionDelta(
+      poolAddress,
+      title,
+      description,
+      userAddress
+    );
+  } else {
+    return createLiquidateSuggestionGamma(poolAddress, title, description);
+  }
 }
 
 export async function createSwapSuggestion(
@@ -262,49 +200,28 @@ export async function createSwapSuggestion(
   tokenOut,
   title,
   description,
-  amount
+  amount,
+  userAddress,
+  version
 ) {
-  const [wunderPool] = initPool(poolAddress);
-  const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
-
-  if (tokenAddresses.includes(tokenOut)) {
-    return createMultiActionProposal(
+  if (version > 3) {
+    return createSwapSuggestionDelta(
       poolAddress,
+      tokenIn,
+      tokenOut,
       title,
       description,
-      [tokenIn, wunderSwapperAddress],
-      ["transfer(address,uint256)", "swapTokens(address,address,uint256)"],
-      [
-        encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]),
-        encodeParams(
-          ["address", "address", "uint256"],
-          [tokenIn, tokenOut, amount]
-        ),
-      ],
-      [0, 0],
-      1846183041
+      amount,
+      userAddress
     );
   } else {
-    return createMultiActionProposal(
+    return createSwapSuggestionGamma(
       poolAddress,
+      tokenIn,
+      tokenOut,
       title,
       description,
-      [tokenIn, wunderSwapperAddress, poolAddress],
-      [
-        "transfer(address,uint256)",
-        "swapTokens(address,address,uint256)",
-        "addToken(address,bool,uint256)",
-      ],
-      [
-        encodeParams(["address", "uint256"], [wunderSwapperAddress, amount]),
-        encodeParams(
-          ["address", "address", "uint256"],
-          [tokenIn, tokenOut, amount]
-        ),
-        encodeParams(["address", "bool", "uint256"], [tokenOut, false, 0]),
-      ],
-      [0, 0, 0],
-      1846183041
+      amount
     );
   }
 }
@@ -316,30 +233,32 @@ export async function createNftBuyProposal(
   buyerAddress,
   title,
   description,
-  amount
+  amount,
+  userAddress,
+  version
 ) {
-  return createMultiActionProposal(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      "transferFrom(address,address,uint256)",
-      "transferFrom(address,address,uint256)",
-    ],
-    [
-      encodeParams(
-        ["address", "address", "uint256"],
-        [buyerAddress, poolAddress, amount]
-      ),
-      encodeParams(
-        ["address", "address", "uint256"],
-        [poolAddress, buyerAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    1846183041
-  );
+  if (version > 3) {
+    return createNftBuyProposalDelta(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      buyerAddress,
+      title,
+      description,
+      amount,
+      userAddress
+    );
+  } else {
+    return createNftBuyProposalGamma(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      buyerAddress,
+      title,
+      description,
+      amount
+    );
+  }
 }
 
 export async function createNftSellProposal(
@@ -349,76 +268,38 @@ export async function createNftSellProposal(
   sellerAddress,
   title,
   description,
-  amount
+  amount,
+  userAddress,
+  version
 ) {
-  return createMultiActionProposal(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      "transferFrom(address,address,uint256)",
-      "transferFrom(address,address,uint256)",
-    ],
-    [
-      encodeParams(
-        ["address", "address", "uint256"],
-        [poolAddress, sellerAddress, amount]
-      ),
-      encodeParams(
-        ["address", "address", "uint256"],
-        [sellerAddress, poolAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    1846183041
-  );
+  if (version > 3) {
+    return createNftSellProposalDelta(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      sellerAddress,
+      title,
+      description,
+      amount,
+      userAddress
+    );
+  } else {
+    return createNftSellProposalGamma(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      sellerAddress,
+      title,
+      description,
+      amount
+    );
+  }
 }
 
-export function testExecute(
-  poolAddress,
-  contractAddress,
-  action,
-  params,
-  transactionValue
-) {
-  const abi = [`function ${action}${transactionValue == 0 ? "" : " payable"}`];
-  const provider = httpProvider;
-  const contract = new ethers.Contract(contractAddress, abi, provider);
-  const fun = contract.callStatic[action];
-  const overrides = { from: poolAddress };
-  if (transactionValue != 0)
-    overrides.value = ethers.utils.parseEther(transactionValue);
-  return new Promise((resolve, reject) => {
-    fun
-      .apply(null, [...params[1], overrides])
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        reject(err?.error?.error?.message || err);
-      });
-  });
-}
-
-export function execute(poolAddress, id) {
-  return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
-      name: "WunderPool",
-      accountId: "ABCDEF",
-    });
-    const [wunderPool, provider] = initPool(poolAddress);
-    const tx = await wunderPool.populateTransaction.executeProposal(id, {
-      gasPrice: await gasPrice(),
-    });
-
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
-  });
+export function executeProposal(poolAddress, id, version) {
+  if (version > 3) {
+    return executeProposalDelta(poolAddress, id);
+  } else {
+    return executeProposalGamma(poolAddress, id);
+  }
 }
