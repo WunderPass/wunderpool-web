@@ -7,9 +7,10 @@ export function voteDelta(poolAddress, proposalId, mode, userAddress) {
       name: 'WunderPool',
       accountId: 'ABCDEF',
     });
-    const data = [userAddress, poolAddress, proposalId, mode];
+    const types = ['address', 'address', 'uint', 'uint'];
+    const values = [userAddress, poolAddress, proposalId, mode];
 
-    sendSignatureRequest(data)
+    sendSignatureRequest(types, values)
       .then(async (signature) => {
         const tx = await wunderPool.voteForUser(
           userAddress,
