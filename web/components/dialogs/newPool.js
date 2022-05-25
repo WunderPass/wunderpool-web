@@ -128,6 +128,7 @@ export default function NewPoolDialog(props) {
       setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
 
+
   const handleDescriptionChange = (e) => {
     let description = e.target.value;
     setPoolDescription(description);

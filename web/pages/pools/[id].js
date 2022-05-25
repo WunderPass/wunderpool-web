@@ -25,6 +25,7 @@ import TokenList from '/components/tokens/list';
 import { toEthString } from '/services/formatter';
 import NftList from '/components/tokens/nfts';
 import PoolHeader from '/components/pool/header';
+import PoolBody from '/components/pool/body';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -38,12 +39,9 @@ export default function Pool(props) {
     proposalExecutedEvent,
     resetEvents,
   } = props;
-  const [ape, setApe] = useState(false);
-  const [customProposal, setCustomProposal] = useState(false);
   const [fundDialog, setFundDialog] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
   const [userIsMember, setUserIsMember] = useState(null);
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [tokens, setTokens] = useState([]);
   const [nfts, setNfts] = useState([]);
@@ -157,111 +155,21 @@ export default function Pool(props) {
           fetchProposals={fetchProposals}
           poolBalance={poolBalance}
         />
-        {userIsMember ? (
-          <>
-            <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
-              <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
-                <button
-                  className="btn btn-success w-full"
-                  onClick={() => {
-                    setApe(true);
-                  }}
-                >
-                  Buy New Token
-                </button>
-                <button
-                  className="btn btn-default w-full"
-                  onClick={() => {
-                    setCustomProposal(true);
-                  }}
-                >
-                  Custom Proposal
-                </button>
-              </Stack>
-            </Collapse>
-            <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
-              <ApeForm
-                setApe={setApe}
-                address={address}
-                fetchProposals={fetchProposals}
-                {...props}
-              />
-            </Collapse>
-            <Collapse
-              in={customProposal}
-              sx={{ width: '100%', margin: '0 !important' }}
-            >
-              <CustomForm
-                customProposal={customProposal}
-                setCustomProposal={setCustomProposal}
-                poolAddress={address}
-                fetchProposals={fetchProposals}
-                {...props}
-              />
-            </Collapse>
-            {loading ? (
-              <Skeleton
-                variant="rectangular"
-                width="100%"
-                sx={{ height: '100px', borderRadius: 3 }}
-              />
-            ) : (
-              <Collapse in={!customProposal && !ape} sx={{ width: '100%' }}>
-                <Stack spacing={3}>
-                  <TokenList
-                    tokens={tokens}
-                    poolAddress={address}
-                    fetchProposals={fetchProposals}
-                    handleFund={() => setFundDialog(true)}
-                    handleWithdraw={() => setWithdrawDialog(true)}
-                    poolBalance={poolBalance}
-                    {...props}
-                  />
-                  <NftList
-                    nfts={nfts}
-                    poolAddress={address}
-                    fetchProposals={fetchProposals}
-                    {...props}
-                  />
-                  <ProposalList
-                    proposals={proposals}
-                    totalGovernanceTokens={totalGovernanceTokens}
-                    poolAddress={address}
-                    setApe={setApe}
-                    fetchProposals={fetchProposals}
-                    fetchTokens={fetchTokens}
-                    fetchBalance={fetchBalance}
-                    {...props}
-                  />
-                </Stack>
-              </Collapse>
-            )}
-          </>
-        ) : userIsMember === false ? (
-          <Paper elevation={4} sx={{ width: '100%', p: 3 }}>
-            <Stack spacing={2}>
-              <Typography variant="h5">
-                Do you want to join this Pool?
-              </Typography>
-              <Typography variant="subtitle1">
-                Minimum Invest:{' '}
-                {governanceTokenData
-                  ? toEthString(governanceTokenData.entryBarrier, 6)
-                  : '...'}{' '}
-                USD
-              </Typography>
-              <button
-                className="btn btn-info"
-                variant="contained"
-                onClick={() => setJoinPool(true)}
-              >
-                Join
-              </button>
-            </Stack>
-          </Paper>
-        ) : (
-          <Skeleton width="100%" height={100} />
-        )}
+        <PoolBody
+          userIsMember={userIsMember}
+          address={address}
+          proposals={proposals}
+          tokens={tokens}
+          nfts={nfts}
+          loading={loading}
+          governanceTokenData={governanceTokenData}
+          totalGovernanceTokens={totalGovernanceTokens}
+          poolBalance={poolBalance}
+          fetchProposals={fetchProposals}
+          fetchTokens={fetchTokens}
+          fetchBalance={fetchBalance}
+          {...props}
+        />
       </Stack>
       <FundPoolDialog
         open={fundDialog}
