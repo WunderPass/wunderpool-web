@@ -147,29 +147,31 @@ export default function Pool(props) {
         paddingTop={2}
         sx={{ width: '100%' }}
       >
-        <PoolHeader
-          name={name}
-          address={address}
-          governanceTokenData={governanceTokenData}
-          userIsMember={userIsMember}
-          fetchProposals={fetchProposals}
-          poolBalance={poolBalance}
-        />
-        <PoolBody
-          userIsMember={userIsMember}
-          address={address}
-          proposals={proposals}
-          tokens={tokens}
-          nfts={nfts}
-          loading={loading}
-          governanceTokenData={governanceTokenData}
-          totalGovernanceTokens={totalGovernanceTokens}
-          poolBalance={poolBalance}
-          fetchProposals={fetchProposals}
-          fetchTokens={fetchTokens}
-          fetchBalance={fetchBalance}
-          {...props}
-        />
+        <div className="flex flex-col sm:flex-row">
+          <PoolHeader
+            name={name}
+            address={address}
+            governanceTokenData={governanceTokenData}
+            userIsMember={userIsMember}
+            fetchProposals={fetchProposals}
+            poolBalance={poolBalance}
+          />
+          <PoolBody
+            userIsMember={userIsMember}
+            address={address}
+            proposals={proposals}
+            tokens={tokens}
+            nfts={nfts}
+            loading={loading}
+            governanceTokenData={governanceTokenData}
+            totalGovernanceTokens={totalGovernanceTokens}
+            poolBalance={poolBalance}
+            fetchProposals={fetchProposals}
+            fetchTokens={fetchTokens}
+            fetchBalance={fetchBalance}
+            {...props}
+          />
+        </div>
       </Stack>
       <FundPoolDialog
         open={fundDialog}

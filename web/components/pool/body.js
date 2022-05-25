@@ -7,6 +7,7 @@ import { toEthString } from '/services/formatter';
 import NftList from '/components/tokens/nfts';
 import { useState, useEffect } from 'react';
 import React from 'react';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 function body(props) {
   const {
@@ -29,7 +30,7 @@ function body(props) {
   const [withdrawDialog, setWithdrawDialog] = useState(false);
 
   return (
-    <>
+    <div className="sm:ml-6">
       {userIsMember ? (
         <>
           <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
@@ -112,30 +113,42 @@ function body(props) {
           )}
         </>
       ) : userIsMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
-        <Paper elevation={4} sx={{ width: '100%', p: 3 }}>
-          <Stack spacing={2}>
-            <Typography variant="h5">Do you want to join this Pool?</Typography>
-            <Typography variant="subtitle1">
-              Minimum Invest:{' '}
-              {governanceTokenData
-                ? toEthString(governanceTokenData.entryBarrier, 6)
-                : '...'}{' '}
-              USD
-            </Typography>
+        <div className="flex container-white justify-start sm:justify-center mb-4 ">
+          <div className="flex flex-col items-center justify-center ">
+            <Typography className="text-xl w-full">Members</Typography>
+
+            <div className="flex flex-col ">
+              <div className="flex flex-row w-full mt-2">
+                <div className="flex border-solid text-black rounded-full bg-green-400 w-10 h-10 items-center justify-center border-2 border-white">
+                  <Typography>AR</Typography>
+                </div>
+                <div className="flex border-solid text-black rounded-full bg-red-400 w-10 h-10 items-center justify-center -ml-3 border-2 border-white">
+                  <Typography>JF </Typography>
+                </div>
+                <div className="flex border-solid text-black rounded-full bg-blue-300 w-10 h-10 items-center justify-center -ml-3 border-2 border-white">
+                  <Typography>DP</Typography>
+                </div>
+              </div>
+              <Typography className="my-2 sm:mt-4 " variant="h7">
+                6 Wunderpass friends and 10 other members are in the pool.
+              </Typography>
+            </div>
             <button
-              className="btn btn-info"
-              variant="contained"
+              className="btn-kaico items-center w-full my-5 py-3 px-3 text-md "
               onClick={() => setJoinPool(true)}
             >
-              Join
+              <div className="flex flex-row items-center justify-center">
+                <AiOutlinePlus className=" text-xl" />
+                <Typography className="ml-2">Join</Typography>
+              </div>
             </button>
-          </Stack>
-        </Paper>
+          </div>
+        </div>
       ) : (
         //DEFAULT
         <Skeleton width="100%" height={100} />
       )}
-    </>
+    </div>
   );
 }
 

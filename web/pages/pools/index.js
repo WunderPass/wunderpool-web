@@ -120,10 +120,7 @@ export default function Pools(props) {
 
   return (
     <>
-      <div
-        className="font-graphik"
-        //className="bg-gradient-to-b from-wunder-blue via-white to-[#f0ffff]"  //PLAY AROUND HERE AND CHECK IF BACKGROUND IS NICE
-      >
+      <div className="font-graphik">
         <Head>
           <title>WunderPool</title>
           <meta

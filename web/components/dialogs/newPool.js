@@ -60,7 +60,7 @@ export default function NewPoolDialog(props) {
 
   const openAdvanced = () => {
     setShowMoreOptions(true);
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       end.current.scrollIntoView({ behavior: 'smooth' });
     }, 250);
   };
@@ -127,7 +127,6 @@ export default function NewPoolDialog(props) {
     if (!tokenSymbolTouched)
       setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
   };
-
 
   const handleDescriptionChange = (e) => {
     let description = e.target.value;
