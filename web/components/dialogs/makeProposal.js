@@ -142,19 +142,6 @@ export default function makeProposal(props) {
         setValueTouched(true);
     };
 
-    const handleNameChange = (e) => {
-        let name = e.target.value;
-        setPoolName(name);
-        setPoolNameTouched(true);
-        if (!tokenNameTouched)
-            setTokenName(
-                `${name.trim()}${name.match(' ') ? ' ' : name.match('-') ? '-' : ''
-                }Token`
-            );
-        if (!tokenSymbolTouched)
-            setTokenSymbol(name.slice(0, 3).toUpperCase() || 'PGT');
-    };
-
 
 
     return (
