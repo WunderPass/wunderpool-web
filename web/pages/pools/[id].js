@@ -75,8 +75,7 @@ export default function Pool(props) {
   return (
     <Container maxWidth="md">
       <Stack
-        spacing={3}
-        alignItems="center"
+        className="flex flex-col md:flex-row "
         paddingTop={2}
         style={{ maxWidth: '100%' }}
       >
