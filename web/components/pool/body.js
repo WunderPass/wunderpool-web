@@ -1,15 +1,14 @@
-import { Collapse, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Collapse, Skeleton, Stack, } from '@mui/material';
 import ProposalList from '/components/proposals/list';
 import ApeForm from '/components/proposals/apeForm';
 import CustomForm from '/components/proposals/customForm';
 import TokenList from '/components/tokens/list';
-import { toEthString } from '/services/formatter';
 import NftList from '/components/tokens/nfts';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import React from 'react';
 import Members from '/components/pool/members';
-import { AiOutlinePlus } from 'react-icons/ai';
 import JoinPoolDialog from '/components/dialogs/joinPool';
+import AssetDetails from '/components/pool/assetDetails';
 
 function body(props) {
   const { address, loading, wunderPool, loginCallback } = props;
@@ -23,18 +22,7 @@ function body(props) {
     <div className="md:ml-4">
       {wunderPool.isMember ? (
         <>
-          <Collapse in={!ape && !customProposal} sx={{ width: '100%' }}>
-            <Stack direction="row" spacing={3} sx={{ width: '100%' }}>
-              <button
-                className="btn btn-success w-full"
-                onClick={() => {
-                  setApe(true);
-                }}
-              >
-                Buy New Token
-              </button>
-            </Stack>
-          </Collapse>
+
           <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
             <ApeForm setApe={setApe} wunderPool={wunderPool} {...props} />
           </Collapse>
@@ -60,6 +48,7 @@ function body(props) {
             //POOL WHEN YOU ARE A MEMBER
             <Collapse in={!customProposal && !ape} sx={{ width: '100%' }}>
               <Stack spacing={3}>
+                <AssetDetails {...props} />
                 <TokenList
                   tokens={wunderPool.tokens}
                   poolAddress={address}
