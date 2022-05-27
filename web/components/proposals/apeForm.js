@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { createApeSuggestion } from '/services/contract/proposals';
 import TokenInput from '../tokens/input';
 import axios from 'axios';
 import { currency, round } from '/services/formatter';

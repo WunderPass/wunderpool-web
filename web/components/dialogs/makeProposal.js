@@ -1,22 +1,24 @@
 import {
-    Button,
-    Collapse,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
-    Divider,
-    LinearProgress,
     Stack,
     Typography,
-    Switch,
+    Collapse,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+
 } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { createPool } from '/services/contract/pools';
 import CurrencyInput from 'react-currency-input-field';
-import { waitForTransaction } from '../../services/contract/provider';
+import TokenInput from '../tokens/input';
+import { currency, round } from '/services/formatter';
+
+
 
 
 export default function makeProposal(props) {
@@ -25,23 +27,14 @@ export default function makeProposal(props) {
     const [tokenImage, setTokenImage] = useState(null);
     const [tokenPrice, setTokenPrice] = useState(false);
     const [waitingForPrice, setWaitingForPrice] = useState(false);
-    const [poolName, setPoolName] = useState('');
-    const [poolDescription, setPoolDescription] = useState('');
-    const [image, setImage] = useState(null);
-    const [createObjectURL, setCreateObjectURL] = useState(null);
-    const [poolNameTouched, setPoolNameTouched] = useState(false);
     const [tokenName, setTokenName] = useState('');
     const [tokenNameTouched, setTokenNameTouched] = useState(false);
     const [tokenSymbol, setTokenSymbol] = useState('');
     const [tokenSymbolTouched, setTokenSymbolTouched] = useState(false);
-    const [entryBarrier, setEntryBarrier] = useState('');
     const [value, setValue] = useState('');
     const [valueTouched, setValueTouched] = useState(false);
-    const [waitingForPool, setWaitingForPool] = useState(false);
-    const [showMoreOptions, setShowMoreOptions] = useState(false);
     const [loading, setLoading] = useState(false);
     const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
-    const [step, setStep] = useState(1);
     const [votingsOn, setVotingsOn] = useState(true);
     const end = useRef(null);
 
@@ -107,31 +100,14 @@ export default function makeProposal(props) {
             end.current.scrollIntoView({ behavior: 'smooth' });
         }, 250);
     };
-
-    const uploadToClient = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            const i = event.target.files[0];
-
-            setImage(i);
-            setCreateObjectURL(URL.createObjectURL(i));
-        }
-    };
-
-    const uploadToServer = async (event) => {
-        const body = new FormData();
-        body.append('file', image);
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            body,
-        });
-    };
-
     const handleClose = () => {
-
-    };
-
-    const convertToRawValue = (value) => {
-        return value.replace(/[^0-9.]/g, '');
+        setTokenAddress('');
+        setTokenName(null);
+        setTokenSymbol(null);
+        setTokenImage(null);
+        setValue(0);
+        setLoading(false);
+        setOpen(false);
     };
 
     const handleValueChange = (e) => {
@@ -166,32 +142,65 @@ export default function makeProposal(props) {
                                 Name of the Proposal
                             </label>
                             <input
-                                value={poolName}
                                 className="textfield py-4 px-3 mt-2 "
                                 id="poolName"
                                 type="text"
-                                placeholder="Name of the Pool"
+                                placeholder="Name of the Proposal"
                             />
 
-                            {poolNameTouched && poolName.length < 3 && (
-                                <div className="text-red-600" style={{ marginTop: 0 }}>
-                                    must be 3 letters or more
-                                </div>
-                            )}
+
                         </div>
 
                         <div className="pt-4">
                             <label className="label pb-2" for="poolDescription">
                                 Buy Token
                             </label>
-                            <input
-                                value={poolDescription}
-                                className="textfield py-4 pb-9 mt-2"
-                                id="poolDescription"
-                                type="text"
-                                placeholder="Description of the Pool"
-                            />
+
+                            <div className="mt-2">
+                                <TokenInput
+                                    className="textfield py-4 pb-9 mt-2"
+                                    setTokenAddress={setTokenAddress}
+                                    setTokenName={setTokenName}
+                                    setTokenSymbol={setTokenSymbol}
+                                    setTokenImage={setTokenImage}
+                                />
+                            </div>
                         </div>
+                        <Collapse in={tokenName && tokenSymbol ? true : false}>
+                            <Stack spacing={3}>
+                                <Stack
+                                    spacing={2}
+                                    alignItems="center"
+                                    direction="row"
+                                    sx={{ height: '50px' }}
+                                >
+                                    <img width="50px" src={tokenImage || '/favicon.ico'} />
+                                    <Typography variant="h4" flexGrow={1}>
+                                        {tokenName}
+                                    </Typography>
+                                    <Typography variant="h4" color="GrayText">
+                                        {!waitingForPrice && currency(tokenPrice, {})}
+                                    </Typography>
+                                </Stack>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel>Ape Amount</InputLabel>
+                                    <OutlinedInput
+                                        type="number"
+                                        value={value}
+                                        onChange={handleValueInput}
+                                        label="Ape Amount"
+                                        placeholder="1"
+                                        endAdornment={
+                                            <InputAdornment position="end">USD</InputAdornment>
+                                        }
+                                    />
+                                    <Typography variant="subtitle1" textAlign="right">
+                                        {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
+                                        {tokenSymbol}
+                                    </Typography>
+                                </FormControl>
+                            </Stack>
+                        </Collapse>
 
                         <div className="pt-4">
                             <label className="label pb-2" for="value">
@@ -200,13 +209,14 @@ export default function makeProposal(props) {
                             <div>
                                 <CurrencyInput
                                     intlConfig={{ locale: 'en-US', currency: 'USD' }}
-                                    value={value}
                                     className="textfield py-4 mt-2"
                                     prefix={'$'}
-                                    type="text"
-                                    placeholder="min - $3,00"
+                                    placeholder="$1,00"
                                     decimalsLimit={2}
-                                    onChange={handleValueChange}
+                                    type="text"
+                                    value={value}
+                                    onChange={handleValueInput}
+                                    label="amount"
                                 />
                                 {valueTouched && !hasEnoughBalance && (
                                     <div className="text-red-600" style={{ marginTop: 0 }}>
@@ -220,29 +230,23 @@ export default function makeProposal(props) {
 
                     </Stack>
                 </DialogContent>
-                {waitingForPool ? (
-                    <Stack spacing={2} sx={{ textAlign: 'center' }}>
-                        <Typography variant="subtitle1">Creating your Pool...</Typography>
-                    </Stack>
-                ) : (
-                    <DialogActions className="flex items-center justify-center mx-4">
-                        <div className="flex flex-col items-center justify-center w-full">
-                            <button
-                                className="btn-neutral w-full py-3"
-                                onClick={handleClose}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="btn-kaico w-full py-3 mt-2"
-                                onClick={stepContinue}
-                                disabled={poolName.length < 3}
-                            >
-                                Continue
-                            </button>
-                        </div>
-                    </DialogActions>
-                )}
+
+                <DialogActions className="flex items-center justify-center mx-4">
+                    <div className="flex flex-col items-center justify-center w-full">
+                        <button
+                            className="btn-neutral w-full py-3"
+                            onClick={handleClose}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="btn-kaico w-full py-3 mt-2"
+                            onClick={stepContinue}
+                        >
+                            Continue
+                        </button>
+                    </div>
+                </DialogActions>
             </>
         </Dialog>
     );
