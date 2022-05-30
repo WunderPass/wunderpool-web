@@ -1,17 +1,13 @@
-import { Collapse, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import React from 'react';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
 
 function assetDetails(props) {
-  const { address, loading, wunderPool, loginCallback } = props;
+  const { wunderPool } = props;
 
-  const [ape, setApe] = useState(false);
   const [open, setOpen] = useState(false);
-  const [customProposal, setCustomProposal] = useState(false);
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
-  const [joinPool, setJoinPool] = useState(false);
 
   return (
     <>

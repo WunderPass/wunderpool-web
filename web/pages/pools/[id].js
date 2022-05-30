@@ -77,24 +77,46 @@ export default function Pool(props) {
   return (
     <Container maxWidth="md">
       <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
-        <div className="md:flex md:flex-row">
-          <PoolHeader name={name} address={address} wunderPool={wunderPool} />
-          <div
-            className="flex-col" //NUR WENN POOLMEMBER CHANGE IT
-          >
+        <div
+          className="hidden md:flex md:flex-row" //Desktop
+        >
+          <div className="md:flex md:flex-col max-w-xl ">
+            <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+            <PoolBody
+              address={address}
+              loading={loading}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
+          </div>{' '}
+          <div className="flex-col">
+            {!wunderPool.isMember && <></>}
             <PoolDetails address={address} wunderPool={wunderPool} {...props} />
             <PoolMembers address={address} wunderPool={wunderPool} {...props} />
           </div>
         </div>
 
-        <PoolBody
-          address={address}
-          loading={loading}
-          wunderPool={wunderPool}
-          loginCallback={loginCallback}
-          {...props}
-        />
+        <div
+          className="block md:hidden" //Mobile
+        >
+          <div className="flex-col">
+            <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+
+            <PoolDetails address={address} wunderPool={wunderPool} {...props} />
+            <PoolMembers address={address} wunderPool={wunderPool} {...props} />
+
+            <PoolBody
+              address={address}
+              loading={loading}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
+          </div>
+        </div>
       </Stack>
+
       <FundPoolDialog
         open={fundDialog}
         setOpen={setFundDialog}

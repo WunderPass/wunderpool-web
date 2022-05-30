@@ -14,10 +14,10 @@ function members(props) {
   const [joinPool, setJoinPool] = useState(false);
 
   return (
-    <div className="md:ml-4 mt-6">
+    <div className="md:ml-4">
       {wunderPool.isMember ? ( //POOL WHEN ARE A MEMBER
         <>
-          <div className="flex container-white justify-start sm:justify-center mb-4 md:mb-0 ">
+          <div className="flex container-white justify-start sm:justify-center mb-4 md:mb-0 mt-6 md:mt-4">
             <div className="flex flex-col items-center justify-center ">
               <Typography className="text-xl w-full">Members</Typography>
               <div className="flex flex-col ">
@@ -39,8 +39,8 @@ function members(props) {
             </div>
           </div>
         </>
-      ) : wunderPool.isMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
-        <div className="flex container-white justify-start sm:justify-center mb-4 ">
+      ) : !wunderPool.isMember ? ( //POOL BEFORE YOU ARE A MEMBER
+        <div className="flex container-white justify-start sm:justify-center mb-4 mt-6 md:mt-6">
           <div className="flex flex-col items-center justify-center ">
             <Typography className="text-xl w-full">Members</Typography>
             <div className="flex flex-col ">

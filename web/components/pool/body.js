@@ -19,7 +19,7 @@ function body(props) {
   const [joinPool, setJoinPool] = useState(false);
 
   return (
-    <div className="md:ml-4">
+    <div className="mt-4">
       {wunderPool.isMember ? (
         <>
           <Collapse in={ape} sx={{ width: '100%', margin: '0 !important' }}>
@@ -73,9 +73,7 @@ function body(props) {
           )}
         </>
       ) : wunderPool.isMember === false ? ( //POOL BEFORE YOU ARE A MEMBER
-        <>
-          <Members {...props} />
-        </>
+        <></>
       ) : (
         //DEFAULT
         <Skeleton width="100%" height={100} />
