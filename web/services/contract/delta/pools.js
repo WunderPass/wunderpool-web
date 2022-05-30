@@ -1,10 +1,14 @@
 import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import axios from 'axios';
-import { tokenAbi, usdcAddress } from '/services/contract/init';
+import {
+  tokenAbi,
+  usdcAddress,
+  connectContract,
+  gasPrice,
+} from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherDelta, initPoolDelta } from './init';
-import { gasPrice } from '../init';
 import { httpProvider } from '../provider';
 
 export function fetchUserPoolsDelta(userAddress) {
@@ -91,6 +95,34 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
           reject(error?.error?.error?.error?.message || error);
         });
     });
+  });
+}
+
+export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
+  return new Promise(async (resolve, reject) => {
+    const { sendSignatureRequest } = useWunderPass({
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
+    });
+    const types = ['address', 'address', 'address'];
+    const values = [userAddress, poolAddress, newMember];
+
+    sendSignatureRequest(types, values)
+      .then(async (signature) => {
+        const [wunderPool] = initPoolDelta(poolAddress);
+        const tx = await connectContract(wunderPool).addToWhiteListForUser(
+          userAddress,
+          newMember,
+          signature.signature,
+          { gasPrice: await gasPrice() }
+        );
+
+        const result = await tx.wait();
+        resolve(result);
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
