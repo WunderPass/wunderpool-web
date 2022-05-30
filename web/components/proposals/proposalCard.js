@@ -102,19 +102,17 @@ export default function ProposalCard(props) {
                 Execute
               </button>
             )}
-            {signing && (
-              <>
-                <Dialog open={open} onClose={handleClose}>
-                  <iframe
-                    className="w-auto"
-                    id="fr"
-                    name="transactionFrame"
-                    height="500"
-                  ></iframe>
-                  <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-                </Dialog>
-              </>
-            )}
+            <>
+              <Dialog open={signing} onClose={handleClose}>
+                <iframe
+                  className="w-auto"
+                  id="fr"
+                  name="transactionFrame"
+                  height="500"
+                ></iframe>
+                <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+              </Dialog>
+            </>
             <div className="md:pl-4 pl-0 md:pt-1 pt-8 self-center ">
               <div className="">
                 <VotingButtons {...props} />
@@ -250,17 +248,6 @@ export default function ProposalCard(props) {
                     );
                   })}
               </>
-            )}
-            {proposal.execute && (
-              <Dialog open={open} onClose={handleClose}>
-                <iframe
-                  className="w-auto"
-                  id="fr"
-                  name="transactionFrame"
-                  height="500"
-                ></iframe>
-                <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-              </Dialog>
             )}
           </Stack>
         </Collapse>
