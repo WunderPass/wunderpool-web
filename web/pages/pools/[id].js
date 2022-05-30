@@ -5,6 +5,8 @@ import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import PoolHeader from '/components/pool/header';
 import PoolBody from '/components/pool/body';
 import usePool from '/hooks/usePool';
+import PoolDetails from '/components/pool/assetDetails';
+import PoolMembers from '/components/pool/members';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -74,12 +76,17 @@ export default function Pool(props) {
 
   return (
     <Container maxWidth="md">
-      <Stack
-        className="flex flex-col md:flex-row "
-        paddingTop={2}
-        style={{ maxWidth: '100%' }}
-      >
-        <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+      <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
+        <div className="md:flex md:flex-row">
+          <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+          <div
+            className="flex-col" //NUR WENN POOLMEMBER CHANGE IT
+          >
+            <PoolDetails address={address} wunderPool={wunderPool} {...props} />
+            <PoolMembers address={address} wunderPool={wunderPool} {...props} />
+          </div>
+        </div>
+
         <PoolBody
           address={address}
           loading={loading}
