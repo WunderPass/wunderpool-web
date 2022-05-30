@@ -33,8 +33,14 @@ export default function PoolHeader(props) {
 
   return (
     <>
-      <div className="flex flex-col container-white-p-0 w-full mb-8">
-        <div className="flex flex-col border-solid text-black  rounded-2xl bg-kaico-extra-light-blue h-36  w-full items-center justify-center cursor-pointer">
+      <div
+        className={
+          !showMoreInfo
+            ? 'flex flex-col container-white-p-0 w-full sm:mt-6 md:max-h-72'
+            : 'flex flex-col container-white-p-0 w-full sm:mt-6 '
+        }
+      >
+        <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
           <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
             <FaLongArrowAltDown className="text-2xl" />
           </div>
@@ -66,15 +72,17 @@ export default function PoolHeader(props) {
             </Typography>
           </div>
 
-          <div className="mt-10">
-            <Collapse className="" in={!showMoreInfo}>
+          <Divider className="my-6 mt-8 opacity-70" />
+
+          <div className="mb-1">
+            <Collapse in={!showMoreInfo}>
               <button
-                className="text-black text-sm mt-2 opacity-40"
+                className="text-black text-sm mt-0 opacity-40"
                 onClick={toggleAdvanced}
               >
-                <div className="flex flex-row items-center ">
+                <div className="flex flex-row items-center">
                   <Typography className="text-lg">Advanced Info</Typography>
-                  <MdOutlineKeyboardArrowDown className="ml-3 text-xl" />
+                  <MdOutlineKeyboardArrowDown className="ml-3 text-2xl" />
                 </div>
               </button>
             </Collapse>

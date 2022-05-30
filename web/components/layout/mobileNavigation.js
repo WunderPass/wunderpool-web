@@ -36,7 +36,7 @@ const mobileNavigation = (props) => {
       <div className="block sm:hidden pt-1">
         <div className="flex flex-row items-center">
           <div className="px-2">
-            <IoMdNotifications className="text-xl" />
+            <IoMdNotifications className="text-xl opacity-50" />
           </div>
           <div
             onClick={() => user.setTopUpRequired(true)}

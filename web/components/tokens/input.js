@@ -64,6 +64,8 @@ export default function TokenInput(props) {
 
   return (
     <Autocomplete
+      className=" w-full text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-kaico-extra-light-blue"
+
       options={options}
       loading={loading}
       isOptionEqualToValue={(option, val) => option.address == val.address}
@@ -75,6 +77,7 @@ export default function TokenInput(props) {
       onInputChange={handleInput}
       renderInput={(params) => (
         <TextField
+          className="opacity-50 text-black rounded-lg"
           {...params}
           label="Token"
           inputProps={{ ...params.inputProps }}
