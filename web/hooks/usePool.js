@@ -25,6 +25,7 @@ import {
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
 import { waitForTransaction } from '/services/contract/provider';
+import axios from 'axios';
 
 export default function usePool(userAddr, poolAddr = null) {
   const userAddress = userAddr;
@@ -36,6 +37,8 @@ export default function usePool(userAddr, poolAddr = null) {
   const [version, setVersion] = useState(null);
   const [userIsMember, setUserIsMember] = useState(null);
   const [usdcBalance, setUsdcBalance] = useState(0);
+  const [assetBalance, setAssetBalance] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
   const [poolTokens, setPoolTokens] = useState([]);
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
@@ -144,6 +147,34 @@ export default function usePool(userAddr, poolAddr = null) {
     setUsdcBalance(await fetchPoolBalance(poolAddress));
   };
 
+  const determineAssetBalance = async () => {
+    determinePoolTokens();
+    setAssetBalance(0);
+    var curAssetBalance = 0;
+    var tokenPrice = 0;
+    var newAssetBalance = 0;
+    poolTokens.map((token, i) => {
+      if (token.address && token.address.length == 42) {
+        axios({
+          url: `/api/tokens/price`,
+          params: { address: token.address },
+        }).then(async (res) => {
+          tokenPrice = res.data?.dollar_price;
+          curAssetBalance = token.formattedBalance * tokenPrice;
+          newAssetBalance = curAssetBalance + assetBalance;
+          setAssetBalance(newAssetBalance);
+          console.log('name = ' + token.name);
+          console.log('tokenPrice = ' + tokenPrice);
+          console.log('price = ' + token.price);
+          console.log('balance = ' + token.formattedBalance);
+          console.log('curAssetBalance = ' + curAssetBalance);
+          console.log('finalAssetBalance = ' + assetBalance);
+          console.log('_____________________________________');
+        });
+      }
+    });
+  };
+
   const determinePoolTokens = async () => {
     setPoolTokens(await fetchPoolTokens(poolAddress, version.number));
   };
@@ -197,6 +228,7 @@ export default function usePool(userAddr, poolAddr = null) {
           await determineClosed(vers);
           await determineIfMember();
           await determineUsdcBalance();
+          await determineAssetBalance();
         })
         .catch((err) => {
           setExists(false);
@@ -237,6 +269,8 @@ export default function usePool(userAddr, poolAddr = null) {
     newPool,
     join,
     usdcBalance,
+    assetBalance,
+    totalBalance,
     tokens: poolTokens,
     nfts: poolNfts,
     governanceToken: poolGovernanceToken,

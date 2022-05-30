@@ -12,9 +12,23 @@ import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container, Paper, Skeleton, Typography } from '@mui/material';
+import { fetchPoolBalance } from '/services/contract/pools';
 
 function PoolStructure(props) {
   const { pools, setOpen } = props;
+  const [totalBalance, setTotalBalance] = useState(null);
+  const [usdcBalance, setUsdcBalance] = useState(null);
+
+  /*
+  useEffect(() => {
+    fetchUsdcBalance();
+  }, []); */
+
+  const fetchUsdcBalance = (poolAd) => {
+    fetchPoolBalance(poolAd).then((balance) => {
+      setUsdcBalance(balance);
+    });
+  };
 
   return pools.map((pool, i) => {
     return (
@@ -31,7 +45,7 @@ function PoolStructure(props) {
               <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
             </div>
             <Typography className="text-lg pt-3 font-semibold">
-              $2,500 Balance
+              $2,500 Balance {pool.balance}
             </Typography>
             {pool.entryBarrier && (
               <Typography variant="subtitle1">
