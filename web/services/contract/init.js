@@ -91,6 +91,11 @@ export function initPoolSocket(poolAddress) {
   return [wunderPool, provider];
 }
 
+export function connectContract(contract) {
+  const wallet = new ethers.Wallet(process.env.EXECUTE_KEY, httpProvider);
+  return contract.connect(wallet);
+}
+
 export async function gasPrice() {
   const currentPrice = await httpProvider.getGasPrice();
   return currentPrice.mul(3);

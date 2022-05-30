@@ -2,7 +2,11 @@ import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { initPoolGamma } from './init';
-import { gasPrice, wunderSwapperAddress } from '/services/contract/init';
+import {
+  gasPrice,
+  wunderSwapperAddress,
+  usdcAddress,
+} from '/services/contract/init';
 
 export function fetchPoolProposalsGamma(address) {
   return new Promise(async (resolve, reject) => {

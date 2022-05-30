@@ -22,7 +22,6 @@ export default function ProposalCard(props) {
   const { proposal, wunderPool, handleSuccess, handleError } = props;
   const { totalSupply } = wunderPool.governanceToken;
   const [loading, setLoading] = useState(false);
-  const [waitingForExec, setWaitingForExec] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
   const [opening, setOpen] = useState(null);
   const [signing, setSigning] = useState(false);
@@ -30,12 +29,9 @@ export default function ProposalCard(props) {
   const [closeable, setCloseable] = useState(false);
 
   useEffect(() => {
-    setExecutable(
-      proposal.yesVotes.toNumber() > totalSupply?.toNumber() / 2
-    );
+    setExecutable(proposal.yesVotes.toNumber() > totalSupply?.toNumber() / 2);
     setCloseable(
-      executable ||
-        proposal.noVotes.toNumber() > totalSupply?.toNumber() / 2
+      executable || proposal.noVotes.toNumber() > totalSupply?.toNumber() / 2
     );
   });
 
@@ -60,7 +56,6 @@ export default function ProposalCard(props) {
 
   const executeProposal = () => {
     setSigning(true);
-    setWaitingForExec(true);
     wunderPool
       .execute(proposal.id)
       .then((res) => {
@@ -74,7 +69,7 @@ export default function ProposalCard(props) {
         handleError(err);
       })
       .then(() => {
-        setWaitingForExec(false);
+        setSigning(false);
       });
   };
 
@@ -101,7 +96,7 @@ export default function ProposalCard(props) {
             {!proposal.executed && (
               <button
                 className={executable ? 'p-8 btn btn-warning' : 'hidden'}
-                disabled={waitingForExec}
+                disabled={signing}
                 onClick={executeProposal}
               >
                 Execute
