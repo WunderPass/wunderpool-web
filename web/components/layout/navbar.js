@@ -20,7 +20,7 @@ export default function Navbar(props) {
           <Stack className="flex flex-row w-full justify-between items-center">
             <Link href="/pools">
               <div className="flex flex-row">
-                <div className="hidden pt-0.5 w-44 pr-3 sm:block">
+                <div className="hidden pb-0.5 w-44 pr-3 sm:block">
                   <Image
                     src={WunderPoolIcon}
                     alt="WunderPoolIcon"
