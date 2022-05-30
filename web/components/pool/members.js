@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import JoinPoolDialog from '/components/dialogs/joinPool';
+import InviteMemberDialog from '../dialogs/inviteMember';
 
 function members(props) {
   const { address, loading, wunderPool, loginCallback } = props;
@@ -12,6 +13,7 @@ function members(props) {
   const [customProposal, setCustomProposal] = useState(false);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
+  const [inviteMember, setInviteMember] = useState(false);
 
   return (
     <div className="md:ml-4">
@@ -35,6 +37,12 @@ function members(props) {
                 <Typography className="my-2 sm:mt-4 " variant="h7">
                   6 Wunderpass friends and 10 other members are in the pool.
                 </Typography>
+                <button
+                  className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
+                  onClick={() => setInviteMember(true)}
+                >
+                  <Typography className="text-lg">Invite Member</Typography>
+                </button>
               </div>
             </div>
           </div>
@@ -74,6 +82,12 @@ function members(props) {
         //DEFAULT
         <Skeleton width="100%" height={100} />
       )}
+      <InviteMemberDialog
+        open={inviteMember}
+        setOpen={setInviteMember}
+        wunderPool={wunderPool}
+        {...props}
+      />
     </div>
   );
 }
