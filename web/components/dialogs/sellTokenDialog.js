@@ -1,31 +1,21 @@
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   InputAdornment,
-  LinearProgress,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { createFudSuggestion } from '/services/contract/proposals';
 import axios from 'axios';
+import { ethers } from 'ethers';
 
 export default function SellTokenDialog(props) {
-  const {
-    open,
-    setOpen,
-    name,
-    address,
-    symbol,
-    balance,
-    wunderPool,
-    handleError,
-    handleSuccess,
-  } = props;
+  const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
+    props;
+  const { address, decimals, formattedBalance, name, symbol } = token;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [waitingForPrice, setWaitingForPrice] = useState(false);
@@ -44,7 +34,7 @@ export default function SellTokenDialog(props) {
         address,
         `Let's Sell ${name} (${symbol})`,
         `We will sell ${amount} ${symbol}`,
-        amount
+        ethers.utils.parseUnits(amount, decimals)
       )
       .then((res) => {
         console.log(res);
@@ -72,7 +62,6 @@ export default function SellTokenDialog(props) {
         params: { address: address },
       }).then((res) => {
         setTokenPrice(res.data?.dollar_price);
-        console.log(res.data?.dollar_price);
         setWaitingForPrice(false);
       });
     }
@@ -83,7 +72,7 @@ export default function SellTokenDialog(props) {
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
         <Typography>Price per token: {tokenPrice} $</Typography>
-        <Typography>Tokens owned: {balance} </Typography>
+        <Typography>Tokens owned: {formattedBalance} </Typography>
         <TextField
           className="mt-4"
           autoFocus
@@ -99,7 +88,7 @@ export default function SellTokenDialog(props) {
               <InputAdornment position="end">
                 <button
                   className="btn btn-default"
-                  onClick={() => setAmount(balance)}
+                  onClick={() => setAmount(formattedBalance)}
                 >
                   MAX
                 </button>
@@ -121,7 +110,7 @@ export default function SellTokenDialog(props) {
             className="btn btn-danger"
             onClick={handleSubmit}
             color="success"
-            disabled={Number(amount) > Number(balance)}
+            disabled={Number(amount) > Number(formattedBalance)}
           >
             Sell
           </button>

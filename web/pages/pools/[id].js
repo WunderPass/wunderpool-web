@@ -78,7 +78,7 @@ export default function Pool(props) {
         spacing={3}
         alignItems="center"
         paddingTop={2}
-        sx={{ width: '100%' }}
+        style={{ maxWidth: '100%' }}
       >
         <PoolHeader name={name} address={address} wunderPool={wunderPool} />
         <PoolBody

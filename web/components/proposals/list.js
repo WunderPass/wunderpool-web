@@ -24,7 +24,9 @@ export default function ProposalList(props) {
           >
             <Stack spacing={2}>
               {wunderPool.proposals
-                .filter((p) => p.executed == false)
+                .filter(
+                  (p) => p.executed == false || p.noVotes < p.totalVotes / 2
+                )
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
                   return (
@@ -47,9 +49,7 @@ export default function ProposalList(props) {
             <Stack spacing={2}>
               {wunderPool.proposals
                 .filter(
-                  (p) =>
-                    p.executed == true ||
-                    p.noVotes > p.yesVotes + p.abstainVotes
+                  (p) => p.executed == true || p.noVotes > p.totalVotes / 2
                 )
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {

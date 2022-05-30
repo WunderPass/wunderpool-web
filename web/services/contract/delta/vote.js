@@ -1,5 +1,9 @@
+import { connectContract } from '/services/contract/init';
 import useWunderPass from '/hooks/useWunderPass';
-import { initPoolDelta } from '/services/contract/delta/init';
+import {
+  initPoolDelta,
+  initProposalDelta,
+} from '/services/contract/delta/init';
 
 export function voteDelta(poolAddress, proposalId, mode, userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -7,15 +11,17 @@ export function voteDelta(poolAddress, proposalId, mode, userAddress) {
       name: 'WunderPool',
       accountId: 'ABCDEF',
     });
-    const data = [userAddress, poolAddress, proposalId, mode];
+    const types = ['address', 'address', 'uint', 'uint'];
+    const values = [userAddress, poolAddress, proposalId, mode];
 
-    sendSignatureRequest(data)
+    sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const tx = await wunderPool.voteForUser(
+        const [wunderPool] = initPoolDelta();
+        const tx = await connectContract(wunderPool).voteForUser(
           userAddress,
           proposalId,
           mode,
-          signature,
+          signature.signature,
           { gasPrice: await gasPrice() }
         );
 
@@ -38,7 +44,7 @@ export function voteAgainstDelta(address, proposalId) {
 
 export function hasVotedDelta(poolAddress, proposalId, address) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolDelta(poolAddress);
-    resolve(await wunderPool.hasVoted(proposalId, address));
+    const [wunderProposal] = initProposalDelta();
+    resolve(await wunderProposal.hasVoted(poolAddress, proposalId, address));
   });
 }

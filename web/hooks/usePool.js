@@ -24,6 +24,7 @@ import {
 } from '/services/contract/proposals';
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
+import { waitForTransaction } from '/services/contract/provider';
 
 export default function usePool(userAddr, poolAddr = null) {
   const userAddress = userAddr;
@@ -61,10 +62,16 @@ export default function usePool(userAddr, poolAddr = null) {
     if (!version || userIsMember) return;
     joinPool(poolAddress, userAddress, amount, version.number)
       .then((res) => {
-        console.log(res);
+        waitForTransaction(res)
+          .then(() => {
+            return true;
+          })
+          .catch((err) => {
+            throw err;
+          });
       })
       .catch((err) => {
-        console.log(err);
+        throw err;
       });
   };
 

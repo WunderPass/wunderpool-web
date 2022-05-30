@@ -56,6 +56,7 @@ export function createMultiActionProposal(
   if (version > 3) {
     return createMultiActionProposalDelta(
       poolAddress,
+
       title,
       description,
       contractAddresses,

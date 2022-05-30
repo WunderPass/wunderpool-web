@@ -47,7 +47,7 @@ export default function TokenCard(props) {
                 </Typography>
                 <Typography>Price per token: {tokenPrice} $ </Typography>
                 <Typography variant="subtitle1" width="fit-content">
-                  Tokens Owned: {token.balance}
+                  Tokens Owned: {token.formattedBalance}
                 </Typography>
               </div>
             </Tooltip>

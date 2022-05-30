@@ -2,7 +2,12 @@ import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { initPoolDelta, initProposalDelta } from './init';
-import { gasPrice, wunderSwapperAddress } from '../init';
+import {
+  gasPrice,
+  usdcAddress,
+  wunderSwapperAddress,
+  connectContract,
+} from '/services/contract/init';
 
 export function fetchPoolProposalsDelta(address) {
   return new Promise(async (resolve, reject) => {
@@ -70,9 +75,21 @@ export function createMultiActionProposalDelta(
       name: 'WunderPool',
       accountId: 'ABCDEF',
     });
-    const [wunderPool] = initPool(poolAddress);
+    const [wunderPool] = initPoolDelta(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
-    const data = [
+    const types = [
+      'address',
+      'address',
+      'string',
+      'string',
+      'address[]',
+      'string[]',
+      'bytes[]',
+      'uint[]',
+      'uint',
+      'uint',
+    ];
+    const values = [
       userAddress,
       poolAddress,
       title,
@@ -85,9 +102,9 @@ export function createMultiActionProposalDelta(
       proposalId,
     ];
 
-    sendSignatureRequest(data, false)
+    sendSignatureRequest(types, values, false)
       .then(async (signature) => {
-        const tx = await wunderPool.createProposalForUser(
+        const tx = await connectContract(wunderPool).createProposalForUser(
           userAddress,
           title,
           description,
@@ -96,7 +113,7 @@ export function createMultiActionProposalDelta(
           params,
           transactionValues,
           deadline,
-          signature,
+          signature.signature,
           { gasPrice: await gasPrice() }
         );
 
@@ -214,7 +231,7 @@ export async function createSwapSuggestionDelta(
   amount,
   userAddress
 ) {
-  const [wunderPool] = initPool(poolAddress);
+  const [wunderPool] = initPoolDelta(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
   if (tokenAddresses.includes(tokenOut)) {
@@ -333,15 +350,22 @@ export async function createNftSellProposalDelta(
 
 export function executeProposalDelta(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    try {
-      const tx = await wunderPool.executeProposal(id, {
-        gasPrice: await gasPrice(),
-      });
-      const result = await tx.wait();
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    }
+    const { smartContractTransaction } = useWunderPass({
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
+    });
+    const [wunderPool, provider] = initPoolDelta(poolAddress);
+    const tx = await wunderPool.populateTransaction.executeProposal(id, {
+      gasPrice: await gasPrice(),
+    });
+
+    smartContractTransaction(tx).then(async (transaction) => {
+      try {
+        const receipt = await provider.waitForTransaction(transaction.hash);
+        resolve(receipt);
+      } catch (error) {
+        reject(error?.error?.error?.error?.message || error);
+      }
+    });
   });
 }
