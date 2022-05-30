@@ -163,7 +163,12 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const getTransactionData = async (id, transactionCount) => {
-    return await fetchTransactionData(poolAddress, id, transactionCount);
+    return await fetchTransactionData(
+      poolAddress,
+      id,
+      transactionCount,
+      version.number
+    );
   };
 
   const voteWithMode = (proposalId, mode) => {
