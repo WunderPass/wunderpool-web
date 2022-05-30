@@ -109,7 +109,7 @@ export default function makeProposal(props) {
           }}
         >
           <>
-            <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
+            <DialogTitle className="font-bold font-graphik tracking-tight w-full">
               Make a Proposal
             </DialogTitle>
             <DialogContent style={{ scrollbarwidth: 'none' }}>

@@ -82,6 +82,7 @@ export default function Pool(props) {
         >
           <div className="md:flex md:flex-col max-w-xl ">
             <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+
             <PoolBody
               address={address}
               loading={loading}
