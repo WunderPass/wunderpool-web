@@ -16,7 +16,7 @@ export function voteDelta(poolAddress, proposalId, mode, userAddress) {
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const [wunderPool] = initPoolDelta();
+        const [wunderPool] = initPoolDelta(poolAddress);
         const tx = await connectContract(wunderPool).voteForUser(
           userAddress,
           proposalId,
