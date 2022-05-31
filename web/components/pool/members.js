@@ -37,12 +37,14 @@ function members(props) {
                 <Typography className="my-2 sm:mt-4 " variant="h7">
                   6 Wunderpass friends and 10 other members are in the pool.
                 </Typography>
-                <button
-                  className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
-                  onClick={() => setInviteMember(true)}
-                >
-                  <Typography className="text-lg">Invite Member</Typography>
-                </button>
+                {wunderPool.version.number > 3 && !wunderPool.closed && (
+                  <button
+                    className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
+                    onClick={() => setInviteMember(true)}
+                  >
+                    <Typography className="text-lg">Invite Member</Typography>
+                  </button>
+                )}
               </div>
             </div>
           </div>
