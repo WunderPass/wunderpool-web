@@ -1,16 +1,11 @@
 import { Collapse, Paper, Skeleton, Stack, Typography } from '@mui/material';
-
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
-import JoinPoolDialog from '/components/dialogs/joinPool';
 
 function members(props) {
   const { address, loading, wunderPool, loginCallback } = props;
 
-  const [ape, setApe] = useState(false);
-  const [customProposal, setCustomProposal] = useState(false);
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [joinPool, setJoinPool] = useState(false);
 
   return (
