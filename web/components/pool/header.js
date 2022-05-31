@@ -152,9 +152,9 @@ export default function PoolHeader(props) {
                     onCopy={() => alert.show('address copied!')}
                   >
                     <span className=" cursor-pointer text-md">
-                      <div className="flex flex-row items-center">
+                      <div className="flex flex-row items-center justify-between">
                         <div className="truncate ...">{address && address}</div>
-                        <MdContentCopy className="text-gray-500 text-3xl ml-2" />
+                        <MdContentCopy className="text-gray-500 text-2xl ml-2" />
                       </div>
                     </span>
                   </CopyToClipboard>

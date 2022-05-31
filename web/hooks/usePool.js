@@ -149,61 +149,36 @@ export default function usePool(userAddr, poolAddr = null) {
     setUsdcBalance(await fetchPoolBalance(poolAddress));
   };
 
-  const determineAssetBalance = () => {
-    determinePoolTokens();
+  const determineCustomBalances = async (tokens) => {
     var totalBalance = 0;
+    var assetBalance = 0;
     var curAssetBalance = 0;
-    var tokenPrice;
     var assetCount = 0;
-    poolTokens.map((token, i) => {
-      if (token.address && token.address.length == 42) {
-        if (token.address !== usdcAddress) {
-          assetCount++;
-          axios({
-            url: `/api/tokens/price`,
-            params: { address: token.address },
-          })
-            .then((res) => {
-              tokenPrice = res.data?.dollar_price;
-              curAssetBalance = token.formattedBalance * tokenPrice;
-              totalBalance = curAssetBalance + totalBalance;
-            })
-            .then(() => {
-              setAssetBalance(totalBalance);
-              setAssetCount(assetCount);
-              console.log(totalBalance);
-            });
-        }
-      }
-    });
-  };
-
-  const determineTotalBalance = () => {
-    determinePoolTokens();
-    var totalBalance = 0;
-    var curAssetBalance = 0;
-    var tokenPrice;
-    poolTokens.map((token, i) => {
+    tokens.map((token, i) => {
       if (token.address && token.address.length == 42) {
         axios({
-          url: `/api/tokens/price`,
+          url: `/api/tokens/showPrice`,
           params: { address: token.address },
-        })
-          .then((res) => {
-            tokenPrice = res.data?.dollar_price;
-            curAssetBalance = token.formattedBalance * tokenPrice;
-            totalBalance = curAssetBalance + totalBalance;
-          })
-          .then(() => {
-            console.log(totalBalance);
-            setTotalBalance(totalBalance);
-          });
+        }).then((res) => {
+          var tokenPrice = res.data?.dollar_price;
+          curAssetBalance = token.formattedBalance * tokenPrice;
+          totalBalance = curAssetBalance + totalBalance;
+          if (token.address !== usdcAddress) {
+            assetBalance = curAssetBalance + assetBalance;
+            assetCount++;
+          }
+          setAssetBalance(assetBalance);
+          setTotalBalance(totalBalance);
+          setAssetCount(assetCount);
+        });
       }
     });
   };
 
   const determinePoolTokens = async () => {
-    setPoolTokens(await fetchPoolTokens(poolAddress, version.number));
+    const tokens = await fetchPoolTokens(poolAddress, version.number);
+    setPoolTokens(tokens);
+    return tokens;
   };
 
   const determinePoolNfts = async () => {
@@ -251,15 +226,16 @@ export default function usePool(userAddr, poolAddr = null) {
         .then(async (name) => {
           setPoolName(name);
           setExists(true);
-          const vers = await determineVersion();
-          await determineClosed(vers);
+          await determineClosed(await determineVersion());
           await determineIfMember();
           await determineUsdcBalance();
-          await determineAssetBalance();
-          await determineTotalBalance();
+
+          const tokens = await determinePoolTokens();
+          await determineCustomBalances(tokens);
         })
         .catch((err) => {
           setExists(false);
+          console.log(err);
         });
     } else {
       setVersion(latestVersion);

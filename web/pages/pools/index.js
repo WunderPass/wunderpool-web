@@ -15,11 +15,22 @@ import { determineTotalBalance } from '/hooks/usePool';
 import { currency } from '/services/formatter';
 
 function PoolStructure(props) {
-  const { pools, setOpen } = props;
+  const { pools, user, setOpen } = props;
+
+  const determineGovernanceShares = (pool) => {
+    {
+      pool.poolGovernanceToken.holders.map((holder, i) => {
+        if (holder.address === user.address) {
+          holder.address;
+          console.log('share' + holder.share.toString());
+          console.log('tokens' + holder.tokens.toString());
+        }
+      });
+    }
+  };
 
   return pools.map((pool, i) => {
-    console.log(pool.totalBalance);
-
+    console.log('totalBalance' + pool.totalBalance);
     return (
       <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
         <Paper
@@ -35,6 +46,7 @@ function PoolStructure(props) {
             </div>
             <Typography className="text-lg pt-3 font-semibold">
               {currency(pool.totalBalance, {})} Balance {pool.assetBalance}
+              Governnancetoken:{' '}
             </Typography>
             {pool.entryBarrier && (
               <Typography variant="subtitle1">
