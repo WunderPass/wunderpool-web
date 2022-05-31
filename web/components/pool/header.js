@@ -69,7 +69,6 @@ export default function PoolHeader(props) {
             </Typography>
             <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
               {currency(poolBalanceToUsd(wunderPool.usdcBalance), {})}
-              {wunderPool.assetBalance}
             </Typography>
           </div>
 

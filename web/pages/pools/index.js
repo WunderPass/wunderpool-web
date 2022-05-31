@@ -1,5 +1,3 @@
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import NewPoolDialog from '/components/dialogs/newPool';
 import BalanceBox from '/components/pool/balanceBox';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
@@ -13,24 +11,15 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { Container, Paper, Skeleton, Typography } from '@mui/material';
 import { fetchPoolBalance } from '/services/contract/pools';
+import { determineTotalBalance } from '/hooks/usePool';
+import { currency } from '/services/formatter';
 
 function PoolStructure(props) {
   const { pools, setOpen } = props;
-  const [totalBalance, setTotalBalance] = useState(null);
-  const [usdcBalance, setUsdcBalance] = useState(null);
-
-  /*
-  useEffect(() => {
-    fetchUsdcBalance();
-  }, []); */
-
-  const fetchUsdcBalance = (poolAd) => {
-    fetchPoolBalance(poolAd).then((balance) => {
-      setUsdcBalance(balance);
-    });
-  };
 
   return pools.map((pool, i) => {
+    console.log(pool.totalBalance);
+
     return (
       <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
         <Paper
@@ -45,7 +34,7 @@ function PoolStructure(props) {
               <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
             </div>
             <Typography className="text-lg pt-3 font-semibold">
-              $2,500 Balance {pool.balance}
+              {currency(pool.totalBalance, {})} Balance {pool.assetBalance}
             </Typography>
             {pool.entryBarrier && (
               <Typography variant="subtitle1">
@@ -170,7 +159,7 @@ export default function Pools(props) {
                 <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4">
                   Balance
                 </Typography>
-                <BalanceBox className="w-10" />
+                <BalanceBox className="w-10" {...props} />
               </div>
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">

@@ -26,6 +26,7 @@ import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
 import { waitForTransaction } from '/services/contract/provider';
 import axios from 'axios';
+import { usdcAddress } from '/services/contract/init';
 
 export default function usePool(userAddr, poolAddr = null) {
   const userAddress = userAddr;
@@ -39,6 +40,7 @@ export default function usePool(userAddr, poolAddr = null) {
   const [usdcBalance, setUsdcBalance] = useState(0);
   const [assetBalance, setAssetBalance] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [assetCount, setAssetCount] = useState(0);
   const [poolTokens, setPoolTokens] = useState([]);
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
@@ -147,30 +149,55 @@ export default function usePool(userAddr, poolAddr = null) {
     setUsdcBalance(await fetchPoolBalance(poolAddress));
   };
 
-  const determineAssetBalance = async () => {
+  const determineAssetBalance = () => {
     determinePoolTokens();
-    setAssetBalance(0);
+    var totalBalance = 0;
     var curAssetBalance = 0;
-    var tokenPrice = 0;
-    var newAssetBalance = 0;
+    var tokenPrice;
+    var assetCount = 0;
+    poolTokens.map((token, i) => {
+      if (token.address && token.address.length == 42) {
+        if (token.address !== usdcAddress) {
+          assetCount++;
+          axios({
+            url: `/api/tokens/price`,
+            params: { address: token.address },
+          })
+            .then((res) => {
+              tokenPrice = res.data?.dollar_price;
+              curAssetBalance = token.formattedBalance * tokenPrice;
+              totalBalance = curAssetBalance + totalBalance;
+            })
+            .then(() => {
+              setAssetBalance(totalBalance);
+              setAssetCount(assetCount);
+              console.log(totalBalance);
+            });
+        }
+      }
+    });
+  };
+
+  const determineTotalBalance = () => {
+    determinePoolTokens();
+    var totalBalance = 0;
+    var curAssetBalance = 0;
+    var tokenPrice;
     poolTokens.map((token, i) => {
       if (token.address && token.address.length == 42) {
         axios({
           url: `/api/tokens/price`,
           params: { address: token.address },
-        }).then(async (res) => {
-          tokenPrice = res.data?.dollar_price;
-          curAssetBalance = token.formattedBalance * tokenPrice;
-          newAssetBalance = curAssetBalance + assetBalance;
-          setAssetBalance(newAssetBalance);
-          console.log('name = ' + token.name);
-          console.log('tokenPrice = ' + tokenPrice);
-          console.log('price = ' + token.price);
-          console.log('balance = ' + token.formattedBalance);
-          console.log('curAssetBalance = ' + curAssetBalance);
-          console.log('finalAssetBalance = ' + assetBalance);
-          console.log('_____________________________________');
-        });
+        })
+          .then((res) => {
+            tokenPrice = res.data?.dollar_price;
+            curAssetBalance = token.formattedBalance * tokenPrice;
+            totalBalance = curAssetBalance + totalBalance;
+          })
+          .then(() => {
+            console.log(totalBalance);
+            setTotalBalance(totalBalance);
+          });
       }
     });
   };
@@ -229,6 +256,7 @@ export default function usePool(userAddr, poolAddr = null) {
           await determineIfMember();
           await determineUsdcBalance();
           await determineAssetBalance();
+          await determineTotalBalance();
         })
         .catch((err) => {
           setExists(false);
@@ -271,6 +299,7 @@ export default function usePool(userAddr, poolAddr = null) {
     usdcBalance,
     assetBalance,
     totalBalance,
+    assetCount,
     tokens: poolTokens,
     nfts: poolNfts,
     governanceToken: poolGovernanceToken,
