@@ -9,11 +9,21 @@ export default function useNotification() {
     label: null,
   });
 
+  const stringifyError = (msg) => {
+    if (typeof msg == 'string') {
+      return msg;
+    } else {
+      console.log('Uncaught Error');
+      console.log('Type:', typeof msg);
+      console.log('ERR:', msg);
+      return 'Somenthing went wrong';
+    }
+  };
+
   const handleError = (msg, opts = {}) => {
-    console.log(msg);
     setNotification({
       type: 'error',
-      message: msg,
+      message: stringifyError(msg),
       active: true,
       url: opts.url,
       label: opts.label,

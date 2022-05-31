@@ -100,6 +100,10 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
 
 export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
   return new Promise(async (resolve, reject) => {
+    if (userAddress == newMember) {
+      reject('You cant invite yourself');
+      return;
+    }
     const { sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',

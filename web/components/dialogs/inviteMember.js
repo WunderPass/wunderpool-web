@@ -20,6 +20,7 @@ export default function InviteMemberDialog(props) {
 
   const handleClose = () => {
     setLoading(false);
+    setSelectedUser(null);
     setOpen(false);
   };
 
@@ -47,7 +48,9 @@ export default function InviteMemberDialog(props) {
         handleSuccess(`Added User ${selectedUser.wunderId} to the WhiteList`);
         setSelectedUser(null);
       })
-      .catch((err) => handleError('Something went wrong'))
+      .catch((err) => {
+        handleError(err);
+      })
       .then(() => {
         setLoading(false);
       });
@@ -66,10 +69,14 @@ export default function InviteMemberDialog(props) {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Invite Member</DialogTitle>
-      <DialogContent sx={{ minWidth: '50vw' }}>
+      <DialogContent>
+        <Typography variant="subtitle1">
+          Invite Users to the Pool. Invited Users can join your Pool
+        </Typography>
         <Autocomplete
-          className="mt-3 w-full text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-kaico-extra-light-blue"
+          className="mt-3 w-full leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-kaico-extra-light-blue"
           options={users}
+          value={selectedUser}
           isOptionEqualToValue={(option, val) => option.address == val.address}
           getOptionLabel={(option) => {
             return option.wunderId;
@@ -78,7 +85,7 @@ export default function InviteMemberDialog(props) {
           onChange={handleChange}
           renderInput={(params) => (
             <TextField
-              className="opacity-50 text-black rounded-lg"
+              className="text-black rounded-lg"
               {...params}
               label="User"
               inputProps={{ ...params.inputProps }}
@@ -143,14 +150,13 @@ export default function InviteMemberDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <iframe
+        className="w-auto"
+        id="fr"
+        name="transactionFrame"
+        height={loading ? '500' : '0'}
+        style={{ transition: 'height 300ms ease' }}
+      ></iframe>
     </Dialog>
   );
 }
