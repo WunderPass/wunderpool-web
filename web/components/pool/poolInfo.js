@@ -6,16 +6,24 @@ export default function getPoolInfo(_pool, _user) {
   const pool = _pool;
   const user = _user;
   const [governanceToken, setGovernanceToken] = useState(0);
-  const [poolTokens, setPoolTokens] = useState();
+  const [totalBalance, setTotalBalance] = useState();
   const [sharesOfUserInPercent, setSharesOfUserInPercent] = useState(0);
   const [isReady, setIsReady] = useState();
 
-  const getInfo = async () => {
+  const getTotalBalance = async () => {
     const poolTokens = await fetchPoolTokens(pool.address, pool.version.number);
+    const totalBalance = 0;
 
-    console.log('poolTokens pre set: ' + poolTokens);
-    console.log(poolTokens);
-    setPoolTokens(poolTokens);
+    poolTokens.map((token, i) => {
+      var usdValueAsNumber = Number(token.usdValue.replace(/[^0-9.-]+/g, ''));
+      totalBalance = totalBalance + usdValueAsNumber;
+    });
+    //console.log('poolTokens : ');
+    //console.log(poolTokens);
+    //console.log('totalBalance');
+    //console.log(totalBalance);
+
+    setTotalBalance(totalBalance);
   };
 
   const getSharesOfUser = async () => {
@@ -31,7 +39,7 @@ export default function getPoolInfo(_pool, _user) {
   };
 
   const initialize = async () => {
-    await getInfo();
+    await getTotalBalance();
     await getSharesOfUser();
   };
 
@@ -42,5 +50,5 @@ export default function getPoolInfo(_pool, _user) {
     });
   }, []);
 
-  return [governanceToken, poolTokens, sharesOfUserInPercent, isReady];
+  return [totalBalance, sharesOfUserInPercent, isReady];
 }

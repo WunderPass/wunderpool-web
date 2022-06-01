@@ -162,9 +162,9 @@ export default function usePool(userAddr, poolAddr = null) {
         }).then((res) => {
           var tokenPrice = res.data?.dollar_price;
           curAssetBalance = token.formattedBalance * tokenPrice;
-          totalBalance = curAssetBalance + totalBalance;
+          totalBalance += curAssetBalance;
           if (token.address !== usdcAddress) {
-            assetBalance = curAssetBalance + assetBalance;
+            assetBalance += curAssetBalance;
             assetCount++;
           }
           setAssetBalance(assetBalance);

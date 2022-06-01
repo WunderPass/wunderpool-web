@@ -10,52 +10,19 @@ import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container, Paper, Skeleton, Typography } from '@mui/material';
-import { fetchPoolBalance } from '/services/contract/pools';
 import getPoolInfo from '/components/pool/poolInfo';
 import { currency } from '/services/formatter';
-import useUser from '/hooks/useUser';
 
 function PoolStructure(props) {
   const { pools, user, setOpen } = props;
-  //const user = useUser();
-
-  const superfunc = () => {
-    {
-      governanceTokenData.holders.map((holder, i) => {
-        {
-          holder.address;
-        }
-        {
-          holder.address;
-        }
-
-        {
-          holder.tokens.toString();
-        }
-
-        {
-          holder.share.toString();
-        }
-      });
-    }
-  };
 
   return pools.map((pool, i) => {
-    //console.log(
-    //  await fetchPoolGovernanceToken(pool.address, pool.version.number)
-    //);
-    const [govTokens, poolTokens, sharesOfUserInPercent] = getPoolInfo(
+    const [totalBalance, sharesOfUserInPercent, isReady] = getPoolInfo(
       pool,
       user
     );
-    console.log('poolTokens');
-    console.log(poolTokens);
-    console.log('govTokens');
-    console.log(govTokens);
-    console.log('sharesOfUserInPercent');
-    console.log(sharesOfUserInPercent);
 
-    return (
+    return isReady ? (
       <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
         <Paper
           className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
@@ -69,7 +36,7 @@ function PoolStructure(props) {
               <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
             </div>
             <Typography className="text-lg pt-3 font-semibold">
-              Governnancetoken:
+              {currency(totalBalance, {})}
             </Typography>
             {pool.entryBarrier && (
               <Typography variant="subtitle1">
@@ -115,6 +82,12 @@ function PoolStructure(props) {
           </div>
         </Paper>
       </Link>
+    ) : (
+      <Skeleton
+        variant="rectangular"
+        width="100%"
+        sx={{ height: '100px', borderRadius: 3 }}
+      />
     );
   });
 }

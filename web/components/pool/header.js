@@ -22,7 +22,6 @@ import { Typography, Collapse, Divider } from '@mui/material';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
-  const [poolInfo, setPoolInfo] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const alert = useAlert();
