@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 export default function getPoolInfo(_pool, _user) {
   const pool = _pool;
   const user = _user;
-  const [governanceToken, setGovernanceToken] = useState(0);
   const [totalBalance, setTotalBalance] = useState();
   const [sharesOfUserInPercent, setSharesOfUserInPercent] = useState(0);
   const [isReady, setIsReady] = useState();
@@ -18,11 +17,6 @@ export default function getPoolInfo(_pool, _user) {
       var usdValueAsNumber = Number(token.usdValue.replace(/[^0-9.-]+/g, ''));
       totalBalance = totalBalance + usdValueAsNumber;
     });
-    //console.log('poolTokens : ');
-    //console.log(poolTokens);
-    //console.log('totalBalance');
-    //console.log(totalBalance);
-
     setTotalBalance(totalBalance);
   };
 
