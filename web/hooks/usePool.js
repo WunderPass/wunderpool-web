@@ -11,6 +11,7 @@ import {
   poolVersion,
   createPool,
   joinPool,
+  addToWhiteList,
   fetchPoolBalance,
 } from '/services/contract/pools';
 import {
@@ -78,6 +79,10 @@ export default function usePool(userAddr, poolAddr = null) {
       .catch((err) => {
         throw err;
       });
+  };
+
+  const inviteUser = (newMember) => {
+    return addToWhiteList(poolAddress, userAddress, newMember, version.number);
   };
 
   const apeSuggestion = (tokenAddress, title, description, value) => {
@@ -272,6 +277,7 @@ export default function usePool(userAddr, poolAddr = null) {
     isMember: userIsMember,
     newPool,
     join,
+    inviteUser,
     usdcBalance,
     assetBalance,
     totalBalance,
