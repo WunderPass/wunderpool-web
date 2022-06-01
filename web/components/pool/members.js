@@ -4,6 +4,7 @@ import { Skeleton, Tooltip, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
+import InitialsAvatar from '../utils/initialsAvatar';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback } = props;
@@ -46,23 +47,13 @@ export default function PoolMembers(props) {
                 <div className="flex flex-row flex-wrap w-full mt-2">
                   {members.map((member, i) => {
                     return (
-                      <div
+                      <InitialsAvatar
                         key={`member-${i}`}
-                        className={`initials-avatar bg-${
-                          ['green', 'red', 'blue'][i % 3]
-                        }-300`}
-                      >
-                        <Tooltip title={`${member.share.toString()}%`}>
-                          <Typography>
-                            {member.wunderId
-                              ? member.wunderId
-                                  .match(/(\w)-(\w)/)
-                                  .slice(1, 3)
-                                  .join('')
-                              : '0X'}
-                          </Typography>
-                        </Tooltip>
-                      </div>
+                        tooltip={`${member.share.toString()}%`}
+                        text={member.wunderId ? member.wunderId : '0-X'}
+                        separator="-"
+                        color={['red', 'green', 'blue'][i % 3]}
+                      />
                     );
                   })}
                 </div>
