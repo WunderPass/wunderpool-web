@@ -3,6 +3,7 @@ import { Typography } from '@mui/material';
 import { useState } from 'react';
 import React from 'react';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
+import { currency } from '/services/formatter';
 
 function assetDetails(props) {
   const { wunderPool } = props;
@@ -21,7 +22,7 @@ function assetDetails(props) {
                   Total value of pool assets
                 </Typography>
                 <Typography className="text-2xl opacity-90 py-1 font-semibold">
-                  20.000 $
+                  {currency(wunderPool.assetBalance, {})}
                 </Typography>
               </div>
               <div className="w-full">
@@ -29,7 +30,7 @@ function assetDetails(props) {
                   Amount of different assets
                 </Typography>
                 <Typography className="text-2xl opacity-90 py-1 font-semibold">
-                  0
+                  {wunderPool.assetCount}
                 </Typography>
               </div>
 

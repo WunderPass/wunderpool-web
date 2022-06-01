@@ -6,7 +6,7 @@ import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import PoolInfoDialog from '/components/dialogs/poolInfo';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
-import { currency, usdc } from '/services/formatter';
+import { currency, usdc, poolBalanceToUsd } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
@@ -22,7 +22,6 @@ import { Typography, Collapse, Divider } from '@mui/material';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
-  const [poolInfo, setPoolInfo] = useState(false);
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const alert = useAlert();
@@ -68,7 +67,7 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              {currency(wunderPool.usdcBalance?.toString() / 1000000, {})}
+              {currency(poolBalanceToUsd(wunderPool.usdcBalance), {})}
             </Typography>
           </div>
 
@@ -152,9 +151,9 @@ export default function PoolHeader(props) {
                     onCopy={() => alert.show('address copied!')}
                   >
                     <span className=" cursor-pointer text-md">
-                      <div className="flex flex-row items-center">
+                      <div className="flex flex-row items-center justify-between">
                         <div className="truncate ...">{address && address}</div>
-                        <MdContentCopy className="text-gray-500 text-3xl ml-2" />
+                        <MdContentCopy className="text-gray-500 text-2xl ml-2" />
                       </div>
                     </span>
                   </CopyToClipboard>

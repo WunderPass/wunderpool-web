@@ -15,7 +15,7 @@ export function fetchUserPoolsGamma(userAddress) {
           return {
             address: addr,
             name: await wunderPool.name(),
-            version: 'GAMMA',
+            version: { version: 'GAMMA', number: 3 },
             isMember: true,
           };
         } catch (err) {

@@ -1,5 +1,3 @@
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import { fetchAllPools, fetchUserPools } from '/services/contract/pools';
 import NewPoolDialog from '/components/dialogs/newPool';
 import BalanceBox from '/components/pool/balanceBox';
 import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
@@ -12,12 +10,19 @@ import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container, Paper, Skeleton, Typography } from '@mui/material';
+import getPoolInfo from '/components/pool/poolInfo';
+import { currency } from '/services/formatter';
 
 function PoolStructure(props) {
-  const { pools, setOpen } = props;
+  const { pools, user, setOpen } = props;
 
   return pools.map((pool, i) => {
-    return (
+    const [totalBalance, sharesOfUserInPercent, isReady] = getPoolInfo(
+      pool,
+      user
+    );
+
+    return isReady ? (
       <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
         <Paper
           className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
@@ -31,7 +36,7 @@ function PoolStructure(props) {
               <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
             </div>
             <Typography className="text-lg pt-3 font-semibold">
-              $2,500 Balance
+              {currency(totalBalance, {})}
             </Typography>
             {pool.entryBarrier && (
               <Typography variant="subtitle1">
@@ -44,31 +49,55 @@ function PoolStructure(props) {
                 <PieChart
                   className="w-8 sm:w-6 my-1 mt-6"
                   data={[
-                    { title: 'One', value: 22, color: '#E4DFFF' },
-                    { title: 'Two', value: 29, color: '#5F45FD' },
+                    {
+                      title: 'One',
+                      value: 100 - parseInt(sharesOfUserInPercent),
+                      color: '#E4DFFF',
+                    },
+                    {
+                      title: 'Two',
+                      value: parseInt(sharesOfUserInPercent),
+                      color: '#5F45FD',
+                    },
                   ]}
                 />
-                <Typography className="text-md  pt-5 pl-3">29%</Typography>
+
+                <Typography className="text-md  pt-5 pl-3">
+                  {sharesOfUserInPercent && sharesOfUserInPercent}%
+                </Typography>
               </div>
 
-              <PieChart
-                className="w-8 sm:w-6 my-1 mt-6 m-1"
-                data={[{ title: 'One', value: 100, color: '#5F45FD' }]}
-              />
+              <div className="flex flex-row  mt-4">
+                <div className="flex border-solid text-black rounded-full bg-green-400 w-8 h-8 items-center justify-center border-2 border-white">
+                  <Typography className="text-sm">AR</Typography>
+                </div>
+                <div className="flex border-solid text-black rounded-full bg-red-400 w-8 h-8 items-center justify-center -ml-2 border-2 border-white">
+                  <Typography className="text-sm">JF </Typography>
+                </div>
+                <div className="flex border-solid text-black rounded-full bg-blue-300 w-8 h-8 items-center justify-center -ml-2 border-2 border-white">
+                  <Typography className="text-sm">DP</Typography>
+                </div>
+              </div>
             </div>
           </div>
         </Paper>
       </Link>
+    ) : (
+      <Skeleton
+        variant="rectangular"
+        width="100%"
+        sx={{ height: '100px', borderRadius: 3 }}
+      />
     );
   });
 }
 
 function PoolList(props) {
-  const { pools, setOpen } = props;
+  const { pools, user, setOpen } = props;
 
   return pools.length > 0 ? (
     <div className="md:grid md:grid-cols-2 md:gap-6">
-      <PoolStructure pools={pools} />
+      <PoolStructure pools={pools} user={user} />
     </div>
   ) : (
     <div className="container-white">
@@ -156,7 +185,7 @@ export default function Pools(props) {
                 <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4">
                   Balance
                 </Typography>
-                <BalanceBox className="w-10" />
+                <BalanceBox className="w-10" {...props} />
               </div>
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
@@ -175,6 +204,7 @@ export default function Pools(props) {
                 ) : (
                   <PoolList
                     className="mx-4"
+                    user={user}
                     pools={userPools}
                     setOpen={setOpen}
                   />

@@ -25,7 +25,7 @@ export function fetchUserPoolsDelta(userAddress) {
           return {
             address: addr,
             name: await wunderPool.name(),
-            version: 'DELTA',
+            version: { version: 'DELTA', number: 4 },
             isMember: await wunderPool.isMember(userAddress),
           };
         } catch (err) {
