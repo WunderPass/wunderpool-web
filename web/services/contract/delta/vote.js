@@ -4,6 +4,7 @@ import {
   initPoolDelta,
   initProposalDelta,
 } from '/services/contract/delta/init';
+import { gasPrice } from '/services/contract/init';
 
 export function voteDelta(poolAddress, proposalId, mode, userAddress) {
   return new Promise(async (resolve, reject) => {
