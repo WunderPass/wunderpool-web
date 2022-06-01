@@ -20,6 +20,7 @@ import { currency, round } from '/services/formatter';
 export default function makeProposal(props) {
   const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
   const [tokenAddress, setTokenAddress] = useState('');
+  const [proposalName, setProposalName] = useState('');
   const [tokenName, setTokenName] = useState('');
   const [tokenImage, setTokenImage] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState('');
@@ -39,7 +40,7 @@ export default function makeProposal(props) {
     wunderPool
       .apeSuggestion(
         tokenAddress,
-        `Let's Ape into ${tokenName} (${tokenSymbol})`,
+        proposalName || `Let's Ape into ${tokenName} (${tokenSymbol})`,
         `We will ape ${value} USD into ${tokenName}`,
         value
       )
@@ -59,6 +60,7 @@ export default function makeProposal(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setProposalName('');
     setTokenAddress('');
     setTokenName(null);
     setTokenSymbol(null);
@@ -115,14 +117,17 @@ export default function makeProposal(props) {
             <DialogContent style={{ scrollbarwidth: 'none' }}>
               <Stack spacing={1}>
                 <div className="mt-2">
-                  <label className="label " for="poolName">
+                  <label className="label" htmlFor="proposalName">
                     Name of the Proposal
                   </label>
                   <input
                     className="textfield py-4 px-3 mt-2 "
-                    id="poolName"
+                    id="proposalName"
                     type="text"
                     placeholder="Name of the Proposal"
+                    onChange={(e) => {
+                      setProposalName(e.target.value);
+                    }}
                   />
                 </div>
 

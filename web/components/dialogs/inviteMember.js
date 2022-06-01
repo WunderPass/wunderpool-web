@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 
 export default function InviteMemberDialog(props) {
   const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
-  const [users, setUsers] = useState(true);
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -57,6 +57,7 @@ export default function InviteMemberDialog(props) {
   };
 
   useEffect(() => {
+    if (!open) return;
     axios({ url: '/api/proxy/users/all' })
       .then((res) => {
         setUsers(res.data);
@@ -64,7 +65,7 @@ export default function InviteMemberDialog(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -100,7 +101,7 @@ export default function InviteMemberDialog(props) {
                   spacing={2}
                   sx={{ height: '50px', width: '100%' }}
                 >
-                  <div className="flex border-solid text-black rounded-full bg-blue-300 w-10 h-10 items-center justify-center -ml-3 border-2 border-white uppercase">
+                  <div className="initials-avatar bg-blue-300">
                     <Typography>
                       {option.wunderId
                         .match(/(\w)-(\w)/)
