@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { initPool, usdcAddress, tokenAbi, versionLookup } from './init';
 import {
+  addToWhiteListDelta,
   fetchAllPoolsDelta,
   fetchPoolIsClosedDelta,
   fetchUserPoolsDelta,
@@ -119,6 +120,14 @@ export function fetchPoolBalance(poolAddress, version = null) {
     const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
     resolve(await usdcContract.balanceOf(poolAddress));
   });
+}
+
+export function addToWhiteList(poolAddress, userAddress, newMember, version) {
+  if (version > 3) {
+    return addToWhiteListDelta(poolAddress, userAddress, newMember);
+  } else {
+    throw 'Not implemented before DELTA';
+  }
 }
 
 export function fundPool(poolAddress, amount, version) {

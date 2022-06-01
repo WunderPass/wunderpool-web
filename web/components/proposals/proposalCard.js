@@ -10,6 +10,8 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Alert,
+  AlertTitle,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
@@ -104,6 +106,13 @@ export default function ProposalCard(props) {
             )}
             <>
               <Dialog open={signing} onClose={handleClose}>
+                {!wunderPool.closed && (
+                  <Alert severity="warning">
+                    <AlertTitle>
+                      After execution, no new members can join this Pool
+                    </AlertTitle>
+                  </Alert>
+                )}
                 <iframe
                   className="w-auto"
                   id="fr"

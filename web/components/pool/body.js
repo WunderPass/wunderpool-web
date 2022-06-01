@@ -1,13 +1,10 @@
-import { Collapse, Skeleton, Stack, Typography, Divider } from '@mui/material';
+import { Collapse, Skeleton, Typography, Divider } from '@mui/material';
 import ProposalList from '/components/proposals/list';
-import ApeForm from '/components/proposals/apeForm';
 import CustomForm from '/components/proposals/customForm';
 import TokenList from '/components/tokens/list';
 import NftList from '/components/tokens/nfts';
 import { useState, useEffect } from 'react';
 import React from 'react';
-import Members from '/components/pool/members';
-import JoinPoolDialog from '/components/dialogs/joinPool';
 import AssetDetails from '/components/pool/assetDetails';
 
 function body(props) {
@@ -16,7 +13,6 @@ function body(props) {
   const [ape, setApe] = useState(false);
   const [customProposal, setCustomProposal] = useState(false);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
-  const [joinPool, setJoinPool] = useState(false);
   const [isProposalTab, setIsProposalTab] = useState(true);
   const [isAssetTab, setIsAssetTab] = useState(false);
   const [isNftTab, setIsNftTab] = useState(false);
@@ -141,15 +137,6 @@ function body(props) {
       ) : (
         //DEFAULT
         <Skeleton width="100%" height={100} />
-      )}
-      {wunderPool.governanceToken && (
-        <JoinPoolDialog
-          open={joinPool}
-          setOpen={setJoinPool}
-          loginCallback={loginCallback}
-          wunderPool={wunderPool}
-          {...props}
-        />
       )}
     </div>
   );
