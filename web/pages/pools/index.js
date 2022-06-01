@@ -12,12 +12,13 @@ import Link from 'next/link';
 import { Container, Paper, Skeleton, Typography } from '@mui/material';
 import getPoolInfo from '/components/pool/poolInfo';
 import { currency } from '/services/formatter';
+import InitialsAvatar from '../../components/utils/initialsAvatar';
 
 function PoolStructure(props) {
   const { pools, user, setOpen } = props;
 
   return pools.map((pool, i) => {
-    const [totalBalance, sharesOfUserInPercent, isReady] = getPoolInfo(
+    const [totalBalance, sharesOfUserInPercent, members, isReady] = getPoolInfo(
       pool,
       user
     );
@@ -68,15 +69,23 @@ function PoolStructure(props) {
               </div>
 
               <div className="flex flex-row  mt-4">
-                <div className="flex border-solid text-black rounded-full bg-green-400 w-8 h-8 items-center justify-center border-2 border-white">
-                  <Typography className="text-sm">AR</Typography>
-                </div>
-                <div className="flex border-solid text-black rounded-full bg-red-400 w-8 h-8 items-center justify-center -ml-2 border-2 border-white">
-                  <Typography className="text-sm">JF </Typography>
-                </div>
-                <div className="flex border-solid text-black rounded-full bg-blue-300 w-8 h-8 items-center justify-center -ml-2 border-2 border-white">
-                  <Typography className="text-sm">DP</Typography>
-                </div>
+                {members &&
+                  members
+                    .sort((a, b) => b.share.toNumber() - a.share.toNumber())
+                    .slice(0, 3)
+                    .map((member, i) => {
+                      return (
+                        <InitialsAvatar
+                          key={`member-${i}`}
+                          tooltip={`${
+                            member.wunderId || 'External User'
+                          }: ${member.share.toString()}%`}
+                          text={member.wunderId ? member.wunderId : '0-X'}
+                          separator="-"
+                          color={['red', 'green', 'blue'][i % 3]}
+                        />
+                      );
+                    })}
               </div>
             </div>
           </div>

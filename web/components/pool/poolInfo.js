@@ -1,12 +1,14 @@
 import { fetchPoolGovernanceToken } from '/services/contract/token';
 import { fetchPoolTokens } from '/services/contract/token';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function getPoolInfo(_pool, _user) {
   const pool = _pool;
   const user = _user;
   const [totalBalance, setTotalBalance] = useState();
   const [sharesOfUserInPercent, setSharesOfUserInPercent] = useState(0);
+  const [members, setMembers] = useState([]);
   const [isReady, setIsReady] = useState();
 
   const getTotalBalance = async () => {
@@ -25,11 +27,26 @@ export default function getPoolInfo(_pool, _user) {
       pool.address,
       pool.version.number
     );
-    govTokens.holders.map((holder, i) => {
-      if (holder.address.toString().toLowerCase() == user.address.toString()) {
-        setSharesOfUserInPercent(holder.share.toString());
-      }
-    });
+
+    const resolvedMembers = await Promise.all(
+      govTokens.holders.map(async (holder) => {
+        if (
+          holder.address.toString().toLowerCase() == user.address.toString()
+        ) {
+          setSharesOfUserInPercent(holder.share.toString());
+        }
+        try {
+          const user = await axios({
+            url: '/api/proxy/users/find',
+            params: { address: holder.address },
+          });
+          return { ...holder, wunderId: user.data.wunderId };
+        } catch {
+          return holder;
+        }
+      })
+    );
+    setMembers(resolvedMembers);
   };
 
   const initialize = async () => {
@@ -44,5 +61,5 @@ export default function getPoolInfo(_pool, _user) {
     });
   }, []);
 
-  return [totalBalance, sharesOfUserInPercent, isReady];
+  return [totalBalance, sharesOfUserInPercent, members, isReady];
 }
