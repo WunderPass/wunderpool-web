@@ -132,7 +132,7 @@ export default function makeProposal(props) {
                 </div>
 
                 <div className="pt-4">
-                  <label className="label pb-2" for="poolDescription">
+                  <label className="label pb-2" htmlFor="poolDescription">
                     Buy Token
                   </label>
 
@@ -157,7 +157,7 @@ export default function makeProposal(props) {
                 </Collapse>
 
                 <div className="pt-4">
-                  <label className="label pb-2" for="value">
+                  <label className="label pb-2" htmlFor="value">
                     Amount
                   </label>
                   <div>

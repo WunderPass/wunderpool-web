@@ -198,7 +198,7 @@ export default function NewPoolDialog(props) {
               </DialogContentText>
 
               <div>
-                <label className="label" for="poolPicture">
+                <label className="label" htmlFor="poolPicture">
                   Upload a profile picture for the Pool
                 </label>
                 <label htmlFor="fileUpload">
@@ -230,7 +230,7 @@ export default function NewPoolDialog(props) {
               </div>
 
               <div>
-                <label class="label" for="poolName">
+                <label className="label" htmlFor="poolName">
                   Name of the Pool
                 </label>
                 <input
@@ -250,7 +250,7 @@ export default function NewPoolDialog(props) {
               </div>
 
               <div>
-                <label className="label pb-2" for="poolDescription">
+                <label className="label pb-2" htmlFor="poolDescription">
                   Description of the Pool
                 </label>
                 <input
@@ -264,7 +264,7 @@ export default function NewPoolDialog(props) {
               </div>
 
               <div>
-                <label className="label pb-2" for="value">
+                <label className="label pb-2" htmlFor="value">
                   Your Investment
                 </label>
                 <div>
@@ -315,7 +315,7 @@ export default function NewPoolDialog(props) {
                   </button>
 
                   <div>
-                    <label className="label pb-2" for="value">
+                    <label className="label pb-2" htmlFor="value">
                       Minimum investment to join the Pool
                     </label>
                     <CurrencyInput
@@ -339,7 +339,7 @@ export default function NewPoolDialog(props) {
                   </div>
 
                   <div>
-                    <label className="label pb-2" for="value">
+                    <label className="label pb-2" htmlFor="value">
                       Maximum investment to join the Pool
                     </label>
                     <CurrencyInput //ADD FUNCTIONALITY
@@ -359,7 +359,7 @@ export default function NewPoolDialog(props) {
                   <div>
                     <label
                       className="label pb-2"
-                      for="value" //ADD FUNCTIONALITY
+                      htmlFor="value" //ADD FUNCTIONALITY
                     >
                       Maximum members
                     </label>
@@ -374,7 +374,7 @@ export default function NewPoolDialog(props) {
                   <div>
                     <label
                       className="label pb-1"
-                      for="value" //ADD FUNCTIONALITY
+                      htmlFor="value" //ADD FUNCTIONALITY
                     >
                       Lifetime of the Pool
                     </label>
@@ -395,7 +395,7 @@ export default function NewPoolDialog(props) {
                   </div>
 
                   <div>
-                    <label className="label pb-2" for="value">
+                    <label className="label pb-2" htmlFor="value">
                       Governance token
                     </label>
                     <input
@@ -411,7 +411,7 @@ export default function NewPoolDialog(props) {
                     />
                   </div>
                   <div>
-                    <label className="label pb-2" for="value">
+                    <label className="label pb-2" htmlFor="value">
                       Token Symbol
                     </label>
                     <input
@@ -476,7 +476,7 @@ export default function NewPoolDialog(props) {
 
               <div className={votingsOn ? '' : 'opacity-20'}>
                 <div className="pb-4">
-                  <label className="label pb-1" for="value">
+                  <label className="label pb-1" htmlFor="value">
                     Duration of voting
                   </label>
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
@@ -496,7 +496,7 @@ export default function NewPoolDialog(props) {
                 </div>
 
                 <div className="pb-4">
-                  <label className="label pb-1" for="value">
+                  <label className="label pb-1" htmlFor="value">
                     How many % is needed to win a vote
                   </label>
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
@@ -544,7 +544,7 @@ export default function NewPoolDialog(props) {
               </DialogContentText>
 
               <div>
-                <label className="label" for="poolName">
+                <label className="label" htmlFor="poolName">
                   Invite your friends via Wunderpass
                 </label>
                 <div className="flex flex-row justify-between textfield mb-6 mt-2">
@@ -564,7 +564,7 @@ export default function NewPoolDialog(props) {
               <Divider className="" />
 
               <div className="flex justify-between items-center pt-4">
-                <label className="label  " for="value">
+                <label className="label  " htmlFor="value">
                   <div className="flex flex-row justify-between items-center">
                     <BsLink45Deg className="text-xl opacity-60 mr-1" />
                     <Typography>Invite by link</Typography>
