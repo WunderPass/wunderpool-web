@@ -5,6 +5,8 @@ import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import PoolHeader from '/components/pool/header';
 import PoolBody from '/components/pool/body';
 import usePool from '/hooks/usePool';
+import PoolDetails from '/components/pool/assetDetails';
+import PoolMembers from '/components/pool/members';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -74,21 +76,57 @@ export default function Pool(props) {
 
   return (
     <Container maxWidth="md">
-      <Stack
-        spacing={3}
-        alignItems="center"
-        paddingTop={2}
-        style={{ maxWidth: '100%' }}
-      >
-        <PoolHeader name={name} address={address} wunderPool={wunderPool} />
-        <PoolBody
-          address={address}
-          loading={loading}
-          wunderPool={wunderPool}
-          loginCallback={loginCallback}
-          {...props}
-        />
+      <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
+        <div
+          className="hidden md:flex md:flex-row" //Desktop
+        >
+          <div className="md:flex md:flex-col max-w-xl ">
+            <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+
+            <PoolBody
+              address={address}
+              loading={loading}
+              wunderPool={wunderPool}
+              {...props}
+            />
+          </div>{' '}
+          <div className="flex-col">
+            {!wunderPool.isMember && <></>}
+            <PoolDetails address={address} wunderPool={wunderPool} {...props} />
+            <PoolMembers
+              address={address}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
+          </div>
+        </div>
+
+        <div
+          className="block md:hidden" //Mobile
+        >
+          <div className="flex-col">
+            <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+
+            <PoolDetails address={address} wunderPool={wunderPool} {...props} />
+            <PoolMembers
+              address={address}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
+
+            <PoolBody
+              address={address}
+              loading={loading}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
+          </div>
+        </div>
       </Stack>
+
       <FundPoolDialog
         open={fundDialog}
         setOpen={setFundDialog}

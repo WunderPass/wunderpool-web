@@ -9,28 +9,16 @@ export default function TokenList(props) {
   const { tokens, poolAddress } = props;
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [symbol, setSymbol] = useState('');
-  const [balance, setBalance] = useState('');
-  const [formattedBalance, setFormattedBalance] = useState('');
+  const [token, setToken] = useState('');
 
   const handleSell = (token) => {
     setOpenSell(true);
-    setAddress(token.address);
-    setName(token.name);
-    setSymbol(token.symbol);
-    setBalance(token.balance.toString());
-    setFormattedBalance(token.formattedBalance.toString());
+    setToken(token);
   };
 
   const handleSwap = (token) => {
     setOpenSwap(true);
-    setAddress(token.address);
-    setName(token.name);
-    setSymbol(token.symbol);
-    setBalance(token.balance.toString());
-    setFormattedBalance(token.formattedBalance.toString());
+    setToken(token);
   };
 
   return (
@@ -54,22 +42,14 @@ export default function TokenList(props) {
       <SellTokenDialog
         open={openSell}
         setOpen={setOpenSell}
-        name={name}
-        address={address}
-        symbol={symbol}
-        balance={balance}
-        poolAddress={poolAddress}
-        formattedBalance={formattedBalance}
+        token={token}
+        {...props}
       />
       <SwapTokenDialog
         open={openSwap}
         setOpen={setOpenSwap}
-        name={name}
-        address={address}
-        symbol={symbol}
-        balance={balance}
-        poolAddress={poolAddress}
-        formattedBalance
+        token={token}
+        {...props}
       />
     </Stack>
   );

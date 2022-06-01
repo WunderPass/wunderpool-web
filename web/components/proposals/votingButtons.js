@@ -54,7 +54,7 @@ export default function VotingButtons(props) {
     if (user.address) {
       wunderPool.userHasVoted(proposal.id).then((res) => {
         setWaitingForVote(false);
-        setUserHasVoted(res.toNumber());
+        setUserHasVoted(res);
       });
     }
   }, [user.address]);

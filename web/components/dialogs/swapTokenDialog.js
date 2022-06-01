@@ -16,20 +16,9 @@ import { createSwapSuggestion } from '/services/contract/proposals';
 import TokenInput from '../tokens/input';
 
 export default function SwapTokenDialog(props) {
-  const {
-    open,
-    setOpen,
-    name,
-    address,
-    symbol,
-    balance,
-    poolAddress,
-    wunderPool,
-    handleError,
-    handleSuccess,
-    tokenPrice,
-    formattedBalance,
-  } = props;
+  const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
+    props;
+  const { address, decimals, formattedBalance, name, symbol } = token;
   const [amount, setAmount] = useState('');
   const [receiveName, setReceiveName] = useState('');
   const [receiveSymbol, setReceiveSymbol] = useState('');
@@ -54,7 +43,7 @@ export default function SwapTokenDialog(props) {
         receiveAddress,
         `Let's Swap ${name} (${symbol}) for ${receiveName} (${receiveSymbol})`,
         `We will swap ${amount} ${symbol} for ${receiveSymbol}`,
-        amount
+        ethers.utils.parseUnits(amount, decimals)
       )
       .then((res) => {
         console.log(res);

@@ -9,13 +9,16 @@ export default function ProposalList(props) {
   const slidingContainer = useRef(null);
 
   return wunderPool.proposals.length > 0 ? (
-    <Stack spacing={1}>
-      <Typography variant="h4">Proposals</Typography>
+    <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <Tabs value={tab} onChange={(_, val) => setTab(val)}>
-        <Tab label="Open" sx={{ maxWidth: 'unset', flexGrow: 1 }} />
-        <Tab label="Closed" sx={{ maxWidth: 'unset', flexGrow: 1 }} />
+        <Tab label="Open" sx={{ maxWidth: 'unset' }} className="flex-1" />
+        <Tab
+          label="Closed"
+          sx={{ maxWidth: 'unset' }}
+          className="flex-1 pr-6"
+        />
       </Tabs>
-      <Box ref={slidingContainer} p={1} overflow="hidden">
+      <Box ref={slidingContainer} p={1} overflow="hidden" className="w-full">
         {tab == 0 && (
           <Slide
             container={slidingContainer.current}
@@ -24,9 +27,7 @@ export default function ProposalList(props) {
           >
             <Stack spacing={2}>
               {wunderPool.proposals
-                .filter(
-                  (p) => p.executed == false || p.noVotes < p.totalVotes / 2
-                )
+                .filter((p) => p.executed == false)
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
                   return (

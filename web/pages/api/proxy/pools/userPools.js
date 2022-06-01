@@ -7,17 +7,10 @@ export default async function handler(req, res) {
       authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
     };
 
-    const body = {
-      pool_address: req.body.poolAddress?.toLowerCase(),
-      joining_user_address: req.body.userAddress,
-      invest: req.body.amount,
-    };
-
     const resp = await axios({
-      method: 'POST',
-      url: 'https://pools-service.wunderpass.org/web3Proxy/pools/byPoolAddress/joinPool',
+      method: 'get',
+      url: `https://pools-service.wunderpass.org/web3Proxy/pools/web2/byUser/${req.query.address}`,
       headers: headers,
-      data: body,
     });
     res.status(200).json(resp.data);
   } catch (error) {

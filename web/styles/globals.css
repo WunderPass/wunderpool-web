@@ -30,8 +30,12 @@ a {
   box-sizing: border-box;
 }
 
+button:disabled {
+  @apply opacity-40 cursor-not-allowed;
+}
+
 .btn {
-  @apply rounded-lg py-2.5 px-3 text-xs cursor-pointer bg-black  transition-colors;
+  @apply rounded-lg py-2.5 px-3 text-xs cursor-pointer bg-black transition-colors;
 }
 
 .btn-connect {
@@ -108,4 +112,8 @@ a {
 
 .label {
   @apply text-black;
+}
+
+.initials-avatar {
+  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white;
 }

@@ -12,7 +12,6 @@ export default async function handler(req, res) {
       url: 'https://pools-service.wunderpass.org/web3Proxy/pools/web2/all',
       headers: headers,
     });
-    console.log(resp);
     res.status(200).json(resp.data);
   } catch (error) {
     console.log(error);

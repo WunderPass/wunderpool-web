@@ -30,7 +30,7 @@ export function initPoolGamma(poolAddress) {
     'function getProposal(uint _proposalId) public view returns(string memory title, string memory description, uint transactionCount, uint deadline, uint yesVotes, uint noVotes, uint totalVotes, uint createdAt, bool executed)',
     'function getProposalTransaction(uint _proposalId, uint _transactionIndex) public view returns(string memory action, bytes memory param, uint transactionValue, address contractAddress)',
     'function vote(uint proposalId, uint mode) public',
-    'function hasVoted(uint256 proposalId, address account) public view returns (uint)',
+    'function hasVoted(uint256 proposalId, address account) public view returns (uint8)',
     'function executeProposal(uint _proposalId) public',
   ];
   const provider = httpProvider;
