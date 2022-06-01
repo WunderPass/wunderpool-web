@@ -12,6 +12,7 @@ export default function useUser() {
   const [pools, setPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
 
   const loggedIn = wunderId || address;
 
@@ -39,12 +40,15 @@ export default function useUser() {
     });
   };
 
-  const fetchUsdBalance = () => {
-    usdcBalanceOf(address).then((balance) => {
-      setUsdBalance(balance);
-      if (balance < 1 && !checkedTopUp) {
-        setTopUpRequired(true);
-      }
+  const fetchUsdBalance = async () => {
+    return new Promise((res, rej) => {
+      usdcBalanceOf(address).then((balance) => {
+        setUsdBalance(balance);
+        if (balance < 1 && !checkedTopUp) {
+          setTopUpRequired(true);
+        }
+        res(balance);
+      });
     });
   };
 
@@ -67,10 +71,11 @@ export default function useUser() {
     router.push('/');
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (address) {
-      fetchPools();
-      fetchUsdBalance();
+      await fetchPools();
+      await fetchUsdBalance();
+      setIsReady(true);
     }
   }, [address]);
 
@@ -93,6 +98,7 @@ export default function useUser() {
     fetchUsdBalance,
     topUpRequired,
     setTopUpRequired,
+    isReady,
     addToDatabase,
   };
 }
