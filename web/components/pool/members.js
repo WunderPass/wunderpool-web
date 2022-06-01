@@ -1,7 +1,6 @@
-import { Collapse, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Skeleton, Tooltip, Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
@@ -50,10 +49,12 @@ export default function PoolMembers(props) {
                     return (
                       <InitialsAvatar
                         key={`member-${i}`}
-                        tooltip={`${member.share.toString()}%`}
+                        tooltip={`${
+                          member.wunderId || 'External User'
+                        }: ${member.share.toString()}%`}
                         text={member.wunderId ? member.wunderId : '0-X'}
                         separator="-"
-                        color={['red', 'green', 'blue'][i % 3]}
+                        color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                       />
                     );
                   })}
