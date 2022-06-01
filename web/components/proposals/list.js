@@ -27,9 +27,7 @@ export default function ProposalList(props) {
           >
             <Stack spacing={2}>
               {wunderPool.proposals
-                .filter(
-                  (p) => p.executed == false || p.noVotes < p.totalVotes / 2
-                )
+                .filter((p) => p.executed == false)
                 .sort((one, two) => two.createdAt.sub(one.createdAt))
                 .map((proposal) => {
                   return (

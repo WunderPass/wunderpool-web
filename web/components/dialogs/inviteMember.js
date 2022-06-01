@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 
 export default function InviteMemberDialog(props) {
   const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
-  const [users, setUsers] = useState(true);
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -57,6 +57,7 @@ export default function InviteMemberDialog(props) {
   };
 
   useEffect(() => {
+    if (!open) return;
     axios({ url: '/api/proxy/users/all' })
       .then((res) => {
         setUsers(res.data);
@@ -64,7 +65,7 @@ export default function InviteMemberDialog(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
