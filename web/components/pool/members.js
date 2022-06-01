@@ -49,10 +49,12 @@ export default function PoolMembers(props) {
                     return (
                       <InitialsAvatar
                         key={`member-${i}`}
-                        tooltip={`${member.share.toString()}%`}
+                        tooltip={`${
+                          member.wunderId || 'External User'
+                        }: ${member.share.toString()}%`}
                         text={member.wunderId ? member.wunderId : '0-X'}
                         separator="-"
-                        color={['red', 'green', 'blue'][i % 3]}
+                        color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                       />
                     );
                   })}
