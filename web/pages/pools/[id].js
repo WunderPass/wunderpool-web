@@ -87,14 +87,18 @@ export default function Pool(props) {
               address={address}
               loading={loading}
               wunderPool={wunderPool}
-              loginCallback={loginCallback}
               {...props}
             />
           </div>{' '}
           <div className="flex-col">
             {!wunderPool.isMember && <></>}
             <PoolDetails address={address} wunderPool={wunderPool} {...props} />
-            <PoolMembers address={address} wunderPool={wunderPool} {...props} />
+            <PoolMembers
+              address={address}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
           </div>
         </div>
 
@@ -105,7 +109,12 @@ export default function Pool(props) {
             <PoolHeader name={name} address={address} wunderPool={wunderPool} />
 
             <PoolDetails address={address} wunderPool={wunderPool} {...props} />
-            <PoolMembers address={address} wunderPool={wunderPool} {...props} />
+            <PoolMembers
+              address={address}
+              wunderPool={wunderPool}
+              loginCallback={loginCallback}
+              {...props}
+            />
 
             <PoolBody
               address={address}

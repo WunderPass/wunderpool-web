@@ -11,7 +11,9 @@ export default async function handler(req, res) {
     };
     status = user ? 200 : 404;
   } else if (req.query.address) {
-    const user = users.filter((u) => u.address == req.query.address)[0];
+    const user = users.filter(
+      (u) => u.address.toLowerCase() == req.query.address.toLowerCase()
+    )[0];
     data = user || { error: `No User found for Address ${req.query.address}` };
     status = user ? 200 : 404;
   } else {

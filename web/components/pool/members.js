@@ -1,97 +1,122 @@
-import { Collapse, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Skeleton, Tooltip, Typography } from '@mui/material';
 
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
+import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
-import InviteMemberDialog from '../dialogs/inviteMember';
+import axios from 'axios';
 
-function members(props) {
-  const { address, loading, wunderPool, loginCallback } = props;
-
-  const [ape, setApe] = useState(false);
-  const [customProposal, setCustomProposal] = useState(false);
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
+export default function PoolMembers(props) {
+  const { wunderPool, loginCallback } = props;
+  const { isReady, isMember, governanceToken } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
+  const [members, setMembers] = useState(null);
 
-  return (
+  useEffect(async () => {
+    if (governanceToken && governanceToken.holders) {
+      const resolvedMembers = await Promise.all(
+        governanceToken.holders.map(async (mem) => {
+          try {
+            const user = await axios({
+              url: '/api/proxy/users/find',
+              params: { address: mem.address },
+            });
+            return { ...mem, wunderId: user.data.wunderId };
+          } catch {
+            return mem;
+          }
+        })
+      );
+      setMembers(resolvedMembers);
+    }
+  }, [governanceToken]);
+
+  return isReady ? (
     <div className="md:ml-4">
-      {wunderPool.isMember ? ( //POOL WHEN ARE A MEMBER
-        <>
-          <div className="flex container-white justify-start sm:justify-center mb-4 md:mb-0 mt-6 md:mt-4">
-            <div className="flex flex-col items-center justify-center ">
-              <Typography className="text-xl w-full">Members</Typography>
-              <div className="flex flex-col ">
-                <div className="flex flex-row w-full mt-2">
-                  <div className="flex border-solid text-black rounded-full bg-green-400 w-10 h-10 items-center justify-center border-2 border-white">
-                    <Typography>AR</Typography>
-                  </div>
-                  <div className="flex border-solid text-black rounded-full bg-red-400 w-10 h-10 items-center justify-center -ml-3 border-2 border-white">
-                    <Typography>JF </Typography>
-                  </div>
-                  <div className="flex border-solid text-black rounded-full bg-blue-300 w-10 h-10 items-center justify-center -ml-3 border-2 border-white">
-                    <Typography>DP</Typography>
-                  </div>
+      <div
+        className={`flex container-white justify-start sm:justify-center mb-4 ${
+          isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
+        }`}
+      >
+        <div className="flex flex-col items-center justify-center ">
+          <Typography className="text-xl w-full">Members</Typography>
+          <div className="flex flex-col ">
+            {members && (
+              <>
+                <div className="flex flex-row flex-wrap w-full mt-2">
+                  {members.map((member, i) => {
+                    return (
+                      <div
+                        key={`member-${i}`}
+                        className={`initials-avatar bg-${
+                          ['green', 'red', 'blue'][i % 3]
+                        }-300`}
+                      >
+                        <Tooltip title={`${member.share.toString()}%`}>
+                          <Typography>
+                            {member.wunderId
+                              ? member.wunderId
+                                  .match(/(\w)-(\w)/)
+                                  .slice(1, 3)
+                                  .join('')
+                              : '0X'}
+                          </Typography>
+                        </Tooltip>
+                      </div>
+                    );
+                  })}
                 </div>
                 <Typography className="my-2 sm:mt-4 " variant="h7">
-                  6 Wunderpass friends and 10 other members are in the pool.
+                  {members.length} members are in the pool.
                 </Typography>
-                {wunderPool.version.number > 3 && !wunderPool.closed && (
-                  <button
-                    className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
-                    onClick={() => setInviteMember(true)}
-                  >
-                    <Typography className="text-lg">Invite Member</Typography>
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </>
-      ) : !wunderPool.isMember ? ( //POOL BEFORE YOU ARE A MEMBER
-        <div className="flex container-white justify-start sm:justify-center mb-4 mt-6 md:mt-6">
-          <div className="flex flex-col items-center justify-center ">
-            <Typography className="text-xl w-full">Members</Typography>
-            <div className="flex flex-col ">
-              <div className="flex flex-row w-full mt-2">
-                <div className="flex border-solid text-black rounded-full bg-green-400 w-10 h-10 items-center justify-center border-2 border-white">
-                  <Typography>AR</Typography>
+              </>
+            )}
+            {isMember ? (
+              wunderPool.version.number > 3 &&
+              !wunderPool.closed && (
+                <button
+                  className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
+                  onClick={() => setInviteMember(true)}
+                >
+                  <Typography className="text-lg">Invite Member</Typography>
+                </button>
+              )
+            ) : (
+              <button
+                className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
+                onClick={() => setJoinPool(true)}
+                disabled={!Boolean(wunderPool.governanceToken)}
+              >
+                <div className="flex flex-row items-center justify-center">
+                  <AiOutlinePlus className=" text-xl" />
+                  <Typography className="ml-2">Join</Typography>
                 </div>
-                <div className="flex border-solid text-black rounded-full bg-red-400 w-10 h-10 items-center justify-center -ml-3 border-2 border-white">
-                  <Typography>JF </Typography>
-                </div>
-                <div className="flex border-solid text-black rounded-full bg-blue-300 w-10 h-10 items-center justify-center -ml-3 border-2 border-white">
-                  <Typography>DP</Typography>
-                </div>
-              </div>
-              <Typography className="my-2 sm:mt-4 " variant="h7">
-                6 Wunderpass friends and 10 other members are in the pool.
-              </Typography>
-            </div>
-            <button
-              className="btn-kaico items-center w-full my-5 py-3 px-3 text-md "
-              onClick={() => setJoinPool(true)}
-            >
-              <div className="flex flex-row items-center justify-center">
-                <AiOutlinePlus className=" text-xl" />
-                <Typography className="ml-2">Join</Typography>
-              </div>
-            </button>
+              </button>
+            )}
           </div>
         </div>
-      ) : (
-        //DEFAULT
-        <Skeleton width="100%" height={100} />
-      )}
+      </div>
       <InviteMemberDialog
         open={inviteMember}
         setOpen={setInviteMember}
         wunderPool={wunderPool}
         {...props}
       />
+      {wunderPool.governanceToken && (
+        <JoinPoolDialog
+          open={joinPool}
+          setOpen={setJoinPool}
+          loginCallback={loginCallback}
+          wunderPool={wunderPool}
+          {...props}
+        />
+      )}
+    </div>
+  ) : (
+    <div className="md:ml-4">
+      <Skeleton width="100%" height={100} />
     </div>
   );
 }
-
-export default members;

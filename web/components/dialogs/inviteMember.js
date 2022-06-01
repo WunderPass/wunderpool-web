@@ -100,7 +100,7 @@ export default function InviteMemberDialog(props) {
                   spacing={2}
                   sx={{ height: '50px', width: '100%' }}
                 >
-                  <div className="flex border-solid text-black rounded-full bg-blue-300 w-10 h-10 items-center justify-center -ml-3 border-2 border-white uppercase">
+                  <div className="initials-avatar bg-blue-300">
                     <Typography>
                       {option.wunderId
                         .match(/(\w)-(\w)/)

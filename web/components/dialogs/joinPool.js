@@ -4,15 +4,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  InputAdornment,
-  LinearProgress,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import { toEthString, usdc } from '/services/formatter';
+import CurrencyInput from '/components/utils/currencyInput';
 
 export default function JoinPoolDialog(props) {
   const {
@@ -22,9 +20,11 @@ export default function JoinPoolDialog(props) {
     handleSuccess,
     handleError,
     wunderPool,
+    user,
   } = props;
   const { price, totalSupply, entryBarrier } = wunderPool.governanceToken;
   const [amount, setAmount] = useState('');
+  const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -53,11 +53,24 @@ export default function JoinPoolDialog(props) {
       : ethers.BigNumber.from(100);
   const shareOfPool =
     totalSupply > 0
-      ? receivedTokens.mul(price).div(totalSupply.add(receivedTokens))
+      ? receivedTokens.mul(100).div(totalSupply.add(receivedTokens))
       : ethers.BigNumber.from(100);
 
-  const handleInput = (e) => {
-    setAmount(e.target.value);
+  const handleInput = (value, float) => {
+    setAmount(value);
+    if (float && entryBarrier.gt(float * 1000000)) {
+      setErrorMsg(
+        `Minimum of ${entryBarrier
+          .div(1000000)
+          .toString()} $ required for the Pool`
+      );
+    } else if (float && 3 > float) {
+      setErrorMsg(`Minimum of 3 $ required`);
+    } else if (user.usdBalance < float) {
+      setErrorMsg(`Not enough balance`);
+    } else {
+      setErrorMsg(null);
+    }
   };
 
   return (
@@ -70,23 +83,12 @@ export default function JoinPoolDialog(props) {
         <DialogContentText>
           Price per Governance Token: {toEthString(price, 6)} USD
         </DialogContentText>
-        <TextField
-          autoFocus
-          type="number"
-          margin="dense"
+        <CurrencyInput
           value={amount}
+          placeholder="Invest Amount"
           onChange={handleInput}
-          label="Invest Amount"
-          placeholder="1"
-          fullWidth
-          inputProps={{ min: '0' }}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">USD</InputAdornment>,
-          }}
+          error={errorMsg}
         />
-        <DialogContentText>
-          Governance Tokens: {receivedTokens.toString()}
-        </DialogContentText>
         <DialogContentText>
           Share of Pool: {shareOfPool.toString()}%
         </DialogContentText>
@@ -103,20 +105,19 @@ export default function JoinPoolDialog(props) {
           <button
             className="btn btn-success"
             onClick={handleSubmit}
-            disabled={entryBarrier.gt(usdc(amount))}
+            disabled={!Boolean(amount) || Boolean(errorMsg)}
           >
             Join
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <iframe
+        className="w-auto"
+        id="fr"
+        name="transactionFrame"
+        height={loading ? '500' : '0'}
+        style={{ transition: 'height 300ms ease' }}
+      ></iframe>
     </Dialog>
   );
 }
