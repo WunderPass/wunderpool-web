@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { usdcBalanceOf } from '/services/contract/token';
 import { fetchUserPools } from '/services/contract/pools';
+import axios from 'axios';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
@@ -47,6 +48,15 @@ export default function useUser() {
     });
   };
 
+  const addToDatabase = () => {
+    if (!address || !wunderId) return;
+    axios({
+      method: 'POST',
+      url: '/api/proxy/users/add',
+      data: { wunderId: wunderId, address: address },
+    });
+  };
+
   const logOut = () => {
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
@@ -83,5 +93,6 @@ export default function useUser() {
     fetchUsdBalance,
     topUpRequired,
     setTopUpRequired,
+    addToDatabase,
   };
 }

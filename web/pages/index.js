@@ -28,6 +28,7 @@ export default function Home(props) {
 
   useEffect(() => {
     if (user.wunderId && user.address) {
+      user.addToDatabase();
       router.push('/pools');
     }
   }, [user]);
