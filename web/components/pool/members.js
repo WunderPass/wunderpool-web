@@ -1,11 +1,9 @@
-import { Skeleton, Tooltip, Typography } from '@mui/material';
-
+import axios from 'axios';
 import { useState, useEffect } from 'react';
-import React from 'react';
+import { Skeleton, Tooltip, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
-import axios from 'axios';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback } = props;
@@ -36,7 +34,7 @@ export default function PoolMembers(props) {
   return isReady ? (
     <div className="md:ml-4">
       <div
-        className={`flex container-white justify-start sm:justify-center mb-4 ${
+        className={`flex container-white justify-start md:justify-center mb-4 ${
           isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
         }`}
       >
