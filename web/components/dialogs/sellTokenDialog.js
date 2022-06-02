@@ -68,7 +68,14 @@ export default function SellTokenDialog(props) {
   }, [address]);
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+      PaperProps={{
+        style: { borderRadius: 12 },
+      }}
+    >
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
         <Typography>Price per token: {tokenPrice} $</Typography>

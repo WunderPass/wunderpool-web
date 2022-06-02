@@ -74,7 +74,14 @@ export default function SwapTokenDialog(props) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+      PaperProps={{
+        style: { borderRadius: 12 },
+      }}
+    >
       <DialogTitle>Swap {name}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>

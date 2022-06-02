@@ -140,7 +140,13 @@ export default function ApeForm(props) {
             <button className="btn btn-default" disabled variant="contained">
               Submitting Proposal...
             </button>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              PaperProps={{
+                style: { borderRadius: 12 },
+              }}
+            >
               <iframe
                 className="w-auto"
                 id="fr"

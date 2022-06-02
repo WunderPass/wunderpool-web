@@ -1,5 +1,14 @@
-import { Box, Paper, Slide, Stack, Tab, Tabs, Typography } from '@mui/material';
-import { useRef, useEffect } from 'react';
+import {
+  Box,
+  Paper,
+  Slide,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+  Skeleton,
+} from '@mui/material';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import ProposalCard from './proposalCard';
 
@@ -7,8 +16,23 @@ export default function ProposalList(props) {
   const { wunderPool, setApe } = props;
   const [tab, setTab] = useState(0);
   const slidingContainer = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  return wunderPool.proposals.length > 0 ? (
+  useEffect(() => {
+    if (wunderPool.isReady2) {
+      console.log(wunderPool.isReady);
+      console.log(wunderPool.proposals);
+      setIsLoading(false);
+    }
+  }, [wunderPool.isReady2]);
+
+  return isLoading ? (
+    <Skeleton
+      variant="rectangular"
+      width="100%"
+      sx={{ height: '100px', borderRadius: 3 }}
+    />
+  ) : wunderPool.proposals.length != 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <Tabs value={tab} onChange={(_, val) => setTab(val)}>
         <Tab label="Open" sx={{ maxWidth: 'unset' }} className="flex-1" />
@@ -71,15 +95,19 @@ export default function ProposalList(props) {
     <Paper elevation={1} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
         <Typography variant="h5">There are no Proposals</Typography>
-        <Typography variant="subtitle1">Create one now!</Typography>
-        <button
-          className="btn btn-default"
-          onClick={() => setApe(true)}
-          variant="contained"
-          color="success"
-        >
-          New
-        </button>
+        <Typography className="mb-2" variant="subtitle1">
+          Create one now!
+        </Typography>
+        <div className="">
+          <button
+            className="btn-kaico p-3 w-1/2"
+            onClick={() => setApe(true)}
+            variant="contained"
+            color="success"
+          >
+            New
+          </button>
+        </div>
       </Stack>
     </Paper>
   );

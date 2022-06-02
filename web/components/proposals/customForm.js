@@ -162,7 +162,13 @@ export default function CustomForm(props) {
               Submitting Proposal...
             </button>
             {signing && (
-              <Dialog open={open} onClose={dialogClose}>
+              <Dialog
+                open={open}
+                onClose={dialogClose}
+                PaperProps={{
+                  style: { borderRadius: 12 },
+                }}
+              >
                 <iframe
                   className="w-auto"
                   id="fr"

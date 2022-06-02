@@ -480,16 +480,19 @@ export default function NewPoolDialog(props) {
                     Duration of voting
                   </label>
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
-                    <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                    <button
+                      id="b1"
+                      className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full"
+                    >
                       6h
                     </button>
-                    <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
                       24h
                     </button>
-                    <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
                       3d
                     </button>
-                    <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
                       Custom
                     </button>
                   </div>
@@ -501,12 +504,12 @@ export default function NewPoolDialog(props) {
                   </label>
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
                     <div className="flex items-center justify-center  w-full">
-                      <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                      <button className="focus:bg-gray-200 text-black  text-sm py-2 px-2 rounded-lg w-full">
                         51%
                       </button>
                     </div>
                     <div className="flex w-full items-center justify-center">
-                      <button className="focus:bg-white text-black  text-sm py-2 px-2 rounded-lg w-full">
+                      <button className="focus:bg-gray-200 text-black  text-sm py-2 px-2 rounded-lg w-full">
                         Custom
                       </button>
                     </div>
@@ -549,7 +552,6 @@ export default function NewPoolDialog(props) {
                 </label>
                 <div className="flex flex-row justify-between textfield mb-6 mt-2">
                   <input
-                    onChange={handleNameChange}
                     className=" w-full  text-gray-700 leading-tight rounded-lg bg-[#F6F6F6]  focus:outline-none"
                     id="inviteFriends"
                     type="text"
@@ -570,10 +572,7 @@ export default function NewPoolDialog(props) {
                     <Typography>Invite by link</Typography>
                   </div>
                 </label>
-                <button
-                  className="btn-neutral bg-[#F6F6F6] sm:w-1/4 py-3"
-                  onClick={handleClose} //ADD functionality
-                >
+                <button className="btn-neutral bg-[#F6F6F6] sm:w-1/4 py-3">
                   <div className="flex flex-row justify-between items-center ">
                     <MdContentCopy className="text-gray-500 mr-2 ml-3" />
                     <Typography className="mr-3">Copy Link</Typography>
