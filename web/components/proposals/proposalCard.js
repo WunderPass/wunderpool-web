@@ -105,7 +105,13 @@ export default function ProposalCard(props) {
               </button>
             )}
             <>
-              <Dialog open={signing} onClose={handleClose}>
+              <Dialog
+                open={signing}
+                onClose={handleClose}
+                PaperProps={{
+                  style: { borderRadius: 12 },
+                }}
+              >
                 {!wunderPool.closed && (
                   <Alert severity="warning">
                     <AlertTitle>

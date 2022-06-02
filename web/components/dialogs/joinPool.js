@@ -74,7 +74,13 @@ export default function JoinPoolDialog(props) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        style: { borderRadius: 12 },
+      }}
+    >
       <DialogTitle>Join the Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>

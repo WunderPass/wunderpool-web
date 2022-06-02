@@ -37,7 +37,13 @@ export default function DestroyPoolDialog(props) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        style: { borderRadius: 12 },
+      }}
+    >
       <DialogTitle>Liquidate Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>
