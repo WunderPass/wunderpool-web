@@ -33,6 +33,7 @@ export default function usePool(userAddr, poolAddr = null) {
   const userAddress = userAddr;
   const [poolAddress, setPoolAddress] = useState(poolAddr);
   const [isReady, setIsReady] = useState(false);
+  const [isReady2, setIsReady2] = useState(false);
   const [poolName, setPoolName] = useState(null);
   const [exists, setExists] = useState(true);
   const [closed, setClosed] = useState(null);
@@ -247,15 +248,23 @@ export default function usePool(userAddr, poolAddr = null) {
     }
   };
 
-  useEffect(async () => {
-    if (userIsMember === true) {
-      await determinePoolTokens();
-      await determinePoolNfts();
-      await determinePoolGovernanceToken();
-      await determinePoolProposals();
-    } else if (userIsMember === false) {
-      await determinePoolGovernanceToken();
+  const initialize2 = async () => {
+    if (poolAddress) {
+      if (userIsMember === true) {
+        await determinePoolTokens();
+        await determinePoolNfts();
+        await determinePoolGovernanceToken();
+        await determinePoolProposals();
+      } else if (userIsMember === false) {
+        await determinePoolGovernanceToken();
+      }
     }
+  };
+  useEffect(() => {
+    setIsReady2(false);
+    initialize2().then(() => {
+      setIsReady2(true);
+    });
   }, [userIsMember]);
 
   useEffect(() => {
@@ -267,6 +276,7 @@ export default function usePool(userAddr, poolAddr = null) {
 
   return {
     isReady,
+    isReady2,
     exists,
     closed,
     poolName,
