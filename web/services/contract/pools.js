@@ -54,6 +54,32 @@ export function createPool(
   });
 }
 
+export function getPoolAddressFromTx(txHash, version = null) {
+  const iface = new ethers.utils.Interface([
+    'event PoolLaunched(address indexed poolAddress, string name, address governanceTokenAddress, string governanceTokenName, uint256 entryBarrier)',
+  ]);
+  return new Promise((resolve, reject) => {
+    httpProvider
+      .getTransactionReceipt(txHash)
+      .then((receipt) => {
+        const events = receipt.logs.map((log) => {
+          try {
+            return iface.decodeEventLog('PoolLaunched', log.data, log.topics);
+          } catch {
+            return null;
+          }
+        });
+        const event = events.filter((e) => e)[0];
+        const { name, poolAddress } = event;
+        resolve({ name: name, address: poolAddress });
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(false);
+      });
+  });
+}
+
 export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
     const deltaPools = await fetchUserPoolsDelta(userAddress);
