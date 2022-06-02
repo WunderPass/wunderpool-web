@@ -95,19 +95,9 @@ export default function ProposalList(props) {
     <Paper elevation={1} sx={{ p: 2 }}>
       <Stack sx={{ textAlign: 'center' }}>
         <Typography variant="h5">There are no Proposals</Typography>
-        <Typography className="mb-2" variant="subtitle1">
+        <Typography className="mb-2 mt-3" variant="subtitle1">
           Create one now!
         </Typography>
-        <div className="">
-          <button
-            className="btn-kaico p-3 w-1/2"
-            onClick={() => setApe(true)}
-            variant="contained"
-            color="success"
-          >
-            New
-          </button>
-        </div>
       </Stack>
     </Paper>
   );
