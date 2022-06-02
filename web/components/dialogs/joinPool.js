@@ -37,9 +37,9 @@ export default function JoinPoolDialog(props) {
     wunderPool
       .join(amount)
       .then((res) => {
-        handleSuccess(`Joined Pool with ${amount} USD`);
+        //handleSuccess(`Joined Pool with ${amount} USD`);
         loginCallback();
-        handleClose();
+        //handleClose();
       })
       .catch((err) => {
         handleError(err);
@@ -64,7 +64,7 @@ export default function JoinPoolDialog(props) {
           .div(1000000)
           .toString()} $ required for the Pool`
       );
-    } else if (float && 3 > float) {
+    } else if (float && 0 > float) {
       setErrorMsg(`Minimum of 3 $ required`);
     } else if (user.usdBalance < float) {
       setErrorMsg(`Not enough balance`);
@@ -74,56 +74,60 @@ export default function JoinPoolDialog(props) {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      PaperProps={{
-        style: { borderRadius: 12 },
-      }}
-    >
-      <DialogTitle>Join the Pool</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          You will receive Governance Tokens proportionally to your invest
-        </DialogContentText>
-        <DialogContentText>
-          Price per Governance Token: {toEthString(price, 6)} USD
-        </DialogContentText>
-        <CurrencyInput
-          value={amount}
-          placeholder="Invest Amount"
-          onChange={handleInput}
-          error={errorMsg}
-        />
-        <DialogContentText>
-          Share of Pool: {shareOfPool.toString()}%
-        </DialogContentText>
-      </DialogContent>
-      {loading ? (
-        <Stack spacing={2} sx={{ textAlign: 'center' }}>
-          <Typography variant="subtitle1">Joining Pool...</Typography>
-        </Stack>
-      ) : (
-        <DialogActions>
-          <button className="btn btn-danger" onClick={handleClose}>
-            Cancel
-          </button>
-          <button
-            className="btn btn-success"
-            onClick={handleSubmit}
-            disabled={!Boolean(amount) || Boolean(errorMsg)}
-          >
-            Join
-          </button>
-        </DialogActions>
-      )}
-      <iframe
-        className="w-auto"
-        id="fr"
-        name="transactionFrame"
-        height={loading ? '500' : '0'}
-        style={{ transition: 'height 300ms ease' }}
-      ></iframe>
-    </Dialog>
+    <>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: { borderRadius: 12 },
+        }}
+      >
+        <DialogTitle>Join the Pool</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You will receive Governance Tokens proportionally to your invest
+          </DialogContentText>
+          <DialogContentText>
+            Price per Governance Token: {toEthString(price, 6)} USD
+          </DialogContentText>
+          <CurrencyInput
+            value={amount}
+            placeholder="Invest Amount"
+            onChange={handleInput}
+            error={errorMsg}
+          />
+          <DialogContentText>
+            Share of Pool: {shareOfPool.toString()}%
+          </DialogContentText>
+        </DialogContent>
+        {loading ? (
+          <Stack spacing={2} sx={{ textAlign: 'center' }}>
+            <Typography variant="subtitle1">Joining Pool...</Typography>
+          </Stack>
+        ) : (
+          <DialogActions>
+            <button className="btn btn-danger" onClick={handleClose}>
+              Cancel
+            </button>
+            <button
+              className="btn btn-success"
+              onClick={handleSubmit}
+              disabled={!Boolean(amount) || Boolean(errorMsg)}
+            >
+              Join
+            </button>
+          </DialogActions>
+        )}
+        {loading && (
+          <iframe
+            className="w-auto"
+            id="fr"
+            name="transactionFrame"
+            height="500"
+            style={{ transition: 'height 300ms ease' }}
+          ></iframe>
+        )}
+      </Dialog>
+    </>
   );
 }
