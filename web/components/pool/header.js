@@ -180,7 +180,7 @@ export default function PoolHeader(props) {
                       Price per Token
                     </Typography>
                     <Typography className="text-sm opacity-90 py-1">
-                      {toEthString(wunderPool.governanceToken.price, 6)} USD
+                      {currency(wunderPool.governanceToken.price / 1000000, {})}
                     </Typography>
                   </div>
                   <div>
