@@ -114,11 +114,10 @@ export default function PoolHeader(props) {
                 </Typography>
                 <Typography className="text-sm opacity-90 py-1">
                   {wunderPool.governanceToken &&
-                    toEthString(
-                      wunderPool.governanceToken.entryBarrier,
-                      6
-                    )}{' '}
-                  $
+                    currency(
+                      wunderPool.governanceToken.entryBarrier / 1000000,
+                      {}
+                    )}
                 </Typography>
               </div>
               <div>
