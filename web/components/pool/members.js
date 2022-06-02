@@ -5,10 +5,11 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
 import InitialsAvatar from '../utils/initialsAvatar';
+import { FaBan } from 'react-icons/fa';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback } = props;
-  const { isReady, isMember, governanceToken } = wunderPool;
+  const { isReady, isMember, closed, governanceToken, version } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
   const [members, setMembers] = useState(null);
@@ -35,13 +36,13 @@ export default function PoolMembers(props) {
   return isReady ? (
     <div className="md:ml-4">
       <div
-        className={`flex container-white justify-start md:justify-center mb-4 ${
+        className={`flex container-white overflow-clip justify-start md:justify-center mb-4 ${
           isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
         }`}
       >
-        <div className="flex flex-col items-center justify-center ">
+        <div className="flex flex-col items-start justify-center grow">
           <Typography className="text-xl w-full">Members</Typography>
-          <div className="flex flex-col ">
+          <div className="flex flex-col w-full">
             {members && (
               <>
                 <div className="flex flex-row flex-wrap w-full mt-2">
@@ -65,8 +66,8 @@ export default function PoolMembers(props) {
               </>
             )}
             {isMember ? (
-              wunderPool.version.number > 3 &&
-              !wunderPool.closed && (
+              version.number > 3 &&
+              !closed && (
                 <button
                   className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
                   onClick={() => setInviteMember(true)}
@@ -74,11 +75,18 @@ export default function PoolMembers(props) {
                   <Typography className="text-lg">Invite Member</Typography>
                 </button>
               )
+            ) : closed ? (
+              <div className="-m-5 mt-1 bg-amber-300 text-amber-800 py-2 px-3 flex flex-row items-center justify-center">
+                <FaBan className="text-2xl" />
+                <Typography className="ml-3">
+                  You cannot join the Pool as it is closed
+                </Typography>
+              </div>
             ) : (
               <button
                 className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
                 onClick={() => setJoinPool(true)}
-                disabled={!Boolean(wunderPool.governanceToken)}
+                disabled={!Boolean(governanceToken)}
               >
                 <div className="flex flex-row items-center justify-center">
                   <AiOutlinePlus className=" text-xl" />
@@ -95,7 +103,7 @@ export default function PoolMembers(props) {
         wunderPool={wunderPool}
         {...props}
       />
-      {wunderPool.governanceToken && (
+      {governanceToken && (
         <JoinPoolDialog
           open={joinPool}
           setOpen={setJoinPool}
