@@ -86,15 +86,23 @@ export default function PoolHeader(props) {
               </button>
             </Collapse>
             <Collapse in={showMoreInfo}>
-              <button
-                className="text-black text-sm mt-2 opacity-40"
-                onClick={toggleAdvanced}
-              >
-                <div className="flex flex-row items-center">
-                  <Typography className="text-lg">Advanced Info</Typography>
-                  <MdOutlineKeyboardArrowUp className="ml-3 text-2xl" />
-                </div>
-              </button>
+              <div className="flex flex-row items-center  justify-between">
+                <button
+                  className="text-black text-sm mt-2 opacity-40"
+                  onClick={toggleAdvanced}
+                >
+                  <div className="flex flex-row items-center">
+                    <Typography className="text-lg">Advanced Info</Typography>
+                    <MdOutlineKeyboardArrowUp className="ml-3 text-2xl" />
+                  </div>
+                </button>
+                <button
+                  className="hover:bg-red-500 btn-kaico p-3 px-4"
+                  onClick={() => setDestroyDialog(true)}
+                >
+                  Liquidate Pool
+                </button>
+              </div>
 
               <div>
                 <Typography className="text-sm opacity-40 py-1 pt-6">
@@ -114,11 +122,10 @@ export default function PoolHeader(props) {
                 </Typography>
                 <Typography className="text-sm opacity-90 py-1">
                   {wunderPool.governanceToken &&
-                    toEthString(
-                      wunderPool.governanceToken.entryBarrier,
-                      6
-                    )}{' '}
-                  $
+                    currency(
+                      wunderPool.governanceToken.entryBarrier / 1000000,
+                      {}
+                    )}
                 </Typography>
               </div>
               <div>
@@ -181,7 +188,7 @@ export default function PoolHeader(props) {
                       Price per Token
                     </Typography>
                     <Typography className="text-sm opacity-90 py-1">
-                      {toEthString(wunderPool.governanceToken.price, 6)} USD
+                      {currency(wunderPool.governanceToken.price / 1000000, {})}
                     </Typography>
                   </div>
                   <div>

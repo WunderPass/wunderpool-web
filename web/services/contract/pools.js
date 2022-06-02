@@ -108,8 +108,6 @@ export function fetchPoolMembers(poolAddress, version = null) {
 export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPool(poolAddress);
-    console.log('wunderpool: ' + poolAddress);
-    console.log('userAddr: ' + userAddress);
     resolve(await wunderPool.isMember(userAddress));
   });
 }

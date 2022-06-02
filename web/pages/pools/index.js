@@ -82,7 +82,7 @@ function PoolStructure(props) {
                           }: ${member.share.toString()}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
                           separator="-"
-                          color={['red', 'green', 'blue'][i % 3]}
+                          color={['green', 'blue', 'red', 'teal'][i % 4]}
                         />
                       );
                     })}
