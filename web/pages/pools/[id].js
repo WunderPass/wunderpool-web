@@ -84,11 +84,18 @@ export default function Pool(props) {
           className="hidden md:flex md:flex-row" //Desktop
         >
           <div className="md:flex md:flex-col max-w-xl ">
-            <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+            <PoolHeader
+              name={name}
+              address={address}
+              wunderPool={wunderPool}
+              {...props}
+            />
             <PoolBody
               address={address}
               loading={loading}
               wunderPool={wunderPool}
+              tokenAddedEvent={tokenAddedEvent}
+              newProposalEvent={newProposalEvent}
               {...props}
             />
           </div>{' '}

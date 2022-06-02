@@ -8,7 +8,8 @@ import React from 'react';
 import AssetDetails from '/components/pool/assetDetails';
 
 function body(props) {
-  const { address, loading, wunderPool, loginCallback } = props;
+  const { address, loading, wunderPool, tokenAddedEvent, newProposalEvent } =
+    props;
 
   const [ape, setApe] = useState(false);
   const [customProposal, setCustomProposal] = useState(false);
@@ -34,6 +35,20 @@ function body(props) {
     setIsProposalTab(false);
     setIsAssetTab(false);
   };
+
+  useEffect(() => {
+    if (!tokenAddedEvent) return;
+    if (tokenAddedEvent.nft) {
+      activateNftTab();
+    } else {
+      activateAssetTab();
+    }
+  }, [tokenAddedEvent]);
+
+  useEffect(() => {
+    if (!newProposalEvent) return;
+    activateProposalTab();
+  }, [newProposalEvent]);
 
   return (
     <div className="mt-4 mb-8">
