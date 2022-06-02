@@ -549,7 +549,6 @@ export default function NewPoolDialog(props) {
                 </label>
                 <div className="flex flex-row justify-between textfield mb-6 mt-2">
                   <input
-                    onChange={handleNameChange}
                     className=" w-full  text-gray-700 leading-tight rounded-lg bg-[#F6F6F6]  focus:outline-none"
                     id="inviteFriends"
                     type="text"
