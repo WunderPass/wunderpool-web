@@ -1,2 +1,2 @@
 .env
-userMapping.json
+web/data/userMapping.json
