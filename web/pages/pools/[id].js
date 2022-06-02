@@ -64,15 +64,17 @@ export default function Pool(props) {
   useEffect(() => {
     console.log(votedEvent, newProposalEvent, proposalExecutedEvent);
     if (!address || !user.address) return;
-    if (!votedEvent || votedEvent?.voter == user.address) return;
-    if (!newProposalEvent || newProposalEvent?.creator == user.address) return;
+    if (votedEvent && votedEvent?.voter == user.address) return;
+    if (newProposalEvent && newProposalEvent?.creator == user.address) return;
     if (
-      !proposalExecutedEvent ||
+      proposalExecutedEvent &&
       proposalExecutedEvent?.executor == user.address
     )
       return;
-    wunderPool.determineProposals();
-    resetEvents();
+    if (votedEvent || newProposalEvent || proposalExecutedEvent) {
+      wunderPool.determineProposals();
+      resetEvents();
+    }
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   return (
