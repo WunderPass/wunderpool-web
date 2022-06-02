@@ -41,7 +41,7 @@ export default function makeProposal(props) {
       .apeSuggestion(
         tokenAddress,
         proposalName || `Let's Ape into ${tokenName} (${tokenSymbol})`,
-        `We will ape ${value} USD into ${tokenName}`,
+        `We will ape ${currency(value, {}).toString()} into ${tokenName}`,
         value
       )
       .then((res) => {
