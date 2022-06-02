@@ -97,7 +97,7 @@ export default function PoolHeader(props) {
                   </div>
                 </button>
                 <button
-                  className="hover:bg-red-500 btn-kaico p-3 px-4"
+                  className="btn-danger p-3 px-4"
                   onClick={() => setDestroyDialog(true)}
                 >
                   Liquidate Pool
