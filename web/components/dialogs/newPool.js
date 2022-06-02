@@ -22,6 +22,8 @@ import CurrencyInput from 'react-currency-input-field';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
 import { waitForTransaction } from '../../services/contract/provider';
+import { getPoolAddressFromTx } from '../../services/contract/pools';
+import { useRouter } from 'next/router';
 
 export default function NewPoolDialog(props) {
   const {
@@ -52,6 +54,7 @@ export default function NewPoolDialog(props) {
   const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
   const [step, setStep] = useState(1);
   const [votingsOn, setVotingsOn] = useState(true);
+  const router = useRouter();
   const end = useRef(null);
 
   const onToggle = () => {
@@ -164,6 +167,13 @@ export default function NewPoolDialog(props) {
         waitForTransaction(res)
           .then((tx) => {
             handleSuccess(`Created Pool "${poolName}"`);
+            getPoolAddressFromTx(res)
+              .then(({ address, name }) => {
+                router.push(`/pools/${address}?name=${name}`);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .catch((err) => {
             console.log(err);
