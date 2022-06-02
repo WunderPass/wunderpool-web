@@ -480,7 +480,10 @@ export default function NewPoolDialog(props) {
                     Duration of voting
                   </label>
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
-                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
+                    <button
+                      id="b1"
+                      className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full"
+                    >
                       6h
                     </button>
                     <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">

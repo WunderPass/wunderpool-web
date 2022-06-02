@@ -63,7 +63,13 @@ export default function VotingButtons(props) {
     return (
       <>
         {signing && (
-          <Dialog open={open} onClose={handleClose}>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              style: { borderRadius: 12 },
+            }}
+          >
             <iframe
               className="w-auto"
               id="fr"

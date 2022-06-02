@@ -69,7 +69,13 @@ export default function InviteMemberDialog(props) {
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        style: { borderRadius: 12 },
+      }}
+    >
       <DialogTitle>Invite Member</DialogTitle>
       <DialogContent>
         <Typography variant="subtitle1">
