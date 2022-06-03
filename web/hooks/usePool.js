@@ -160,25 +160,27 @@ export default function usePool(userAddr, poolAddr = null) {
     var assetBalance = 0;
     var curAssetBalance = 0;
     var assetCount = 0;
-    tokens.map((token, i) => {
-      if (token.address && token.address.length == 42) {
-        axios({
-          url: `/api/tokens/showPrice`,
-          params: { address: token.address },
-        }).then((res) => {
-          var tokenPrice = res.data?.dollar_price;
-          curAssetBalance = token.formattedBalance * tokenPrice;
-          totalBalance += curAssetBalance;
-          if (token.address !== usdcAddress) {
-            assetBalance += curAssetBalance;
-            assetCount++;
-          }
-          setAssetBalance(assetBalance);
-          setTotalBalance(totalBalance);
-          setAssetCount(assetCount);
-        });
-      }
-    });
+    tokens
+      .filter((tkn) => tkn.balance > 0)
+      .map((token, i) => {
+        if (token.address && token.address.length == 42) {
+          axios({
+            url: `/api/tokens/showPrice`,
+            params: { address: token.address },
+          }).then((res) => {
+            var tokenPrice = res.data?.dollar_price;
+            curAssetBalance = token.formattedBalance * tokenPrice;
+            totalBalance += curAssetBalance;
+            if (token.address !== usdcAddress) {
+              assetBalance += curAssetBalance;
+              assetCount++;
+            }
+            setAssetBalance(assetBalance);
+            setTotalBalance(totalBalance);
+            setAssetCount(assetCount);
+          });
+        }
+      });
   };
 
   const determinePoolTokens = async () => {
