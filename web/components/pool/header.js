@@ -97,7 +97,9 @@ export default function PoolHeader(props) {
                   </div>
                 </button>
                 <button
-                  className="btn-danger p-3 px-4"
+                  className={
+                    wunderPool.isMember ? 'btn-danger p-3 px-4' : 'hidden'
+                  }
                   onClick={() => setDestroyDialog(true)}
                 >
                   Liquidate Pool
