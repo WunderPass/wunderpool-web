@@ -8,16 +8,10 @@ import { HiOutlineLogout } from 'react-icons/hi';
 const navigation = (props) => {
   const { user } = props;
   const [poolListOpen, setPoolListOpen] = useState(null);
-  const [usdcBalance, setUsdcBalance] = useState(true);
 
   const handleMenuClose = () => {
     setPoolListOpen(null);
   };
-
-  useEffect(() => {
-    if (!user.usdBalance) return;
-    setUsdcBalance(user?.usdBalance);
-  }, [user.usdBalance]);
 
   return (
     <div className="hidden sm:block w-full">
@@ -64,7 +58,7 @@ const navigation = (props) => {
             className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
           >
             <div className="flex flex-row pr-1 text-center items-center text-sm ">
-              <p className="mx-2">{currency(usdcBalance, {})}</p>
+              <p className="mx-2">{currency(user?.usdBalance, {})}</p>
               <BsFillPlusCircleFill className="text-xl mr-1" />
             </div>
           </div>

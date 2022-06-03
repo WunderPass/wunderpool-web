@@ -10,7 +10,6 @@ import { motion } from 'framer-motion';
 const mobileNavigation = (props) => {
   const { user } = props;
   const [poolListOpen, setPoolListOpen] = useState(null);
-  const [usdcBalance, setUsdcBalance] = useState(true);
   const [open, setOpen] = useState(false);
   const animateFrom = { opacity: 0, y: -40 };
   const animateTo = { opacity: 1, y: 0 };
@@ -18,11 +17,6 @@ const mobileNavigation = (props) => {
   const handleMenuClose = () => {
     setPoolListOpen(null);
   };
-
-  useEffect(() => {
-    if (!user.usdBalance) return;
-    setUsdcBalance(user?.usdBalance);
-  }, [user.usdBalance]);
 
   const hamburgerIcon = (
     <GiHamburgerMenu className="text-3xl ml-2.5"> </GiHamburgerMenu>
@@ -43,7 +37,7 @@ const mobileNavigation = (props) => {
             className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
           >
             <div className="flex flex-row pr-1 text-center items-center text-sm ">
-              <p className="mx-2">{currency(usdcBalance, {})}</p>
+              <p className="mx-2">{currency(user?.usdBalance, {})}</p>
               <BsFillPlusCircleFill className="text-xl mr-1" />
             </div>
           </div>

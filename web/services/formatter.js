@@ -76,5 +76,5 @@ export function currency(num, { symbol, locale, seperator, decimalSeperator }) {
 
   return `${sym}${formattedAmount}${decSep}${decimals}${
     decimals.length == 1 ? '0' : ''
-  } `;
+  }`;
 }
