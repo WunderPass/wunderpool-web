@@ -28,13 +28,11 @@ export default function JoinPoolDialog(props) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    console.log('in close');
     setOpen(false);
     setLoading(false);
   };
 
   const handleSubmit = () => {
-    console.log('in submit');
     setLoading(true);
     wunderPool
       .join(amount)
@@ -42,7 +40,6 @@ export default function JoinPoolDialog(props) {
         //handleSuccess(`Joined Pool with ${amount} USD`);
         loginCallback();
         //handleClose();
-        console.log('in then');
       })
       .catch((err) => {
         handleError(err);

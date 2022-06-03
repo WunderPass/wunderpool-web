@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
@@ -20,12 +20,11 @@ export default function DestroyPoolDialog(props) {
     setLoading(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
     wunderPool
       .liquidateSuggestion("Let's Liquidate the Pool", 'I want my money back')
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created new Proposal to Liquidate the Pool ${name}`);
         wunderPool.determineProposals();
         handleClose();

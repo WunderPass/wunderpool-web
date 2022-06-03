@@ -1,9 +1,9 @@
-import { Box, IconButton, Skeleton } from "@mui/material";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import NftImage from "./nftImage";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import NftDialog from "../dialogs/nftDialog";
+import { Box, IconButton, Skeleton } from '@mui/material';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import NftImage from './nftImage';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import NftDialog from '../dialogs/nftDialog';
 
 export default function Nft(props) {
   const { uri, address, tokenId } = props;
@@ -18,14 +18,14 @@ export default function Nft(props) {
   useEffect(() => {
     axios({ url: uri })
       .then((res) => {
-        setImageUrl(res.data?.image || "/wunderpool_logo.svg");
+        setImageUrl(res.data?.image || '/wunderpool_logo.svg');
         setVideoUrl(res.data?.video_url || res.data?.animation_url);
         setName(res.data?.name);
         setDescription(res.data?.description);
       })
       .catch((err) => {
         console.log(err);
-        setImageUrl("/wunderpool_logo.svg");
+        setImageUrl('/wunderpool_logo.svg');
       })
       .then(() => {
         setLoading(false);
@@ -35,8 +35,8 @@ export default function Nft(props) {
   useEffect(() => {
     if (!videoUrl) return;
     axios({ url: videoUrl }).then((res) => {
-      console.log(res.headers["content-type"]);
-      setMediaType(res.headers["content-type"]);
+      console.log(res.headers['content-type']);
+      setMediaType(res.headers['content-type']);
     });
   }, [videoUrl]);
 
@@ -50,8 +50,8 @@ export default function Nft(props) {
         alignItems="center"
         position="relative"
         sx={{
-          aspectRatio: "1/1",
-          backgroundColor: "rgba(0,0,0,0.1)",
+          aspectRatio: '1/1',
+          backgroundColor: 'rgba(0,0,0,0.1)',
           borderRadius: 2,
         }}
       >
@@ -67,7 +67,7 @@ export default function Nft(props) {
         <IconButton
           color="default"
           onClick={() => setOpen(true)}
-          sx={{ position: "absolute", right: 0, top: 0 }}
+          sx={{ position: 'absolute', right: 0, top: 0 }}
         >
           <MoreVertIcon />
         </IconButton>

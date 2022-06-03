@@ -23,7 +23,6 @@ export default function Home(props) {
 
   const handleClick = () => {
     setSigning(true);
-    console.log('Test');
   };
 
   useEffect(() => {

@@ -15,7 +15,6 @@ export function voteGamma(poolAddress, proposalId, mode) {
 
     smartContractTransaction(tx).then(async (transaction) => {
       try {
-        console.log(transaction);
         const receipt = await provider.waitForTransaction(transaction.hash);
         resolve(receipt);
       } catch (error) {
