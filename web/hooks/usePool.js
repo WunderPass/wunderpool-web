@@ -71,7 +71,6 @@ export default function usePool(userAddr, poolAddr = null) {
       .then((res) => {
         waitForTransaction(res)
           .then((tx) => {
-            handleSuccess(`Created Pool "${poolName}"`);
             window.location.reload();
           })
           .catch((err) => {
