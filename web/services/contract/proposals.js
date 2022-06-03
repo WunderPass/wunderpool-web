@@ -10,6 +10,7 @@ import {
   executeProposalDelta,
   fetchPoolProposalsDelta,
   fetchTransactionDataDelta,
+  isLiquidateProposalDelta,
 } from './delta/proposals';
 import {
   createApeSuggestionGamma,
@@ -23,6 +24,7 @@ import {
   executeProposalGamma,
   fetchPoolProposalsGamma,
   fetchTransactionDataGamma,
+  isLiquidateProposalGamma,
 } from './gamma/proposals';
 
 export function fetchPoolProposals(address, version) {
@@ -302,5 +304,13 @@ export function executeProposal(poolAddress, id, version) {
     return executeProposalDelta(poolAddress, id);
   } else {
     return executeProposalGamma(poolAddress, id);
+  }
+}
+
+export function isLiquidateProposal(poolAddress, id, version) {
+  if (version > 3) {
+    return isLiquidateProposalDelta(poolAddress, id);
+  } else {
+    return isLiquidateProposalGamma(poolAddress, id);
   }
 }

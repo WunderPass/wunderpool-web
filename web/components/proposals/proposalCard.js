@@ -21,7 +21,7 @@ import VotingBar from '/components/proposals/votingBar';
 import VotingButtons from './votingButtons';
 
 export default function ProposalCard(props) {
-  const { proposal, wunderPool, handleSuccess, handleError } = props;
+  const { proposal, wunderPool, user, handleSuccess, handleError } = props;
   const { totalSupply } = wunderPool.governanceToken;
   const [loading, setLoading] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
@@ -61,11 +61,15 @@ export default function ProposalCard(props) {
     wunderPool
       .execute(proposal.id)
       .then((res) => {
-        console.log(res);
-        handleSuccess(`Proposal "${proposal.title}" executed`);
-        wunderPool.determineProposals();
-        wunderPool.determineTokens();
-        wunderPool.determineBalance();
+        if (res) {
+          handleSuccess('Pool liquidated');
+          user.fetchUsdBalance();
+        } else {
+          handleSuccess(`Proposal "${proposal.title}" executed`);
+          wunderPool.determineProposals();
+          wunderPool.determineTokens();
+          wunderPool.determineBalance();
+        }
       })
       .catch((err) => {
         handleError(err);

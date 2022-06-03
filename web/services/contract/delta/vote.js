@@ -11,6 +11,7 @@ export function voteDelta(poolAddress, proposalId, mode, userAddress) {
     const { sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress,
     });
     const types = ['address', 'address', 'uint', 'uint'];
     const values = [userAddress, poolAddress, proposalId, mode];

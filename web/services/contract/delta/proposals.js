@@ -74,6 +74,7 @@ export function createMultiActionProposalDelta(
     const { sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress,
     });
     const [wunderPool] = initPoolDelta(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
@@ -105,6 +106,7 @@ export function createMultiActionProposalDelta(
     console.log(types, values);
     sendSignatureRequest(types, values, false)
       .then(async (signature) => {
+        console.log(signature);
         const tx = await connectContract(wunderPool).createProposalForUser(
           userAddress,
           title,
@@ -368,5 +370,35 @@ export function executeProposalDelta(poolAddress, id) {
         reject(error?.error?.error?.error?.message || error);
       }
     });
+  });
+}
+
+export function isLiquidateProposalDelta(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [wunderProposal] = initProposalDelta();
+      const { transactionCount } = await wunderProposal.getProposal(
+        poolAddress,
+        id
+      );
+      const transactions = await fetchTransactionDataDelta(
+        poolAddress,
+        id,
+        transactionCount
+      );
+      if (
+        transactions.find(
+          (trx) =>
+            trx.action == 'liquidatePool()' &&
+            trx.contractAddress == poolAddress
+        )
+      ) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    } catch (error) {
+      reject(error);
+    }
   });
 }
