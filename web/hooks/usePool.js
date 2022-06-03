@@ -226,6 +226,15 @@ export default function usePool(userAddr, poolAddr = null) {
     return hasVoted(poolAddress, proposalId, userAddress, version.number);
   };
 
+  const userShare = () => {
+    if (!poolGovernanceToken) return;
+    return poolGovernanceToken?.holders
+      ?.find(
+        (holder) => holder.address.toLowerCase() == userAddress.toLowerCase()
+      )
+      ?.share?.toNumber();
+  };
+
   const initialize = async () => {
     if (poolAddress) {
       await fetchPoolName(poolAddress)
@@ -250,13 +259,10 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const initialize2 = async () => {
     if (poolAddress) {
+      await determinePoolGovernanceToken();
       if (userIsMember === true) {
-        await determinePoolTokens();
         await determinePoolNfts();
-        await determinePoolGovernanceToken();
         await determinePoolProposals();
-      } else if (userIsMember === false) {
-        await determinePoolGovernanceToken();
       }
     }
   };
@@ -284,6 +290,7 @@ export default function usePool(userAddr, poolAddr = null) {
     poolAddress,
     setPoolAddress,
     userAddress,
+    userShare,
     isMember: userIsMember,
     newPool,
     join,
