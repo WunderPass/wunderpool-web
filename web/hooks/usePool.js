@@ -28,6 +28,7 @@ import { latestVersion } from '/services/contract/init';
 import { waitForTransaction } from '/services/contract/provider';
 import axios from 'axios';
 import { usdcAddress } from '/services/contract/init';
+import { isLiquidateProposal } from '../services/contract/proposals';
 
 export default function usePool(userAddr, poolAddr = null) {
   const userAddress = userAddr;
@@ -37,6 +38,7 @@ export default function usePool(userAddr, poolAddr = null) {
   const [poolName, setPoolName] = useState(null);
   const [exists, setExists] = useState(true);
   const [closed, setClosed] = useState(null);
+  const [liquidated, setLiquidated] = useState(false);
   const [version, setVersion] = useState(null);
   const [userIsMember, setUserIsMember] = useState(null);
   const [usdcBalance, setUsdcBalance] = useState(0);
@@ -134,7 +136,22 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const execute = (id) => {
-    return executeProposal(poolAddress, id, version.number);
+    setClosed(true);
+    return new Promise(async (resolve, reject) => {
+      const isLiquidate = await isLiquidateProposal(
+        poolAddress,
+        id,
+        version.number
+      );
+      executeProposal(poolAddress, id, version.number)
+        .then((res) => {
+          setLiquidated(isLiquidate);
+          resolve(isLiquidate);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   };
 
   const determineClosed = async (vers) => {
@@ -182,22 +199,26 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const determinePoolTokens = async () => {
+    if (liquidated) return;
     const tokens = await fetchPoolTokens(poolAddress, version.number);
     setPoolTokens(tokens);
     return tokens;
   };
 
   const determinePoolNfts = async () => {
+    if (liquidated) return;
     setPoolNfts(await fetchPoolNfts(poolAddress, version.number));
   };
 
   const determinePoolGovernanceToken = async () => {
+    if (liquidated) return;
     setPoolGovernanceToken(
       await fetchPoolGovernanceToken(poolAddress, version.number)
     );
   };
 
   const determinePoolProposals = async () => {
+    if (liquidated) return;
     setPoolProposals(await fetchPoolProposals(poolAddress, version.number));
   };
 
@@ -226,6 +247,15 @@ export default function usePool(userAddr, poolAddr = null) {
     return hasVoted(poolAddress, proposalId, userAddress, version.number);
   };
 
+  const userShare = () => {
+    if (!poolGovernanceToken) return;
+    return poolGovernanceToken?.holders
+      ?.find(
+        (holder) => holder.address.toLowerCase() == userAddress.toLowerCase()
+      )
+      ?.share?.toNumber();
+  };
+
   const initialize = async () => {
     if (poolAddress) {
       await fetchPoolName(poolAddress)
@@ -250,13 +280,10 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const initialize2 = async () => {
     if (poolAddress) {
+      await determinePoolGovernanceToken();
       if (userIsMember === true) {
-        await determinePoolTokens();
         await determinePoolNfts();
-        await determinePoolGovernanceToken();
         await determinePoolProposals();
-      } else if (userIsMember === false) {
-        await determinePoolGovernanceToken();
       }
     }
   };
@@ -279,11 +306,13 @@ export default function usePool(userAddr, poolAddr = null) {
     isReady2,
     exists,
     closed,
+    liquidated,
     poolName,
     version,
     poolAddress,
     setPoolAddress,
     userAddress,
+    userShare,
     isMember: userIsMember,
     newPool,
     join,
