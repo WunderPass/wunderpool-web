@@ -39,6 +39,8 @@ export default function ProposalCard(props) {
 
   const handleClose = () => {
     setSigning(false);
+    setLoading(false);
+    window.location.reload();
   };
 
   const handleOpen = () => {
@@ -66,6 +68,7 @@ export default function ProposalCard(props) {
         wunderPool.determineProposals();
         wunderPool.determineTokens();
         wunderPool.determineBalance();
+        handleClose(false);
       })
       .catch((err) => {
         handleError(err);

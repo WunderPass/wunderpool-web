@@ -20,8 +20,6 @@ export default function ProposalList(props) {
 
   useEffect(() => {
     if (wunderPool.isReady2) {
-      console.log(wunderPool.isReady);
-      console.log(wunderPool.proposals);
       setIsLoading(false);
     }
   }, [wunderPool.isReady2]);

@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;

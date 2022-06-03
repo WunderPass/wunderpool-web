@@ -27,8 +27,6 @@ export default function TokenCard(props) {
         setWaitingForPrice(false);
       });
     }
-
-    console.log(token.address);
   }, [token.address]);
 
   return (

@@ -35,7 +35,6 @@ export default function Nft(props) {
   useEffect(() => {
     if (!videoUrl) return;
     axios({ url: videoUrl }).then((res) => {
-      console.log(res.headers['content-type']);
       setMediaType(res.headers['content-type']);
     });
   }, [videoUrl]);
