@@ -101,7 +101,8 @@ export function createMultiActionProposalDelta(
       deadline,
       proposalId,
     ];
-
+    console.log('types, values');
+    console.log(types, values);
     sendSignatureRequest(types, values, false)
       .then(async (signature) => {
         const tx = await connectContract(wunderPool).createProposalForUser(

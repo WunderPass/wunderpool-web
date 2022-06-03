@@ -70,11 +70,12 @@ export default function usePool(userAddr, poolAddr = null) {
     joinPool(poolAddress, userAddress, amount, version.number)
       .then((res) => {
         waitForTransaction(res)
-          .then(() => {
-            return true;
+          .then((tx) => {
+            handleSuccess(`Created Pool "${poolName}"`);
+            window.location.reload();
           })
           .catch((err) => {
-            throw err;
+            console.log(err);
           });
       })
       .catch((err) => {
