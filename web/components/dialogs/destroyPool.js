@@ -86,7 +86,7 @@ export default function DestroyPoolDialog(props) {
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    pt={1}
+                    py={1}
                     width="100%"
                     borderTop="1px solid lightgray"
                   >
