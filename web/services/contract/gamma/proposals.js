@@ -399,3 +399,30 @@ export function executeProposalGamma(poolAddress, id) {
     });
   });
 }
+
+export function isLiquidateProposalGamma(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [wunderPool] = initPoolGamma(poolAddress);
+      const { transactionCount } = await wunderPool.getProposal(id);
+      const transactions = await fetchTransactionDataGamma(
+        poolAddress,
+        id,
+        transactionCount
+      );
+      if (
+        transactions.find(
+          (trx) =>
+            trx.action == 'liquidatePool()' &&
+            trx.contractAddress == poolAddress
+        )
+      ) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}

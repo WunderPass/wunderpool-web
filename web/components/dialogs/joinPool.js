@@ -39,6 +39,7 @@ export default function JoinPoolDialog(props) {
     wunderPool
       .join(amount)
       .then((res) => {
+        user.fetchUsdBalance();
         //handleSuccess(`Joined Pool with ${amount} USD`);
         loginCallback();
         //handleClose();

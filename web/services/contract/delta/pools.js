@@ -70,6 +70,7 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
     const { smartContractTransaction } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress: userAddress,
     });
     const tx = await usdcContract.populateTransaction.approve(
       poolAddress,
@@ -107,6 +108,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
     const { sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress,
     });
     const types = ['address', 'address', 'address'];
     const values = [userAddress, poolAddress, newMember];

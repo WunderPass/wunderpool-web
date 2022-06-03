@@ -24,11 +24,14 @@ function PoolStructure(props) {
     );
 
     return isReady ? (
-      <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
+      <Link
+        key={`pool-${i}`}
+        href={`/pools/${pool.address}?name=${pool.name}`}
+        passHref
+      >
         <Paper
           className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
           elevation={1}
-          key={`pool-${i}`}
           sx={{ p: 2 }}
         >
           <div className="flex flex-col">
@@ -93,6 +96,7 @@ function PoolStructure(props) {
       </Link>
     ) : (
       <Skeleton
+        key={`pool-skeleton-${i}`}
         variant="rectangular"
         width="100%"
         sx={{ height: '100px', borderRadius: 3 }}

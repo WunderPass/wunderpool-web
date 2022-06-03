@@ -1,5 +1,5 @@
 export default function useWunderPass(config) {
-  const { name, image, accountId } = config;
+  const { name, image, accountId, userAddress } = config;
 
   const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
@@ -16,6 +16,7 @@ export default function useWunderPass(config) {
             JSON.parse(
               JSON.stringify({
                 accountId: accountId,
+                userAddress: userAddress,
                 types: types,
                 values: values,
                 packed: packed,
@@ -56,6 +57,7 @@ export default function useWunderPass(config) {
             JSON.parse(
               JSON.stringify({
                 accountId: accountId,
+                userAddress: userAddress,
                 tx: tx,
                 network: network,
                 usdc: usdc,
