@@ -73,7 +73,11 @@ export default function useWunderPass(config) {
 
             if (event.data && typeof event.data == 'object') {
               event.source.window.close();
-              resolve(event.data.response);
+              if (event.data.response) {
+                resolve(event.data.response);
+              } else if (event.data.error) {
+                reject(event.data.error);
+              }
             }
           }
         });
