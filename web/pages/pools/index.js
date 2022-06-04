@@ -229,7 +229,7 @@ export default function Pools(props) {
               </button>
             </div>
 
-            <WhiteListedPools pools={user.pools} />
+            <WhiteListedPools pools={user.whitelistedPools} />
 
             <div className="sm:flex sm:flex-row">
               <div className="flex flex-col sm:w-1/2 sm:pr-8">
