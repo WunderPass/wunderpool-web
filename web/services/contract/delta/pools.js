@@ -14,8 +14,37 @@ import { httpProvider } from '../provider';
 export function fetchUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
     const [poolLauncher] = initLauncherDelta();
-    const poolAddresses = await poolLauncher.whiteListedPoolsOfMember(
+    const poolAddresses = await poolLauncher.poolsOfMember(userAddress);
+
+    const pools = await Promise.all(
+      poolAddresses.map(async (addr) => {
+        const [wunderPool] = initPoolDelta(addr);
+        try {
+          return {
+            address: addr,
+            name: await wunderPool.name(),
+            version: { version: 'DELTA', number: 4 },
+            isMember: true,
+          };
+        } catch (err) {
+          return null;
+        }
+      })
+    );
+    resolve(pools.filter((elem) => elem));
+  });
+}
+
+export function fetchWhitelistedUserPoolsDelta(userAddress) {
+  return new Promise(async (resolve, reject) => {
+    const [poolLauncher] = initLauncherDelta();
+    const whiteListPools = await poolLauncher.whiteListedPoolsOfMember(
       userAddress
+    );
+    const memberPools = await poolLauncher.poolsOfMember(userAddress);
+
+    const poolAddresses = whiteListPools.filter(
+      (pool) => !memberPools.includes(pool)
     );
 
     const pools = await Promise.all(
@@ -26,7 +55,7 @@ export function fetchUserPoolsDelta(userAddress) {
             address: addr,
             name: await wunderPool.name(),
             version: { version: 'DELTA', number: 4 },
-            isMember: await wunderPool.isMember(userAddress),
+            isMember: false,
           };
         } catch (err) {
           return null;
