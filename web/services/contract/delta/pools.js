@@ -80,22 +80,26 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
       }
     );
 
-    smartContractTransaction(tx).then((transaction) => {
-      provider
-        .waitForTransaction(transaction.hash)
-        .then(() => {
-          axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-            .then((res) => {
-              resolve(res.data);
-            })
-            .catch((err) => {
-              reject(err);
-            });
-        })
-        .catch((error) => {
-          reject(error?.error?.error?.error?.message || error);
-        });
-    });
+    smartContractTransaction(tx)
+      .then((transaction) => {
+        provider
+          .waitForTransaction(transaction.hash)
+          .then(() => {
+            axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
+              .then((res) => {
+                resolve(res.data);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          })
+          .catch((error) => {
+            reject(error?.error?.error?.error?.message || error);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
@@ -148,13 +152,17 @@ export function fundPoolDelta(poolAddress, amount) {
     smartContractTransaction(tx, {
       amount: usdc(amount),
       spender: poolAddress,
-    }).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    })
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
