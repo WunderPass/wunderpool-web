@@ -1,7 +1,10 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { usdcBalanceOf } from '/services/contract/token';
-import { fetchUserPools } from '/services/contract/pools';
+import {
+  fetchUserPools,
+  fetchWhitelistedUserPools,
+} from '/services/contract/pools';
 import axios from 'axios';
 
 export default function useUser() {
@@ -10,6 +13,7 @@ export default function useUser() {
   const [usdBalance, setUsdBalance] = useState(null);
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [pools, setPools] = useState([]);
+  const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
@@ -32,6 +36,20 @@ export default function useUser() {
       fetchUserPools(address)
         .then((pools) => {
           setPools(pools);
+          resolve(pools);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  };
+
+  const fetchWhitelistedPools = () => {
+    return new Promise((resolve, reject) => {
+      if (!address) resolve(null);
+      fetchWhitelistedUserPools(address)
+        .then((pools) => {
+          setWhitelistedPools(pools);
           resolve(pools);
         })
         .catch((err) => {
@@ -73,8 +91,9 @@ export default function useUser() {
 
   useEffect(async () => {
     if (address) {
-      await fetchPools();
       await fetchUsdBalance();
+      await fetchPools();
+      await fetchWhitelistedPools();
       setIsReady(true);
     }
   }, [address]);
@@ -94,6 +113,8 @@ export default function useUser() {
     logOut,
     pools,
     fetchPools,
+    whitelistedPools,
+    fetchWhitelistedPools,
     usdBalance,
     fetchUsdBalance,
     topUpRequired,
