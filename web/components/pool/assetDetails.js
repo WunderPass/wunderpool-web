@@ -35,7 +35,7 @@ function assetDetails(props) {
               </div>
 
               <button
-                className="btn-kaico items-center w-full mb-2 mt-6 py-5 px-3 text-md"
+                className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
                 onClick={() => {
                   setOpen(true);
                 }}

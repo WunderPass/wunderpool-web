@@ -43,6 +43,12 @@ export default function Pool(props) {
   }, [wunderPool.isReady, wunderPool.isMember]);
 
   useEffect(() => {
+    if (wunderPool.liquidated) {
+      router.push('/pools');
+    }
+  }, [wunderPool.liquidated]);
+
+  useEffect(() => {
     if (router.isReady) {
       setAddress(router.query.id);
       setName(router.query.name);
@@ -63,11 +69,20 @@ export default function Pool(props) {
 
   useEffect(() => {
     if (!address || !user.address) return;
-    if (votedEvent && votedEvent?.voter == user.address) return;
-    if (newProposalEvent && newProposalEvent?.creator == user.address) return;
+    if (
+      votedEvent &&
+      votedEvent?.voter.toLowerCase() == user.address.toLowerCase()
+    )
+      return;
+    if (
+      newProposalEvent &&
+      newProposalEvent?.creator.toLowerCase() == user.address.toLowerCase()
+    )
+      return;
     if (
       proposalExecutedEvent &&
-      proposalExecutedEvent?.executor == user.address
+      proposalExecutedEvent?.executor.toLowerCase() ==
+        user.address.toLowerCase()
     )
       return;
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {

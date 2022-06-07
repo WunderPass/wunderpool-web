@@ -41,62 +41,60 @@ export default function ProposalList(props) {
         />
       </Tabs>
       <Box ref={slidingContainer} p={1} overflow="hidden" className="w-full">
-        {tab == 0 && (
-          <Slide
-            container={slidingContainer.current}
-            direction="right"
-            in={tab == 0}
-          >
-            <Stack spacing={2}>
-              {wunderPool.proposals
-                .filter((p) => p.executed == false)
-                .sort((one, two) => two.createdAt.sub(one.createdAt))
-                .map((proposal) => {
-                  return (
-                    <ProposalCard
-                      key={`proposal-${proposal.id}`}
-                      proposal={proposal}
-                      {...props}
-                    />
-                  );
-                })}
-            </Stack>
-          </Slide>
-        )}
-        {tab == 1 && (
-          <Slide
-            container={slidingContainer.current}
-            direction="left"
-            in={tab == 1}
-          >
-            <Stack spacing={2}>
-              {wunderPool.proposals
-                .filter(
-                  (p) => p.executed == true || p.noVotes > p.totalVotes / 2
-                )
-                .sort((one, two) => two.createdAt.sub(one.createdAt))
-                .map((proposal) => {
-                  return (
-                    <ProposalCard
-                      key={`proposal-${proposal.id}`}
-                      proposal={proposal}
-                      {...props}
-                    />
-                  );
-                })}
-            </Stack>
-          </Slide>
-        )}
+        <Slide
+          container={slidingContainer.current}
+          direction="right"
+          in={tab == 0}
+          height={tab == 0 ? 'unset' : 0}
+        >
+          <Stack spacing={2}>
+            {wunderPool.proposals
+              .filter((p) => p.executed == false)
+              .sort((one, two) => two.createdAt.sub(one.createdAt))
+              .map((proposal) => {
+                return (
+                  <ProposalCard
+                    key={`proposal-${proposal.id}`}
+                    proposal={proposal}
+                    {...props}
+                  />
+                );
+              })}
+          </Stack>
+        </Slide>
+        <Slide
+          container={slidingContainer.current}
+          direction="left"
+          in={tab == 1}
+          height={tab == 1 ? 'unset' : 0}
+        >
+          <Stack spacing={2}>
+            {wunderPool.proposals
+              .filter((p) => p.executed == true || p.noVotes > p.totalVotes / 2)
+              .sort((one, two) => two.createdAt.sub(one.createdAt))
+              .map((proposal) => {
+                return (
+                  <ProposalCard
+                    key={`proposal-${proposal.id}`}
+                    proposal={proposal}
+                    {...props}
+                  />
+                );
+              })}
+          </Stack>
+        </Slide>
       </Box>
     </Stack>
   ) : (
-    <Paper elevation={1} sx={{ p: 2 }}>
+    <div className="container-white border-2">
       <Stack sx={{ textAlign: 'center' }}>
-        <Typography variant="h5">There are no Proposals</Typography>
+        <Typography className="mt-3" variant="h5">
+          There are no Proposals
+        </Typography>
         <Typography className="mb-2 mt-3" variant="subtitle1">
           Create one now!
         </Typography>
       </Stack>
-    </Paper>
+    </div>
   );
 }

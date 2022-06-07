@@ -6,14 +6,18 @@ import {
   DialogContentText,
   DialogTitle,
   LinearProgress,
+  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import { currency } from '../../services/formatter';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
   const [loading, setLoading] = useState(false);
+  const [userShare, setUserShare] = useState(null);
 
   const handleClose = () => {
     setOpen(false);
@@ -35,6 +39,11 @@ export default function DestroyPoolDialog(props) {
       });
   };
 
+  useEffect(() => {
+    if (!wunderPool.governanceToken) return;
+    setUserShare(wunderPool.userShare());
+  }, [wunderPool.governanceToken]);
+
   return (
     <Dialog
       open={open}
@@ -52,6 +61,44 @@ export default function DestroyPoolDialog(props) {
         <Alert severity="warning">
           This will create a Proposal to Liquidate the Pool
         </Alert>
+        <Typography variant="h6" mt={1}>
+          You will receive:
+        </Typography>
+        {userShare ? (
+          <>
+            {wunderPool.tokens
+              .filter((tkn) => tkn.balance > 0)
+              .map((tkn, i) => {
+                const tokenValue = currency(
+                  ethers.BigNumber.from(tkn.balance)
+                    .mul(userShare)
+                    .mul(tkn.price)
+                    .div(100)
+                    .div(10000)
+                    .div(ethers.BigNumber.from(10).pow(tkn.decimals))
+                    .toNumber() / 100,
+                  {}
+                );
+                return (
+                  <Stack
+                    key={`tkn-prev-${i}`}
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    py={1}
+                    width="100%"
+                    borderTop="1px solid lightgray"
+                  >
+                    <img width="40" src={tkn.image || '/favicon.ico'} alt="" />
+                    <Typography sx={{ flexGrow: 1 }}>{tkn.name}</Typography>
+                    <Typography color="green">+ {tokenValue}</Typography>
+                  </Stack>
+                );
+              })}
+          </>
+        ) : (
+          <Skeleton width="100%" height={10} />
+        )}
       </DialogContent>
       {loading ? (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>

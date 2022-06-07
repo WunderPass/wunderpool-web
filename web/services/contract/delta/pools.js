@@ -14,8 +14,37 @@ import { httpProvider } from '../provider';
 export function fetchUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
     const [poolLauncher] = initLauncherDelta();
-    const poolAddresses = await poolLauncher.whiteListedPoolsOfMember(
+    const poolAddresses = await poolLauncher.poolsOfMember(userAddress);
+
+    const pools = await Promise.all(
+      poolAddresses.map(async (addr) => {
+        const [wunderPool] = initPoolDelta(addr);
+        try {
+          return {
+            address: addr,
+            name: await wunderPool.name(),
+            version: { version: 'DELTA', number: 4 },
+            isMember: true,
+          };
+        } catch (err) {
+          return null;
+        }
+      })
+    );
+    resolve(pools.filter((elem) => elem));
+  });
+}
+
+export function fetchWhitelistedUserPoolsDelta(userAddress) {
+  return new Promise(async (resolve, reject) => {
+    const [poolLauncher] = initLauncherDelta();
+    const whiteListPools = await poolLauncher.whiteListedPoolsOfMember(
       userAddress
+    );
+    const memberPools = await poolLauncher.poolsOfMember(userAddress);
+
+    const poolAddresses = whiteListPools.filter(
+      (pool) => !memberPools.includes(pool)
     );
 
     const pools = await Promise.all(
@@ -26,7 +55,8 @@ export function fetchUserPoolsDelta(userAddress) {
             address: addr,
             name: await wunderPool.name(),
             version: { version: 'DELTA', number: 4 },
-            isMember: await wunderPool.isMember(userAddress),
+            isMember: false,
+            closed: await wunderPool.poolClosed(),
           };
         } catch (err) {
           return null;
@@ -70,6 +100,7 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
     const { smartContractTransaction } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress: userAddress,
     });
     const tx = await usdcContract.populateTransaction.approve(
       poolAddress,
@@ -79,22 +110,26 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
       }
     );
 
-    smartContractTransaction(tx).then((transaction) => {
-      provider
-        .waitForTransaction(transaction.hash)
-        .then(() => {
-          axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-            .then((res) => {
-              resolve(res.data);
-            })
-            .catch((err) => {
-              reject(err);
-            });
-        })
-        .catch((error) => {
-          reject(error?.error?.error?.error?.message || error);
-        });
-    });
+    smartContractTransaction(tx)
+      .then((transaction) => {
+        provider
+          .waitForTransaction(transaction.hash)
+          .then(() => {
+            axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
+              .then((res) => {
+                resolve(res.data);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          })
+          .catch((error) => {
+            reject(error?.error?.error?.error?.message || error);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
@@ -107,6 +142,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
     const { sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress,
     });
     const types = ['address', 'address', 'address'];
     const values = [userAddress, poolAddress, newMember];
@@ -144,13 +180,17 @@ export function fundPoolDelta(poolAddress, amount) {
     smartContractTransaction(tx, {
       amount: usdc(amount),
       spender: poolAddress,
-    }).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    })
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }

@@ -5,6 +5,7 @@ import {
   fetchAllPoolsDelta,
   fetchPoolIsClosedDelta,
   fetchUserPoolsDelta,
+  fetchWhitelistedUserPoolsDelta,
   fundPoolDelta,
   joinPoolDelta,
 } from './delta/pools';
@@ -85,6 +86,13 @@ export function fetchUserPools(userAddress) {
     const deltaPools = await fetchUserPoolsDelta(userAddress);
     const gammaPools = await fetchUserPoolsGamma(userAddress);
     resolve([...deltaPools, ...gammaPools]);
+  });
+}
+
+export function fetchWhitelistedUserPools(userAddress) {
+  return new Promise(async (resolve, reject) => {
+    const deltaPools = await fetchWhitelistedUserPoolsDelta(userAddress);
+    resolve([...deltaPools]);
   });
 }
 

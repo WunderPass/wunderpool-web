@@ -84,14 +84,18 @@ export function createSingleActionProposalGamma(
       { gasPrice: await gasPrice() }
     );
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
@@ -122,14 +126,18 @@ export function createMultiActionProposalGamma(
       { gasPrice: await gasPrice() }
     );
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
@@ -389,13 +397,44 @@ export function executeProposalGamma(poolAddress, id) {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function isLiquidateProposalGamma(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [wunderPool] = initPoolGamma(poolAddress);
+      const { transactionCount } = await wunderPool.getProposal(id);
+      const transactions = await fetchTransactionDataGamma(
+        poolAddress,
+        id,
+        transactionCount
+      );
+      if (
+        transactions.find(
+          (trx) =>
+            trx.action == 'liquidatePool()' &&
+            trx.contractAddress == poolAddress
+        )
+      ) {
+        resolve(true);
+      } else {
+        resolve(false);
       }
-    });
+    } catch (error) {
+      reject(error);
+    }
   });
 }

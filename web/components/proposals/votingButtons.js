@@ -62,23 +62,21 @@ export default function VotingButtons(props) {
   if (waitingForVote) {
     return (
       <>
-        {signing && (
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            PaperProps={{
-              style: { borderRadius: 12 },
-            }}
-          >
-            <iframe
-              className="w-auto"
-              id="fr"
-              name="transactionFrame"
-              height="500"
-            ></iframe>
-            <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-          </Dialog>
-        )}
+        <Dialog
+          open={signing}
+          onClose={handleClose}
+          PaperProps={{
+            style: { borderRadius: 12 },
+          }}
+        >
+          <iframe
+            className="w-auto"
+            id="fr"
+            name="transactionFrame"
+            height="500"
+          ></iframe>
+          <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+        </Dialog>
         <CircularProgress />
       </>
     );
