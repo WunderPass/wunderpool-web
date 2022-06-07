@@ -67,7 +67,6 @@ export default function NewPoolDialog(props) {
 
   const stepContinue = () => {
     setStep(step + 1);
-    console.log(step.toString());
   };
 
   const openAdvanced = () => {

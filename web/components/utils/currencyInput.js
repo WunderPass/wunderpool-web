@@ -5,8 +5,6 @@ export default function CurrencyInput(props) {
     props;
 
   const handleInput = (value, _, values) => {
-    console.log(value, values);
-
     if (!value) {
       onChange('', 0);
       return;
