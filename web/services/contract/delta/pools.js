@@ -56,6 +56,7 @@ export function fetchWhitelistedUserPoolsDelta(userAddress) {
             name: await wunderPool.name(),
             version: { version: 'DELTA', number: 4 },
             isMember: false,
+            closed: await wunderPool.poolClosed(),
           };
         } catch (err) {
           return null;

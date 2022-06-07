@@ -54,19 +54,19 @@ export default function InitialsAvatar(props) {
 
   const initials = separator
     ? text
-        .match(new RegExp(`(\\w)${separator}(\\w)`))
-        .slice(1, 3)
-        .join('')
+        ?.match(new RegExp(`(\\w)${separator}(\\w)`))
+        ?.slice(1, 3)
+        ?.join('')
     : text.substr(0, 2);
 
   return (
     <div className={className}>
       {tooltip ? (
         <Tooltip title={tooltip}>
-          <Typography>{initials}</Typography>
+          <Typography>{initials || '0X'}</Typography>
         </Tooltip>
       ) : (
-        <Typography>{initials}</Typography>
+        <Typography>{initials || '0X'}</Typography>
       )}
     </div>
   );
