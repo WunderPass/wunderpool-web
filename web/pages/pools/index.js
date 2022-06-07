@@ -9,108 +9,158 @@ import { MdGroups } from 'react-icons/md';
 import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Container, Paper, Skeleton, Typography } from '@mui/material';
+import {
+  Container,
+  Pagination,
+  Paper,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import getPoolInfo from '/components/pool/poolInfo';
 import { currency } from '/services/formatter';
-import InitialsAvatar from '../../components/utils/initialsAvatar';
+import InitialsAvatar from '/components/utils/initialsAvatar';
+import { ethers } from 'ethers';
 
-function PoolStructure(props) {
-  const { pools, user, setOpen } = props;
+function WhiteListedPools(props) {
+  const { pools } = props;
 
-  return pools.map((pool, i) => {
-    const [totalBalance, sharesOfUserInPercent, members, isReady] = getPoolInfo(
-      pool,
-      user
-    );
+  if (pools.length == 0) return null;
 
-    return isReady ? (
-      <Link
-        key={`pool-${i}`}
-        href={`/pools/${pool.address}?name=${pool.name}`}
-        passHref
+  return (
+    <Paper className="bg-green-300 mb-2 sm:mb-5" elevation={1} sx={{ p: 2 }}>
+      <p className="subheader subheader-sm my-1">
+        You were invited to join{' '}
+        {pools.length == 1 ? 'this Pool' : 'these Pools'}
+      </p>
+      {pools.map((pool, i) => {
+        return (
+          <Link
+            key={`pool-${i}`}
+            href={`/pools/${pool.address}?name=${pool.name}`}
+            passHref
+          >
+            <Paper
+              className="container-white"
+              elevation={1}
+              sx={{ p: 2, my: 1 }}
+            >
+              <div className="flex flex-row justify-between items-center">
+                <Typography className="text-md">{pool.name}</Typography>
+              </div>
+            </Paper>
+          </Link>
+        );
+      })}
+    </Paper>
+  );
+}
+
+function PoolCard(props) {
+  const { pool, user, setOpen } = props;
+
+  const [totalBalance, sharesOfUserInPercent, members, isReady] = getPoolInfo(
+    pool,
+    user
+  );
+  // const [totalBalance, sharesOfUserInPercent, members, isReady] = [
+  //   100,
+  //   33,
+  //   [
+  //     { share: ethers.BigNumber.from(33), wunderId: 'd-bitschnau' },
+  //     { share: ethers.BigNumber.from(33), wunderId: 'm-loechner' },
+  //     { share: ethers.BigNumber.from(33), wunderId: 's-tschurilin' },
+  //   ],
+  //   true,
+  // ];
+
+  return isReady ? (
+    <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
+      <Paper
+        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
+        elevation={1}
+        sx={{ p: 2 }}
       >
-        <Paper
-          className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
-          elevation={1}
-          sx={{ p: 2 }}
-        >
-          <div className="flex flex-col">
-            <div className="flex flex-row justify-between items-center">
-              <Typography className="text-md">{pool.name}</Typography>
-              <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
-            </div>
-            <Typography className="text-lg pt-3 font-semibold">
-              {currency(totalBalance, {})}
+        <div className="flex flex-col">
+          <div className="flex flex-row justify-between items-center">
+            <Typography className="text-md">{pool.name}</Typography>
+            <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
+          </div>
+          <Typography className="text-lg pt-3 font-semibold">
+            {currency(totalBalance, {})}
+          </Typography>
+          {pool.entryBarrier && (
+            <Typography variant="subtitle1">
+              Minimum Invest: $
+              {displayWithDecimalPlaces(toEthString(pool.entryBarrier, 6), 2)}
             </Typography>
-            {pool.entryBarrier && (
-              <Typography variant="subtitle1">
-                Minimum Invest: $
-                {displayWithDecimalPlaces(toEthString(pool.entryBarrier, 6), 2)}
+          )}
+          <div className="flex flex-row justify-between items-center pb-4">
+            <div className="flex flex-row justify-start items-center ">
+              <PieChart
+                className="w-8 sm:w-6 my-1 mt-6"
+                data={[
+                  {
+                    title: 'One',
+                    value: 100 - parseInt(sharesOfUserInPercent),
+                    color: '#E4DFFF',
+                  },
+                  {
+                    title: 'Two',
+                    value: parseInt(sharesOfUserInPercent),
+                    color: '#5F45FD',
+                  },
+                ]}
+              />
+
+              <Typography className="text-md  pt-5 pl-3">
+                {sharesOfUserInPercent &&
+                  `${sharesOfUserInPercent}% (${currency(
+                    (totalBalance / 100) * sharesOfUserInPercent,
+                    {}
+                  )})`}
               </Typography>
-            )}
-            <div className="flex flex-row justify-between items-center pb-4">
-              <div className="flex flex-row justify-start items-center ">
-                <PieChart
-                  className="w-8 sm:w-6 my-1 mt-6"
-                  data={[
-                    {
-                      title: 'One',
-                      value: 100 - parseInt(sharesOfUserInPercent),
-                      color: '#E4DFFF',
-                    },
-                    {
-                      title: 'Two',
-                      value: parseInt(sharesOfUserInPercent),
-                      color: '#5F45FD',
-                    },
-                  ]}
-                />
+            </div>
 
-                <Typography className="text-md  pt-5 pl-3">
-                  {sharesOfUserInPercent && sharesOfUserInPercent}%
-                </Typography>
-              </div>
-
-              <div className="flex flex-row  mt-4">
-                {members &&
-                  members
-                    .sort((a, b) => b.share.toNumber() - a.share.toNumber())
-                    .slice(0, 3)
-                    .map((member, i) => {
-                      return (
-                        <InitialsAvatar
-                          key={`member-${i}`}
-                          tooltip={`${
-                            member.wunderId || 'External User'
-                          }: ${member.share.toString()}%`}
-                          text={member.wunderId ? member.wunderId : '0-X'}
-                          separator="-"
-                          color={['green', 'blue', 'red', 'teal'][i % 4]}
-                        />
-                      );
-                    })}
-              </div>
+            <div className="flex flex-row  mt-4">
+              {members &&
+                members
+                  .sort((a, b) => b.share.toNumber() - a.share.toNumber())
+                  .slice(0, 3)
+                  .map((member, i) => {
+                    return (
+                      <InitialsAvatar
+                        key={`member-${i}`}
+                        tooltip={`${
+                          member.wunderId || 'External User'
+                        }: ${member.share.toString()}%`}
+                        text={member.wunderId ? member.wunderId : '0-X'}
+                        separator="-"
+                        color={['green', 'blue', 'red', 'teal'][i % 4]}
+                      />
+                    );
+                  })}
             </div>
           </div>
-        </Paper>
-      </Link>
-    ) : (
-      <Skeleton
-        key={`pool-skeleton-${i}`}
-        variant="rectangular"
-        width="100%"
-        sx={{ height: '100px', borderRadius: 3 }}
-      />
-    );
-  });
+        </div>
+      </Paper>
+    </Link>
+  ) : (
+    <Skeleton
+      variant="rectangular"
+      width="100%"
+      sx={{ height: '100px', borderRadius: 3 }}
+    />
+  );
 }
 
 function PoolList(props) {
   const { pools, user, setOpen } = props;
 
   return pools.length > 0 ? (
-    <div className="md:grid md:grid-cols-2 md:gap-6">
-      <PoolStructure pools={pools} user={user} />
+    <div className="md:grid md:grid-cols-2 md:gap-6 w-full">
+      {pools.map((pool, i) => {
+        return <PoolCard key={`pool-card-${i}`} pool={pool} user={user} />;
+      })}
     </div>
   ) : (
     <div className="container-white">
@@ -133,25 +183,11 @@ function PoolList(props) {
 }
 
 export default function Pools(props) {
-  const { user } = props;
+  const { user, handleSuccess } = props;
   const [demoPools, setDemoPools] = useState([]);
-  const [userPools, setUserPools] = useState([]);
   const [open, setOpen] = useState(false);
-  const [loadingUser, setLoadingUser] = useState(true);
-  const alert = useAlert();
-
-  const fetchPools = () => {
-    setLoadingUser(true);
-    user.fetchPools().then((pools) => {
-      setUserPools(pools);
-      setLoadingUser(false);
-    });
-  };
-
-  useEffect(() => {
-    if (!user.address) return;
-    fetchPools();
-  }, [user.address]);
+  const [page, setPage] = useState(1);
+  const pageSize = 4;
 
   return (
     <>
@@ -166,7 +202,7 @@ export default function Pools(props) {
 
         <Container>
           <div className="flex flex-col w-full justify-start">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:pb-4 sm:pt-10 sm:pb-10">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <div>
                 <Typography className=" text-2xl my-5 sm:text-4xl">
                   Hello {user?.wunderId},
@@ -174,7 +210,7 @@ export default function Pools(props) {
                 <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 ">
                   <CopyToClipboard
                     text={user?.address}
-                    onCopy={() => alert.show('address copied!')}
+                    onCopy={() => handleSuccess('address copied!')}
                   >
                     <span className=" cursor-pointer text-md">
                       <div className="flex flex-row items-center">
@@ -193,6 +229,8 @@ export default function Pools(props) {
               </button>
             </div>
 
+            <WhiteListedPools pools={user.whitelistedPools} />
+
             <div className="sm:flex sm:flex-row">
               <div className="flex flex-col sm:w-1/2 sm:pr-8">
                 <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4">
@@ -206,20 +244,32 @@ export default function Pools(props) {
                   <Typography className="subheader subheader-sm">
                     My Pools
                   </Typography>
+                  {user.pools.length > pageSize && (
+                    <Pagination
+                      count={Math.ceil(user.pools.length / pageSize)}
+                      page={page}
+                      onChange={(_, val) => {
+                        setPage(val);
+                      }}
+                    />
+                  )}
                 </div>
 
-                {loadingUser ? (
+                {user.isReady ? (
+                  <PoolList
+                    className="mx-4"
+                    user={user}
+                    pools={user.pools.slice(
+                      (page - 1) * pageSize,
+                      (page - 1) * pageSize + pageSize
+                    )}
+                    setOpen={setOpen}
+                  />
+                ) : (
                   <Skeleton
                     variant="rectangular"
                     width="100%"
                     sx={{ height: '100px', borderRadius: 3 }}
-                  />
-                ) : (
-                  <PoolList
-                    className="mx-4"
-                    user={user}
-                    pools={userPools}
-                    setOpen={setOpen}
                   />
                 )}
               </div>
@@ -236,7 +286,7 @@ export default function Pools(props) {
           <NewPoolDialog
             open={open}
             setOpen={setOpen}
-            fetchPools={fetchPools}
+            fetchPools={user.fetchPools}
             {...props}
           />
         </Container>
