@@ -11,6 +11,16 @@ export default function useWunderPass(config) {
           'transactionFrame'
         );
 
+        if (Array.isArray(types) && Array.isArray(types[0])) {
+          if (!Array.isArray(packed)) {
+            packed = new Array(types.length).fill(packed);
+          }
+          if (types.length != values.length) {
+            popup.close();
+            throw `Array lengths do not match: Types(${types.length}), Values(${values.length}), Packed(${packed.length})`;
+          }
+        }
+
         const requestInterval = setInterval(() => {
           popup.postMessage(
             JSON.parse(
