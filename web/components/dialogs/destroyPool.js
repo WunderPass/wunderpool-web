@@ -24,12 +24,11 @@ export default function DestroyPoolDialog(props) {
     setLoading(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
     wunderPool
       .liquidateSuggestion("Let's Liquidate the Pool", 'I want my money back')
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created new Proposal to Liquidate the Pool ${name}`);
         wunderPool.determineProposals();
         handleClose();
