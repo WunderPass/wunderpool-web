@@ -27,7 +27,11 @@ function WhiteListedPools(props) {
   if (pools.length == 0) return null;
 
   return (
-    <Paper className="bg-green-300 mb-2 sm:mb-5" elevation={1} sx={{ p: 2 }}>
+    <Paper
+      className="bg-green-300 mb-2 sm:mb-5 rounded-xl"
+      elevation={1}
+      sx={{ p: 2 }}
+    >
       <p className="subheader subheader-sm my-1">
         You were invited to join{' '}
         {pools.length == 1 ? 'this Pool' : 'these Pools'}
@@ -40,11 +44,11 @@ function WhiteListedPools(props) {
             passHref
           >
             <Paper
-              className="container-white"
+              className="hover:bg-gray-100 container-white cursor-pointer "
               elevation={1}
               sx={{ p: 2, my: 1 }}
             >
-              <div className="flex flex-row justify-between items-center">
+              <div className="flex flex-row justify-between items-center ">
                 <Typography className="text-md">{pool.name}</Typography>
               </div>
             </Paper>
