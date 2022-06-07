@@ -54,7 +54,11 @@ export default function InitialsAvatar(props) {
 
   const initials = separator
     ? text
-        ?.match(new RegExp(`(\\w)${separator}(\\w)`))
+        ?.match(
+          new RegExp(
+            `([\u00C0-\u017FA-Za-z])${separator}([\u00C0-\u017FA-Za-z])`
+          )
+        )
         ?.slice(1, 3)
         ?.join('')
     : text.substr(0, 2);
