@@ -35,7 +35,7 @@ export default function ProposalCard(props) {
     setCloseable(
       executable || proposal.noVotes.toNumber() > totalSupply?.toNumber() / 2
     );
-  });
+  }, [proposal]);
 
   const handleClose = () => {
     setSigning(false);
