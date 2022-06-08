@@ -197,7 +197,7 @@ export default function Pools(props) {
     <>
       <div className="font-graphik">
         <Head>
-          <title>WunderPool</title>
+          <title>Casama</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -281,7 +281,7 @@ export default function Pools(props) {
 
             <div className="w-full pb-14 sm:pt-10">
               <Typography className="subheader pb-4 lg:text-2xl">
-                Demo WunderPool
+                Demo Pool
               </Typography>
               <PoolList pools={demoPools} setOpen={setOpen} />
             </div>

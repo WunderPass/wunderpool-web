@@ -48,7 +48,10 @@ export default function InitialsAvatar(props) {
         'bg-pink-300',
         'bg-rose-300',
         'bg-blue-300',
-      ][Math.round(Math.random() * 10)];
+      ][
+        text?.charCodeAt(text?.length - 1) % 10 ||
+          Math.round(Math.random() * 10)
+      ];
       break;
   }
 

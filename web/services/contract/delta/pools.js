@@ -149,8 +149,6 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        console.log('values IN PoolsCOntract');
-        console.log(values);
         const [wunderPool] = initPoolDelta(poolAddress);
         const tx = await connectContract(wunderPool).addToWhiteListForUser(
           userAddress,
