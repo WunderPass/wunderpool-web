@@ -6,7 +6,7 @@ import { encodeParams } from '/services/formatter';
 
 export default function Transactions(props) {
   const { wunderPool } = props;
-  const { isReady } = wunderPool;
+  const { isReady, address } = wunderPool;
   const [allTransactions, setAllTransactions] = useState();
 
   const unixTimeToDate = (unixTime) => {
@@ -28,14 +28,12 @@ export default function Transactions(props) {
   };
 
   useEffect(async () => {
-    if (isReady) {
-      const resolved = await new Promise(async (resolve, reject) => {
-        const res = await normalTransactions(wunderPool.address);
-        resolve(res);
-      });
-      setAllTransactions(resolved.result);
-    }
-  }, [isReady]);
+    const resolved = await new Promise(async (resolve, reject) => {
+      const res = await normalTransactions(wunderPool.poolAddress);
+      resolve(res);
+    });
+    setAllTransactions(resolved.result);
+  }, [wunderPool.poolAddress]);
 
   return allTransactions ? (
     <div>
