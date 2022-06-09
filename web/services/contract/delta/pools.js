@@ -197,19 +197,13 @@ export function fundPoolDelta(poolAddress, amount) {
 
 export function normalTransactionsDelta(poolAddress) {
   return new Promise(async (resolve, reject) => {
-    console.log('imNormalTrans');
-    console.log(poolAddress);
-
     axios({
       url: `https://api.polygonscan.com/api?module=account&action=txlist&address=${poolAddress}&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`,
     })
       .then((res) => {
-        console.log('in normal transaction .then');
-        console.log(res.data);
         resolve(res.data);
       })
       .catch((err) => {
-        console.log('eerrrrror');
         reject(err);
       });
   });
