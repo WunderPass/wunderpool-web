@@ -14,7 +14,6 @@ import { encodeParams } from '/services/formatter';
 export default function Transactions(props) {
   const { wunderPool } = props;
   const { isReady } = wunderPool;
-  const [isLoading, setIsLoading] = useState(true);
   const [allTransactions, setAllTransactions] = useState();
 
   const unixTimeToDate = (unixTime) => {
@@ -39,13 +38,8 @@ export default function Transactions(props) {
     if (isReady) {
       const resolved = await new Promise(async (resolve, reject) => {
         const res = await normalTransactions(wunderPool.address);
-        console.log('data:');
-        //console.log(allTransactions);
         resolve(res);
       });
-      console.log('after promise:');
-      console.log(resolved.result);
-      setIsLoading(false);
       setAllTransactions(resolved.result);
     }
   }, [isReady]);
@@ -66,6 +60,9 @@ export default function Transactions(props) {
             <div className="text-sm truncate">Value: {trx.value}</div>
             <div className="text-sm truncate">
               Fee: {calculateTrxFee(trx.gasUsed, trx.gasPrice)} MATIC
+            </div>
+            <div className="text-sm truncate">
+              _________________________________
             </div>
           </div>
         );
