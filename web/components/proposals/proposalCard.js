@@ -109,12 +109,44 @@ export default function ProposalCard(props) {
           no={proposal.noVotes.toNumber()}
           total={totalSupply?.toNumber()}
         />
-        <div className="flex flex-row justify-center mt-4">
-          <button className="btn-vote">Yes</button>
-          <button className="btn-vote">No</button>
-          <button className="btn-vote">Abstain</button>
+        <VotingButtons {...props} />
+        <div>
+          {!proposal.executed && (
+            <button
+              className={executable ? 'p-8 btn btn-warning' : 'hidden'}
+              disabled={signing}
+              onClick={executeProposal}
+            >
+              Execute
+            </button>
+          )}
+          <>
+            <Dialog
+              open={signing}
+              onClose={handleClose}
+              PaperProps={{
+                style: { borderRadius: 12 },
+              }}
+            >
+              {!wunderPool.closed && (
+                <Alert severity="warning">
+                  <AlertTitle>
+                    After execution, no new members can join this Pool
+                  </AlertTitle>
+                </Alert>
+              )}
+              <iframe
+                className="w-auto"
+                id="fr"
+                name="transactionFrame"
+                height="500"
+              ></iframe>
+              <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+            </Dialog>
+          </>
         </div>
       </div>
+
       <Paper elevation={1} sx={{ overflowY: 'hidden' }}>
         <Box p={2}>
           <Stack
