@@ -19,6 +19,7 @@ import { ethers } from 'ethers';
 import { decodeParams } from '/services/formatter';
 import VotingBar from '/components/proposals/votingBar';
 import TimerBar from '/components/proposals/timerBar';
+import VotingResults from '/components/proposals/votingResults';
 
 import VotingButtons from './votingButtons';
 import Timer from '/components/proposals/timer';
@@ -57,6 +58,10 @@ export default function ProposalCard(props) {
     }
   };
 
+  function percentage(partialValue, totalValue) {
+    return (100 * partialValue) / totalValue;
+  }
+
   const executeProposal = () => {
     setSigning(true);
     wunderPool
@@ -91,7 +96,7 @@ export default function ProposalCard(props) {
         <div className="flex-col mt-4 justify-end items-center">
           <Timer />
           <div className="flex flex-row opacity-50">
-            <Typography className="text-xs mr-1 ml-1 ">Hours </Typography>
+            <Typography className="text-xs mr-1 ml-1 ">Hours</Typography>
             <Typography className="text-xs mx-1">Minutes</Typography>
             <Typography className="text-xs ml-1">Seconds</Typography>
           </div>
@@ -99,6 +104,11 @@ export default function ProposalCard(props) {
         <div className="mt-5 mb-8">
           <TimerBar passed={20} total={100} />
         </div>
+        <VotingResults
+          yes={proposal.yesVotes.toNumber()}
+          no={proposal.noVotes.toNumber()}
+          total={totalSupply?.toNumber()}
+        />
         <div className="flex flex-row justify-center mt-4">
           <button className="btn-vote">Yes</button>
           <button className="btn-vote">No</button>

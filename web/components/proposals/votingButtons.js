@@ -103,17 +103,19 @@ export default function VotingButtons(props) {
   }
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="center">
-      <Tooltip title="Agree">
-        <IconButton color="success" onClick={() => handleVote(1)}>
-          <ThumbUpOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Disagree">
-        <IconButton color="error" onClick={() => handleVote(2)}>
-          <ThumbDownOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-    </Stack>
+    <>
+      <Stack direction="row" alignItems="center" justifyContent="center">
+        <Tooltip title="Agree">
+          <IconButton color="success" onClick={() => handleVote(1)}>
+            <ThumbUpOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Disagree">
+          <IconButton color="error" onClick={() => handleVote(2)}>
+            <ThumbDownOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </Stack>
+    </>
   );
 }
