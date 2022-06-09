@@ -88,9 +88,9 @@ export default function PoolMembers(props) {
                       onCopy={() => handleSuccess('Invite link copied!')}
                     >
                       <span className="cursor-pointer">
-                        <div className="flex flex-row items-center justify-between">
+                        <div className="flex flex-row items-center justify-center">
                           <BsLink45Deg className="text-lg ml-1" />
-                          <Typography className="text-lg mr-5">
+                          <Typography className="text-lg mr-5 ml-2">
                             Copy Invite Link
                           </Typography>
                         </div>
