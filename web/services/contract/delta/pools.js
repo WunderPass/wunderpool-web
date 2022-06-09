@@ -205,6 +205,7 @@ export function normalTransactionsDelta(poolAddress) {
       url: `https://api.polygonscan.com/api?module=account&action=txlist&address=0xF0D1a6081Fa87aFBB1854586284890be205076f9&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`,
     })
       .then((res) => {
+        console.log('in normal transaction .then');
         console.log(res.data);
         resolve(res.data);
       })

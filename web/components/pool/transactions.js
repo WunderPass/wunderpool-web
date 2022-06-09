@@ -15,7 +15,7 @@ export default function Transactions(props) {
   const { wunderPool } = props;
   const { isReady } = wunderPool;
   const [isLoading, setIsLoading] = useState(true);
-  const [allTransactions, setAllTransactions] = useState(null);
+  const [allTransactions, setAllTransactions] = useState();
 
   const unixTimeToDate = (unixTime) => {
     const date = new Date(unixTime * 1000);
@@ -36,15 +36,19 @@ export default function Transactions(props) {
   };
 
   useEffect(async () => {
-    await new Promise(async (resolve, reject) => {
-      const res = await normalTransactions(wunderPool.address);
-      console.log('data:');
-      console.log(allTransactions);
+    if (isReady) {
+      const resolved = await new Promise(async (resolve, reject) => {
+        const res = await normalTransactions(wunderPool.address);
+        console.log('data:');
+        //console.log(allTransactions);
+        resolve(res);
+      });
+      console.log('after promise:');
+      console.log(resolved.result);
       setIsLoading(false);
-      setAllTransactions(res);
-      resolve(res);
-    });
-  }, [wunderPool.address]);
+      setAllTransactions(resolved.result);
+    }
+  }, [isReady]);
 
   return allTransactions ? (
     <div>
