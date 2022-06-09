@@ -82,12 +82,20 @@ button:disabled {
   @apply bg-white hover:bg-[#ededed] text-gray-500 cursor-pointer rounded-xl border-2 border-gray-200;
 }
 
+.btn-vote {
+  @apply hover:bg-kaico-blue hover:text-white bg-gray-200 text-black text-opacity-70 cursor-pointer rounded-full p-1 px-4 mx-2 border border-kaico-blue;
+}
+
 .container-kaico {
   @apply border-solid text-white rounded-xl bg-kaico-blue p-5 shadow-xl;
 }
 
 .container-white {
   @apply border-solid text-black rounded-xl bg-white p-5 shadow-sm;
+}
+
+.container-gray {
+  @apply border-solid text-black rounded-xl bg-gray-200 p-5 shadow-sm;
 }
 
 .container-white-p-0 {
