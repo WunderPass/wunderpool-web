@@ -30,7 +30,8 @@ export default function TokenCard(props) {
   }, [token.address]);
 
   return (
-    <Paper elevation={1} sx={{ p: 2 }}>
+    <div className="container-gray">
+      {' '}
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack spacing={2} direction="row" alignItems="center">
           <img width="50" src={token.image || '/favicon.ico'} alt="TKN" />
@@ -51,19 +52,21 @@ export default function TokenCard(props) {
             </Tooltip>
           </Stack>
         </Stack>
-        <Stack direction="row" alignItems="center" justifyContent="center">
-          <Tooltip title="Swap Token">
-            <IconButton color="info" onClick={() => handleSwap(token)}>
-              <CurrencyExchangeIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Sell Token">
-            <IconButton color="success" onClick={() => handleSell(token)}>
-              <SellIcon />
-            </IconButton>
-          </Tooltip>
-        </Stack>
       </Stack>
-    </Paper>
+      <div className="flex flex-col items-center justify-center">
+        <button
+          className="rounded-xl btn-kaico w-full p-2 my-2 mt-4"
+          onClick={() => handleSell(token)}
+        >
+          Sell
+        </button>
+        <button
+          className="border-kaico-blue rounded-xl btn-neutral w-full p-2 border"
+          onClick={() => handleSwap(token)}
+        >
+          Swap
+        </button>
+      </div>
+    </div>
   );
 }
