@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import TimerBar from '/components/proposals/timerBar';
 
-const Timer = () => {
+const Timer = (props) => {
+  const { deadLine } = useState();
   // We need ref in this, because we are dealing
   // with JS setInterval to keep track of it and
   // stop it when needed
@@ -11,7 +12,7 @@ const Timer = () => {
   // The state for our timer
   const [timer, setTimer] = useState('00:00:00');
   const [remainingTimeInSec, setRemainingTimeInSec] = useState();
-  const [startTimeInSec, setStartTimeInSec] = useState(120);
+  const [startTimeInSec, setStartTimeInSec] = useState(120); //change time here in future put deadline
 
   const getTimeRemaining = (e) => {
     const total = Date.parse(e) - Date.parse(new Date());
@@ -50,7 +51,7 @@ const Timer = () => {
     // If you adjust it you should also need to
     // adjust the Endtime formula we are about
     // to code next
-    setTimer('00:02:00');
+    setTimer('00:02:00'); //figure out how to set time here to in future
 
     // If you try to remove this line the
     // updating of timer Variable will be
