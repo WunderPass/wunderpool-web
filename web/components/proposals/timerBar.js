@@ -13,7 +13,7 @@ export default function TimerBar(props) {
       <div className="h-2.5 overflow-hidden text-xs flex rounded-full bg-white ">
         <div
           style={{
-            width: percentage(passed, 100) + '%',
+            width: percentage(passed, total) + '%',
           }}
           className="rounded-full shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#04CB5A]"
         ></div>

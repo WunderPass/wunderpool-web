@@ -93,57 +93,50 @@ export default function ProposalCard(props) {
         <Typography className="font-light text-sm opacity-50">
           {proposal.description}
         </Typography>
-        <div className="flex-col mt-4 justify-end items-center">
-          <Timer />
-          <div className="flex flex-row opacity-50">
-            <Typography className="text-xs mr-1 ml-1 ">Hours</Typography>
-            <Typography className="text-xs mx-1">Minutes</Typography>
-            <Typography className="text-xs ml-1">Seconds</Typography>
-          </div>
-        </div>
-        <div className="mt-5 mb-8">
-          <TimerBar passed={20} total={100} />
-        </div>
+        <Timer />
+
         <VotingResults
           yes={proposal.yesVotes.toNumber()}
           no={proposal.noVotes.toNumber()}
           total={totalSupply?.toNumber()}
         />
-        <VotingButtons {...props} />
-        <div>
-          {!proposal.executed && (
-            <button
-              className={executable ? 'p-8 btn btn-warning' : 'hidden'}
-              disabled={signing}
-              onClick={executeProposal}
-            >
-              Execute
-            </button>
-          )}
-          <>
-            <Dialog
-              open={signing}
-              onClose={handleClose}
-              PaperProps={{
-                style: { borderRadius: 12 },
-              }}
-            >
-              {!wunderPool.closed && (
-                <Alert severity="warning">
-                  <AlertTitle>
-                    After execution, no new members can join this Pool
-                  </AlertTitle>
-                </Alert>
-              )}
-              <iframe
-                className="w-auto"
-                id="fr"
-                name="transactionFrame"
-                height="500"
-              ></iframe>
-              <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-            </Dialog>
-          </>
+        <div className="flex flex-row justify-center">
+          <VotingButtons {...props} />
+          <div>
+            {!proposal.executed && (
+              <button
+                className={executable ? 'p-8 btn btn-warning' : 'hidden'}
+                disabled={signing}
+                onClick={executeProposal}
+              >
+                Execute
+              </button>
+            )}
+            <>
+              <Dialog
+                open={signing}
+                onClose={handleClose}
+                PaperProps={{
+                  style: { borderRadius: 12 },
+                }}
+              >
+                {!wunderPool.closed && (
+                  <Alert severity="warning">
+                    <AlertTitle>
+                      After execution, no new members can join this Pool
+                    </AlertTitle>
+                  </Alert>
+                )}
+                <iframe
+                  className="w-auto"
+                  id="fr"
+                  name="transactionFrame"
+                  height="500"
+                ></iframe>
+                <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+              </Dialog>
+            </>
+          </div>
         </div>
       </div>
 
@@ -167,44 +160,10 @@ export default function ProposalCard(props) {
                 {proposal.description}
               </Typography>
             </Stack>
-            <div className="flex flex-col md:flex-row h-32 md:h-10 ml-4 md:ml-0">
-              {!proposal.executed && (
-                <button
-                  className={executable ? 'p-8 btn btn-warning' : 'hidden'}
-                  disabled={signing}
-                  onClick={executeProposal}
-                >
-                  Execute
-                </button>
-              )}
-              <>
-                <Dialog
-                  open={signing}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: { borderRadius: 12 },
-                  }}
-                >
-                  {!wunderPool.closed && (
-                    <Alert severity="warning">
-                      <AlertTitle>
-                        After execution, no new members can join this Pool
-                      </AlertTitle>
-                    </Alert>
-                  )}
-                  <iframe
-                    className="w-auto"
-                    id="fr"
-                    name="transactionFrame"
-                    height="500"
-                  ></iframe>
-                  <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-                </Dialog>
-              </>
-              <div className="md:pl-4 pl-0 md:pt-1 pt-8 self-center ">
-                <div className="">
-                  <VotingButtons {...props} />
-                </div>
+
+            <div className="md:pl-4 pl-0 md:pt-1 pt-6 self-center ">
+              <div className="">
+                <VotingButtons {...props} />
               </div>
             </div>
           </Stack>
@@ -342,11 +301,6 @@ export default function ProposalCard(props) {
             </Stack>
           </Collapse>
         </Box>
-        <VotingBar
-          yes={proposal.yesVotes.toNumber()}
-          no={proposal.noVotes.toNumber()}
-          total={totalSupply?.toNumber()}
-        />
       </Paper>
     </>
   );

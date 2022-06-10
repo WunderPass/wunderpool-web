@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Typography } from '@mui/material';
+import TimerBar from '/components/proposals/timerBar';
 
 const Timer = () => {
   // We need ref in this, because we are dealing
@@ -8,12 +10,17 @@ const Timer = () => {
 
   // The state for our timer
   const [timer, setTimer] = useState('00:00:00');
+  const [remainingTimeInSec, setRemainingTimeInSec] = useState();
+  const [startTimeInSec, setStartTimeInSec] = useState(120);
 
   const getTimeRemaining = (e) => {
     const total = Date.parse(e) - Date.parse(new Date());
+    const totalInSeconds = Math.floor(total / 1000);
     const seconds = Math.floor((total / 1000) % 60);
     const minutes = Math.floor((total / 1000 / 60) % 60);
     const hours = Math.floor((total / 1000 / 60 / 60) % 24);
+    setRemainingTimeInSec(totalInSeconds);
+
     return {
       total,
       hours,
@@ -28,6 +35,7 @@ const Timer = () => {
       // update the timer
       // check if less than 10 then we need to
       // add '0' at the beginning of the variable
+
       setTimer(
         (hours > 9 ? hours : '0' + hours) +
           ':' +
@@ -59,7 +67,7 @@ const Timer = () => {
 
     // This is where you need to adjust if
     // you entend to add more time
-    deadline.setSeconds(deadline.getSeconds() + 120);
+    deadline.setSeconds(deadline.getSeconds() + startTimeInSec);
     return deadline;
   };
 
@@ -80,7 +88,24 @@ const Timer = () => {
     clearTimer(getDeadTime());
   };
 
-  return <div className="text-3xl">{timer}</div>;
+  return (
+    <div className="flex-col mt-4 justify-end items-center">
+      <div>
+        <div className="text-3xl">{timer}</div>
+        <div className="flex flex-row opacity-50">
+          <Typography className="text-xs mr-1 ml-1 ">Hours</Typography>
+          <Typography className="text-xs mx-1">Minutes</Typography>
+          <Typography className="text-xs ml-1">Seconds</Typography>
+        </div>
+      </div>
+      <div className="mt-5 mb-8 ">
+        <TimerBar
+          passed={startTimeInSec - remainingTimeInSec}
+          total={startTimeInSec}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default Timer;

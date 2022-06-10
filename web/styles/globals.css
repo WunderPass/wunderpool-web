@@ -87,7 +87,7 @@ button:disabled {
 }
 
 .btn-vote-filled {
-  @apply hover:text-white bg-kaico-blue text-white cursor-pointer rounded-full p-1 px-4 mx-2 border border-kaico-blue;
+  @apply hover:text-white bg-kaico-blue text-white cursor-not-allowed rounded-full p-1 px-4 mx-2 border border-kaico-blue;
 }
 
 .container-kaico {
