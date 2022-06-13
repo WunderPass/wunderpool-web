@@ -6,7 +6,6 @@ import { encodeParams } from '/services/formatter';
 
 export default function Transactions(props) {
   const { wunderPool } = props;
-  const { isReady, address } = wunderPool;
   const [allTransactions, setAllTransactions] = useState();
 
   const unixTimeToDate = (unixTime) => {
@@ -19,16 +18,8 @@ export default function Transactions(props) {
     return weiToMatic(trxCost);
   };
 
-  const encode = (input) => {
-    const types = ['uint'];
-    const values = [input];
-    console.log(types);
-    console.log(values);
-    return encodeParams(types, values);
-  };
-
   useEffect(async () => {
-    const resolved = await new Promise(async (resolve, reject) => {
+    const resolved = await new Promise(async (resolve) => {
       const res = await normalTransactions(wunderPool.poolAddress);
       resolve(res);
     });

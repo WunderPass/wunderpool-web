@@ -92,7 +92,9 @@ function body(props) {
                   <div className="flex flex-row justify-start items-center w-full">
                     <button
                       className={
-                        isProposalTab ? 'py-4 pr-4' : 'py-4 pr-4 opacity-40 '
+                        isProposalTab
+                          ? 'py-4 pr-2 sm:pr-4'
+                          : 'py-4 pr-2 sm:pr-4 opacity-40'
                       }
                       onClick={activateProposalTab}
                     >
@@ -103,8 +105,8 @@ function body(props) {
                     <button
                       className={
                         isAssetTab
-                          ? ' py-4 pr-4 pl-4'
-                          : 'opacity-40 py-4 pr-4 pl-4'
+                          ? ' py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
+                          : 'opacity-40 py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
                       }
                       onClick={activateAssetTab}
                     >
@@ -115,8 +117,8 @@ function body(props) {
                     <button
                       className={
                         isNftTab
-                          ? 'py-4 pr-4 pl-4'
-                          : 'py-4 pr-4 pl-4 opacity-40'
+                          ? 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
+                          : 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4 opacity-40'
                       }
                       onClick={activateNftTab}
                     >
@@ -127,8 +129,8 @@ function body(props) {
                     <button
                       className={
                         isTransactionsTab
-                          ? 'py-4 pr-4 pl-4'
-                          : 'py-4 pr-4 pl-4 opacity-40'
+                          ? 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
+                          : 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4 opacity-40'
                       }
                       onClick={activateTransactionsTab}
                     >
