@@ -8,6 +8,7 @@ import {
   fetchWhitelistedUserPoolsDelta,
   fundPoolDelta,
   joinPoolDelta,
+  normalTransactionsDelta,
 } from './delta/pools';
 import {
   fetchAllPoolsGamma,
@@ -169,3 +170,13 @@ export function fundPool(poolAddress, amount, version) {
     return fundPoolGamma(poolAddress, amount);
   }
 }
+
+export function normalTransactions(poolAddress, version) {
+  if (version > 3) {
+    return normalTransactionsDelta(poolAddress);
+  } else {
+    return normalTransactionsDelta(poolAddress);
+  }
+}
+
+//FETCH poolTransactions
