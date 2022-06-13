@@ -9,7 +9,6 @@ export default function NftList(props) {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h4">NFTs</Typography>
       {nfts.map((nft) => {
         return (
           <Paper elevation={1} key={`nft-${nft.address}`} sx={{ p: 2 }}>
@@ -40,20 +39,20 @@ export default function NftList(props) {
         );
       })}
       <Paper elevation={1} sx={{ p: 2 }}>
-        <Stack spacing={2}>
-          <Typography variant="h5">Do you own an NFT?</Typography>
+        <div className="container-gray">
+          <Typography className="text-2xl mb-2">Do you own an NFT?</Typography>
           <Typography variant="subtitle1">
             Then you can sell it to the Pool. If all members agree that you made
             them a fair offer, they might agree to buy your NFT
           </Typography>
           <button
-            className="btn btn-info"
+            className="btn-kaico w-full p-2 mt-4"
             variant="contained"
             onClick={() => setOpen(true)}
           >
             Sell Your NFT
           </button>
-        </Stack>
+        </div>
       </Paper>
       <SellNftDialog open={open} setOpen={setOpen} {...props} />
     </Stack>

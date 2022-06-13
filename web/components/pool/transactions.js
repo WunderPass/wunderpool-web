@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Skeleton } from '@mui/material';
+import { Skeleton, Link, Typography } from '@mui/material';
 import { normalTransactions } from '/services/contract/pools';
 import { weiToMatic } from '/services/formatter';
 import { encodeParams } from '/services/formatter';
@@ -30,19 +30,67 @@ export default function Transactions(props) {
     <div>
       {allTransactions.map((trx, i) => {
         return (
-          <div className="container-white">
+          <div className="container-gray mb-4">
             <div className="flex flex-col justify-between items-start max-w-screen overflow-x-auto">
-              <div className="text-sm truncate ">Hash: {trx.hash}</div>
+              <Typography className="text-lg">
+                Transaction #{allTransactions.length - i}
+              </Typography>
+              <div className="text-sm truncate ">
+                Hash:
+                <Link
+                  className="cursor-pointer"
+                  target="_blank"
+                  href={`https://polygonscan.com/tx/${trx.hash}`}
+                >
+                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                    {trx.hash}
+                  </Typography>
+                </Link>
+              </div>
 
-              <div className="text-sm ">Block: {trx.blockNumber}</div>
+              <div className="text-sm ">
+                Block:{' '}
+                <Link
+                  className="cursor-pointer"
+                  target="_blank"
+                  href={`https://polygonscan.com/block/${trx.blockNumber}`}
+                >
+                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                    {trx.blockNumber}
+                  </Typography>
+                </Link>
+              </div>
               <div className="text-sm ">
                 Date: {unixTimeToDate(trx.timeStamp)}
               </div>
-              <div className="text-sm ">From: {trx.from}</div>
-              <div className="text-sm ">To: {trx.to}</div>
+              <div className="text-sm ">
+                From:{' '}
+                <Link
+                  className="cursor-pointer"
+                  target="_blank"
+                  href={`https://polygonscan.com/address/${trx.from}`}
+                >
+                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                    {trx.from}
+                  </Typography>
+                </Link>
+              </div>
+              <div className="text-sm ">
+                To:{' '}
+                <Link
+                  className="cursor-pointer"
+                  target="_blank"
+                  href={`https://polygonscan.com/address/${trx.to}`}
+                >
+                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                    {trx.to}
+                  </Typography>
+                </Link>
+              </div>
               <div className="text-sm ">Value: {trx.value}</div>
               <div className="text-sm ">
-                Fee: {calculateTrxFee(trx.gasUsed, trx.gasPrice)} MATIC
+                Fee: {calculateTrxFee(trx.gasUsed, trx.gasPrice).toFixed(6)}{' '}
+                MATIC
               </div>
               <div className="text-sm ">_________________________________</div>
             </div>
