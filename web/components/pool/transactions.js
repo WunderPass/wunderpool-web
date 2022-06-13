@@ -32,67 +32,76 @@ export default function Transactions(props) {
         return (
           <div className="container-gray mb-4">
             <div className="flex flex-col justify-between items-start max-w-screen overflow-x-auto">
-              <Typography className="text-lg">
+              <Typography className="text-lg mb-1">
                 Transaction #{allTransactions.length - i}
               </Typography>
-              <div className="text-sm truncate ">
-                Hash:
+              <div className="flex flex-row truncate items-center">
+                <Typography className="mr-1">Hash: </Typography>
                 <Link
                   className="cursor-pointer"
                   target="_blank"
                   href={`https://polygonscan.com/tx/${trx.hash}`}
                 >
-                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                  <Typography className="opacity-90 text-kaico-blue cursor-pointer">
                     {trx.hash}
                   </Typography>
                 </Link>
               </div>
 
-              <div className="text-sm ">
-                Block:{' '}
+              <div className="flex flex-row items-center">
+                <Typography className="mr-1"> Block: </Typography>
+
                 <Link
                   className="cursor-pointer"
                   target="_blank"
                   href={`https://polygonscan.com/block/${trx.blockNumber}`}
                 >
-                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                  <Typography className="opacity-90  text-kaico-blue cursor-pointer">
                     {trx.blockNumber}
                   </Typography>
                 </Link>
               </div>
-              <div className="text-sm ">
-                Date: {unixTimeToDate(trx.timeStamp)}
+              <div className="flex flex-row">
+                <Typography>Date: {unixTimeToDate(trx.timeStamp)}</Typography>
               </div>
-              <div className="text-sm ">
-                From:{' '}
+              <div className="flex flex-row  items-center">
+                <Typography className="mr-1">From: </Typography>
+
                 <Link
                   className="cursor-pointer"
                   target="_blank"
                   href={`https://polygonscan.com/address/${trx.from}`}
                 >
-                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                  <Typography className=" opacity-90 text-kaico-blue cursor-pointer">
                     {trx.from}
                   </Typography>
                 </Link>
               </div>
-              <div className="text-sm ">
-                To:{' '}
+              <div className="flex flex-row  items-center">
+                <Typography className="mr-1"> To: </Typography>
+
                 <Link
                   className="cursor-pointer"
                   target="_blank"
                   href={`https://polygonscan.com/address/${trx.to}`}
                 >
-                  <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                  <Typography className=" opacity-90 text-kaico-blue cursor-pointer">
                     {trx.to}
                   </Typography>
                 </Link>
               </div>
-              <div className="text-sm ">Value: {trx.value}</div>
-              <div className="text-sm ">
-                Fee: {calculateTrxFee(trx.gasUsed, trx.gasPrice).toFixed(6)}{' '}
-                MATIC
+              <div className="">
+                <Typography>Value: {trx.value}</Typography>
               </div>
-              <div className="text-sm ">_________________________________</div>
+              <div className="mb-1">
+                <Typography>
+                  {' '}
+                  Fee: {calculateTrxFee(trx.gasUsed, trx.gasPrice).toFixed(
+                    6
+                  )}{' '}
+                  MATIC
+                </Typography>
+              </div>
             </div>
           </div>
         );
