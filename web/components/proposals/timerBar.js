@@ -15,7 +15,7 @@ export default function TimerBar(props) {
           style={{
             width: percentage(passed, total) + '%',
           }}
-          className="rounded-full shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#04CB5A]"
+          className="rounded-full shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-kaico-blue"
         ></div>
       </div>
     </>

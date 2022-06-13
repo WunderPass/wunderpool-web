@@ -23,7 +23,7 @@ export default function VotingBarBox(props) {
                 style={{
                   width: percentage(yes, total) + '%',
                 }}
-                className="rounded-full shadow-none text-center whitespace-nowrap text-white justify-center bg-kaico-blue"
+                className="rounded-full shadow-none text-center whitespace-nowrap text-white justify-center bg-[#04CB5A]"
               ></div>
             </div>
             <Typography className="text-sm w-9">
@@ -37,7 +37,7 @@ export default function VotingBarBox(props) {
                 style={{
                   width: percentage(no, total) + '%',
                 }}
-                className="rounded-full shadow-none text-center whitespace-nowrap text-white justify-center bg-kaico-blue"
+                className="rounded-full shadow-none text-center whitespace-nowrap text-white justify-center bg-red-500"
               ></div>
             </div>
             <Typography className="text-sm w-9">

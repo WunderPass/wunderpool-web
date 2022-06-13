@@ -46,7 +46,10 @@ export default function TokenCard(props) {
                 </Typography>
                 <Typography>Price per token: {tokenPrice} $ </Typography>
                 <Typography variant="subtitle1" width="fit-content">
-                  Tokens Owned: {token.formattedBalance}
+                  Tokens Owned:{' '}
+                  {token.formattedBalance > 1
+                    ? parseFloat(token.formattedBalance).toFixed(3)
+                    : parseFloat(token.formattedBalance).toFixed(8)}
                 </Typography>
               </div>
             </Tooltip>
