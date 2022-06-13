@@ -17,10 +17,6 @@ export default function PoolMembers(props) {
   const [members, setMembers] = useState(null);
   const [inviteLink, setInviteLink] = useState();
 
-  const copyInviteLink = () => {
-    setInviteLink(window.location.href);
-  };
-
   useEffect(async () => {
     if (governanceToken && governanceToken.holders) {
       const resolvedMembers = await Promise.all(
@@ -48,56 +44,123 @@ export default function PoolMembers(props) {
         }`}
       >
         <div className="flex flex-col items-start justify-center grow">
-          <Typography className="text-xl w-full">Members</Typography>
           <div className="flex flex-col w-full">
-            {members && (
-              <>
-                <div className="flex flex-row flex-wrap w-full mt-2">
+            {!isMember ? (
+              members && (
+                <>
+                  <Typography className="text-xl w-full">Members</Typography>
+                  <div className="flex flex-row flex-wrap w-full mt-2">
+                    {members.map((member, i) => {
+                      return (
+                        <InitialsAvatar
+                          key={`member-${i}`}
+                          tooltip={`${
+                            member.wunderId || 'External User'
+                          }: ${member.share.toString()}%`}
+                          text={member.wunderId ? member.wunderId : '0-X'}
+                          separator="-"
+                          color={
+                            ['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]
+                          }
+                        />
+                      );
+                    })}
+                  </div>
+                  <Typography className="my-2 sm:mt-4 " variant="h7">
+                    {members.length} member(s) are in the pool.
+                  </Typography>
+                </>
+              )
+            ) : isMember ? (
+              members && (
+                <>
+                  <div className="flex flex-row items-end mb-7">
+                    <Typography className="my-2 sm:mt-4 text-4xl mr-4">
+                      {members.length}
+                    </Typography>
+                    <Typography className="my-2 sm:mt-4 text-lg">
+                      Pool members
+                    </Typography>
+                  </div>
+
+                  <div className="flex flex-row justify-between">
+                    <Typography className="opacity-50">Member</Typography>
+                    <Typography className="opacity-50">Share</Typography>
+                    <Typography className="opacity-50">Invested</Typography>
+                  </div>
+
                   {members.map((member, i) => {
                     return (
-                      <InitialsAvatar
-                        key={`member-${i}`}
-                        tooltip={`${
-                          member.wunderId || 'External User'
-                        }: ${member.share.toString()}%`}
-                        text={member.wunderId ? member.wunderId : '0-X'}
-                        separator="-"
-                        color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
-                      />
+                      <>
+                        <div className="flex flex-row justify-between items-center">
+                          <div className="flex items-center">
+                            <InitialsAvatar
+                              key={`member-${i}`}
+                              tooltip={`${
+                                member.wunderId || 'External User'
+                              }: ${member.share.toString()}%`}
+                              text={member.wunderId ? member.wunderId : '0-X'}
+                              separator="-"
+                              color={
+                                ['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]
+                              }
+                            />
+                            {member.wunderId ? member.wunderId : '0-X'}
+                          </div>
+                          <div className="flex ">
+                            <Typography>{member.share.toString()}%</Typography>
+                          </div>
+                        </div>
+                      </>
                     );
                   })}
-                </div>
-                <Typography className="my-2 sm:mt-4 " variant="h7">
-                  {members.length} member(s) are in the pool.
-                </Typography>
-              </>
-            )}
-            {isMember ? (
-              version.number > 3 &&
-              !closed && (
-                <div>
-                  <button
-                    className="btn-kaico items-center w-full mb-3 mt-3 py-3 px-3 text-md"
-                    onClick={() => setInviteMember(true)}
-                  >
-                    <Typography className="text-lg">Invite Member</Typography>
-                  </button>
-                  <button className=" btn-neutral items-center w-full py-3 px-3">
-                    <CopyToClipboard
-                      text={window.location.href}
-                      onCopy={() => handleSuccess('Invite link copied!')}
-                    >
-                      <span className="cursor-pointer">
-                        <div className="flex flex-row items-center justify-center">
-                          <BsLink45Deg className="text-lg ml-1" />
-                          <Typography className="text-lg mr-5 ml-2">
-                            Copy Invite Link
-                          </Typography>
-                        </div>
-                      </span>
-                    </CopyToClipboard>
-                  </button>
-                </div>
+
+                  <div className="flex flex-row flex-wrap w-full mt-2">
+                    {members.map((member, i) => {
+                      return (
+                        <InitialsAvatar
+                          key={`member-${i}`}
+                          tooltip={`${
+                            member.wunderId || 'External User'
+                          }: ${member.share.toString()}%`}
+                          text={member.wunderId ? member.wunderId : '0-X'}
+                          separator="-"
+                          color={
+                            ['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]
+                          }
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {version.number > 3 && !closed && (
+                    <div>
+                      <button
+                        className="btn-kaico items-center w-full mb-3 mt-3 py-3 px-3 text-md"
+                        onClick={() => setInviteMember(true)}
+                      >
+                        <Typography className="text-lg">
+                          Invite Member
+                        </Typography>
+                      </button>
+                      <button className=" btn-neutral items-center w-full py-3 px-3">
+                        <CopyToClipboard
+                          text={window.location.href}
+                          onCopy={() => handleSuccess('Invite link copied!')}
+                        >
+                          <span className="cursor-pointer">
+                            <div className="flex flex-row items-center justify-center">
+                              <BsLink45Deg className="text-lg ml-1" />
+                              <Typography className="text-lg mr-5 ml-2">
+                                Copy Invite Link
+                              </Typography>
+                            </div>
+                          </span>
+                        </CopyToClipboard>
+                      </button>
+                    </div>
+                  )}
+                </>
               )
             ) : closed ? (
               <div className="-m-5 mt-1 bg-amber-300 text-amber-800 py-2 px-3 flex flex-row items-center justify-center">
