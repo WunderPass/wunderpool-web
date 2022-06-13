@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AppBar, Link, Stack, Toolbar } from '@mui/material';
 import Image from 'next/image';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
+import CasamaIcon from '/public/casama.svg';
 import UserIcon from '/public/user.png';
 import { useRouter } from 'next/router';
 import MobileNavigation from './mobileNavigation';
@@ -20,13 +21,16 @@ export default function Navbar(props) {
           <Stack className="flex flex-row w-full justify-between items-center">
             <Link href="/pools">
               <div className="flex flex-row">
-                <div className="hidden pb-0.5 w-44 pr-3 sm:block">
-                  <Image
-                    src={WunderPoolIcon}
-                    alt="WunderPoolIcon"
-                    layout="responsive"
-                  />
+                <div className="flex bg-white rounded-full pl-1.5 items-center justify-center mr-4 shadow-sm">
+                  <div className="hidden pb-1 w-44 sm:block">
+                    <Image
+                      src={CasamaIcon}
+                      alt="WunderPoolIcon"
+                      layout="responsive"
+                    />
+                  </div>
                 </div>
+
                 <div className="flex-col justify-between border-solid w-9 h-9 ml-1 border-white rounded-full bg-kaico-extra-light-blue shadow-xl block sm:hidden">
                   <Image src={UserIcon} alt="UserIcon" layout="responsive" />
                 </div>

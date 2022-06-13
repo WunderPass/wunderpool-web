@@ -92,28 +92,27 @@ export default function VotingButtons(props) {
 
   if (userHasVoted) {
     return userHasVoted == 1 ? (
-      <Tooltip title="You voted Yes">
-        <ThumbUpOutlinedIcon color="success" />
-      </Tooltip>
+      <>
+        <button className="btn-vote-filled">Yes</button>
+      </>
     ) : (
-      <Tooltip title="You voted No">
-        <ThumbDownOutlinedIcon color="error" />
-      </Tooltip>
+      <>
+        <button className="btn-vote-filled">No</button>
+      </>
     );
   }
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="center">
-      <Tooltip title="Agree">
-        <IconButton color="success" onClick={() => handleVote(1)}>
-          <ThumbUpOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Disagree">
-        <IconButton color="error" onClick={() => handleVote(2)}>
-          <ThumbDownOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-    </Stack>
+    <>
+      <div className="flex flex-row justify-center mt-2">
+        <button className="bg-black btn-vote" onClick={() => handleVote(1)}>
+          Yes
+        </button>
+        <button className="btn-vote" onClick={() => handleVote(2)}>
+          No
+        </button>
+        <button className="btn-vote">Abstain</button>
+      </div>
+    </>
   );
 }

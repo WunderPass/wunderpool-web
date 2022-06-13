@@ -22,6 +22,7 @@ export function fetchPoolProposalsGamma(address) {
           yesVotes,
           noVotes,
           abstainVotes,
+          totalVotes,
           createdAt,
           executed,
         } = await wunderPool.getProposal(id);
@@ -34,6 +35,7 @@ export function fetchPoolProposalsGamma(address) {
           yesVotes,
           noVotes,
           abstainVotes,
+          totalVotes,
           createdAt,
           executed,
         };

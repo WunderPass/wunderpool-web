@@ -22,6 +22,7 @@ export function encodeParams(types, values) {
       vals.push(`${values[i]}`);
     }
   });
+  console.log(types, vals);
   return abiCoder.encode(types, vals);
 }
 
@@ -34,6 +35,10 @@ export function toEthString(num, decimals) {
 
 export function displayWithDecimalPlaces(num, decimals) {
   return (Math.round(num * 100) / 100).toFixed(decimals);
+}
+
+export function weiToMatic(wei) {
+  return wei / 1000000000000000000;
 }
 
 export function matic(num) {

@@ -1,6 +1,6 @@
 # WunderPool Web App
 
-This Project is the core of WunderPool and enables Users to create Blockchain based Investment Pools.
+This Project is the core of Casama and enables Users to create Blockchain based Investment Pools.
 
 ## Architechture
 

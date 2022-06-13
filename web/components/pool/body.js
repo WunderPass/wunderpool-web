@@ -3,6 +3,7 @@ import ProposalList from '/components/proposals/list';
 import CustomForm from '/components/proposals/customForm';
 import TokenList from '/components/tokens/list';
 import NftList from '/components/tokens/nfts';
+import TransactionsList from '/components/pool/transactions';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import AssetDetails from '/components/pool/assetDetails';
@@ -17,21 +18,32 @@ function body(props) {
   const [isProposalTab, setIsProposalTab] = useState(true);
   const [isAssetTab, setIsAssetTab] = useState(false);
   const [isNftTab, setIsNftTab] = useState(false);
+  const [isTransactionsTab, setIsTransactionsTab] = useState(false);
 
   const activateAssetTab = () => {
     setIsAssetTab(true);
     setIsProposalTab(false);
     setIsNftTab(false);
+    setIsTransactionsTab(false);
   };
 
   const activateProposalTab = () => {
     setIsProposalTab(true);
     setIsAssetTab(false);
     setIsNftTab(false);
+    setIsTransactionsTab(false);
   };
 
   const activateNftTab = () => {
     setIsNftTab(true);
+    setIsProposalTab(false);
+    setIsAssetTab(false);
+    setIsTransactionsTab(false);
+  };
+
+  const activateTransactionsTab = () => {
+    setIsTransactionsTab(true);
+    setIsNftTab(false);
     setIsProposalTab(false);
     setIsAssetTab(false);
   };
@@ -80,7 +92,9 @@ function body(props) {
                   <div className="flex flex-row justify-start items-center w-full">
                     <button
                       className={
-                        isProposalTab ? 'py-4 pr-4' : 'py-4 pr-4 opacity-40 '
+                        isProposalTab
+                          ? 'py-4 pr-2 sm:pr-4'
+                          : 'py-4 pr-2 sm:pr-4 opacity-40'
                       }
                       onClick={activateProposalTab}
                     >
@@ -91,8 +105,8 @@ function body(props) {
                     <button
                       className={
                         isAssetTab
-                          ? ' py-4 pr-4 pl-4'
-                          : 'opacity-40 py-4 pr-4 pl-4'
+                          ? ' py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
+                          : 'opacity-40 py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
                       }
                       onClick={activateAssetTab}
                     >
@@ -103,13 +117,25 @@ function body(props) {
                     <button
                       className={
                         isNftTab
-                          ? 'py-4 pr-4 pl-4'
-                          : 'py-4 pr-4 pl-4 opacity-40'
+                          ? 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
+                          : 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4 opacity-40'
                       }
                       onClick={activateNftTab}
                     >
                       <div className="flex flex-row items-center justify-center">
                         <Typography>NFT's</Typography>
+                      </div>
+                    </button>
+                    <button
+                      className={
+                        isTransactionsTab
+                          ? 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
+                          : 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4 opacity-40'
+                      }
+                      onClick={activateTransactionsTab}
+                    >
+                      <div className="flex flex-row items-center justify-center">
+                        <Typography>Transactions</Typography>
                       </div>
                     </button>
                   </div>
@@ -139,6 +165,13 @@ function body(props) {
                       nfts={wunderPool.nfts}
                       poolAddress={address}
                       fetchProposals={wunderPool.determineProposals}
+                      {...props}
+                    />
+                  )}
+                  {isTransactionsTab && (
+                    <TransactionsList
+                      wunderPool={wunderPool}
+                      poolAddress={address}
                       {...props}
                     />
                   )}
