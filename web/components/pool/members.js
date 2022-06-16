@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Skeleton, Typography, Collapse } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
@@ -47,7 +47,7 @@ export default function PoolMembers(props) {
   return isReady ? (
     <div className="md:ml-4">
       <div
-        className={`flex container-white overflow-clip justify-start md:justify-center mb-4 ${
+        className={`flex container-white overflow-clip justify-start md:justify-center ${
           isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
         }`}
       >
@@ -82,11 +82,11 @@ export default function PoolMembers(props) {
             ) : isMember ? (
               members && (
                 <>
-                  <div className="flex flex-row items-end mb-7">
-                    <Typography className="my-2 sm:mt-4 text-4xl mr-4">
+                  <div className="flex flex-row items-end mb-6">
+                    <Typography className="my-2 sm:mt-2 text-4xl mr-4">
                       {members.length}
                     </Typography>
-                    <Typography className="my-2 sm:mt-4 text-lg">
+                    <Typography className="my-2 sm:mt-2 text-lg">
                       Pool members
                     </Typography>
                   </div>
@@ -98,7 +98,7 @@ export default function PoolMembers(props) {
                           <Typography className="opacity-50">Member</Typography>
                         </th>
                         <th className="pb-4">
-                          <Typography className="text-left opacity-50">
+                          <Typography className="text-left opacity-50 md:text-center">
                             Share
                           </Typography>
                         </th>
@@ -138,7 +138,7 @@ export default function PoolMembers(props) {
                                           ][i % 5]
                                         }
                                       />
-                                      <Typography className="ml-1">
+                                      <Typography className="ml-1 md:hidden">
                                         {b.wunderId
                                           ? b.wunderId
                                           : 'External User'}
