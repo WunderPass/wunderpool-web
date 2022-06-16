@@ -14,9 +14,7 @@ export default function getPoolsInfo(pools) {
         );
 
         const totalBalances = poolTokens.map((token, i) => {
-          var usdValueAsNumber = Number(
-            token.usdValue.replace(/[^0-9.-]+/g, '')
-          );
+          var usdValueAsNumber = token.usdValue;
           return usdValueAsNumber;
         });
 

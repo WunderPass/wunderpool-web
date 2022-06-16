@@ -1,18 +1,12 @@
 import { useState } from 'react';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import DangerousIcon from '@mui/icons-material/Dangerous';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
-import PoolInfoDialog from '/components/dialogs/poolInfo';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
-import { currency, usdc, poolBalanceToUsd } from '/services/formatter';
+import { currency, poolBalanceToUsd } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
-import { toEthString } from '../../services/formatter';
 import { BsLink45Deg } from 'react-icons/bs';
-import { GrGroup } from 'react-icons/gr';
 import { BsImage } from 'react-icons/bs';
 import { FaLongArrowAltDown } from 'react-icons/fa';
 import Link from 'next/link';
@@ -142,12 +136,17 @@ export default function PoolHeader(props) {
                   Pool Description
                 </Typography>
                 <Typography className="text-sm opacity-40 py-1">
-                  150Sol will be converted into a Polygon Matic token. I'm
-                  looking forward to welcoming everyone who wishes to join the
-                  pool. The current 100 Solana to Polygon exchange rate is 0
-                  MATIC. There are no limits to SOL to MATIC swaps here, so feel
-                  free to use ChangeNOW no matter how many coins you need to
-                  exch... Read more
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                  diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                  aliquyam erat, sed diam voluptua. At vero eos et accusam et
+                  justo duo dolores et ea rebum. Stet clita kasd gubergren, no
+                  sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
+                  ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                  nonumy eirmod tempor invidunt ut labore et dolore magna
+                  aliquyam erat, sed diam voluptua. At vero eos et accusam et
+                  justo duo dolores et ea rebum. Stet clita kasd gubergren, no
+                  sea takimata sanctus est Lorem ipsum dolor sit amet.... Read
+                  more
                 </Typography>
               </div>
               <div>

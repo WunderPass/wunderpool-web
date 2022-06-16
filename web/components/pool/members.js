@@ -120,7 +120,7 @@ export default function PoolMembers(props) {
                               {i < 3 && (
                                 <tr>
                                   <td className="pb-2">
-                                    <div className="flex flex-row items-center ">
+                                    <div className="flex flex-row items-center md:ml-2">
                                       <InitialsAvatar
                                         key={`member-${i}`}
                                         tooltip={`${
