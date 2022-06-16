@@ -23,7 +23,6 @@ export default function TokenList(props) {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h4">Tokens</Typography>
       {tokens.length > 0 &&
         tokens
           .filter((tkn) => tkn.balance > 0)

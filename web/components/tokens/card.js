@@ -7,8 +7,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-import SellIcon from '@mui/icons-material/Sell';
 import axios from 'axios';
 
 export default function TokenCard(props) {
@@ -27,45 +25,56 @@ export default function TokenCard(props) {
         setWaitingForPrice(false);
       });
     }
-
-    console.log(token.address);
   }, [token.address]);
 
   return (
-    <Paper elevation={1} sx={{ p: 2 }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Stack spacing={2} direction="row" alignItems="center">
-          <img width="50" src={token.image || '/favicon.ico'} alt="TKN" />
-          <Stack spacing={1}>
-            <Typography variant="h6">
-              {token.name} ({token.symbol})
-            </Typography>
-            <Tooltip title={`Tokens: ${token.formattedBalance}`}>
-              <div className="flex flex-col">
-                <Typography variant="subtitle1" width="fit-content">
-                  Total Balance: {token.usdValue}
-                </Typography>
-                <Typography>Price per token: {tokenPrice} $ </Typography>
-                <Typography variant="subtitle1" width="fit-content">
-                  Tokens Owned: {token.formattedBalance}
+    <div className="container-gray">
+      <div className="flex flex-col">
+        <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center w-full">
+            <img
+              className="mr-4"
+              width="50"
+              src={token.image || '/favicon.ico'}
+              alt="TKN"
+            />
+
+            <div className="flex flex-col w-full justify-between">
+              <div className="flex flex-row justify-between items-center mb-1">
+                <Typography className="text-2xl">{token.name}</Typography>
+                <Typography className="text-2xl" width="fit-content">
+                  {token.usdValue}
                 </Typography>
               </div>
-            </Tooltip>
-          </Stack>
-        </Stack>
-        <Stack direction="row" alignItems="center" justifyContent="center">
-          <Tooltip title="Swap Token">
-            <IconButton color="info" onClick={() => handleSwap(token)}>
-              <CurrencyExchangeIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Sell Token">
-            <IconButton color="success" onClick={() => handleSell(token)}>
-              <SellIcon />
-            </IconButton>
-          </Tooltip>
-        </Stack>
-      </Stack>
-    </Paper>
+              <div className="flex flex-col sm:flex-row  justify-between items-center ">
+                <Typography className="w-full sm:w-auto">
+                  1 {token.symbol} = ${tokenPrice}
+                </Typography>
+                <Typography className="w-full sm:w-auto">
+                  {token.formattedBalance > 1
+                    ? parseFloat(token.formattedBalance).toFixed(3)
+                    : parseFloat(token.formattedBalance).toFixed(8)}{' '}
+                  {token.symbol}
+                </Typography>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        <button
+          className="rounded-xl btn-kaico w-full p-2 my-2 mt-4"
+          onClick={() => handleSell(token)}
+        >
+          Sell
+        </button>
+        <button
+          className="border-kaico-blue rounded-xl btn-neutral w-full p-2 border"
+          onClick={() => handleSwap(token)}
+        >
+          Swap
+        </button>
+      </div>
+    </div>
   );
 }

@@ -49,7 +49,11 @@ export default function ProposalList(props) {
         >
           <Stack spacing={2}>
             {wunderPool.proposals
-              .filter((p) => p.executed == false)
+              .filter(
+                (p) =>
+                  p.executed == false &&
+                  p.noVotes.toNumber() <= p.totalVotes.toNumber() / 2
+              )
               .sort((one, two) => two.createdAt.sub(one.createdAt))
               .map((proposal) => {
                 return (
@@ -70,7 +74,11 @@ export default function ProposalList(props) {
         >
           <Stack spacing={2}>
             {wunderPool.proposals
-              .filter((p) => p.executed == true || p.noVotes > p.totalVotes / 2)
+              .filter(
+                (p) =>
+                  p.executed == true ||
+                  p.noVotes.toNumber() > p.totalVotes.toNumber() / 2
+              )
               .sort((one, two) => two.createdAt.sub(one.createdAt))
               .map((proposal) => {
                 return (
@@ -86,13 +94,15 @@ export default function ProposalList(props) {
       </Box>
     </Stack>
   ) : (
-    <Paper elevation={1} sx={{ p: 2 }}>
+    <div className="container-white border-2">
       <Stack sx={{ textAlign: 'center' }}>
-        <Typography variant="h5">There are no Proposals</Typography>
+        <Typography className="mt-3" variant="h5">
+          There are no Proposals
+        </Typography>
         <Typography className="mb-2 mt-3" variant="subtitle1">
           Create one now!
         </Typography>
       </Stack>
-    </Paper>
+    </div>
   );
 }

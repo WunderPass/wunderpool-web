@@ -5,8 +5,10 @@ import {
   fetchAllPoolsDelta,
   fetchPoolIsClosedDelta,
   fetchUserPoolsDelta,
+  fetchWhitelistedUserPoolsDelta,
   fundPoolDelta,
   joinPoolDelta,
+  normalTransactionsDelta,
 } from './delta/pools';
 import {
   fetchAllPoolsGamma,
@@ -88,6 +90,13 @@ export function fetchUserPools(userAddress) {
   });
 }
 
+export function fetchWhitelistedUserPools(userAddress) {
+  return new Promise(async (resolve, reject) => {
+    const deltaPools = await fetchWhitelistedUserPoolsDelta(userAddress);
+    resolve([...deltaPools]);
+  });
+}
+
 export function fetchAllPools(version) {
   if (version > 3) {
     return fetchAllPoolsDelta();
@@ -161,3 +170,13 @@ export function fundPool(poolAddress, amount, version) {
     return fundPoolGamma(poolAddress, amount);
   }
 }
+
+export function normalTransactions(poolAddress, version) {
+  if (version > 3) {
+    return normalTransactionsDelta(poolAddress);
+  } else {
+    return normalTransactionsDelta(poolAddress);
+  }
+}
+
+//FETCH poolTransactions

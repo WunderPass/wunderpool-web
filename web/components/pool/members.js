@@ -6,13 +6,20 @@ import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
 import InitialsAvatar from '../utils/initialsAvatar';
 import { FaBan } from 'react-icons/fa';
+import { BsLink45Deg } from 'react-icons/bs';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 export default function PoolMembers(props) {
-  const { wunderPool, loginCallback } = props;
+  const { wunderPool, loginCallback, handleSuccess } = props;
   const { isReady, isMember, closed, governanceToken, version } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
   const [members, setMembers] = useState(null);
+  const [inviteLink, setInviteLink] = useState();
+
+  const copyInviteLink = () => {
+    setInviteLink(window.location.href);
+  };
 
   useEffect(async () => {
     if (governanceToken && governanceToken.holders) {
@@ -61,19 +68,36 @@ export default function PoolMembers(props) {
                   })}
                 </div>
                 <Typography className="my-2 sm:mt-4 " variant="h7">
-                  {members.length} members are in the pool.
+                  {members.length} member(s) are in the pool.
                 </Typography>
               </>
             )}
             {isMember ? (
               version.number > 3 &&
               !closed && (
-                <button
-                  className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
-                  onClick={() => setInviteMember(true)}
-                >
-                  <Typography className="text-lg">Invite Member</Typography>
-                </button>
+                <div>
+                  <button
+                    className="btn-kaico items-center w-full mb-3 mt-3 py-3 px-3 text-md"
+                    onClick={() => setInviteMember(true)}
+                  >
+                    <Typography className="text-lg">Invite Member</Typography>
+                  </button>
+                  <button className=" btn-neutral items-center w-full py-3 px-3">
+                    <CopyToClipboard
+                      text={window.location.href}
+                      onCopy={() => handleSuccess('Invite link copied!')}
+                    >
+                      <span className="cursor-pointer">
+                        <div className="flex flex-row items-center justify-center">
+                          <BsLink45Deg className="text-lg ml-1" />
+                          <Typography className="text-lg mr-5 ml-2">
+                            Copy Invite Link
+                          </Typography>
+                        </div>
+                      </span>
+                    </CopyToClipboard>
+                  </button>
+                </div>
               )
             ) : closed ? (
               <div className="-m-5 mt-1 bg-amber-300 text-amber-800 py-2 px-3 flex flex-row items-center justify-center">

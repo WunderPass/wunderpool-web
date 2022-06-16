@@ -102,8 +102,6 @@ export function createMultiActionProposalDelta(
       deadline,
       proposalId,
     ];
-    console.log('types, values');
-    console.log(types, values);
     sendSignatureRequest(types, values, false)
       .then(async (signature) => {
         console.log(signature);
@@ -362,14 +360,18 @@ export function executeProposalDelta(poolAddress, id) {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 

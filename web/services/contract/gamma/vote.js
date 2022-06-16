@@ -13,15 +13,18 @@ export function voteGamma(poolAddress, proposalId, mode) {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        console.log(transaction);
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 

@@ -57,7 +57,6 @@ export default function usePoolListener(handleInfo) {
     });
 
     wunderPool.on('Voted', async (proposalId, voter, mode) => {
-      console.log('Voted:', proposalId, voter, mode);
       const modeLookup = ['NONE', 'YES', 'NO'];
       const wunderId = await resolveUser(voter);
       handleInfo(

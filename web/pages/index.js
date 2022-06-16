@@ -1,6 +1,7 @@
 import CreateYourWunderPass from '/components/auth/createYourWunderPass';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
+import CasamaIcon from '/public/casama-wht.svg';
 import { Dialog, LinearProgress, Stack } from '@mui/material';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
@@ -23,7 +24,6 @@ export default function Home(props) {
 
   const handleClick = () => {
     setSigning(true);
-    console.log('Test');
   };
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Home(props) {
               <div className="ml-10 lg:ml-6 flex-1">
                 <Image
                   className=""
-                  src={WunderPoolIcon}
+                  src={CasamaIcon}
                   alt="WunderPoolIcon"
                   layout="responsive"
                 />

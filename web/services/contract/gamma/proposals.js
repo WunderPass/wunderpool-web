@@ -22,6 +22,7 @@ export function fetchPoolProposalsGamma(address) {
           yesVotes,
           noVotes,
           abstainVotes,
+          totalVotes,
           createdAt,
           executed,
         } = await wunderPool.getProposal(id);
@@ -34,6 +35,7 @@ export function fetchPoolProposalsGamma(address) {
           yesVotes,
           noVotes,
           abstainVotes,
+          totalVotes,
           createdAt,
           executed,
         };
@@ -84,14 +86,18 @@ export function createSingleActionProposalGamma(
       { gasPrice: await gasPrice() }
     );
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
@@ -122,14 +128,18 @@ export function createMultiActionProposalGamma(
       { gasPrice: await gasPrice() }
     );
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
@@ -389,14 +399,18 @@ export function executeProposalGamma(poolAddress, id) {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx).then(async (transaction) => {
-      try {
-        const receipt = await provider.waitForTransaction(transaction.hash);
-        resolve(receipt);
-      } catch (error) {
-        reject(error?.error?.error?.error?.message || error);
-      }
-    });
+    smartContractTransaction(tx)
+      .then(async (transaction) => {
+        try {
+          const receipt = await provider.waitForTransaction(transaction.hash);
+          resolve(receipt);
+        } catch (error) {
+          reject(error?.error?.error?.error?.message || error);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
