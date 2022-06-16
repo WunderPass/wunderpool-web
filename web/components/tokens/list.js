@@ -10,6 +10,11 @@ export default function TokenList(props) {
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
   const [token, setToken] = useState('');
+  const [hideSmallBalances, setHideSmallBalances] = useState(false);
+
+  const toggleHideSmallBalances = () => {
+    setHideSmallBalances(!hideSmallBalances);
+  };
 
   const handleSell = (token) => {
     setOpenSell(true);
@@ -23,19 +28,32 @@ export default function TokenList(props) {
 
   return (
     <Stack spacing={2}>
+      {tokens.length > 0 && (
+        <button
+          className="btn-neutral p-1 w-1/3 place-self-end "
+          onClick={toggleHideSmallBalances}
+        >
+          <Typography className="text-xs mt-0.5">
+            {hideSmallBalances ? 'Show small balances' : 'Hide small balances'}
+          </Typography>
+        </button>
+      )}
+
       {tokens.length > 0 &&
         tokens
           .filter((tkn) => tkn.balance > 0)
           .map((token) => {
             if (token.address != usdcAddress) {
-              return (
-                <TokenCard
-                  token={token}
-                  key={`token-${token.address}`}
-                  handleSell={handleSell}
-                  handleSwap={handleSwap}
-                />
-              );
+              if (!hideSmallBalances || token.usdValue > 0.0) {
+                return (
+                  <TokenCard
+                    token={token}
+                    key={`token-${token.address}`}
+                    handleSell={handleSell}
+                    handleSwap={handleSwap}
+                  />
+                );
+              }
             }
           })}
       <SellTokenDialog

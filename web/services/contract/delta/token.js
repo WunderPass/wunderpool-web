@@ -35,7 +35,7 @@ export function fetchPoolTokensDelta(address) {
           formattedBalance: formattedBalance,
           image: image_url,
           price: price,
-          usdValue: currency(usdValue / 100, {}),
+          usdValue: usdValue / 100,
         };
       })
     );
