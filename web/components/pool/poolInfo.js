@@ -16,7 +16,7 @@ export default function getPoolInfo(_pool, _user) {
     const totalBalance = 0;
 
     poolTokens.map((token, i) => {
-      var usdValueAsNumber = Number(token.usdValue.replace(/[^0-9.-]+/g, ''));
+      var usdValueAsNumber = token.usdValue;
       totalBalance = totalBalance + usdValueAsNumber;
     });
     setTotalBalance(totalBalance);
