@@ -28,7 +28,7 @@ export default function TokenList(props) {
 
   return (
     <Stack spacing={2}>
-      {tokens.length > 0 && (
+      {tokens.length > 1 && (
         <button
           className="btn-neutral p-1 w-1/3 place-self-end "
           onClick={toggleHideSmallBalances}
