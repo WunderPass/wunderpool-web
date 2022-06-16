@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { currency } from '/services/formatter';
 
 export default function TokenCard(props) {
   const { token, handleSell, handleSwap } = props;
@@ -43,7 +44,7 @@ export default function TokenCard(props) {
               <div className="flex flex-row justify-between items-center mb-1">
                 <Typography className="text-2xl">{token.name}</Typography>
                 <Typography className="text-2xl" width="fit-content">
-                  {token.usdValue}
+                  {currency(token.usdValue, {})}
                 </Typography>
               </div>
               <div className="flex flex-col sm:flex-row  justify-between items-center ">

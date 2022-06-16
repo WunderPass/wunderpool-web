@@ -32,12 +32,6 @@ export default function ProposalCard(props) {
   const [executable, setExecutable] = useState(false);
 
   useEffect(() => {
-    console.log(
-      'deadLine as Date',
-      new Date(proposal.createdAt.mul(1000).toNumber())
-    );
-    console.log('deadLine ', proposal.deadline.mul(1000).toNumber());
-
     setExecutable(proposal.yesVotes.toNumber() > totalSupply?.toNumber() / 2);
   }, [proposal.yesVotes.toNumber()]);
 
