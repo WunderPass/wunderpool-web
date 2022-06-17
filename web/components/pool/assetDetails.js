@@ -13,25 +13,27 @@ function assetDetails(props) {
   return (
     <>
       {wunderPool.isMember ? (
-        <div className="md:ml-4 mt-6">
+        <div className="md:ml-4 mt-6 max-w-4xl">
           <div className="flex container-white justify-start sm:justify-center mb-4 ">
             <div className="flex flex-col items-center justify-start w-full">
               <Typography className="text-xl w-full">Asset details</Typography>
-              <div className="w-full">
-                <Typography className="text-sm opacity-40 py-1 pt-6">
-                  Total value of pool assets
-                </Typography>
-                <Typography className="text-2xl opacity-90 py-1 font-semibold">
-                  {currency(wunderPool.assetBalance, {})}
-                </Typography>
-              </div>
-              <div className="w-full">
-                <Typography className="text-sm opacity-40 py-1 pt-6">
-                  Amount of different assets
-                </Typography>
-                <Typography className="text-2xl opacity-90 py-1 font-semibold">
-                  {wunderPool.assetCount}
-                </Typography>
+              <div className="lg:flex lg:flex-row lg:justify-between w-full">
+                <div className="w-full">
+                  <Typography className="text-sm opacity-40 py-1 pt-6">
+                    Total value of pool assets
+                  </Typography>
+                  <Typography className="text-2xl opacity-90 py-1 font-semibold">
+                    {currency(wunderPool.assetBalance, {})}
+                  </Typography>
+                </div>
+                <div className="w-full text-right">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 ">
+                    Amount of assets
+                  </Typography>
+                  <Typography className="text-2xl opacity-90 py-1 font-semibold">
+                    {wunderPool.assetCount}
+                  </Typography>
+                </div>
               </div>
 
               <button

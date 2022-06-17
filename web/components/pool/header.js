@@ -100,7 +100,7 @@ export default function PoolHeader(props) {
                 </button>
               </div>
 
-              <div className="lg:flex lg:flex-row lg:w-2/4 lg:justify-between">
+              <div className="lg:flex lg:flex-row lg:w-3/4 lg:justify-between">
                 <div>
                   <Typography className="text-sm opacity-40 py-1 pt-6">
                     Created
@@ -178,31 +178,37 @@ export default function PoolHeader(props) {
                       Token details
                     </Typography>
                   </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Pool Token Name
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      {wunderPool.governanceToken.name} (
-                      {wunderPool.governanceToken.symbol})
-                    </Typography>
+                  <div className="lg:flex lg:flex-row lg:w-3/4 lg:justify-between">
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Pool Token Name
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        {wunderPool.governanceToken.name} (
+                        {wunderPool.governanceToken.symbol})
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Price per Token
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        {currency(
+                          wunderPool.governanceToken.price / 1000000,
+                          {}
+                        )}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Total Supply
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        {wunderPool.governanceToken.totalSupply.toString()}
+                      </Typography>
+                    </div>
                   </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Price per Token
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      {currency(wunderPool.governanceToken.price / 1000000, {})}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Total Supply
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      {wunderPool.governanceToken.totalSupply.toString()}
-                    </Typography>
-                  </div>
+
                   <div>
                     <Typography className="text-sm opacity-40 py-1 pt-6">
                       Token Pool Address
@@ -228,37 +234,39 @@ export default function PoolHeader(props) {
                       Voting rules
                     </Typography>
                   </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Duration of Voting
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      -
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Min % vor win
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      -
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Type of Voting
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      -
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography className="text-sm opacity-40 py-1 pt-6">
-                      Available answers
-                    </Typography>
-                    <Typography className="text-sm opacity-90 py-1">
-                      -
-                    </Typography>
+                  <div className="lg:flex lg:flex-row lg:w-3/4 lg:justify-between">
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Duration of Voting
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        -
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Min % vor win
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        -
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Type of Voting
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        -
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography className="text-sm opacity-40 py-1 pt-6">
+                        Available answers
+                      </Typography>
+                      <Typography className="text-sm opacity-90 py-1">
+                        -
+                      </Typography>
+                    </div>
                   </div>
                 </>
               )}
