@@ -35,14 +35,14 @@ export default function Home(props) {
 
   return (
     <>
-      <div className="flex flex-col h-screen pt-7 ">
+      <div className="flex flex-col h-screen md:pt-7 ">
         <Head>
           <title>Casama</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-          <div className="lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-4xl">
-            <div className="h-fit bg-kaico-blue text-white rounded-t-2xl py-12 lg:py-52 lg:w-2/5  lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
+        <main className="flex flex-col items-center justify-center w-full  flex-1 px-20 text-center">
+          <div className="lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen">
+            <div className="h-fit bg-kaico-blue text-white md:rounded-t-2xl py-12 lg:py-52 lg:w-2/5  lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
               <div className="ml-10 lg:ml-6 flex-1">
                 <Image
                   className=""
