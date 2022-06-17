@@ -92,12 +92,12 @@ export default function Pool(props) {
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
         <div
           className="hidden md:flex md:flex-row" //Desktop
         >
-          <div className="md:flex md:flex-col max-w-xl ">
+          <div className="md:flex md:flex-col max-w-3xl">
             <PoolHeader
               name={name}
               address={address}

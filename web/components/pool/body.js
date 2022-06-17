@@ -63,7 +63,7 @@ function body(props) {
   }, [newProposalEvent]);
 
   return (
-    <div className="mt-4 mb-8">
+    <div className="mt-4 mb-8 ">
       {wunderPool.isMember ? ( //POOL WHEN YOU ARE A MEMBER
         <>
           <Collapse

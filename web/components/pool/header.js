@@ -29,7 +29,7 @@ export default function PoolHeader(props) {
       <div
         className={
           !showMoreInfo
-            ? 'flex flex-col container-white-p-0 w-full sm:mt-6 md:max-h-72'
+            ? 'flex flex-col container-white-p-0 w-full sm:mt-6 md:max-h-72 '
             : 'flex flex-col container-white-p-0 w-full sm:mt-6 '
         }
       >
@@ -80,7 +80,7 @@ export default function PoolHeader(props) {
               </button>
             </Collapse>
             <Collapse in={showMoreInfo}>
-              <div className="flex flex-row items-center  justify-between">
+              <div className="flex flex-row  items-center  justify-between">
                 <button
                   className="text-black text-sm mt-2 opacity-40"
                   onClick={toggleAdvanced}
@@ -100,36 +100,39 @@ export default function PoolHeader(props) {
                 </button>
               </div>
 
-              <div>
-                <Typography className="text-sm opacity-40 py-1 pt-6">
-                  Created
-                </Typography>
-                <Typography className="text-sm opacity-90 py-1">-</Typography>
+              <div className="lg:flex lg:flex-row lg:w-2/4 lg:justify-between">
+                <div>
+                  <Typography className="text-sm opacity-40 py-1 pt-6">
+                    Created
+                  </Typography>
+                  <Typography className="text-sm opacity-90 py-1">-</Typography>
+                </div>
+                <div>
+                  <Typography className="text-sm opacity-40 py-1 pt-6">
+                    End Time
+                  </Typography>
+                  <Typography className="text-sm opacity-90 py-1">-</Typography>
+                </div>
+                <div>
+                  <Typography className="text-sm opacity-40 py-1 pt-6">
+                    Min
+                  </Typography>
+                  <Typography className="text-sm opacity-90 py-1">
+                    {wunderPool.governanceToken &&
+                      currency(
+                        wunderPool.governanceToken.entryBarrier / 1000000,
+                        {}
+                      )}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography className="text-sm opacity-40 py-1 pt-6">
+                    Max
+                  </Typography>
+                  <Typography className="text-sm opacity-90 py-1">-</Typography>
+                </div>
               </div>
-              <div>
-                <Typography className="text-sm opacity-40 py-1 pt-6">
-                  End Time
-                </Typography>
-                <Typography className="text-sm opacity-90 py-1">-</Typography>
-              </div>
-              <div>
-                <Typography className="text-sm opacity-40 py-1 pt-6">
-                  Min
-                </Typography>
-                <Typography className="text-sm opacity-90 py-1">
-                  {wunderPool.governanceToken &&
-                    currency(
-                      wunderPool.governanceToken.entryBarrier / 1000000,
-                      {}
-                    )}
-                </Typography>
-              </div>
-              <div>
-                <Typography className="text-sm opacity-40 py-1 pt-6">
-                  Max
-                </Typography>
-                <Typography className="text-sm opacity-90 py-1">-</Typography>
-              </div>
+
               <Divider className="my-8 opacity-70" />
               <div>
                 <Typography className="text-lg font-semi py-1">
