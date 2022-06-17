@@ -1,64 +1,66 @@
 import { useState } from 'react';
+import { Dialog, LinearProgress, Stack } from '@mui/material';
 
 export default function LoginWithWunderPass(props) {
   const { dev, name, image, intent = [], onSuccess } = props;
   const [popup, setPopup] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = (e) => {
+    setOpen(true);
+    setLoading(true);
     e.preventDefault();
-    const authPopup =
-      popup ||
-      window.open(
-        encodeURI(
-          `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
-        ),
-        'WunderPassAuth',
-        'popup'
-      );
-    setPopup(authPopup);
 
-    const requestInterval = setInterval(() => {
-      authPopup.postMessage(
-        { accountId: 'ABCDE', intent: intent },
-        process.env.WUNDERPASS_URL
-      );
-    }, 1000);
+    setTimeout(() => {
+      const authPopup =
+        popup ||
+        window.open(
+          encodeURI(
+            `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
+          ),
+          'wunderPassAuth'
+        );
+      setPopup(authPopup);
 
-    window.addEventListener('message', (event) => {
-      if (event.origin == process.env.WUNDERPASS_URL) {
-        clearInterval(requestInterval);
+      const requestInterval = setInterval(() => {
+        authPopup.postMessage(
+          { accountId: 'ABCDE', intent: intent },
+          process.env.WUNDERPASS_URL
+        );
+      }, 1000);
 
-        if (event.data?.wunderId) {
-          onSuccess(event.data);
-          event.source.window.close();
-          setPopup(null);
+      window.addEventListener('message', (event) => {
+        if (event.origin == process.env.WUNDERPASS_URL) {
+          clearInterval(requestInterval);
+
+          if (event.data?.wunderId) {
+            onSuccess(event.data);
+            event.source.window.close();
+            setPopup(null);
+          }
         }
-      }
-    });
+      });
 
-    const closedListener = setInterval(() => {
-      if (authPopup.closed) {
-        setPopup(null);
-        clearInterval(closedListener);
-      }
-    }, 500);
+      const closedListener = setInterval(() => {
+        if (authPopup.closed) {
+          setPopup(null);
+          clearInterval(closedListener);
+        }
+      }, 500);
+    }, 10);
   };
 
-  const goBack = (e) => {
-    e.preventDefault();
-    popup.focus();
-  };
-
-  const cancelAuth = (e) => {
-    e.preventDefault();
+  const dialogClose = () => {
+    setOpen(false);
+    setLoading(false);
     setPopup(null);
-    popup.close();
   };
 
   return (
     <>
-      <a href={process.env.WUNDERPASS_URL} onClick={handleClick}>
-        <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md lg:px-2 py-2 font-bold text-md">
+      <button onClick={handleClick}>
+        <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-bold text-md">
           <svg
             className="fill-white"
             xmlns="http://www.w3.org/2000/svg"
@@ -72,33 +74,27 @@ export default function LoginWithWunderPass(props) {
               transform="matrix(.1 0 0 -.1 0 1917)"
             ></path>
           </svg>
-          <p className="pl-2 lg:pl-4 text-white">Login with WunderPass</p>
+          <p className="pl-2 lg:pl-3 pt-1 text-white">Login with WunderPass</p>
         </div>
-      </a>
-      {popup && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            margin: 0,
-            padding: 0,
-            width: '100vw',
-            height: '100vh',
-            background: '#000C',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <a href="#" onClick={goBack}>
-            Go Back
-          </a>
-          <a href="#" onClick={cancelAuth}>
-            Cancel
-          </a>
-        </div>
+      </button>
+      {loading && (
+        <>
+          <Dialog
+            open={open}
+            onClose={dialogClose}
+            PaperProps={{
+              style: { borderRadius: 12 },
+            }}
+          >
+            <iframe
+              className="w-auto"
+              name="wunderPassAuth"
+              height="500"
+              style={{ transition: 'height 300ms ease' }}
+            ></iframe>
+            <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+          </Dialog>
+        </>
       )}
     </>
   );
