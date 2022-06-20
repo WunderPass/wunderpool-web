@@ -49,7 +49,13 @@ export default function TokenCard(props) {
               </div>
               <div className="flex flex-col sm:flex-row  justify-between items-center ">
                 <Typography className="w-full sm:w-auto">
-                  1 {token.symbol} = ${tokenPrice}
+                  1 {token.symbol} = $
+                  {tokenPrice >= 0.01
+                    ? parseFloat(tokenPrice).toFixed(2)
+                    : tokenPrice > 0.001
+                    ? parseFloat(tokenPrice).toFixed(6)
+                    : tokenPrice}{' '}
+                  {token.symbol}
                 </Typography>
                 <Typography className="w-full sm:w-auto">
                   {token.formattedBalance > 1
