@@ -13,13 +13,13 @@ function assetDetails(props) {
   return (
     <>
       {wunderPool.isMember ? (
-        <div className="md:ml-4 mt-6 max-w-4xl">
+        <div className="md:ml-4 mt-6 max-w-4xl lg:w-80 ">
           <div className="flex container-white justify-start sm:justify-center mb-4 ">
             <div className="flex flex-col items-center justify-start w-full">
               <Typography className="text-xl w-full">Asset details</Typography>
               <div className="flex lg:flex-row flex-col lg:justify-between w-full">
                 <div className="w-full">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 lg:h-16">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 ">
                     Total value of assets
                   </Typography>
                   <Typography className="text-2xl opacity-90 py-1 font-semibold">
@@ -27,7 +27,7 @@ function assetDetails(props) {
                   </Typography>
                 </div>
                 <div className="w-full lg:text-right">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 lg:h-16">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 ">
                     Amount of assets
                   </Typography>
                   <Typography className="text-2xl opacity-90 py-1 font-semibold">
