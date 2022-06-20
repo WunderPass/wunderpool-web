@@ -94,7 +94,12 @@ export default function ProposalCard(props) {
         {proposal.description}
       </Typography>
 
-      <Timer {...props} />
+      <div className="mt-4 mb-8 ">
+        {proposal.executed == false &&
+          proposal.noVotes.toNumber() <= proposal.totalVotes.toNumber() / 2 && (
+            <Timer {...props} />
+          )}
+      </div>
 
       <VotingResults
         yes={proposal.yesVotes.toNumber()}

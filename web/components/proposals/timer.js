@@ -107,7 +107,7 @@ const Timer = (props) => {
   };
 
   return (
-    <div className="flex-col mt-4 justify-end items-center">
+    <div className="flex-col justify-end items-center">
       <div>
         <div className="text-3xl">{timer}</div>
         <div className="flex flex-row opacity-50">
@@ -116,7 +116,7 @@ const Timer = (props) => {
           <Typography className="text-xs ml-1">Seconds</Typography>
         </div>
       </div>
-      <div className="mt-5 mb-8 ">
+      <div className="mt-5">
         <TimerBar
           passed={startTimeInSec - remainingTimeInSec}
           total={startTimeInSec}

@@ -111,7 +111,6 @@ export default function VotingButtons(props) {
         <button className="btn-vote" onClick={() => handleVote(2)}>
           No
         </button>
-        <button className="btn-vote">Abstain</button>
       </div>
     </>
   );
