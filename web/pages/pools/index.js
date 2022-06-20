@@ -19,45 +19,6 @@ import {
 import getPoolInfo from '/components/pool/poolInfo';
 import { currency } from '/services/formatter';
 import InitialsAvatar from '/components/utils/initialsAvatar';
-import { ethers } from 'ethers';
-
-function WhiteListedPools(props) {
-  const { pools } = props;
-
-  if (pools.length == 0) return null;
-
-  return (
-    <Paper
-      className="bg-green-300 mb-2 sm:mb-5 rounded-xl"
-      elevation={1}
-      sx={{ p: 2 }}
-    >
-      <p className="subheader subheader-sm my-1">
-        You were invited to join{' '}
-        {pools.length == 1 ? 'this Pool' : 'these Pools'}
-      </p>
-      {pools.map((pool, i) => {
-        return (
-          <Link
-            key={`pool-${i}`}
-            href={`/pools/${pool.address}?name=${pool.name}`}
-            passHref
-          >
-            <Paper
-              className="hover:bg-gray-100 container-white cursor-pointer "
-              elevation={1}
-              sx={{ p: 2, my: 1 }}
-            >
-              <div className="flex flex-row justify-between items-center ">
-                <Typography className="text-md">{pool.name}</Typography>
-              </div>
-            </Paper>
-          </Link>
-        );
-      })}
-    </Paper>
-  );
-}
 
 function PoolCard(props) {
   const { pool, user, setOpen } = props;
@@ -232,8 +193,6 @@ export default function Pools(props) {
                 Create pool
               </button>
             </div>
-
-            <WhiteListedPools pools={user.whitelistedPools} />
 
             <div className="sm:flex sm:flex-row">
               <div className="flex flex-col sm:w-1/2 sm:pr-8">

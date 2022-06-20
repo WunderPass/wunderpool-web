@@ -1,16 +1,28 @@
 import { useEffect, useState } from 'react';
-import { Link, Menu, MenuItem } from '@mui/material';
+import {
+  Link,
+  Menu,
+  MenuItem,
+  Paper,
+  Typography,
+  Divider,
+} from '@mui/material';
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { IoMdNotifications } from 'react-icons/io';
 import { HiOutlineLogout } from 'react-icons/hi';
+import { motion } from 'framer-motion';
 
 const navigation = (props) => {
   const { user } = props;
   const [poolListOpen, setPoolListOpen] = useState(null);
+  const [notificationListOpen, setNotificationListOpen] = useState(null);
+  const animateFrom = { opacity: 0, y: -40 };
+  const animateTo = { opacity: 1, y: 0 };
 
   const handleMenuClose = () => {
     setPoolListOpen(null);
+    setNotificationListOpen(null);
   };
 
   return (
@@ -25,6 +37,7 @@ const navigation = (props) => {
               My Pools
             </button>
             <Menu
+              className="mt-4"
               open={Boolean(poolListOpen)}
               onClose={handleMenuClose}
               anchorEl={poolListOpen}
@@ -50,9 +63,54 @@ const navigation = (props) => {
           </li>
         </div>
         <div className="flex flex-row items-center justify-end">
-          <div className="px-2 opacity-50">
-            <IoMdNotifications className="text-xl" />
-          </div>
+          {user.whitelistedPools.length > 0 && (
+            <div className="flex w-5 h-5 bg-red-500 text-white text-sm mb-7 -mr-12 z-50 rounded-full  items-center justify-center">
+              <Typography className="text-sm">
+                {user.whitelistedPools.length}
+              </Typography>
+            </div>
+          )}
+
+          <motion.li
+            className="px-2 py-1 pt-2"
+            initial={animateFrom}
+            animate={animateTo}
+            transition={{ delay: 0.05 }}
+          >
+            <button
+              onClick={(e) => setNotificationListOpen(e.currentTarget)}
+              className="px-2 opacity-50"
+            >
+              <IoMdNotifications className="text-xl" />
+            </button>
+            <Menu
+              className="mt-5"
+              open={Boolean(notificationListOpen)}
+              onClose={handleMenuClose}
+              anchorEl={notificationListOpen}
+            >
+              <Typography className="p-4 text-xl">
+                You were invited to join these Pools
+              </Typography>
+              <Divider className="mb-2" />
+              {user.whitelistedPools.length > 0 &&
+                user.whitelistedPools.map((pool, i) => {
+                  console.log(pool);
+                  return (
+                    <Link
+                      key={`pool-${i}`}
+                      href={`/pools/${pool.address}?name=${pool.name}`}
+                      sx={{ textDecoration: 'none', color: 'inherit' }}
+                      passHref
+                    >
+                      <MenuItem> {pool.name}</MenuItem>
+                    </Link>
+                  );
+                })}
+              {user.pools.length == 0 && <MenuItem> - no pools - </MenuItem>}
+            </Menu>
+          </motion.li>
+
           <div
             onClick={() => user.setTopUpRequired(true)}
             className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
