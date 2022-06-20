@@ -35,15 +35,15 @@ export default function Home(props) {
 
   return (
     <>
-      <div className="flex flex-col h-screen pt-7 ">
+      <div className="flex flex-col h-screen lg:pt-7 ">
         <Head>
           <title>Casama</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-          <div className="lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-4xl">
-            <div className="h-fit bg-kaico-blue text-white rounded-t-2xl py-12 lg:py-52 lg:w-2/5  lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
-              <div className="ml-10 lg:ml-6 flex-1">
+        <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center ">
+          <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen lg:mb-7 ">
+            <div className="bg-kaico-blue text-white lg:rounded-t-2xl lg:py-52 lg:w-2/5 lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none ">
+              <div className="ml-10 lg:ml-6 flex-1 pt-6 lg:pt-0 ">
                 <Image
                   className=""
                   src={CasamaIcon}
@@ -53,18 +53,18 @@ export default function Home(props) {
               </div>
               <div className="px-6 lg:px-12">
                 <div className="text-center w-full pb-4"></div>
-                <h6 className="text-1xl font-bold mb-0">
+                <h6 className="text-1xl font-bold mb-6">
                   Invest with friends, get rich together!
                 </h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
-                <p className="text-xs lg:pb-12 lg:mb-0 mt-6 ">
+                <p className="text-xs lg:pb-12 lg:mb-0 pb-6 mt-6 ">
                   Choose a way to connect and start aping!
                 </p>
               </div>
             </div>
 
-            <div className="p-5 bg-white rounded-bl-2xl rounded-br-2xl lg:rounded-tr-2xl lg:w-3/5">
-              <div className="py-5 lg:py-10">
+            <div className="p-5  bg-white rounded-bl-2xl lg:rounded-bl-none rounded-br-2xl lg:rounded-tr-2xl lg:w-3/5">
+              <div className="py-5 lg:py-10 mb-14">
                 <h2 className="text-3xl font-bold text-kaico-blue mb-6">
                   Sign in with WunderPass
                 </h2>

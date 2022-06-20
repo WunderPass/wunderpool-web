@@ -92,12 +92,12 @@ export default function Pool(props) {
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   return (
-    <Container maxWidth="md">
+    <Container className="flex justify-center items-center" maxWidth="xl">
       <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
         <div
           className="hidden md:flex md:flex-row" //Desktop
         >
-          <div className="md:flex md:flex-col max-w-xl ">
+          <div className="md:flex md:flex-col max-w-4xl">
             <PoolHeader
               name={name}
               address={address}
@@ -113,7 +113,7 @@ export default function Pool(props) {
               {...props}
             />
           </div>{' '}
-          <div className="flex-col">
+          <div className="flex-col max-w-2xl">
             {!wunderPool.isMember && <></>}
             <PoolDetails address={address} wunderPool={wunderPool} {...props} />
             <PoolMembers

@@ -32,22 +32,10 @@ export default function ProposalList(props) {
     />
   ) : wunderPool.proposals.length != 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
-      <Tabs value={tab} onChange={(_, val) => setTab(val)}>
-        <Tab label="Open" sx={{ maxWidth: 'unset' }} className="flex-1" />
-        <Tab
-          label="Closed"
-          sx={{ maxWidth: 'unset' }}
-          className="flex-1 pr-6"
-        />
-      </Tabs>
       <Box ref={slidingContainer} p={1} overflow="hidden" className="w-full">
-        <Slide
-          container={slidingContainer.current}
-          direction="right"
-          in={tab == 0}
-          height={tab == 0 ? 'unset' : 0}
-        >
-          <Stack spacing={2}>
+        <Stack spacing={2}>
+          <div>
+            <Typography className="text-xl mb-4">Open Proposals</Typography>
             {wunderPool.proposals
               .filter(
                 (p) =>
@@ -64,33 +52,29 @@ export default function ProposalList(props) {
                   />
                 );
               })}
-          </Stack>
-        </Slide>
-        <Slide
-          container={slidingContainer.current}
-          direction="left"
-          in={tab == 1}
-          height={tab == 1 ? 'unset' : 0}
-        >
-          <Stack spacing={2}>
-            {wunderPool.proposals
-              .filter(
-                (p) =>
-                  p.executed == true ||
-                  p.noVotes.toNumber() > p.totalVotes.toNumber() / 2
-              )
-              .sort((one, two) => two.createdAt.sub(one.createdAt))
-              .map((proposal) => {
-                return (
-                  <ProposalCard
-                    key={`proposal-${proposal.id}`}
-                    proposal={proposal}
-                    {...props}
-                  />
-                );
-              })}
-          </Stack>
-        </Slide>
+          </div>
+          <div className="">
+            <Typography className="text-xl my-4">Closed Proposals</Typography>
+            <div className="flex lg:grid lg:grid-cols-2 lg:gap-6 w-full h-full">
+              {wunderPool.proposals
+                .filter(
+                  (p) =>
+                    p.executed == true ||
+                    p.noVotes.toNumber() > p.totalVotes.toNumber() / 2
+                )
+                .sort((one, two) => two.createdAt.sub(one.createdAt))
+                .map((proposal) => {
+                  return (
+                    <ProposalCard
+                      key={`proposal-${proposal.id}`}
+                      proposal={proposal}
+                      {...props}
+                    />
+                  );
+                })}
+            </div>
+          </div>
+        </Stack>
       </Box>
     </Stack>
   ) : (

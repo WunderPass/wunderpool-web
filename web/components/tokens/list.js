@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SellTokenDialog from '../dialogs/sellTokenDialog';
 import SwapTokenDialog from '/components/dialogs/swapTokenDialog';
 import TokenCard from './card';
@@ -10,7 +10,7 @@ export default function TokenList(props) {
   const [openSell, setOpenSell] = useState(false);
   const [openSwap, setOpenSwap] = useState(false);
   const [token, setToken] = useState('');
-  const [hideSmallBalances, setHideSmallBalances] = useState(false);
+  const [hideSmallBalances, setHideSmallBalances] = useState(true);
 
   const toggleHideSmallBalances = () => {
     setHideSmallBalances(!hideSmallBalances);
@@ -26,6 +26,18 @@ export default function TokenList(props) {
     setToken(token);
   };
 
+  useEffect(() => {
+    const data = window.localStorage.getItem('CASAMA_HIDEBALANCES_STATE');
+    if (data !== null) setHideSmallBalances(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      'CASAMA_HIDEBALANCES_STATE',
+      JSON.stringify(hideSmallBalances)
+    );
+  }, [hideSmallBalances]);
+
   return (
     <Stack spacing={2}>
       {tokens.length > 1 && (
@@ -34,7 +46,7 @@ export default function TokenList(props) {
           onClick={toggleHideSmallBalances}
         >
           <Typography className="text-xs mt-0.5">
-            {hideSmallBalances ? 'Show small balances' : 'Hide small balances'}
+            {hideSmallBalances ? 'Show all balances' : 'Hide small balances'}
           </Typography>
         </button>
       )}

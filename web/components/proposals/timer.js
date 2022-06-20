@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import TimerBar from '/components/proposals/timerBar';
 
 const Timer = (props) => {
-  const { deadLine } = useState();
+  const { proposal, wunderPool, user } = props;
   // We need ref in this, because we are dealing
   // with JS setInterval to keep track of it and
   // stop it when needed
@@ -72,6 +72,23 @@ const Timer = (props) => {
     return deadline;
   };
 
+  function timeDiff(tstart, tend) {
+    var diff = Math.floor((tend - tstart) / 1000),
+      units = [
+        { d: 60, l: 'seconds' },
+        { d: 60, l: 'minutes' },
+        { d: 24, l: 'hours' },
+        { d: 365, l: 'days' },
+      ];
+
+    var s = '';
+    for (var i = 0; i < units.length; ++i) {
+      s = (diff % units[i].d) + ' ' + units[i].l + ' ' + s;
+      diff = Math.floor(diff / units[i].d);
+    }
+    return s;
+  }
+
   // We can use useEffect so that when the component
   // mount the timer will start as soon as possible
 
@@ -90,7 +107,7 @@ const Timer = (props) => {
   };
 
   return (
-    <div className="flex-col mt-4 justify-end items-center">
+    <div className="flex-col justify-end items-center">
       <div>
         <div className="text-3xl">{timer}</div>
         <div className="flex flex-row opacity-50">
@@ -99,7 +116,7 @@ const Timer = (props) => {
           <Typography className="text-xs ml-1">Seconds</Typography>
         </div>
       </div>
-      <div className="mt-5 mb-8 ">
+      <div className="mt-5">
         <TimerBar
           passed={startTimeInSec - remainingTimeInSec}
           total={startTimeInSec}
