@@ -80,7 +80,7 @@ export default function ProposalCard(props) {
   };
 
   return (
-    <div className="container-gray">
+    <div className="container-gray mb-6">
       <div className="flex flex-row items-center">
         <Typography className="text-xl ">{proposal.title}</Typography>
         <Tooltip title="Show details">

@@ -17,7 +17,7 @@ function assetDetails(props) {
           <div className="flex container-white justify-start sm:justify-center mb-4 ">
             <div className="flex flex-col items-center justify-start w-full">
               <Typography className="text-xl w-full">Asset details</Typography>
-              <div className="lg:flex lg:flex-row lg:justify-between w-full">
+              <div className="lg:flex lg:flex-row flex-col lg:justify-between w-full">
                 <div className="w-full">
                   <Typography className="text-sm opacity-40 py-1 pt-6">
                     Total value of pool assets
@@ -26,7 +26,7 @@ function assetDetails(props) {
                     {currency(wunderPool.assetBalance, {})}
                   </Typography>
                 </div>
-                <div className="w-full text-right">
+                <div className="w-full lg:text-right">
                   <Typography className="text-sm opacity-40 py-1 pt-6 ">
                     Amount of assets
                   </Typography>
