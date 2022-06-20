@@ -80,7 +80,7 @@ export default function ProposalCard(props) {
   };
 
   return (
-    <div className="container-gray">
+    <div className="container-gray mb-6">
       <div className="flex flex-row items-center">
         <Typography className="text-xl ">{proposal.title}</Typography>
         <Tooltip title="Show details">
@@ -94,7 +94,12 @@ export default function ProposalCard(props) {
         {proposal.description}
       </Typography>
 
-      <Timer />
+      <div className="mt-4 mb-8 ">
+        {proposal.executed == false &&
+          proposal.noVotes.toNumber() <= proposal.totalVotes.toNumber() / 2 && (
+            <Timer {...props} />
+          )}
+      </div>
 
       <VotingResults
         yes={proposal.yesVotes.toNumber()}

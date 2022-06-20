@@ -38,22 +38,20 @@ export default function NftList(props) {
           </Paper>
         );
       })}
-      <Paper elevation={1} sx={{ p: 2 }}>
-        <div className="container-gray">
-          <Typography className="text-2xl mb-2">Do you own an NFT?</Typography>
-          <Typography variant="subtitle1">
-            Then you can sell it to the Pool. If all members agree that you made
-            them a fair offer, they might agree to buy your NFT
-          </Typography>
-          <button
-            className="btn-kaico w-full p-2 mt-4"
-            variant="contained"
-            onClick={() => setOpen(true)}
-          >
-            Sell Your NFT
-          </button>
-        </div>
-      </Paper>
+      <div className="container-gray">
+        <Typography className="text-2xl mb-2">Do you own an NFT?</Typography>
+        <Typography variant="subtitle1">
+          Then you can sell it to the Pool. If all members agree that you made
+          them a fair offer, they might agree to buy your NFT
+        </Typography>
+        <button
+          className="btn-kaico w-full p-2 mt-4"
+          variant="contained"
+          onClick={() => setOpen(true)}
+        >
+          Sell Your NFT
+        </button>
+      </div>
       <SellNftDialog open={open} setOpen={setOpen} {...props} />
     </Stack>
   );
