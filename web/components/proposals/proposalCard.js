@@ -94,7 +94,7 @@ export default function ProposalCard(props) {
         {proposal.description}
       </Typography>
 
-      <Timer />
+      <Timer {...props} />
 
       <VotingResults
         yes={proposal.yesVotes.toNumber()}
