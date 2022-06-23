@@ -7,11 +7,11 @@ import {
   createNftBuyProposalDelta,
   createNftSellProposalDelta,
   createSwapSuggestionDelta,
-  executeProposalDelta,
   fetchPoolProposalsDelta,
   fetchTransactionDataDelta,
   isLiquidateProposalDelta,
 } from './delta/proposals';
+import { fetchPoolProposalsEpsilon } from './epsilon/proposals';
 import {
   createApeSuggestionGamma,
   createCustomProposalGamma,
@@ -28,7 +28,9 @@ import {
 } from './gamma/proposals';
 
 export function fetchPoolProposals(address, version) {
-  if (version > 3) {
+  if (version > 4) {
+    return fetchPoolProposalsEpsilon(address);
+  } else if (version > 3) {
     return fetchPoolProposalsDelta(address);
   } else {
     return fetchPoolProposalsGamma(address);
@@ -299,12 +301,8 @@ export async function createNftSellProposal(
   }
 }
 
-export function executeProposal(poolAddress, id, version) {
-  if (version > 3) {
-    return executeProposalDelta(poolAddress, id);
-  } else {
-    return executeProposalGamma(poolAddress, id);
-  }
+export function executeProposal(poolAddress, id, version = null) {
+  return executeProposalGamma(poolAddress, id);
 }
 
 export function isLiquidateProposal(poolAddress, id, version) {

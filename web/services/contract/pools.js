@@ -2,22 +2,16 @@ import { ethers } from 'ethers';
 import { initPool, usdcAddress, tokenAbi, versionLookup } from './init';
 import {
   addToWhiteListDelta,
-  fetchAllPoolsDelta,
   fetchPoolIsClosedDelta,
-  fetchUserPoolsDelta,
   fetchWhitelistedUserPoolsDelta,
   fundPoolDelta,
   joinPoolDelta,
-  normalTransactionsDelta,
 } from './delta/pools';
-import {
-  fetchAllPoolsGamma,
-  fetchUserPoolsGamma,
-  fundPoolGamma,
-  joinPoolGamma,
-} from './gamma/pools';
+import { fundPoolGamma, joinPoolGamma } from './gamma/pools';
+import { addToWhiteListWithSecretEpsilon } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
+import { usdcBalanceOf } from './token';
 
 export function poolVersion(poolAddress) {
   return new Promise(async (resolve, reject) => {
@@ -82,11 +76,111 @@ export function getPoolAddressFromTx(txHash, version = null) {
   });
 }
 
+async function formatAsset(asset) {
+  const token = (
+    await axios({
+      url: `/api/tokens/show`,
+      params: { address: asset.asset_infos.currency_contract_address },
+    })
+  ).data;
+  return {
+    name: asset.asset_name,
+    address: asset.asset_infos.currency_contract_address,
+    decimals: asset.asset_infos.decimals,
+    symbol: asset.asset_infos.currency_symbol,
+    balance: asset.pool_balance,
+    usdValue: token.dollar_price,
+  };
+}
+
+async function formatMember(member, totalSupply) {
+  let wunderId;
+  try {
+    wunderId = (
+      await axios({
+        url: `/api/proxy/users/find`,
+        params: { address: member.members_address },
+      })
+    ).data.wunderId;
+  } catch (e) {}
+  return {
+    address: member.members_address,
+    shares: member.pool_shares_balance,
+    share: (member.pool_shares_balance * 100) / totalSupply,
+    wunderId,
+  };
+}
+
+async function formatGovernanceToken(token) {
+  const address = token.governanc_token.currency_contract_address;
+  const govToken = new ethers.Contract(address, tokenAbi, httpProvider);
+  return {
+    name: token.governanc_token.currency_name,
+    address,
+    symbol: token.governanc_token.currency_symbol,
+    price: 1 / token.tokens_for_dollar,
+    totalSupply: (await govToken.totalSupply()).toNumber(), // token.emmited_shares,
+  };
+}
+
+async function formatPool(pool, user = null) {
+  try {
+    const tokens = await Promise.all(
+      pool.pool_assets.map(async (asset) => await formatAsset(asset))
+    );
+    const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
+    const cashInTokens = tokens
+      .map((tkn) => tkn.usdValue * tkn.balance)
+      .reduce((a, b) => a + b, 0);
+    const totalBalance = cashInTokens + usdBalance;
+
+    const governanceToken = await formatGovernanceToken(pool.pool_shares);
+    const members = await Promise.all(
+      pool.pool_members.map(
+        async (member) =>
+          await formatMember(member, governanceToken.totalSupply)
+      )
+    );
+    const userShare = user
+      ? members.find((member) => member.address.toLowerCase() == user)?.share
+      : 0;
+    const userBalance = (totalBalance * userShare) / 100;
+
+    return {
+      active: pool.active,
+      closed: pool.closed,
+      address: pool.pool_address,
+      name: pool.pool_name,
+      version: versionLookup[pool.launcher.launcher_version],
+      minInvest: pool.min_stake,
+      usdBalance,
+      cashInTokens,
+      totalBalance,
+      userShare,
+      userBalance,
+      tokens,
+      members,
+      governanceToken,
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
 export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
-    const deltaPools = await fetchUserPoolsDelta(userAddress);
-    const gammaPools = await fetchUserPoolsGamma(userAddress);
-    resolve([...deltaPools, ...gammaPools]);
+    axios({ url: `/api/proxy/pools/userPools?address=${userAddress}` })
+      .then(async (res) => {
+        const pools = await Promise.all(
+          res.data
+            .filter((pool) => pool.active)
+            .map(
+              async (pool) => await formatPool(pool, userAddress.toLowerCase())
+            )
+        );
+        resolve(pools.filter((p) => p));
+      })
+      .catch((err) => reject(err));
   });
 }
 
@@ -97,12 +191,16 @@ export function fetchWhitelistedUserPools(userAddress) {
   });
 }
 
-export function fetchAllPools(version) {
-  if (version > 3) {
-    return fetchAllPoolsDelta();
-  } else {
-    return fetchAllPoolsGamma();
-  }
+export function fetchAllPools() {
+  return new Promise(async (resolve, reject) => {
+    axios({ url: '/api/proxy/pools/all' })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 }
 
 export function joinPool(poolAddress, userAddress, value, version) {
@@ -163,6 +261,25 @@ export function addToWhiteList(poolAddress, userAddress, newMember, version) {
   }
 }
 
+export function addToWhiteListWithSecret(
+  poolAddress,
+  userAddress,
+  secret,
+  validFor,
+  version
+) {
+  if (version > 4) {
+    return addToWhiteListWithSecretEpsilon(
+      poolAddress,
+      userAddress,
+      secret,
+      validFor
+    );
+  } else {
+    throw 'Not implemented before EPSILON';
+  }
+}
+
 export function fundPool(poolAddress, amount, version) {
   if (version > 3) {
     return fundPoolDelta(poolAddress, amount);
@@ -171,12 +288,18 @@ export function fundPool(poolAddress, amount, version) {
   }
 }
 
-export function normalTransactions(poolAddress, version) {
-  if (version > 3) {
-    return normalTransactionsDelta(poolAddress);
-  } else {
-    return normalTransactionsDelta(poolAddress);
-  }
+export function normalTransactions(poolAddress, version = null) {
+  return new Promise(async (resolve, reject) => {
+    axios({
+      url: `https://api.polygonscan.com/api?module=account&action=txlist&address=${poolAddress}&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`,
+    })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 }
 
 //FETCH poolTransactions

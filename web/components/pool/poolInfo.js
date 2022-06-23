@@ -3,9 +3,7 @@ import { fetchPoolTokens } from '/services/contract/token';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export default function getPoolInfo(_pool, _user) {
-  const pool = _pool;
-  const user = _user;
+export default function getPoolInfo(pool, user) {
   const [totalBalance, setTotalBalance] = useState();
   const [sharesOfUserInPercent, setSharesOfUserInPercent] = useState(0);
   const [members, setMembers] = useState([]);

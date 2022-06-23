@@ -1,54 +1,7 @@
 import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { gasPrice } from '/services/contract/init';
-import { initLauncherGamma, initPoolGamma } from './init';
-
-export function fetchUserPoolsGamma(userAddress) {
-  return new Promise(async (resolve, reject) => {
-    const [poolLauncher] = initLauncherGamma();
-    const poolAddresses = await poolLauncher.poolsOfMember(userAddress);
-
-    const pools = await Promise.all(
-      poolAddresses.map(async (addr) => {
-        const [wunderPool] = initPoolGamma(addr);
-        try {
-          return {
-            address: addr,
-            name: await wunderPool.name(),
-            version: { version: 'GAMMA', number: 3 },
-            isMember: true,
-          };
-        } catch (err) {
-          return null;
-        }
-      })
-    );
-    resolve(pools.filter((elem) => elem));
-  });
-}
-
-export function fetchAllPoolsGamma() {
-  return new Promise(async (resolve, reject) => {
-    const [poolLauncher] = initLauncherGamma();
-    const poolAddresses = await poolLauncher.allPools();
-
-    const pools = await Promise.all(
-      poolAddresses.map(async (addr) => {
-        const [wunderPool] = initPoolGamma(addr);
-        try {
-          return {
-            address: addr,
-            name: await wunderPool.name(),
-            entryBarrier: await wunderPool.entryBarrier(),
-          };
-        } catch (err) {
-          return null;
-        }
-      })
-    );
-    resolve(pools.filter((elem) => elem));
-  });
-}
+import { initPoolGamma } from './init';
 
 export function joinPoolGamma(poolAddress, value) {
   return new Promise(async (resolve, reject) => {

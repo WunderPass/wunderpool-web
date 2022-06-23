@@ -8,12 +8,12 @@ import {
   gasPrice,
 } from '/services/contract/init';
 import { ethers } from 'ethers';
-import { initLauncherDelta, initPoolDelta } from './init';
+import { initLauncherEpsilon, initPoolEpsilon } from './init';
 import { httpProvider } from '../provider';
 
-export function fetchWhitelistedUserPoolsDelta(userAddress) {
+export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
-    const [poolLauncher] = initLauncherDelta();
+    const [poolLauncher] = initLauncherEpsilon();
     const whiteListPools = await poolLauncher.whiteListedPoolsOfMember(
       userAddress
     );
@@ -25,12 +25,12 @@ export function fetchWhitelistedUserPoolsDelta(userAddress) {
 
     const pools = await Promise.all(
       poolAddresses.map(async (addr) => {
-        const [wunderPool] = initPoolDelta(addr);
+        const [wunderPool] = initPoolEpsilon(addr);
         try {
           return {
             address: addr,
             name: await wunderPool.name(),
-            version: { version: 'DELTA', number: 4 },
+            version: { version: 'EPSILON', number: 5 },
             isMember: false,
             closed: await wunderPool.poolClosed(),
           };
@@ -43,14 +43,7 @@ export function fetchWhitelistedUserPoolsDelta(userAddress) {
   });
 }
 
-export function fetchPoolIsClosedDelta(poolAddress) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolDelta(poolAddress);
-    wunderPool.poolClosed().then((res) => resolve(res));
-  });
-}
-
-export function joinPoolDelta(poolAddress, userAddress, value) {
+export function joinPoolEpsilon(poolAddress, userAddress, value) {
   return new Promise(async (resolve, reject) => {
     const body = {
       poolAddress: poolAddress,
@@ -97,7 +90,7 @@ export function joinPoolDelta(poolAddress, userAddress, value) {
   });
 }
 
-export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
+export function addToWhiteListEpsilon(poolAddress, userAddress, newMember) {
   return new Promise(async (resolve, reject) => {
     if (userAddress == newMember) {
       reject('You cant invite yourself');
@@ -113,7 +106,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const [wunderPool] = initPoolDelta(poolAddress);
+        const [wunderPool] = initPoolEpsilon(poolAddress);
         const tx = await connectContract(wunderPool).addToWhiteListForUser(
           userAddress,
           newMember,
@@ -130,28 +123,37 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
   });
 }
 
-export function fundPoolDelta(poolAddress, amount) {
+export function addToWhiteListWithSecretEpsilon(
+  poolAddress,
+  userAddress,
+  secret,
+  validFor
+) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
+      userAddress,
     });
-    const [wunderPool, provider] = initPoolDelta(poolAddress);
-    const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {
-      gasPrice: await gasPrice(),
-    });
+    const hashedSecret = ethers.utils.keccak256(
+      ethers.utils.toUtf8Bytes(secret)
+    );
+    const types = ['address', 'address', 'bytes32', 'uint256'];
+    const values = [userAddress, poolAddress, hashedSecret, validFor];
 
-    smartContractTransaction(tx, {
-      amount: usdc(amount),
-      spender: poolAddress,
-    })
-      .then(async (transaction) => {
-        try {
-          const receipt = await provider.waitForTransaction(transaction.hash);
-          resolve(receipt);
-        } catch (error) {
-          reject(error?.error?.error?.error?.message || error);
-        }
+    sendSignatureRequest(types, values)
+      .then(async (signature) => {
+        const [wunderPool] = initPoolEpsilon(poolAddress);
+        const tx = await connectContract(wunderPool).addToWhiteListWithSecret(
+          userAddress,
+          hashedSecret,
+          validFor,
+          signature.signature,
+          { gasPrice: await gasPrice() }
+        );
+
+        const result = await tx.wait();
+        resolve(result);
       })
       .catch((err) => {
         reject(err);
