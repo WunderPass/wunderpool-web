@@ -18,7 +18,7 @@ import {
 import InitialsAvatar from '/components/utils/initialsAvatar';
 
 function PoolCard(props) {
-  const { pool, user, setOpen } = props;
+  const { pool } = props;
   const members = pool.members;
 
   return (
@@ -95,12 +95,12 @@ function PoolCard(props) {
 }
 
 function PoolList(props) {
-  const { pools, user, setOpen } = props;
+  const { pools, setOpen } = props;
 
   return pools.length > 0 ? (
     <div className="md:grid md:grid-cols-2 md:gap-6 w-full">
       {pools.map((pool, i) => {
-        return <PoolCard key={`pool-card-${i}`} pool={pool} user={user} />;
+        return <PoolCard key={`pool-card-${i}`} pool={pool} />;
       })}
     </div>
   ) : (
