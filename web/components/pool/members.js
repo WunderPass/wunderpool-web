@@ -11,6 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { currency } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
+import InviteLinkButton from './inviteLinkButton';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback, handleSuccess } = props;
@@ -110,7 +111,6 @@ export default function PoolMembers(props) {
                         Pool members
                       </Typography>
                     </div>
-
                     <table className="table-auto">
                       <thead>
                         <tr>

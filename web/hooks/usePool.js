@@ -182,7 +182,7 @@ export default function usePool(userAddr, poolAddr = null) {
       .map((token, i) => {
         if (token.address && token.address.length == 42) {
           axios({
-            url: `/api/tokens/showPrice`,
+            url: `/api/tokens/show`,
             params: { address: token.address },
           }).then((res) => {
             var tokenPrice = res.data?.dollar_price;
