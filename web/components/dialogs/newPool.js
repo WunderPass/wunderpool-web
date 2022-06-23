@@ -188,7 +188,7 @@ export default function NewPoolDialog(props) {
 
   return (
     <Dialog
-      className="rounded-2xl"
+      className="flex rounded-2xl w-full justify-center"
       open={open}
       onClose={handleClose}
       PaperProps={{
@@ -197,7 +197,7 @@ export default function NewPoolDialog(props) {
     >
       {step < 2 && (
         <>
-          <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
+          <DialogTitle className="font-bold font-graphik tracking-tight w-full">
             Create a pool
           </DialogTitle>
           <DialogContent style={{ scrollbarwidth: 'none' }}>
@@ -469,12 +469,12 @@ export default function NewPoolDialog(props) {
 
       {step === 2 && (
         <>
-          <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
+          <DialogTitle className="flex font-bold font-graphik tracking-tight w-full">
             Create a pool
           </DialogTitle>
           <DialogContent style={{ scrollbarwidth: 'none' }}>
             <Stack spacing={1}>
-              <DialogContentText className="text-sm mb-7 font-graphik">
+              <DialogContentText className="text-sm mb-7 font-graphik w-full">
                 Step 2 of 3 | Voting Rules
               </DialogContentText>
 
@@ -484,7 +484,7 @@ export default function NewPoolDialog(props) {
               </div>
 
               <div className={votingsOn ? '' : 'opacity-20'}>
-                <div className="pb-4">
+                <div className="pb-4 w-full">
                   <label className="label pb-1" htmlFor="value">
                     Duration of voting
                   </label>
@@ -546,7 +546,7 @@ export default function NewPoolDialog(props) {
 
       {step === 3 && (
         <>
-          <DialogTitle className="font-bold font-graphik tracking-tight w-screen">
+          <DialogTitle className="flex font-bold font-graphik tracking-tight w-full">
             Create a pool
           </DialogTitle>
           <DialogContent style={{ scrollbarwidth: 'none' }}>
@@ -581,7 +581,7 @@ export default function NewPoolDialog(props) {
                     <Typography>Invite by link</Typography>
                   </div>
                 </label>
-                <button className="btn-neutral bg-[#F6F6F6] sm:w-1/4 py-3">
+                <button className="btn-neutral bg-[#F6F6F6] sm:w-2/5 py-3">
                   <div className="flex flex-row justify-between items-center ">
                     <MdContentCopy className="text-gray-500 mr-2 ml-3" />
                     <Typography className="mr-3">Copy Link</Typography>

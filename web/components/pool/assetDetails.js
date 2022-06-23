@@ -13,7 +13,7 @@ function assetDetails(props) {
   return (
     <>
       {wunderPool.isMember ? (
-        <div className="md:ml-4 mt-6 max-w-4xl lg:w-80 md:w-54">
+        <div className="md:ml-4 mt-6 max-w-4xl lg:w-80 md:w-54 ">
           <div className="flex container-white justify-start sm:justify-center mb-4 ">
             <div className="flex flex-col items-center justify-start w-full">
               <Typography className="text-xl w-full">Asset details</Typography>
