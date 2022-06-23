@@ -11,6 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { currency } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
+import InviteLinkButton from './inviteLinkButton';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback, handleSuccess } = props;
@@ -256,21 +257,7 @@ export default function PoolMembers(props) {
                           Invite Member
                         </Typography>
                       </button>
-                      <button className=" btn-neutral items-center w-full py-3 px-3">
-                        <CopyToClipboard
-                          text={window.location.href}
-                          onCopy={() => handleSuccess('Invite link copied!')}
-                        >
-                          <span className="cursor-pointer">
-                            <div className="flex flex-row items-center justify-center">
-                              <BsLink45Deg className="text-lg ml-1" />
-                              <Typography className="text-lg mr-5 ml-2">
-                                Copy Invite Link
-                              </Typography>
-                            </div>
-                          </span>
-                        </CopyToClipboard>
-                      </button>
+                      <InviteLinkButton {...props} />
                     </div>
                   )}
                 </>

@@ -10,18 +10,27 @@ export const versionLookup = {
     name: 'ALPHA',
     number: 1,
   },
+  Alpha: { name: 'ALPHA', number: 1 },
   '0xc484B477BE6c3C58Fe3b4d3ede08BE96f47c5DEb': { name: 'BETA', number: 2 },
+  Beta: { name: 'BETA', number: 2 },
   '0xAE32217Dc2d87c07C0885D69121B968C96d3E693': {
     name: 'GAMMA',
     number: 3,
   },
+  Gamma: { name: 'GAMMA', number: 3 },
   '0xA40E3c0efA5a1Fa1C84aD7958e7aBf0Cf186809F': {
     name: 'DELTA',
     number: 4,
   },
+  Delta: { name: 'DELTA', number: 4 },
+  '0x34645Cb6b71A4513AC3e3D9683DF48142114e55B': {
+    name: 'EPSILON',
+    number: 5,
+  },
+  Epsilon: { name: 'EPSILON', number: 5 },
 };
 
-export const latestVersion = { name: 'DELTA', number: 4 };
+export const latestVersion = { name: 'EPSILON', number: 5 };
 
 export const tokenAbi = [
   'function name() public view returns(string)',

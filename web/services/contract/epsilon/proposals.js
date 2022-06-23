@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
-import { initPoolDelta, initProposalDelta } from './init';
+import { initPoolEpsilon, initProposalEpsilon } from './init';
 import {
   gasPrice,
   usdcAddress,
@@ -9,10 +9,10 @@ import {
   connectContract,
 } from '/services/contract/init';
 
-export function fetchPoolProposalsDelta(address) {
+export function fetchPoolProposalsEpsilon(address) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolDelta(address);
-    const [wunderProposal] = initProposalDelta();
+    const [wunderPool] = initPoolEpsilon(address);
+    const [wunderProposal] = initProposalEpsilon();
     const proposalIds = await wunderPool.getAllProposalIds();
     const proposals = await Promise.all(
       proposalIds.map(async (id) => {
@@ -26,6 +26,7 @@ export function fetchPoolProposalsDelta(address) {
           totalVotes,
           createdAt,
           executed,
+          creator,
         } = await wunderProposal.getProposal(address, id);
         return {
           id: id,
@@ -38,6 +39,7 @@ export function fetchPoolProposalsDelta(address) {
           totalVotes,
           createdAt,
           executed,
+          creator,
         };
       })
     );
@@ -45,21 +47,7 @@ export function fetchPoolProposalsDelta(address) {
   });
 }
 
-export function fetchTransactionDataDelta(address, id, transactionCount) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderProposal] = initProposalDelta();
-    const transactions = await Promise.all(
-      [...Array(transactionCount).keys()].map(async (index) => {
-        const { action, param, transactionValue, contractAddress } =
-          await wunderProposal.getProposalTransaction(address, id, index);
-        return { action, params: param, transactionValue, contractAddress };
-      })
-    );
-    resolve(transactions);
-  });
-}
-
-export function createMultiActionProposalDelta(
+export function createMultiActionProposalEpsilon(
   poolAddress,
   title,
   description,
@@ -67,7 +55,6 @@ export function createMultiActionProposalDelta(
   actions,
   params,
   transactionValues,
-  deadline,
   userAddress
 ) {
   return new Promise(async (resolve, reject) => {
@@ -76,7 +63,7 @@ export function createMultiActionProposalDelta(
       accountId: 'ABCDEF',
       userAddress,
     });
-    const [wunderPool] = initPoolDelta(poolAddress);
+    const [wunderPool] = initPoolEpsilon(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
     const types = [
       'address',
@@ -88,7 +75,6 @@ export function createMultiActionProposalDelta(
       'bytes[]',
       'uint[]',
       'uint',
-      'uint',
     ];
     const values = [
       userAddress,
@@ -99,7 +85,6 @@ export function createMultiActionProposalDelta(
       actions,
       params,
       transactionValues,
-      deadline,
       proposalId,
     ];
     sendSignatureRequest(types, values, false)
@@ -113,7 +98,6 @@ export function createMultiActionProposalDelta(
           actions,
           params,
           transactionValues,
-          deadline,
           signature.signature,
           { gasPrice: await gasPrice() }
         );
@@ -127,7 +111,7 @@ export function createMultiActionProposalDelta(
   });
 }
 
-export function createCustomProposalDelta(
+export function createCustomProposalEpsilon(
   poolAddress,
   title,
   description,
@@ -135,7 +119,6 @@ export function createCustomProposalDelta(
   actions,
   params,
   transactionValues,
-  deadline,
   userAddress
 ) {
   const formattedValues = transactionValues.map((val) =>
@@ -153,7 +136,7 @@ export function createCustomProposalDelta(
       })
     )
   );
-  return createMultiActionProposalDelta(
+  return createMultiActionProposalEpsilon(
     poolAddress,
     title,
     description,
@@ -161,56 +144,17 @@ export function createCustomProposalDelta(
     actions,
     encodedParams,
     formattedValues,
-    deadline,
     userAddress
   );
 }
 
-export function createApeSuggestionDelta(
-  poolAddress,
-  tokenAddress,
-  title,
-  description,
-  value,
-  userAddress
-) {
-  return createSwapSuggestionDelta(
-    poolAddress,
-    usdcAddress,
-    tokenAddress,
-    title,
-    description,
-    usdc(value),
-    userAddress
-  );
-}
-
-export function createFudSuggestionDelta(
-  poolAddress,
-  tokenAddress,
-  title,
-  description,
-  value,
-  userAddress
-) {
-  return createSwapSuggestionDelta(
-    poolAddress,
-    tokenAddress,
-    usdcAddress,
-    title,
-    description,
-    value,
-    userAddress
-  );
-}
-
-export function createLiquidateSuggestionDelta(
+export function createLiquidateSuggestionEpsilon(
   poolAddress,
   title,
   description,
   userAddress
 ) {
-  return createMultiActionProposalDelta(
+  return createMultiActionProposalEpsilon(
     poolAddress,
     title,
     description,
@@ -218,12 +162,11 @@ export function createLiquidateSuggestionDelta(
     ['liquidatePool()'],
     ['0x'],
     [0],
-    1846183041,
     userAddress
   );
 }
 
-export async function createSwapSuggestionDelta(
+export async function createSwapSuggestionEpsilon(
   poolAddress,
   tokenIn,
   tokenOut,
@@ -232,11 +175,11 @@ export async function createSwapSuggestionDelta(
   amount,
   userAddress
 ) {
-  const [wunderPool] = initPoolDelta(poolAddress);
+  const [wunderPool] = initPoolEpsilon(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
   if (tokenAddresses.includes(tokenOut)) {
-    return createMultiActionProposalDelta(
+    return createMultiActionProposalEpsilon(
       poolAddress,
       title,
       description,
@@ -250,11 +193,10 @@ export async function createSwapSuggestionDelta(
         ),
       ],
       [0, 0],
-      1846183041,
       userAddress
     );
   } else {
-    return createMultiActionProposalDelta(
+    return createMultiActionProposalEpsilon(
       poolAddress,
       title,
       description,
@@ -273,13 +215,12 @@ export async function createSwapSuggestionDelta(
         encodeParams(['address', 'bool', 'uint256'], [tokenOut, false, 0]),
       ],
       [0, 0, 0],
-      1846183041,
       userAddress
     );
   }
 }
 
-export async function createNftBuyProposalDelta(
+export async function createNftBuyProposalEpsilon(
   poolAddress,
   nftAddress,
   tokenId,
@@ -289,7 +230,7 @@ export async function createNftBuyProposalDelta(
   amount,
   userAddress
 ) {
-  return createMultiActionProposalDelta(
+  return createMultiActionProposalEpsilon(
     poolAddress,
     title,
     description,
@@ -309,12 +250,11 @@ export async function createNftBuyProposalDelta(
       ),
     ],
     [0, 0],
-    1846183041,
     userAddress
   );
 }
 
-export async function createNftSellProposalDelta(
+export async function createNftSellProposalEpsilon(
   poolAddress,
   nftAddress,
   tokenId,
@@ -324,7 +264,7 @@ export async function createNftSellProposalDelta(
   amount,
   userAddress
 ) {
-  return createMultiActionProposalDelta(
+  return createMultiActionProposalEpsilon(
     poolAddress,
     title,
     description,
@@ -344,37 +284,13 @@ export async function createNftSellProposalDelta(
       ),
     ],
     [0, 0],
-    1846183041,
     userAddress
   );
 }
 
-export function isLiquidateProposalDelta(poolAddress, id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const [wunderProposal] = initProposalDelta();
-      const { transactionCount } = await wunderProposal.getProposal(
-        poolAddress,
-        id
-      );
-      const transactions = await fetchTransactionDataDelta(
-        poolAddress,
-        id,
-        transactionCount
-      );
-      if (
-        transactions.find(
-          (trx) =>
-            trx.action == 'liquidatePool()' &&
-            trx.contractAddress == poolAddress
-        )
-      ) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+export async function createJoinProposalEpsilon(
+  poolAddress,
+  userAddress,
+  amount,
+  govTokens
+) {}

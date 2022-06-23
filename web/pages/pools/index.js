@@ -1,12 +1,11 @@
 import NewPoolDialog from '/components/dialogs/newPool';
 import BalanceBox from '/components/pool/balanceBox';
-import { toEthString, displayWithDecimalPlaces } from '/services/formatter';
+import { displayWithDecimalPlaces, currency } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
 import { MdContentCopy } from 'react-icons/md';
 import { PieChart } from 'react-minimal-pie-chart';
 import { MdGroups } from 'react-icons/md';
-import { useAlert } from 'react-alert';
 import Head from 'next/head';
 import Link from 'next/link';
 import {
@@ -16,29 +15,13 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import getPoolInfo from '/components/pool/poolInfo';
-import { currency } from '/services/formatter';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 
 function PoolCard(props) {
   const { pool, user, setOpen } = props;
+  const members = pool.members;
 
-  const [totalBalance, sharesOfUserInPercent, members, isReady] = getPoolInfo(
-    pool,
-    user
-  );
-  // const [totalBalance, sharesOfUserInPercent, members, isReady] = [
-  //   100,
-  //   33,
-  //   [
-  //     { share: ethers.BigNumber.from(33), wunderId: 'd-bitschnau' },
-  //     { share: ethers.BigNumber.from(33), wunderId: 'm-loechner' },
-  //     { share: ethers.BigNumber.from(33), wunderId: 's-tschurilin' },
-  //   ],
-  //   true,
-  // ];
-
-  return isReady ? (
+  return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
       <Paper
         className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
@@ -51,12 +34,11 @@ function PoolCard(props) {
             <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
           </div>
           <Typography className="text-lg pt-3 font-semibold">
-            {currency(totalBalance, {})}
+            {currency(pool.totalBalance, {})}
           </Typography>
-          {pool.entryBarrier && (
+          {pool.minInvest > 0 && (
             <Typography variant="subtitle1">
-              Minimum Invest: $
-              {displayWithDecimalPlaces(toEthString(pool.entryBarrier, 6), 2)}
+              Minimum Invest: ${displayWithDecimalPlaces(pool.minInvest, 2)}
             </Typography>
           )}
           <div className="flex flex-row justify-between items-center pb-4">
@@ -66,21 +48,21 @@ function PoolCard(props) {
                 data={[
                   {
                     title: 'One',
-                    value: 100 - parseInt(sharesOfUserInPercent),
+                    value: 100 - parseInt(pool.userShare),
                     color: '#E4DFFF',
                   },
                   {
                     title: 'Two',
-                    value: parseInt(sharesOfUserInPercent),
+                    value: parseInt(pool.userShare),
                     color: '#5F45FD',
                   },
                 ]}
               />
 
               <Typography className="text-md  pt-5 pl-3">
-                {sharesOfUserInPercent &&
-                  `${sharesOfUserInPercent}% (${currency(
-                    (totalBalance / 100) * sharesOfUserInPercent,
+                {pool.userShare &&
+                  `${parseInt(pool.userShare)}% (${currency(
+                    pool.userBalance,
                     {}
                   )})`}
               </Typography>
@@ -89,7 +71,7 @@ function PoolCard(props) {
             <div className="flex flex-row  mt-4">
               {members &&
                 members
-                  .sort((a, b) => b.share.toNumber() - a.share.toNumber())
+                  .sort((a, b) => b.share - a.share)
                   .slice(0, 3)
                   .map((member, i) => {
                     return (
@@ -97,7 +79,7 @@ function PoolCard(props) {
                         key={`member-${i}`}
                         tooltip={`${
                           member.wunderId || 'External User'
-                        }: ${member.share.toString()}%`}
+                        }: ${parseInt(member.share)}%`}
                         text={member.wunderId ? member.wunderId : '0-X'}
                         separator="-"
                         color={['green', 'blue', 'red', 'teal'][i % 4]}
@@ -109,12 +91,6 @@ function PoolCard(props) {
         </div>
       </Paper>
     </Link>
-  ) : (
-    <Skeleton
-      variant="rectangular"
-      width="100%"
-      sx={{ height: '100px', borderRadius: 3 }}
-    />
   );
 }
 
@@ -222,10 +198,12 @@ export default function Pools(props) {
                   <PoolList
                     className="mx-4"
                     user={user}
-                    pools={user.pools.slice(
-                      (page - 1) * pageSize,
-                      (page - 1) * pageSize + pageSize
-                    )}
+                    pools={user.pools
+                      .sort((a, b) => b.totalBalance - a.totalBalance)
+                      .slice(
+                        (page - 1) * pageSize,
+                        (page - 1) * pageSize + pageSize
+                      )}
                     setOpen={setOpen}
                   />
                 ) : (
