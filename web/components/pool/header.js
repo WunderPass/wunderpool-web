@@ -108,12 +108,7 @@ export default function PoolHeader(props) {
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">-</Typography>
                 </div>
-                <div>
-                  <Typography className="text-sm opacity-40 py-1 pt-6">
-                    End Time
-                  </Typography>
-                  <Typography className="text-sm opacity-90 py-1">-</Typography>
-                </div>
+
                 <div>
                   <Typography className="text-sm opacity-40 py-1 pt-6">
                     Min

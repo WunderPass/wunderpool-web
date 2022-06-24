@@ -160,7 +160,7 @@ export default function PoolMembers(props) {
                                             ][i % 5]
                                           }
                                         />
-                                        <Typography className="ml-1 md:hidden">
+                                        <Typography className="ml-1 hidden">
                                           {b.wunderId
                                             ? b.wunderId
                                             : 'External User'}
@@ -168,7 +168,7 @@ export default function PoolMembers(props) {
                                       </div>
                                     </td>
                                     <td className="pb-2">
-                                      <div className="flex flex-row items-center ml-14">
+                                      <div className="flex flex-row items-center md:ml-5 lg:ml-14">
                                         <Typography>
                                           {b.tokens.toString()}
                                         </Typography>
