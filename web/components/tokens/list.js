@@ -11,6 +11,11 @@ export default function TokenList(props) {
   const [openSwap, setOpenSwap] = useState(false);
   const [token, setToken] = useState('');
   const [hideSmallBalances, setHideSmallBalances] = useState(true);
+  const [isSmallBalances, setIsSmallBalances] = useState(false);
+
+  const triggerSmallBalances = () => {
+    setIsSmallBalances(true);
+  };
 
   const toggleHideSmallBalances = () => {
     setHideSmallBalances(!hideSmallBalances);
@@ -27,6 +32,17 @@ export default function TokenList(props) {
   };
 
   useEffect(() => {
+    tokens.length > 0 &&
+      tokens
+        .filter((tkn) => tkn.balance > 0)
+        .map((token) => {
+          if (token.usdValue < 0.01) {
+            triggerSmallBalances();
+          }
+        });
+  }, []);
+
+  useEffect(() => {
     const data = window.localStorage.getItem('CASAMA_HIDEBALANCES_STATE');
     if (data !== null) setHideSmallBalances(JSON.parse(data));
   }, []);
@@ -40,7 +56,7 @@ export default function TokenList(props) {
 
   return (
     <Stack spacing={2}>
-      {tokens.length > 1 && (
+      {isSmallBalances && (
         <button
           className="btn-neutral p-1 w-1/3 place-self-end "
           onClick={toggleHideSmallBalances}
@@ -50,13 +66,12 @@ export default function TokenList(props) {
           </Typography>
         </button>
       )}
-
       {tokens.length > 0 &&
         tokens
           .filter((tkn) => tkn.balance > 0)
           .map((token) => {
             if (token.address != usdcAddress) {
-              if (!hideSmallBalances || token.usdValue > 0.0) {
+              if (!hideSmallBalances || token.usdValue > 0.009) {
                 return (
                   <TokenCard
                     token={token}
@@ -68,6 +83,7 @@ export default function TokenList(props) {
               }
             }
           })}
+
       <SellTokenDialog
         open={openSell}
         setOpen={setOpenSell}

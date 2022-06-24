@@ -59,21 +59,25 @@ export default function PoolMembers(props) {
                   <>
                     <Typography className="text-xl w-full">Members</Typography>
                     <div className="flex flex-row flex-wrap w-full mt-2">
-                      {members.map((member, i) => {
-                        return (
-                          <InitialsAvatar
-                            key={`member-${i}`}
-                            tooltip={`${
-                              member.wunderId || 'External User'
-                            }: ${member.share.toString()}%`}
-                            text={member.wunderId ? member.wunderId : '0-X'}
-                            separator="-"
-                            color={
-                              ['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]
-                            }
-                          />
-                        );
-                      })}
+                      {members
+                        .sort(function (a, b) {
+                          return b.tokens - a.tokens;
+                        })
+                        .map((member, i) => {
+                          return (
+                            <InitialsAvatar
+                              key={`member-${i}`}
+                              tooltip={`${
+                                member.wunderId || 'External User'
+                              }: ${member.share.toString()}%`}
+                              text={member.wunderId ? member.wunderId : '0-X'}
+                              separator="-"
+                              color={
+                                ['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]
+                              }
+                            />
+                          );
+                        })}
                     </div>
                     <Typography className="my-2 sm:mt-4 " variant="h7">
                       {members.length} member(s) are in the pool.
@@ -134,7 +138,7 @@ export default function PoolMembers(props) {
                       <tbody>
                         {members
                           .sort(function (a, b) {
-                            return b.tokens > a.tokens;
+                            return b.tokens - a.tokens;
                           })
                           .map((b, i) => {
                             return (
@@ -195,7 +199,7 @@ export default function PoolMembers(props) {
                                 {i >= 3 && (
                                   <tr className={showMore ? '' : 'hidden'}>
                                     <td className="pb-2">
-                                      <div className="flex flex-row items-center ">
+                                      <div className="flex flex-row items-center md:ml-2">
                                         <InitialsAvatar
                                           key={`member-${i}`}
                                           tooltip={`${
@@ -213,7 +217,7 @@ export default function PoolMembers(props) {
                                             ][i % 5]
                                           }
                                         />
-                                        <Typography className="ml-1">
+                                        <Typography className="ml-1 hidden">
                                           {b.wunderId
                                             ? b.wunderId
                                             : 'External User'}
@@ -221,7 +225,7 @@ export default function PoolMembers(props) {
                                       </div>
                                     </td>
                                     <td className="pb-2">
-                                      <div className="flex flex-row items-center ">
+                                      <div className="flex flex-row items-center md:ml-5 lg:ml-14">
                                         <Typography>
                                           {b.tokens.toString()}
                                         </Typography>
