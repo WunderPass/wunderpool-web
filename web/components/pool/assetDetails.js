@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
-
 import { useState } from 'react';
 import React from 'react';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
 import { currency } from '/services/formatter';
+import { GrMoney } from 'react-icons/gr';
 
 function assetDetails(props) {
   const { wunderPool } = props;
@@ -22,9 +22,12 @@ function assetDetails(props) {
                   <Typography className="text-sm opacity-40 py-1 pt-6 ">
                     Total value of assets
                   </Typography>
-                  <Typography className="text-2xl opacity-90 py-1 font-semibold">
-                    {currency(wunderPool.assetBalance, {})}
-                  </Typography>
+                  <div className="flex flex-row items-center justify-start ">
+                    <GrMoney className="text-xl mr-2" />
+                    <Typography className="text-2xl opacity-90 py-1 font-semibold">
+                      {currency(wunderPool.assetBalance, {})}
+                    </Typography>
+                  </div>
                 </div>
                 <div className="w-full lg:text-right">
                   <Typography className="text-sm opacity-40 py-1 pt-6 ">

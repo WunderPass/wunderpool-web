@@ -13,6 +13,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider } from '@mui/material';
+import { GiMoneyStack } from 'react-icons/gi';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
@@ -60,9 +61,11 @@ export default function PoolHeader(props) {
             <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
               {name}
             </Typography>
-            <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              Cash: {currency(wunderPool.totalBalance, {})}
-            </Typography>
+            <div className="flex flex-row justify-center items-center">
+              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
+                Cash: {currency(wunderPool.totalBalance, {})}
+              </Typography>
+            </div>
           </div>
 
           <Divider className="my-6 mt-8 opacity-70" />
