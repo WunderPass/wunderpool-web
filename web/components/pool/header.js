@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
-import { currency, poolBalanceToUsd } from '/services/formatter';
+import { currency, polyValueToUsd } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
@@ -61,7 +61,7 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              {currency(poolBalanceToUsd(wunderPool.usdcBalance), {})}
+              {currency(polyValueToUsd(wunderPool.usdcBalance), {})}
             </Typography>
           </div>
 

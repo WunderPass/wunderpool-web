@@ -8,7 +8,7 @@ import InitialsAvatar from '../utils/initialsAvatar';
 import { FaBan } from 'react-icons/fa';
 import { BsLink45Deg } from 'react-icons/bs';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { currency } from '/services/formatter';
+import { currency, polyValueToUsd } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import InviteLinkButton from './inviteLinkButton';
@@ -168,7 +168,7 @@ export default function PoolMembers(props) {
                                       </div>
                                     </td>
                                     <td className="pb-2">
-                                      <div className="flex flex-row items-center ">
+                                      <div className="flex flex-row items-center ml-14">
                                         <Typography>
                                           {b.tokens.toString()}
                                         </Typography>
@@ -178,11 +178,13 @@ export default function PoolMembers(props) {
                                       </div>{' '}
                                     </td>
                                     <td className="text-right pb-2">
-                                      <Typography
-                                        className="" //TODO CHANGE THIS IN THE FUTURE WHEN THERE IS A GOVTOKENPRICE
-                                      >
+                                      <Typography className="">
                                         {currency(
-                                          b.tokens.toString() * 0.03,
+                                          b.tokens.toString() *
+                                            polyValueToUsd(
+                                              Number(governanceToken.price),
+                                              {}
+                                            ),
                                           {}
                                         )}
                                       </Typography>
@@ -275,7 +277,7 @@ export default function PoolMembers(props) {
                     )}
 
                     {version.number > 3 && !closed && (
-                      <div>
+                      <div className="w-full">
                         <button
                           className="btn-kaico items-center w-full mb-3 mt-3 py-3 px-3 text-md"
                           onClick={() => setInviteMember(true)}
@@ -291,9 +293,8 @@ export default function PoolMembers(props) {
                           >
                             <span className="cursor-pointer">
                               <div className="flex flex-row items-center justify-center">
-                                <BsLink45Deg className="text-lg ml-1" />
-                                <Typography className="text-lg mr-5 ml-2">
-                                  Copy Invite Link
+                                <Typography className="text-lg">
+                                  Invite with secret
                                 </Typography>
                               </div>
                             </span>
