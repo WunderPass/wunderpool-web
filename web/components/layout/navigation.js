@@ -95,7 +95,6 @@ const navigation = (props) => {
               <Divider className="mb-2" />
               {user.whitelistedPools.length > 0 &&
                 user.whitelistedPools.map((pool, i) => {
-                  console.log(pool);
                   return (
                     <Link
                       key={`pool-${i}`}

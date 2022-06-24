@@ -21,7 +21,6 @@ export default function PoolHeader(props) {
   const alert = useAlert();
 
   const toggleAdvanced = () => {
-    console.log(wunderPool);
     setShowMoreInfo(!showMoreInfo);
   };
 
