@@ -21,6 +21,7 @@ export default function PoolHeader(props) {
   const alert = useAlert();
 
   const toggleAdvanced = () => {
+    console.log(wunderPool);
     setShowMoreInfo(!showMoreInfo);
   };
 
@@ -61,7 +62,7 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              {currency(polyValueToUsd(wunderPool.usdcBalance), {})}
+              {currency(wunderPool.totalBalance, {})}
             </Typography>
           </div>
 
@@ -120,7 +121,10 @@ export default function PoolHeader(props) {
                   <Typography className="text-sm opacity-90 py-1">
                     {wunderPool.governanceToken &&
                       currency(
-                        wunderPool.governanceToken.entryBarrier / 1000000,
+                        polyValueToUsd(
+                          wunderPool.governanceToken.entryBarrier,
+                          {}
+                        ),
                         {}
                       )}
                   </Typography>
