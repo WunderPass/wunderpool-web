@@ -78,7 +78,7 @@ export default function ProposalList(props) {
       </Box>
     </Stack>
   ) : (
-    <div className="container-white border-2">
+    <div className="container-gray border-2">
       <Stack sx={{ textAlign: 'center' }}>
         <Typography className="mt-3" variant="h5">
           There are no Proposals
