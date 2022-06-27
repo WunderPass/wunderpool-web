@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { AppBar, Link, Stack, Toolbar } from '@mui/material';
+import { AppBar, Stack, Toolbar } from '@mui/material';
 import Image from 'next/image';
-import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import CasamaIcon from '/public/casama-wht.svg';
 import UserIcon from '/public/user.png';
 import { useRouter } from 'next/router';
 import MobileNavigation from './mobileNavigation';
 import Navigation from './navigation';
+import Link from 'next/link';
 
 export default function Navbar(props) {
   const { user } = props;
@@ -20,7 +19,7 @@ export default function Navbar(props) {
         <Toolbar>
           <Stack className="flex flex-row w-full justify-between items-center mt-1">
             <Link href="/pools">
-              <div className="flex flex-row">
+              <div className="flex flex-row cursor-pointer">
                 <div className="hidden pl-1.5 items-center justify-center mr-4 sm:block">
                   <div className="hidden pb-1.5 w-40 sm:block">
                     <Image

@@ -1,22 +1,27 @@
 import {
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
+  Stack,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { MdContentCopy } from 'react-icons/md';
+import { BsLink45Deg } from 'react-icons/bs';
 
 export default function InviteLinkButton(props) {
   const { wunderPool, handleSuccess, handleError } = props;
   const [open, setOpen] = useState(false);
-  const [validFor, setValidFor] = useState(1);
+  const [validFor, setValidFor] = useState('');
   const [loading, setLoading] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
 
   const handleClose = () => {
     setOpen(false);
+    setValidFor('');
+    setInviteLink('');
   };
 
   const handleSubmit = () => {
@@ -25,17 +30,17 @@ export default function InviteLinkButton(props) {
       .map(() => (~~(Math.random() * 36)).toString(36))
       .join('');
     wunderPool
-      .registerInviteLink(secret, validFor ?? 1)
+      .createInviteLink(secret, validFor ?? 1)
       .then((res) => {
         setInviteLink(
-          `${window.location.origin}/pools/join/${wunderPool.address}?secret=${secret}`
+          `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`
         );
       })
       .catch((err) => handleError(err))
       .then(() => setLoading(false));
   };
 
-  return (
+  return wunderPool.version.number > 4 ? (
     <>
       <button
         className=" btn-neutral items-center w-full py-3 px-3"
@@ -50,6 +55,7 @@ export default function InviteLinkButton(props) {
         </span>
       </button>
       <Dialog
+        fullWidth
         open={open}
         onClose={handleClose}
         PaperProps={{
@@ -58,13 +64,18 @@ export default function InviteLinkButton(props) {
       >
         <DialogTitle>Generate Invite Link</DialogTitle>
         <DialogContent>
-          <Typography variant="subtitle1">
+          <label className="label" htmlFor="validFor">
             How many users can use this link?
-          </Typography>
-          <TextField
-            value={validFor}
-            onChange={(_, val) => setValidFor(val)}
-            label="Valid For"
+          </label>
+          <input
+            className="textfield py-4 px-3 mt-2 "
+            id="validFor"
+            type="number"
+            min={1}
+            placeholder="1"
+            onChange={(e) => {
+              setValidFor(e.target.value);
+            }}
           />
           {inviteLink && (
             <CopyToClipboard
@@ -72,8 +83,8 @@ export default function InviteLinkButton(props) {
               onCopy={() => handleSuccess('Copied Invite Link')}
             >
               <span className="cursor-pointer text-md">
-                <div className="flex flex-row items-center">
-                  <div>{inviteLink}</div>
+                <div className="flex flex-row items-center mt-2">
+                  <div className="truncate ...">{inviteLink}</div>
                   <MdContentCopy className="text-gray-500 ml-4" />
                 </div>
               </span>
@@ -90,7 +101,7 @@ export default function InviteLinkButton(props) {
               Cancel
             </button>
             <button
-              className="btn btn-success"
+              className="btn btn-kaico"
               onClick={handleSubmit}
               disabled={validFor < 1}
             >
@@ -107,5 +118,21 @@ export default function InviteLinkButton(props) {
         ></iframe>
       </Dialog>
     </>
+  ) : (
+    <button className=" btn-neutral items-center w-full py-3 px-3">
+      <CopyToClipboard
+        text={window.location.href}
+        onCopy={() => handleSuccess('Invite link copied!')}
+      >
+        <span className="cursor-pointer">
+          <div className="flex flex-row items-center justify-center">
+            <BsLink45Deg className="text-lg ml-1" />
+            <Typography className="text-lg mr-5 ml-2">
+              Copy Invite Link
+            </Typography>
+          </div>
+        </span>
+      </CopyToClipboard>
+    </button>
   );
 }

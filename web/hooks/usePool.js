@@ -29,6 +29,7 @@ import { waitForTransaction } from '/services/contract/provider';
 import axios from 'axios';
 import { usdcAddress } from '/services/contract/init';
 import { isLiquidateProposal } from '../services/contract/proposals';
+import { addToWhiteListWithSecret } from '../services/contract/pools';
 
 export default function usePool(userAddr, poolAddr = null) {
   const userAddress = userAddr;
@@ -86,6 +87,16 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const inviteUser = (newMember) => {
     return addToWhiteList(poolAddress, userAddress, newMember, version.number);
+  };
+
+  const createInviteLink = (secret, validFor) => {
+    return addToWhiteListWithSecret(
+      poolAddress,
+      userAddress,
+      secret,
+      validFor,
+      version.number
+    );
   };
 
   const apeSuggestion = (tokenAddress, title, description, value) => {
@@ -319,6 +330,7 @@ export default function usePool(userAddr, poolAddr = null) {
     newPool,
     join,
     inviteUser,
+    createInviteLink,
     usdcBalance,
     assetBalance,
     totalBalance,

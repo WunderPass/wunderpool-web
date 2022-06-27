@@ -54,7 +54,7 @@ export default function Pool(props) {
       setName(router.query.name);
       wunderPool.setPoolAddress(router.query.id);
     }
-  }, [router.isReady]);
+  }, [router.isReady, router.query.id]);
 
   useEffect(() => {
     if (!address || !user.address) return;
