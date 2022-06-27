@@ -53,6 +53,7 @@ export default function ProposalList(props) {
                 );
               })}
           </div>
+
           <div className="">
             <Typography className="text-xl my-4">Closed Proposals</Typography>
             <div className="lg:grid lg:grid-cols-2 lg:gap-6">
