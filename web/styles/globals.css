@@ -127,5 +127,5 @@ button:disabled {
 }
 
 .initials-avatar {
-  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white;
+  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white pt-0.5;
 }

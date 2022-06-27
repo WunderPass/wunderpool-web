@@ -46,7 +46,11 @@ export default function NewPoolDialog(props) {
   const [tokenSymbolTouched, setTokenSymbolTouched] = useState(false);
   const [entryBarrier, setEntryBarrier] = useState('');
   const [entryBarrierTouched, setEntryBarrierTouched] = useState(false);
+  const [maxInvest, setMaxInvest] = useState('');
+  const [maxInvestTouched, setMaxInvestTouched] = useState(false);
+  const [maxMembers, setMaxMembers] = useState('50');
   const [value, setValue] = useState('');
+  const [valueAsDollarString, setValueAsDollarString] = useState('');
   const [valueTouched, setValueTouched] = useState(false);
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -57,6 +61,88 @@ export default function NewPoolDialog(props) {
   const router = useRouter();
   const end = useRef(null);
 
+  //DurationPicker
+  const [sixHours, setSixHours] = useState(false);
+  const [twentyFourHours, settwentyFourHours] = useState(true);
+  const [threeDays, setThreeDays] = useState(false);
+  const [showCustomDurationTextBox, setShowCustomDurationTextBox] =
+    useState(false);
+
+  const VotingDuration = {
+    SIXHOURS: 1,
+    TWENTYFOURHOURS: 2,
+    THREEDAYS: 3,
+    CUSTOM: 4,
+  };
+  Object.freeze(VotingDuration);
+
+  const durationPickerForBackground = (duration) => {
+    setSixHours(false);
+    settwentyFourHours(false);
+    setThreeDays(false);
+    setShowCustomDurationTextBox(false);
+    switch (duration) {
+      case 1:
+        setSixHours(true);
+        break;
+      case 2:
+        settwentyFourHours(true);
+        break;
+      case 3:
+        setThreeDays(true);
+        break;
+      case 4:
+        setShowCustomDurationTextBox(true);
+        break;
+      default:
+    }
+  };
+
+  //PercentPicker
+  const [overFifty, setOverFifty] = useState(true);
+  const [showCustomPercentTextBox, setShowCustomPercentTextBox] =
+    useState(false);
+
+  const percentPickerForBackground = (id) => {
+    setOverFifty(false);
+    setShowCustomPercentTextBox(false);
+
+    switch (id) {
+      case 1:
+        setOverFifty(true);
+        break;
+      case 2:
+        setShowCustomPercentTextBox(true);
+        break;
+      default:
+    }
+  };
+
+  //VotersPicker
+  const [onePerson, setOnePerson] = useState(false);
+  const [twoPersons, setTwoPerson] = useState(true);
+  const [customPerson, setCustomPerson] = useState(false);
+
+  const votersPickerForBackground = (id) => {
+    setOnePerson(false);
+    setTwoPerson(false);
+    setCustomPerson(false);
+
+    switch (id) {
+      case 1:
+        setOnePerson(true);
+        break;
+      case 2:
+        setTwoPerson(true);
+        break;
+      case 3:
+        setCustomPerson(true);
+        break;
+      default:
+    }
+  };
+
+  //main functions
   const onToggle = () => {
     setVotingsOn(!votingsOn);
   };
@@ -113,6 +199,21 @@ export default function NewPoolDialog(props) {
     setShowMoreOptions(false);
     setLoading(false);
     setStep(1);
+
+    //DurationPicker
+    setSixHours(false);
+    settwentyFourHours(true);
+    setThreeDays(false);
+    setShowCustomDurationTextBox(false);
+
+    //PercentPicker
+    setOverFifty(true);
+    setShowCustomPercentTextBox(false);
+
+    //VotersPicker
+    setOnePerson(false);
+    setTwoPerson(true);
+    setCustomPerson(false);
   };
 
   const convertToRawValue = (value) => {
@@ -123,6 +224,7 @@ export default function NewPoolDialog(props) {
     setHasEnoughBalance(
       user.usdBalance >= Number(convertToRawValue(e.target.value))
     );
+    setValueAsDollarString(e.target.value);
     setValue(convertToRawValue(e.target.value));
     setValueTouched(true);
   };
@@ -146,7 +248,17 @@ export default function NewPoolDialog(props) {
     setPoolDescription(description);
   };
 
+  const checkMinAndMax = () => {
+    if (maxInvest.length === 0) {
+      setMaxInvest(value);
+    }
+    if (entryBarrier.length === 0) {
+      setEntryBarrier(value);
+    }
+  };
+
   const handleSubmit = () => {
+    checkMinAndMax();
     setStep(step + 1);
     setLoading(true);
     setWaitingForPool(true);
@@ -305,9 +417,9 @@ export default function NewPoolDialog(props) {
                   className="text-black text-sm font-semibold mt-2"
                   onClick={openAdvanced}
                 >
-                  <div className="flex flex-row items-center">
+                  <div className="flex flex-row items-center text-lg">
                     Advanced Options
-                    <MdOutlineKeyboardArrowDown className="ml-3 text-md" />
+                    <MdOutlineKeyboardArrowDown className="ml-3 text-lg" />
                   </div>
                 </button>
               </Collapse>
@@ -317,9 +429,9 @@ export default function NewPoolDialog(props) {
                     className="text-black text-sm font-semibold mt-2"
                     onClick={() => setShowMoreOptions(false)}
                   >
-                    <div className="flex flex-row items-center">
+                    <div className="flex flex-row items-center text-lg">
                       Advanced Options
-                      <MdOutlineKeyboardArrowUp className="ml-3 text-md" />
+                      <MdOutlineKeyboardArrowUp className="ml-3 text-lg" />
                     </div>
                   </button>
 
@@ -328,16 +440,18 @@ export default function NewPoolDialog(props) {
                       Minimum investment to join the Pool
                     </label>
                     <CurrencyInput
+                      intlConfig={{ locale: 'en-US', currency: 'USD' }}
                       className="textfield py-4 mt-2"
                       prefix={'$'}
-                      id="entryBarrier"
-                      name="entryBarrier"
-                      placeholder="min - $3,00"
+                      value={entryBarrier}
+                      placeholder={valueAsDollarString}
                       type="text"
                       decimalsLimit={2}
                       onChange={(e) => {
                         setEntryBarrier(convertToRawValue(e.target.value));
                         setEntryBarrierTouched(e.target.value.length > 0);
+                        console.log(convertToRawValue(e.target.value));
+                        console.log(maxInvest);
                       }}
                     />
                     {entryBarrierTouched && entryBarrier < 3 && (
@@ -352,11 +466,17 @@ export default function NewPoolDialog(props) {
                       Maximum investment to join the Pool
                     </label>
                     <CurrencyInput //ADD FUNCTIONALITY
+                      intlConfig={{ locale: 'en-US', currency: 'USD' }}
                       className="textfield py-4 mt-2"
                       prefix={'$'}
-                      placeholder="min - $3,00"
+                      value={maxInvest}
+                      placeholder={valueAsDollarString}
                       type="text"
                       decimalsLimit={2}
+                      onChange={(e) => {
+                        setMaxInvest(convertToRawValue(e.target.value));
+                        setMaxInvestTouched(e.target.value.length > 0);
+                      }}
                     />
                     {entryBarrierTouched && entryBarrier < 3 && (
                       <div className="text-red-600" style={{ marginTop: 0 }}>
@@ -377,30 +497,11 @@ export default function NewPoolDialog(props) {
                       id="maxMembers"
                       type="number"
                       placeholder="50"
+                      value={maxMembers}
+                      onChange={(e) => {
+                        setMaxMembers(e.target.value);
+                      }}
                     />
-                  </div>
-
-                  <div>
-                    <label
-                      className="label pb-1"
-                      htmlFor="value" //ADD FUNCTIONALITY
-                    >
-                      Lifetime of the Pool
-                    </label>
-                    <div className="flex flex-row textfield py-2 justify-between mt-2">
-                      <button className="focus:bg-white text-black font-semibold text-sm py-2 px-2 rounded-lg">
-                        Infinite
-                      </button>
-                      <button className="focus:bg-white text-black font-semibold text-sm py-2 px-2 rounded-lg">
-                        3 M
-                      </button>
-                      <button className="focus:bg-white text-black font-semibold text-sm py-2 px-2 rounded-lg">
-                        1 Y
-                      </button>
-                      <button className="focus:bg-white text-black font-semibold text-sm py-2 px-2 rounded-lg">
-                        Custom
-                      </button>
-                    </div>
                   </div>
 
                   <div>
@@ -491,36 +592,163 @@ export default function NewPoolDialog(props) {
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
                     <button
                       id="b1"
-                      className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full"
+                      className={
+                        sixHours
+                          ? 'bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full'
+                          : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                      }
+                      onClick={() =>
+                        durationPickerForBackground(VotingDuration.SIXHOURS)
+                      }
                     >
                       6h
                     </button>
-                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
+                    <button
+                      className={
+                        twentyFourHours
+                          ? 'bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full'
+                          : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                      }
+                      onClick={() =>
+                        durationPickerForBackground(
+                          VotingDuration.TWENTYFOURHOURS
+                        )
+                      }
+                    >
                       24h
                     </button>
-                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
+                    <button
+                      className={
+                        threeDays
+                          ? 'bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full'
+                          : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                      }
+                      onClick={() =>
+                        durationPickerForBackground(VotingDuration.THREEDAYS)
+                      }
+                    >
                       3d
                     </button>
-                    <button className="focus:bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full">
+                    <button
+                      className={
+                        showCustomDurationTextBox
+                          ? 'hidden'
+                          : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                      }
+                      onClick={() =>
+                        durationPickerForBackground(VotingDuration.CUSTOM)
+                      }
+                    >
                       Custom
                     </button>
+                    <input
+                      className={
+                        showCustomDurationTextBox
+                          ? 'bg-gray-200 text-black text-sm px-2 rounded-lg w-full py-2 text-center'
+                          : 'hidden'
+                      }
+                      type="text"
+                      placeholder="in hours.."
+                      onChange={(e) => {}}
+                    />
                   </div>
                 </div>
 
                 <div className="pb-4">
-                  <label className="label pb-1" htmlFor="value">
+                  <label className="label pb-1 sm:mr-52" htmlFor="value">
                     How many % is needed to win a vote
                   </label>
                   <div className="flex flex-row textfield py-2 justify-between mt-2">
                     <div className="flex items-center justify-center  w-full">
-                      <button className="focus:bg-gray-200 text-black  text-sm py-2 px-2 rounded-lg w-full">
-                        51%
+                      <button
+                        className={
+                          overFifty
+                            ? 'bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full'
+                            : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                        }
+                        onClick={() => percentPickerForBackground(1)}
+                      >
+                        {'> 50%'}
                       </button>
                     </div>
                     <div className="flex w-full items-center justify-center">
-                      <button className="focus:bg-gray-200 text-black  text-sm py-2 px-2 rounded-lg w-full">
+                      <button
+                        className={
+                          showCustomPercentTextBox
+                            ? 'hidden'
+                            : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                        }
+                        onClick={() => {
+                          percentPickerForBackground(2);
+                        }}
+                      >
                         Custom
                       </button>
+                      <input
+                        className={
+                          showCustomPercentTextBox
+                            ? 'bg-gray-200 text-black text-sm px-2 rounded-lg w-full py-2 text-center'
+                            : 'hidden'
+                        }
+                        type="text"
+                        placeholder=" in %.."
+                        onChange={(e) => {}}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="pb-4">
+                  <label className="label pb-1 sm:mr-52" htmlFor="value">
+                    How many people have to vote atleast
+                  </label>
+                  <div className="flex flex-row textfield py-2 justify-between mt-2">
+                    <div className="flex items-center justify-center  w-full">
+                      <button
+                        className={
+                          onePerson
+                            ? 'bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full'
+                            : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                        }
+                        onClick={() => votersPickerForBackground(1)}
+                      >
+                        1
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-center  w-full">
+                      <button
+                        className={
+                          twoPersons
+                            ? 'bg-gray-200 text-black text-sm py-2 px-2 rounded-lg w-full'
+                            : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                        }
+                        onClick={() => votersPickerForBackground(2)}
+                      >
+                        2
+                      </button>
+                    </div>
+                    <div className="flex w-full items-center justify-center">
+                      <button
+                        className={
+                          customPerson
+                            ? 'hidden'
+                            : 'text-black text-sm py-2 px-2 rounded-lg w-full'
+                        }
+                        onClick={() => {
+                          votersPickerForBackground(3);
+                        }}
+                      >
+                        Custom
+                      </button>
+                      <input
+                        className={
+                          customPerson
+                            ? 'bg-gray-200 text-black text-sm px-2 rounded-lg w-full py-2 text-center'
+                            : 'hidden'
+                        }
+                        type="text"
+                        placeholder=" in persons.."
+                        onChange={(e) => {}}
+                      />
                     </div>
                   </div>
                 </div>
@@ -556,7 +784,7 @@ export default function NewPoolDialog(props) {
               </DialogContentText>
 
               <div>
-                <label className="label" htmlFor="poolName">
+                <label className="label pr-52" htmlFor="poolName">
                   Invite your friends via Wunderpass
                 </label>
                 <div className="flex flex-row justify-between textfield mb-6 mt-2">
@@ -575,18 +803,12 @@ export default function NewPoolDialog(props) {
               <Divider className="" />
 
               <div className="flex justify-between items-center pt-4">
-                <label className="label  " htmlFor="value">
-                  <div className="flex flex-row justify-between items-center">
-                    <BsLink45Deg className="text-xl opacity-60 mr-1" />
-                    <Typography>Invite by link</Typography>
-                  </div>
-                </label>
-                <button className="btn-neutral bg-[#F6F6F6] sm:w-2/5 py-3">
-                  <div className="flex flex-row justify-between items-center ">
-                    <MdContentCopy className="text-gray-500 mr-2 ml-3" />
-                    <Typography className="mr-3">Copy Link</Typography>
-                  </div>
-                </button>
+                <div className="flex flex-row justify-between items-center ">
+                  <Typography className="mr-3">
+                    You can invite friends without a Wunderpass after creating
+                    the Pool!
+                  </Typography>
+                </div>
               </div>
             </Stack>
           </DialogContent>
