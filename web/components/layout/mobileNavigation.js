@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Link, Menu, MenuItem, Typography, Divider } from '@mui/material';
+import { useState } from 'react';
+import { Menu, MenuItem, Typography, Divider } from '@mui/material';
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { AiOutlineClose } from 'react-icons/ai';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdNotifications } from 'react-icons/io';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const mobileNavigation = (props) => {
   const { user } = props;
@@ -55,6 +56,7 @@ const mobileNavigation = (props) => {
               className="mt-5"
               open={Boolean(notificationListOpen)}
               onClose={handleMenuClose}
+              onClick={handleMenuClose}
               anchorEl={notificationListOpen}
             >
               <Typography className="p-4 text-md">
@@ -110,6 +112,7 @@ const mobileNavigation = (props) => {
                   className="mt-5"
                   open={Boolean(poolListOpen)}
                   onClose={handleMenuClose}
+                  onClick={handleMenuClose}
                   anchorEl={poolListOpen}
                 >
                   {user.pools.length > 0 &&
