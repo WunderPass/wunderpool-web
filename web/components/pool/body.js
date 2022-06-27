@@ -6,7 +6,6 @@ import NftList from '/components/tokens/nfts';
 import TransactionsList from '/components/pool/transactions';
 import { useState, useEffect } from 'react';
 import React from 'react';
-import AssetDetails from '/components/pool/assetDetails';
 
 function body(props) {
   const { address, loading, wunderPool, tokenAddedEvent, newProposalEvent } =

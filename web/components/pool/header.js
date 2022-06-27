@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
-import { currency, poolBalanceToUsd } from '/services/formatter';
+import { currency, polyValueToUsd } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
@@ -13,6 +13,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider } from '@mui/material';
+import { GiMoneyStack } from 'react-icons/gi';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
@@ -60,9 +61,11 @@ export default function PoolHeader(props) {
             <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
               {name}
             </Typography>
-            <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
-              {currency(poolBalanceToUsd(wunderPool.usdcBalance), {})}
-            </Typography>
+            <div className="flex flex-row justify-center items-center">
+              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
+                Cash: {currency(wunderPool.totalBalance, {})}
+              </Typography>
+            </div>
           </div>
 
           <Divider className="my-6 mt-8 opacity-70" />
@@ -107,12 +110,7 @@ export default function PoolHeader(props) {
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">-</Typography>
                 </div>
-                <div>
-                  <Typography className="text-sm opacity-40 py-1 pt-6">
-                    End Time
-                  </Typography>
-                  <Typography className="text-sm opacity-90 py-1">-</Typography>
-                </div>
+
                 <div>
                   <Typography className="text-sm opacity-40 py-1 pt-6">
                     Min
@@ -120,7 +118,10 @@ export default function PoolHeader(props) {
                   <Typography className="text-sm opacity-90 py-1">
                     {wunderPool.governanceToken &&
                       currency(
-                        wunderPool.governanceToken.entryBarrier / 1000000,
+                        polyValueToUsd(
+                          wunderPool.governanceToken.entryBarrier,
+                          {}
+                        ),
                         {}
                       )}
                   </Typography>

@@ -37,6 +37,7 @@ export default function TopUpAlert(props) {
 
   return (
     <Dialog
+      className="rounded-xl"
       open={open || false}
       onClose={handleClose}
       TransitionComponent={Transition}
@@ -57,12 +58,16 @@ export default function TopUpAlert(props) {
           >
             <button className="btn btn-info">TopUp Now</button>
           </Link>
-          <div className="flex flex-row justify-start items-center mt-2">
-            <Checkbox checked={checked} onChange={handleChange} />
-            <Typography className="pt-1">
-              Don't show this info again.
-            </Typography>
-          </div>
+          {user.usdBalance > 1 && checked ? (
+            <div></div>
+          ) : (
+            <div className="flex flex-row justify-start items-center mt-2">
+              <Checkbox checked={checked} onChange={handleChange} />
+              <Typography className="pt-1">
+                Don't show this info again.
+              </Typography>
+            </div>
+          )}
         </Stack>
       </DialogContent>
     </Dialog>
