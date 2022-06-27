@@ -120,7 +120,7 @@ export default function NewPoolDialog(props) {
 
   //VotersPicker
   const [onePerson, setOnePerson] = useState(false);
-  const [twoPersons, setTwoPerson] = useState(false);
+  const [twoPersons, setTwoPerson] = useState(true);
   const [customPerson, setCustomPerson] = useState(false);
 
   const votersPickerForBackground = (id) => {
@@ -803,18 +803,12 @@ export default function NewPoolDialog(props) {
               <Divider className="" />
 
               <div className="flex justify-between items-center pt-4">
-                <label className="label  " htmlFor="value">
-                  <div className="flex flex-row justify-between items-center">
-                    <BsLink45Deg className="text-xl opacity-60 mr-1" />
-                    <Typography>Invite by link</Typography>
-                  </div>
-                </label>
-                <button className="btn-neutral bg-[#F6F6F6] sm:w-2/5 py-3">
-                  <div className="flex flex-row justify-between items-center ">
-                    <MdContentCopy className="text-gray-500 mr-2 ml-3" />
-                    <Typography className="mr-3">Copy Link</Typography>
-                  </div>
-                </button>
+                <div className="flex flex-row justify-between items-center ">
+                  <Typography className="mr-3">
+                    You can invite friends without a Wunderpass after creating
+                    the Pool!
+                  </Typography>
+                </div>
               </div>
             </Stack>
           </DialogContent>
