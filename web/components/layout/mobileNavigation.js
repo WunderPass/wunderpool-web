@@ -52,30 +52,36 @@ const mobileNavigation = (props) => {
               <IoMdNotifications className="text-xl" />
             </button>
             <Menu
-              className="mt-5"
+              className="mt-5 "
               open={Boolean(notificationListOpen)}
               onClose={handleMenuClose}
               anchorEl={notificationListOpen}
+              sx={{ borderRadius: '50%' }}
             >
               <Typography className="p-4 text-md">
                 You were invited to join these Pools
               </Typography>
               <Divider className="mb-2" />
               {user.whitelistedPools.length > 0 &&
-                user.whitelistedPools.map((pool, i) => {
-                  return (
-                    <Link
-                      key={`pool-${i}`}
-                      href={`/pools/${pool.address}?name=${pool.name}`}
-                      sx={{ textDecoration: 'none', color: 'inherit' }}
-                      passHref
-                    >
-                      <MenuItem>
-                        <Typography className="text-sm">{pool.name}</Typography>{' '}
-                      </MenuItem>
-                    </Link>
-                  );
-                })}
+                user.whitelistedPools
+                  .slice(0)
+                  .reverse()
+                  .map((pool, i) => {
+                    return (
+                      <Link
+                        key={`pool-${i}`}
+                        href={`/pools/${pool.address}?name=${pool.name}`}
+                        sx={{ textDecoration: 'none', color: 'inherit' }}
+                        passHref
+                      >
+                        <MenuItem>
+                          <Typography className="text-sm">
+                            {pool.name}
+                          </Typography>{' '}
+                        </MenuItem>
+                      </Link>
+                    );
+                  })}
               {user.pools.length == 0 && <MenuItem> - no pools - </MenuItem>}
             </Menu>
           </motion.li>

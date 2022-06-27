@@ -57,12 +57,12 @@ export default function PoolHeader(props) {
               </div>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row sm:justify-between">
+          <div className="flex flex-row justify-between">
             <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
               {name}
             </Typography>
-            <div className="flex flex-row justify-center items-center">
-              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 ">
+            <div className="flex flex-row justify-end ">
+              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
                 Cash: {currency(wunderPool.totalBalance, {})}
               </Typography>
             </div>
