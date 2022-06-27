@@ -24,7 +24,7 @@ function PoolCard(props) {
   return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
       <Paper
-        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer md:mb-0 sm:mb-6"
+        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6"
         elevation={1}
         sx={{ p: 2 }}
       >
@@ -63,24 +63,34 @@ function PoolCard(props) {
               </Typography>
             </div>
 
-            <div className="flex flex-row  mt-4">
-              {members &&
-                members
-                  .sort((a, b) => b.share - a.share)
-                  .slice(0, 3)
-                  .map((member, i) => {
-                    return (
-                      <InitialsAvatar
-                        key={`member-${i}`}
-                        tooltip={`${
-                          member.wunderId || 'External User'
-                        }: ${parseInt(member.share)}%`}
-                        text={member.wunderId ? member.wunderId : '0-X'}
-                        separator="-"
-                        color={['green', 'blue', 'red', 'teal'][i % 4]}
-                      />
-                    );
-                  })}
+            <div className="flex flex-row   mt-4">
+              <div className="flex flex-row">
+                {members &&
+                  members
+                    .sort((a, b) => b.share - a.share)
+                    .slice(0, 3)
+                    .map((member, i) => {
+                      return (
+                        <InitialsAvatar
+                          key={`member-${i}`}
+                          tooltip={`${
+                            member.wunderId || 'External User'
+                          }: ${parseInt(member.share)}%`}
+                          text={member.wunderId ? member.wunderId : '0-X'}
+                          separator="-"
+                          color={['green', 'blue', 'red', 'teal'][i % 4]}
+                        />
+                      );
+                    })}
+              </div>
+              {members && members.length > 3 && (
+                <div className="flex flex-row">
+                  <Typography className="pt-2.5 pl-2 ">+</Typography>
+                  <Typography className="pt-2.5 pl-2 ">
+                    {members.length - 3}
+                  </Typography>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -93,7 +103,7 @@ function PoolList(props) {
   const { pools, setOpen } = props;
 
   return pools.length > 0 ? (
-    <div className="md:grid md:grid-cols-2 md:gap-6 w-full">
+    <div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full">
       {pools.map((pool, i) => {
         return <PoolCard key={`pool-card-${i}`} pool={pool} />;
       })}

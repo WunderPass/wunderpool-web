@@ -11,12 +11,14 @@ import {
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import ProposalCard from './proposalCard';
+import MakeProposalDialog from '/components/dialogs/makeProposal';
 
 export default function ProposalList(props) {
   const { wunderPool, setApe } = props;
   const [tab, setTab] = useState(0);
   const slidingContainer = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (wunderPool.isReady2) {
@@ -30,7 +32,7 @@ export default function ProposalList(props) {
       width="100%"
       sx={{ height: '100px', borderRadius: 3 }}
     />
-  ) : wunderPool.proposals.length != 0 ? (
+  ) : wunderPool.proposals.length == 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <Box ref={slidingContainer} p={1} overflow="hidden" className="w-full">
         <Stack spacing={2}>
@@ -53,6 +55,7 @@ export default function ProposalList(props) {
                 );
               })}
           </div>
+
           <div className="">
             <Typography className="text-xl my-4">Closed Proposals</Typography>
             <div className="lg:grid lg:grid-cols-2 lg:gap-6">
@@ -86,6 +89,15 @@ export default function ProposalList(props) {
         <Typography className="mb-2 mt-3" variant="subtitle1">
           Create one now!
         </Typography>
+        <button
+          className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Make Proposal
+        </button>
+        <MakeProposalDialog open={open} setOpen={setOpen} {...props} />
       </Stack>
     </div>
   );

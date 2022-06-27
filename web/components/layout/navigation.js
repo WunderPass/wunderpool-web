@@ -90,18 +90,21 @@ const navigation = (props) => {
               </Typography>
               <Divider className="mb-2" />
               {user.whitelistedPools.length > 0 &&
-                user.whitelistedPools.map((pool, i) => {
-                  return (
-                    <Link
-                      key={`pool-${i}`}
-                      href={`/pools/${pool.address}?name=${pool.name}`}
-                      sx={{ textDecoration: 'none', color: 'inherit' }}
-                      passHref
-                    >
-                      <MenuItem> {pool.name}</MenuItem>
-                    </Link>
-                  );
-                })}
+                user.whitelistedPools
+                  .slice(0)
+                  .reverse()
+                  .map((pool, i) => {
+                    return (
+                      <Link
+                        key={`pool-${i}`}
+                        href={`/pools/${pool.address}?name=${pool.name}`}
+                        sx={{ textDecoration: 'none', color: 'inherit' }}
+                        passHref
+                      >
+                        <MenuItem> {pool.name}</MenuItem>
+                      </Link>
+                    );
+                  })}
               {user.pools.length == 0 && <MenuItem> - no pools - </MenuItem>}
             </Menu>
           </motion.li>
