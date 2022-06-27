@@ -1,17 +1,11 @@
-import { useEffect, useState } from 'react';
-import {
-  Link,
-  Menu,
-  MenuItem,
-  Paper,
-  Typography,
-  Divider,
-} from '@mui/material';
+import { useState } from 'react';
+import { Menu, MenuItem, Typography, Divider } from '@mui/material';
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { IoMdNotifications } from 'react-icons/io';
 import { HiOutlineLogout } from 'react-icons/hi';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const navigation = (props) => {
   const { user } = props;
@@ -40,6 +34,7 @@ const navigation = (props) => {
               className="mt-4"
               open={Boolean(poolListOpen)}
               onClose={handleMenuClose}
+              onClick={handleMenuClose}
               anchorEl={poolListOpen}
             >
               {user.pools.length > 0 &&
@@ -87,6 +82,7 @@ const navigation = (props) => {
               className="mt-5"
               open={Boolean(notificationListOpen)}
               onClose={handleMenuClose}
+              onClick={handleMenuClose}
               anchorEl={notificationListOpen}
             >
               <Typography className="p-4 text-xl">
@@ -95,7 +91,6 @@ const navigation = (props) => {
               <Divider className="mb-2" />
               {user.whitelistedPools.length > 0 &&
                 user.whitelistedPools.map((pool, i) => {
-                  console.log(pool);
                   return (
                     <Link
                       key={`pool-${i}`}

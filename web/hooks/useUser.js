@@ -101,6 +101,7 @@ export default function useUser() {
   useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
+    console.log('useffect in useuser');
     setCheckedTopUp(localStorage.getItem('checkedTopUp'));
   }, []);
 

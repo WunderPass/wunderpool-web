@@ -59,7 +59,7 @@ const localeOptions = {
   de: { symbol: '€', separator: '.', decimals: ',' },
 };
 
-export function poolBalanceToUsd(balance) {
+export function polyValueToUsd(balance) {
   return balance?.toString() / 1000000;
 }
 

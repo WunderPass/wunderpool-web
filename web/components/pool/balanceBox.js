@@ -21,9 +21,7 @@ function BalanceBox(props) {
 
   useEffect(() => {
     if (user.usdBalance) {
-      setTotalBalance(
-        Number(user.usdBalance.replace(/[^0-9.-]+/g, '')) + cashInPools
-      );
+      setTotalBalance(cashInPools);
       setLoading(false);
     }
   }, [user.usdBalance, cashInPools]);
@@ -31,7 +29,7 @@ function BalanceBox(props) {
   return !loading ? (
     <div className="sm:h-full sm:max-h-96 ">
       <div className="flex sm:h-full flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
-        <Typography className="pb-6">Total Balance</Typography>
+        <Typography className="pb-6">Total Pool Balances</Typography>
         <Typography className="text-3xl ">
           {currency(totalBalance, {})}
         </Typography>

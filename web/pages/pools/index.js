@@ -36,11 +36,6 @@ function PoolCard(props) {
           <Typography className="text-lg pt-3 font-semibold">
             {currency(pool.totalBalance, {})}
           </Typography>
-          {pool.minInvest > 0 && (
-            <Typography variant="subtitle1">
-              Minimum Invest: ${displayWithDecimalPlaces(pool.minInvest, 2)}
-            </Typography>
-          )}
           <div className="flex flex-row justify-between items-center pb-4">
             <div className="flex flex-row justify-start items-center ">
               <PieChart

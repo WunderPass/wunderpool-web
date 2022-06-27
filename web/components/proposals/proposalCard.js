@@ -218,7 +218,9 @@ export default function ProposalCard(props) {
                         <Typography variant="span" fontStyle="italic">
                           Contract
                         </Typography>
-                        {data.contractAddress}
+                        <Typography className="ml-2 truncate ">
+                          {data.contractAddress}
+                        </Typography>
                       </Typography>
                       <Divider />
                       <Typography
@@ -231,14 +233,16 @@ export default function ProposalCard(props) {
                         <Typography variant="span" fontStyle="italic">
                           Action
                         </Typography>
-                        {data.action}
+                        <Typography className=" ml-2 truncate ">
+                          {data.action}
+                        </Typography>
                       </Typography>
                       <Divider />
                       <Stack direction="row" justifyContent="space-between">
                         <Typography variant="subtitle1" fontStyle="italic">
                           Params
                         </Typography>
-                        <Stack alignItems="end">
+                        <Stack className="ml-2 truncate" alignItems="start">
                           {decodeParams(data.action, data.params).map(
                             (param, j) => {
                               const formattedParam =
@@ -248,7 +252,7 @@ export default function ProposalCard(props) {
                               return (
                                 <Typography
                                   key={`param-${i}-${j}`}
-                                  variant="subtitle1"
+                                  variant="span"
                                 >
                                   {formattedParam || JSON.stringify(param)}
                                 </Typography>

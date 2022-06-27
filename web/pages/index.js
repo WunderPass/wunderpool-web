@@ -1,6 +1,5 @@
 import CreateYourWunderPass from '/components/auth/createYourWunderPass';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
-import WunderPoolIcon from '/public/wunderpool_logo_white.svg';
 import CasamaIcon from '/public/casama-wht.svg';
 import { Dialog, LinearProgress, Stack } from '@mui/material';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
@@ -43,7 +42,7 @@ export default function Home(props) {
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center ">
           <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen lg:mb-7 ">
             <div className="bg-kaico-blue text-white lg:rounded-t-2xl lg:py-52 lg:w-2/5 lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none ">
-              <div className="ml-10 lg:ml-6 flex-1 pt-6 lg:pt-0 ">
+              <div className="flex-1 justify-center items-center mx-24 lg:mx-8 pt-6 lg:pt-0 ">
                 <Image
                   className=""
                   src={CasamaIcon}

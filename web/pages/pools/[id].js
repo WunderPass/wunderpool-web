@@ -54,7 +54,7 @@ export default function Pool(props) {
       setName(router.query.name);
       wunderPool.setPoolAddress(router.query.id);
     }
-  }, [router.isReady]);
+  }, [router.isReady, router.query.id]);
 
   useEffect(() => {
     if (!address || !user.address) return;
@@ -128,7 +128,7 @@ export default function Pool(props) {
         <div
           className="block md:hidden" //Mobile
         >
-          <div className="flex-col">
+          <div className="flex-col ">
             <PoolHeader name={name} address={address} wunderPool={wunderPool} />
 
             <PoolDetails address={address} wunderPool={wunderPool} {...props} />

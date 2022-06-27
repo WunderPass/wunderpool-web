@@ -8,7 +8,10 @@ import {
   joinPoolDelta,
 } from './delta/pools';
 import { fundPoolGamma, joinPoolGamma } from './gamma/pools';
-import { addToWhiteListWithSecretEpsilon } from './epsilon/pools';
+import {
+  addToWhiteListWithSecretEpsilon,
+  fetchWhitelistedUserPoolsEpsilon,
+} from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
 import { usdcBalanceOf } from './token';
@@ -187,8 +190,21 @@ export function fetchUserPools(userAddress) {
 export function fetchWhitelistedUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
     const deltaPools = await fetchWhitelistedUserPoolsDelta(userAddress);
-    resolve([...deltaPools]);
+    const epsilonPools = await fetchWhitelistedUserPoolsEpsilon(userAddress);
+    resolve([...deltaPools, ...epsilonPools]);
   });
+  // return new Promise(async (resolve, reject) => {
+  //   axios({ url: `/api/proxy/pools/whitelisted?address=${userAddress}` })
+  //     .then(async (res) => {
+  //       const pools = await Promise.all(
+  //         res.data
+  //           .filter((pool) => pool.active)
+  //           .map(async (pool) => await formatPool(pool))
+  //       );
+  //       resolve(pools.filter((p) => p));
+  //     })
+  //     .catch((err) => reject(err));
+  // });
 }
 
 export function fetchAllPools() {
