@@ -100,7 +100,7 @@ export default function Home(props) {
 
                 <div className="flex flex-row justify-center lg:my-2">
                   <a
-                    href="#"
+                    href="https://twitter.com/casama_io"
                     className="p-2 mx-1 rounded-full border-2 border-gray-200 lg:p-3 "
                   >
                     <FaTwitter className="text-sm "></FaTwitter>
