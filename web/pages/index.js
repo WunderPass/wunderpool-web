@@ -41,7 +41,7 @@ export default function Home(props) {
         </Head>
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center ">
           <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen lg:mb-7 ">
-            <div className="bg-kaico-blue text-white lg:rounded-t-2xl lg:py-52 lg:w-2/5 lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none ">
+            <div className="bg-kaico-blue text-white lg:rounded-t-2xl lg:py-52 lg:w-2/5 lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
               <div className="flex-1 justify-center items-center mx-24 lg:mx-8 pt-6 lg:pt-0 ">
                 <Image
                   className=""
@@ -52,12 +52,11 @@ export default function Home(props) {
               </div>
               <div className="px-6 lg:px-12">
                 <div className="text-center w-full pb-4"></div>
-                <h6 className="text-1xl font-bold mb-6">
-                  Invest with friends, get rich together!
-                </h6>
+                <h6 className="text-2xl font-bold mb-6">We do it together!</h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
-                <p className="text-xs lg:pb-12 lg:mb-0 pb-6 mt-6 ">
-                  Choose a way to connect and start aping!
+                <p className="text-md lg:pb-12 lg:mb-0 pb-6 mt-6 ">
+                  Pool capital with your friends, vote on crypto plays and make
+                  bank together!
                 </p>
               </div>
             </div>
@@ -68,9 +67,9 @@ export default function Home(props) {
                   Sign in with WunderPass
                 </h2>
                 <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>
-                <p className="text-gray-400 text-xs my-3 mb-10 lg:mb-20">
-                  Use your WunderPass or connect a exisiting wallet to a new
-                  WunderPass wallet!
+                <p className="text-gray-400 text-md my-3 mb-10 lg:mb-20">
+                  Using WunderPass makes it eassy to interact with Casama on the
+                  Polygon network as you dont have to pay for transaction fees.
                 </p>
 
                 <div className="flex flex-col items-center justify-between mb-12 lg:mb-4">

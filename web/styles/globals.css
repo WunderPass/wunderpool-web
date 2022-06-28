@@ -122,6 +122,10 @@ button:disabled {
   @apply border w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-kaico-extra-light-blue;
 }
 
+.container-checkbox {
+  @apply w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:border-kaico-blue;
+}
+
 .label {
   @apply text-black;
 }
