@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import MobileNavigation from './mobileNavigation';
 import Navigation from './navigation';
 import Link from 'next/link';
+import InitialsAvatar from '/components/utils/initialsAvatar';
 
 export default function Navbar(props) {
   const { user } = props;
@@ -31,8 +32,13 @@ export default function Navbar(props) {
                   </div>
                 </div>
 
-                <div className="flex-col justify-between border-solid w-9 h-9 ml-1 border-white rounded-full bg-kaico-extra-light-blue shadow-xl block sm:hidden">
-                  <Image src={UserIcon} alt="UserIcon" layout="responsive" />
+                <div className="pl-2 pb-1">
+                  <InitialsAvatar
+                    className=""
+                    text={user.wunderId}
+                    separator="-"
+                    color={'casama-light'}
+                  />
                 </div>
               </div>
             </Link>

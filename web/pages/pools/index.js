@@ -158,6 +158,7 @@ export default function Pools(props) {
                 <Typography className=" text-2xl my-5 sm:text-4xl">
                   Hello {user?.wunderId},
                 </Typography>
+
                 <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 ">
                   <CopyToClipboard
                     text={user?.address}
