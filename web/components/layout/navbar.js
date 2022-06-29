@@ -32,7 +32,7 @@ export default function Navbar(props) {
                   </div>
                 </div>
 
-                <div className="pl-2 pb-1">
+                <div className="sm:hidden block pl-2 pb-1">
                   <InitialsAvatar
                     className=""
                     text={user.wunderId}
