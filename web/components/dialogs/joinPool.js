@@ -105,37 +105,11 @@ export default function JoinPoolDialog(props) {
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>
         <DialogContent>
           <div>
-            <DialogContentText className="text-sm pb-3">
+            <DialogContentText className="text-sm pb-2">
               You will receive Governance Tokens proportionally to your invest
             </DialogContentText>
 
-            <DialogContentText className="flex flex-col my-3 ">
-              <Typography>Criteria:</Typography>
-              <div className="flex flex-row">
-                <Typography className="text-black pr-2">
-                  {wunderPool.governanceToken &&
-                    currency(
-                      polyValueToUsd(
-                        wunderPool.governanceToken.entryBarrier,
-                        {}
-                      ),
-                      {}
-                    )}
-                </Typography>
-                <Typography>min</Typography>
-              </div>
-              <div className="flex flex-row">
-                <Typography className="text-black pr-2">
-                  {wunderPool.governanceToken &&
-                    currency(
-                      polyValueToUsd(wunderPool.governanceToken.maxInvest, {}),
-                      {}
-                    )}
-                </Typography>
-                <Typography>max</Typography>
-              </div>
-            </DialogContentText>
-            <Divider className="my-6 opacity-70" />
+            <Divider className="mt-2 mb-4 opacity-70" />
             <Typography>Invest Amount</Typography>
             <CurrencyInput
               value={amount}
@@ -147,11 +121,40 @@ export default function JoinPoolDialog(props) {
               error={errorMsg}
             />
             <DialogContentText className="text-sm pt-2">
-              1 {wunderPool.governanceToken.symbol} ={' '}
-              {currency(polyValueToUsd(price, {}), {})}
+              <div className="flex flex-row justify-between items-center">
+                <Typography>
+                  1 {wunderPool.governanceToken.symbol} ={' '}
+                  {currency(polyValueToUsd(price, {}), {})}
+                </Typography>
+                <Typography>
+                  {wunderPool.governanceToken &&
+                    currency(
+                      polyValueToUsd(
+                        wunderPool.governanceToken.entryBarrier,
+                        {}
+                      ),
+                      {}
+                    )}{' '}
+                  min
+                </Typography>
+              </div>
             </DialogContentText>
             <DialogContentText className="text-sm">
-              Estimated shares: {shareOfPool.toString()}%
+              <div className="flex flex-row justify-between items-center">
+                <Typography>
+                  Estimated shares: {shareOfPool.toString()}%
+                </Typography>
+                <Typography /*
+                >
+                  {wunderPool.governanceToken &&
+                    currency(
+                      polyValueToUsd(wunderPool.governanceToken.maxInvest, {}),
+                      {}
+                    )}{' '}
+                  max
+                */
+                ></Typography>
+              </div>
             </DialogContentText>
             <Divider className="my-6 opacity-70" />
             <Typography>Choose payment method</Typography>
@@ -174,9 +177,14 @@ export default function JoinPoolDialog(props) {
               >
                 <BiCheck className="text-gray-100 text-lg" />
               </button>
-              <Typography className="ml-2"> WunderPass</Typography>
+              <div className="flex flex-row justify-between items-center w-full">
+                <Typography className="ml-2"> WunderPass</Typography>
+                <Typography className="ml-2 opacity-70">
+                  Balance: {currency(user.usdBalance, {})}
+                </Typography>
+              </div>
             </button>
-            <button
+            <button /*
               className={
                 isPayPal
                   ? 'border-2 border-kaico-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
@@ -194,7 +202,8 @@ export default function JoinPoolDialog(props) {
                 <BiCheck className="text-gray-100 text-lg" />
               </div>
               <Typography className="ml-2"> PayPal</Typography>
-            </button>
+            */
+            ></button>
           </div>
         </DialogContent>
         {loading ? (
@@ -204,7 +213,7 @@ export default function JoinPoolDialog(props) {
             <button
               className="btn-kaico w-full py-3 mx-3 mb-2"
               onClick={handleSubmit}
-              disabled={!Boolean(amount) || Boolean(errorMsg)}
+              disabled={!Boolean(amount) || Boolean(errorMsg) || !isWallet}
             >
               Join
             </button>
