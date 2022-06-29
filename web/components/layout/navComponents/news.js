@@ -30,15 +30,6 @@ const news = (props) => {
             <IoMdNotifications className="text-xl" />
           </Badge>
         </button>
-
-        <Menu
-          className={`py-2 pt-2 rounded-full`}
-          open={newsListOpen}
-          onClose={handleMenuClose}
-          anchorEl={newsListOpen}
-        >
-          The content of the Popover.
-        </Menu>
       </motion.li>
     </>
   );

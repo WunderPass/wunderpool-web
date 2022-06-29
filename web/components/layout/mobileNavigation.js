@@ -28,7 +28,7 @@ const mobileNavigation = (props) => {
           <div className="flex px-2 ">
             <News {...props} />
           </div>
-          <div className="flex px-2 ">
+          <div className="flex px-2 pb-0.5">
             <PoolInvites {...props} />
           </div>
           <div
