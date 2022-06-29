@@ -39,7 +39,6 @@ export default function CapTable(props) {
         </thead>
         <tbody>
           {visibleMembers.map((b, i) => {
-            console.log(wunderPool);
             return (
               <tr key={`member-${i}`}>
                 <td className="pb-2">
@@ -79,18 +78,20 @@ export default function CapTable(props) {
           })}
         </tbody>
       </table>
-      <button
-        className="flex items-center justify-center text-black text-sm mt-0 opacity-40"
-        onClick={() => setShowMore((val) => !val)}
-      >
-        <Typography className="text-lg">
-          {showMore ? (
-            <MdOutlineKeyboardArrowUp className="ml-3 text-3xl" />
-          ) : (
-            <MdOutlineKeyboardArrowDown className="ml-3 text-3xl" />
-          )}
-        </Typography>
-      </button>
+      {members.length > 3 && (
+        <button
+          className="flex items-center justify-center text-black text-sm mt-0 opacity-40"
+          onClick={() => setShowMore((val) => !val)}
+        >
+          <Typography className="text-lg">
+            {showMore ? (
+              <MdOutlineKeyboardArrowUp className="ml-3 text-3xl" />
+            ) : (
+              <MdOutlineKeyboardArrowDown className="ml-3 text-3xl" />
+            )}
+          </Typography>
+        </button>
+      )}
     </>
   );
 }
