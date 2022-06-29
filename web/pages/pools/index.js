@@ -85,10 +85,11 @@ function PoolCard(props) {
               </div>
               {members && members.length > 3 && (
                 <div className="flex flex-row">
-                  <Typography className="pt-2.5 pl-2 ">+</Typography>
-                  <Typography className="pt-2.5 pl-2 ">
-                    {members.length - 3}
-                  </Typography>
+                  <InitialsAvatar
+                    className="text-white"
+                    text={additionalMembers(members)}
+                    color={'casama'}
+                  />
                 </div>
               )}
             </div>
@@ -98,6 +99,10 @@ function PoolCard(props) {
     </Link>
   );
 }
+
+const additionalMembers = (members) => {
+  return '+' + (members.length - 3).toString();
+};
 
 function PoolList(props) {
   const { pools, setOpen } = props;

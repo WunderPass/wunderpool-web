@@ -54,7 +54,7 @@ export default function PoolMembers(props) {
             </div>
             {isMember ? (
               <>
-                <CapTable members={members} />
+                <CapTable members={members} {...props} />
                 {version.number > 3 && !closed && (
                   <div>
                     <button
