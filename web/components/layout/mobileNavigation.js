@@ -23,7 +23,7 @@ const mobileNavigation = (props) => {
 
   return (
     <>
-      <div className="block sm:hidden pt-1">
+      <div className="block sm:hidden pb-1">
         <div className="flex flex-row items-center">
           <div className="flex px-2 ">
             <News {...props} />
