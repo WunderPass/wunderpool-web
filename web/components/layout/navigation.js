@@ -1,114 +1,28 @@
-import { useState } from 'react';
-import { Menu, MenuItem, Typography, Divider } from '@mui/material';
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
-import { IoMdNotifications } from 'react-icons/io';
 import { HiOutlineLogout } from 'react-icons/hi';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
+import PoolInvites from './navComponents/poolInvites';
+import MyPools from './navComponents/myPools';
+import News from './navComponents/news';
 
 const navigation = (props) => {
   const { user } = props;
-  const [poolListOpen, setPoolListOpen] = useState(null);
-  const [notificationListOpen, setNotificationListOpen] = useState(null);
-  const animateFrom = { opacity: 0, y: -40 };
-  const animateTo = { opacity: 1, y: 0 };
-
-  const handleMenuClose = () => {
-    setPoolListOpen(null);
-    setNotificationListOpen(null);
-  };
 
   return (
     <div className="hidden sm:block w-full">
       <ul className="flex flex-row justify-between items-center w-full">
         <div className="flex flex-row justify-start">
-          <li className="px-2">
-            <button
-              className="hidden sm:block"
-              onClick={(e) => setPoolListOpen(e.currentTarget)}
-            >
-              My Pools
-            </button>
-            <Menu
-              className="mt-4"
-              open={Boolean(poolListOpen)}
-              onClose={handleMenuClose}
-              onClick={handleMenuClose}
-              anchorEl={poolListOpen}
-            >
-              {user.pools.length > 0 &&
-                user.pools.map((pool, i) => {
-                  return (
-                    <Link
-                      key={`user-pool-${i}`}
-                      href={`/pools/${pool.address}?name=${pool.name}`}
-                      sx={{ textDecoration: 'none', color: 'inherit' }}
-                      passHref
-                    >
-                      <MenuItem>{pool.name}</MenuItem>
-                    </Link>
-                  );
-                })}
-              {user.pools.length == 0 && <MenuItem> - no pools - </MenuItem>}
-            </Menu>{' '}
-          </li>
-          <li className="px-2">
-            <a href="/pools">Profile </a>
+          <li className="px-2 hidden sm:block">
+            <MyPools {...props} />
           </li>
         </div>
-        <div className="flex flex-row items-center justify-end">
-          {user.whitelistedPools.length > 0 && (
-            <div className="flex w-5 h-5 bg-red-500 text-white text-sm mb-7 -mr-12 z-50 rounded-full  items-center justify-center">
-              <Typography className="text-sm">
-                {user.whitelistedPools.length}
-              </Typography>
-            </div>
-          )}
-
-          <motion.li
-            className="px-2 py-1 pt-2"
-            initial={animateFrom}
-            animate={animateTo}
-            transition={{ delay: 0.05 }}
-          >
-            <button
-              onClick={(e) => setNotificationListOpen(e.currentTarget)}
-              className="px-2 opacity-50"
-            >
-              <IoMdNotifications className="text-xl" />
-            </button>
-            <Menu
-              className="mt-5"
-              open={Boolean(notificationListOpen)}
-              onClose={handleMenuClose}
-              onClick={handleMenuClose}
-              anchorEl={notificationListOpen}
-            >
-              <Typography className="p-4 text-xl">
-                You were invited to join these Pools
-              </Typography>
-              <Divider className="mb-2" />
-              {user.whitelistedPools.length > 0 &&
-                user.whitelistedPools
-                  .slice(0)
-                  .reverse()
-                  .map((pool, i) => {
-                    return (
-                      <Link
-                        key={`pool-${i}`}
-                        href={`/pools/${pool.address}?name=${pool.name}`}
-                        sx={{ textDecoration: 'none', color: 'inherit' }}
-                        passHref
-                      >
-                        <MenuItem> {pool.name}</MenuItem>
-                      </Link>
-                    );
-                  })}
-              {user.pools.length == 0 && <MenuItem> - no pools - </MenuItem>}
-            </Menu>
-          </motion.li>
-
+        <div className="flex flex-row items-center justify-end ">
+          <div className="flex px-3 ">
+            <News {...props} />
+          </div>
+          <div className="flex px-3 pr-4 ">
+            <PoolInvites {...props} />
+          </div>
           <div
             onClick={() => user.setTopUpRequired(true)}
             className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
@@ -120,7 +34,7 @@ const navigation = (props) => {
           </div>
 
           <button
-            className="hidden sm:block text-2xl pl-2 hover:text-red-500"
+            className="hidden sm:block text-2xl pl-2  hover:text-red-500"
             onClick={user?.logOut}
           >
             <HiOutlineLogout />

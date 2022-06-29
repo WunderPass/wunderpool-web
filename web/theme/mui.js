@@ -1,6 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
 export default createTheme({
+  palette: {
+    red: { main: '#ef4444' },
+  },
   typography: {
     fontFamily: `"Graphik", sans-serif`,
     fontSize: 14,

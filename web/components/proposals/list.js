@@ -32,7 +32,7 @@ export default function ProposalList(props) {
       width="100%"
       sx={{ height: '100px', borderRadius: 3 }}
     />
-  ) : wunderPool.proposals.length == 0 ? (
+  ) : wunderPool.proposals.length > 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <Box ref={slidingContainer} p={1} overflow="hidden" className="w-full">
         <Stack spacing={2}>
