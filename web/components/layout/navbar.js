@@ -37,7 +37,7 @@ export default function Navbar(props) {
                     className=""
                     text={user.wunderId}
                     separator="-"
-                    color={'casama-light'}
+                    color={'purple'}
                   />
                 </div>
               </div>

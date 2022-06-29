@@ -38,7 +38,7 @@ export default function InitialsAvatar(props) {
     case 'casama':
       className += 'bg-kaico-blue';
       break;
-    case 'casamalight':
+    case 'casama-light':
       className += 'bg-kaico-light-blue';
       break;
     default:
