@@ -5,10 +5,10 @@ import {
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
 import InitialsAvatar from '../utils/initialsAvatar';
-import { currency } from '/services/formatter';
+import { currency, polyValueToUsd } from '/services/formatter';
 
 export default function CapTable(props) {
-  const { members } = props;
+  const { members, wunderPool } = props;
   const [showMore, setShowMore] = useState(false);
 
   const visibleMembers = useMemo(
@@ -39,6 +39,7 @@ export default function CapTable(props) {
         </thead>
         <tbody>
           {visibleMembers.map((b, i) => {
+            console.log(wunderPool);
             return (
               <tr key={`member-${i}`}>
                 <td className="pb-2">
@@ -65,10 +66,12 @@ export default function CapTable(props) {
                   </div>{' '}
                 </td>
                 <td className="text-right pb-2">
-                  <Typography
-                    className="" //TODO CHANGE THIS IN THE FUTURE WHEN THERE IS A GOVTOKENPRICE
-                  >
-                    {currency(b.tokens.toString() * 0.03, {})}
+                  <Typography className="">
+                    {currency(
+                      b.tokens.toString() *
+                        polyValueToUsd(wunderPool.governanceToken.price, {}),
+                      {}
+                    )}
                   </Typography>
                 </td>
               </tr>
