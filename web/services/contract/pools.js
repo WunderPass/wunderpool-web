@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { initPool, usdcAddress, tokenAbi, versionLookup } from './init';
+import { usdc } from '/services/formatter';
 import {
   addToWhiteListDelta,
   fetchPoolIsClosedDelta,
@@ -14,7 +15,7 @@ import {
 } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
-import { usdcBalanceOf } from './token';
+import { approve, usdcBalanceOf } from './token';
 
 export function poolVersion(poolAddress) {
   return new Promise(async (resolve, reject) => {
@@ -24,38 +25,63 @@ export function poolVersion(poolAddress) {
 }
 
 export function createPool(
+  creator,
   poolName,
-  entryBarrier,
   tokenName,
   tokenSymbol,
-  tokenPrice,
-  userAddress
+  minInvest,
+  maxInvest,
+  amount,
+  members,
+  maxMembers,
+  votingThreshold,
+  votingTime,
+  minYesVoters
 ) {
   return new Promise(async (resolve, reject) => {
     const body = {
-      version: 'Delta',
-      network: 'POLYGON_MAINNET',
-      creator: userAddress,
+      creator,
       name: poolName,
-      minInvest: entryBarrier,
-      tokenName: tokenName,
-      tokenSymbol: tokenSymbol,
-      price: tokenPrice,
+      minInvest,
+      maxInvest,
+      tokenName,
+      tokenSymbol,
+      amount,
+      members,
+      maxMembers,
+      votingThreshold,
+      votingTime,
+      minYesVoters,
     };
 
-    axios({ method: 'POST', url: '/api/proxy/pools/create', data: body })
-      .then((res) => {
-        resolve(res.data);
+    approve(
+      usdcAddress,
+      creator,
+      '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E',
+      usdc(amount)
+    )
+      .then(() => {
+        axios({
+          method: 'POST',
+          url: '/api/proxy/pools/create',
+          data: body,
+        })
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       })
       .catch((err) => {
-        reject(err);
+        reject('USD Transaction failed');
       });
   });
 }
 
 export function getPoolAddressFromTx(txHash, version = null) {
   const iface = new ethers.utils.Interface([
-    'event PoolLaunched(address indexed poolAddress, string name, address governanceTokenAddress, string governanceTokenName, uint256 entryBarrier)',
+    'event PoolLaunched(address indexed poolAddress, string name, address governanceTokenAddress)',
   ]);
   return new Promise((resolve, reject) => {
     httpProvider
