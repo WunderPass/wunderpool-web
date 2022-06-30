@@ -20,7 +20,7 @@ const navigation = (props) => {
           <div className="flex px-3 ">
             <News {...props} />
           </div>
-          <div className="flex px-3 pr-4 ">
+          <div className="flex px-3 pr-4 pb-0.5">
             <PoolInvites {...props} />
           </div>
           <div
