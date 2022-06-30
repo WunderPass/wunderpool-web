@@ -2,14 +2,13 @@ import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import axios from 'axios';
 import {
-  tokenAbi,
   usdcAddress,
   connectContract,
   gasPrice,
 } from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherEpsilon, initPoolEpsilon } from './init';
-import { httpProvider } from '../provider';
+import { approve } from '../token';
 
 export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -51,42 +50,21 @@ export function joinPoolEpsilon(poolAddress, userAddress, value) {
       amount: value,
     };
 
-    const provider = httpProvider;
-    const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
-
-    const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-      userAddress: userAddress,
-    });
-    const tx = await usdcContract.populateTransaction.approve(
-      poolAddress,
-      usdc(value),
-      {
-        gasPrice: await gasPrice(),
-      }
-    );
-
-    smartContractTransaction(tx)
-      .then((transaction) => {
-        provider
-          .waitForTransaction(transaction.hash)
-          .then(() => {
-            axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-              .then((res) => {
-                resolve(res.data);
-              })
-              .catch((err) => {
-                reject(err);
-              });
+    approve(usdcAddress, userAddress, poolAddress, usdc(value))
+      .then(() => {
+        axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
+          .then((res) => {
+            resolve(res.data);
           })
-          .catch((error) => {
-            reject(error?.error?.error?.error?.message || error);
+          .catch((err) => {
+            reject(err);
           });
       })
-      .catch((err) => {
-        reject(err);
+      .catch((error) => {
+        reject(error?.error?.error?.error?.message || error);
       });
+  }).catch((err) => {
+    reject(err);
   });
 }
 
