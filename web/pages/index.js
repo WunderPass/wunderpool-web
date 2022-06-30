@@ -52,7 +52,9 @@ export default function Home(props) {
               </div>
               <div className="px-6 lg:px-12">
                 <div className="text-center w-full pb-4"></div>
-                <h6 className="text-2xl font-bold mb-6">We do it together!</h6>
+                <h6 className="text-2xl font-bold mb-6">
+                  Unlock collective gains!
+                </h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
                 <p className="text-md lg:pb-12 lg:mb-0 pb-6 mt-6 ">
                   Pool capital with your friends, vote on crypto plays and make
@@ -68,8 +70,8 @@ export default function Home(props) {
                 </h2>
                 <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>
                 <p className="text-gray-400 text-md my-3 mb-10 lg:mb-20">
-                  Using WunderPass makes it eassy to interact with Casama on the
-                  Polygon network as you dont have to pay for transaction fees.
+                  Using WunderPass makes it easy to interact with Casama on the
+                  Polygon network as you don't have to pay for transaction fees.
                 </p>
 
                 <div className="flex flex-col items-center justify-between mb-12 lg:mb-4">

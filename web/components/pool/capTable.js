@@ -5,17 +5,17 @@ import {
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
 import InitialsAvatar from '../utils/initialsAvatar';
-import { currency } from '/services/formatter';
+import { currency, polyValueToUsd } from '/services/formatter';
 
 export default function CapTable(props) {
-  const { members, address } = props;
+  const { members, wunderPool } = props;
   const [showMore, setShowMore] = useState(false);
 
   const visibleMembers = useMemo(() => {
     return members
       .sort((a, b) => b.tokens - a.tokens)
       .slice(0, showMore ? members.length : 3);
-  }, [showMore, members.length, address]);
+  }, [showMore, members.length, wunderPool.poolAddress]);
 
   return (
     <>
@@ -63,10 +63,12 @@ export default function CapTable(props) {
                   </div>{' '}
                 </td>
                 <td className="text-right pb-2">
-                  <Typography
-                    className="" //TODO CHANGE THIS IN THE FUTURE WHEN THERE IS A GOVTOKENPRICE
-                  >
-                    {currency(b.tokens.toString() * 0.03, {})}
+                  <Typography className="">
+                    {currency(
+                      b.tokens.toString() *
+                        polyValueToUsd(wunderPool.governanceToken.price, {}),
+                      {}
+                    )}
                   </Typography>
                 </td>
               </tr>
@@ -74,18 +76,20 @@ export default function CapTable(props) {
           })}
         </tbody>
       </table>
-      <button
-        className="flex items-center justify-center text-black text-sm mt-0 opacity-40"
-        onClick={() => setShowMore((val) => !val)}
-      >
-        <Typography className="text-lg">
-          {showMore ? (
-            <MdOutlineKeyboardArrowUp className="ml-3 text-3xl" />
-          ) : (
-            <MdOutlineKeyboardArrowDown className="ml-3 text-3xl" />
-          )}
-        </Typography>
-      </button>
+      {members.length > 3 && (
+        <button
+          className="flex items-center justify-center text-black text-sm mt-0 opacity-40"
+          onClick={() => setShowMore((val) => !val)}
+        >
+          <Typography className="text-lg">
+            {showMore ? (
+              <MdOutlineKeyboardArrowUp className="ml-3 text-3xl" />
+            ) : (
+              <MdOutlineKeyboardArrowDown className="ml-3 text-3xl" />
+            )}
+          </Typography>
+        </button>
+      )}
     </>
   );
 }

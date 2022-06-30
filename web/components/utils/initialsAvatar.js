@@ -35,6 +35,12 @@ export default function InitialsAvatar(props) {
     case 'rose':
       className += 'bg-rose-300';
       break;
+    case 'casama':
+      className += 'bg-kaico-blue';
+      break;
+    case 'casama-light':
+      className += 'bg-kaico-light-blue';
+      break;
     default:
       className += [
         'bg-red-300',
