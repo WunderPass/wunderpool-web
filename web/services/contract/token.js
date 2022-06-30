@@ -13,6 +13,7 @@ import {
 import { gasPrice, tokenAbi, usdcAddress } from './init';
 import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
+import { fetchPoolGovernanceTokenEpsilon } from './epsilon/token';
 
 export function fetchERC20Data(address) {
   return new Promise(async (resolve, reject) => {
@@ -39,7 +40,9 @@ export function fetchPoolNfts(address, version) {
 }
 
 export function fetchPoolGovernanceToken(address, version) {
-  if (version > 3) {
+  if (version > 4) {
+    return fetchPoolGovernanceTokenEpsilon(address);
+  } else if (version > 3) {
     return fetchPoolGovernanceTokenDelta(address);
   } else {
     return fetchPoolGovernanceTokenGamma(address);
