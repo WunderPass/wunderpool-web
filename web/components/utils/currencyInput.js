@@ -29,7 +29,7 @@ export default function CurrencyInput(props) {
         className={`${className || 'textfield py-4 mt-2'} ${
           error && 'border-red-600 focus:border-red-600'
         }`}
-        prefix={prefix || '$'}
+        prefix={prefix || '$ '}
         placeholder={placeholder}
         onValueChange={handleInput}
       />
