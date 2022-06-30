@@ -23,7 +23,7 @@ export const versionLookup = {
     number: 4,
   },
   Delta: { name: 'DELTA', number: 4 },
-  '0x34645Cb6b71A4513AC3e3D9683DF48142114e55B': {
+  '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E': {
     name: 'EPSILON',
     number: 5,
   },

@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { httpProvider } from '/services/contract/provider';
 
 export function initLauncherEpsilon() {
-  const address = '0x34645Cb6b71A4513AC3e3D9683DF48142114e55B';
+  const address = '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E';
   const abi = [
     'function allPools() view returns (address[])',
     'function createNewPool(string _poolName, string _tokenName, string _tokenSymbol, uint256 _amount, address _creator, address[] _members, uint256 _minInvest, uint256 _maxInvest, uint256 _maxMembers, uint8 _votingThreshold, uint256 _votingTime, uint256 _minYesVoters)',
@@ -46,7 +46,7 @@ export function initPoolEpsilon(poolAddress) {
 }
 
 export function initProposalEpsilon() {
-  const address = '0x0BfCa025a400300d50C89bFD49961eB127480D07';
+  const address = '0x2A68Dfe9c586DDb209aB3895B85eA6f9804F1551';
   const abi = [
     'function calculateVotes(address _pool, uint256 _proposalId) view returns (uint256 yesVotes, uint256 noVotes, uint256 yesVoters, uint256 noVoters)',
     'function getProposal(address _pool, uint256 _proposalId) view returns (string title, string description, uint256 transactionCount, uint256 deadline, uint256 yesVotes, uint256 noVotes, uint256 totalVotes, uint256 createdAt, bool executed, address creator)',
@@ -59,7 +59,7 @@ export function initProposalEpsilon() {
 }
 
 export function initPoolConfigEpsilon() {
-  const address = '0xBdF6B08B6E533864a3F1cf24760DD5D8776140a8';
+  const address = '0x1e2227686F1015B0EEa9A55F88461D15fFD0E87c';
   const abi = [
     'function getConfig(address _pool) view returns (uint256 _minInvest, uint256 _maxInvest, uint256 _maxMembers, uint8 _votingThreshold, uint256 _votingTime, uint256 _minYesVoters)',
     'function maxInvest(address _pool) view returns (uint256)',
