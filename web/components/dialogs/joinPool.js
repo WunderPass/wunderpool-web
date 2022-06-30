@@ -35,8 +35,6 @@ export default function JoinPoolDialog(props) {
   const [isPayPal, setIsPayPal] = useState(false);
 
   const handleClose = () => {
-    console.log(wunderPool);
-
     setOpen(false);
     setLoading(false);
   };

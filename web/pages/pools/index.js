@@ -1,4 +1,3 @@
-import NewPoolDialog from '/components/dialogs/newPool';
 import BalanceBox from '/components/pool/balanceBox';
 import { displayWithDecimalPlaces, currency } from '/services/formatter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -16,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import InitialsAvatar from '/components/utils/initialsAvatar';
+import NewPoolDialog from '/components/dialogs/newPool/dialog';
 
 function PoolCard(props) {
   const { pool } = props;

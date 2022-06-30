@@ -46,7 +46,6 @@ export default function SwapTokenDialog(props) {
         ethers.utils.parseUnits(amount, decimals)
       )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created Proposal to Swap ${name}`);
         wunderPool.determineProposals();
         handleClose();

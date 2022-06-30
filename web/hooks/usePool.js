@@ -305,7 +305,7 @@ export default function usePool(userAddr, poolAddr = null) {
     initialize2().then(() => {
       setIsReady2(true);
     });
-  }, [userIsMember]);
+  }, [poolAddress, userIsMember]);
 
   useEffect(() => {
     setIsReady(false);
