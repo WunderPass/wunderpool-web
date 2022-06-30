@@ -45,7 +45,6 @@ export default function NftDialog(props) {
       usdc(amount)
     )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created Proposal to Buy NFT ${name}`);
         fetchProposals();
         handleClose();

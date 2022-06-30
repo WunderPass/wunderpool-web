@@ -43,7 +43,6 @@ export default function SellNftDialog(props) {
       usdc(amount)
     )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created Proposal to Sell NFT`);
         fetchProposals();
         handleClose();

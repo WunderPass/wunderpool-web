@@ -7,10 +7,16 @@ export default async function handler(req, res) {
       network,
       creator,
       name,
-      minInvest,
       tokenName,
       tokenSymbol,
-      price,
+      amount,
+      members,
+      minInvest,
+      maxInvest,
+      maxMembers,
+      votingThreshold,
+      votingTime,
+      minYesVoters,
     } = req.body;
 
     const headers = {
@@ -21,31 +27,37 @@ export default async function handler(req, res) {
     const body = {
       launcher: {
         launcher_name: 'PoolLauncher',
-        launcher_version: version || 'Delta',
+        launcher_version: version || 'Epsilon',
         launcher_network: network || 'POLYGON_MAINNET',
       },
-      pool_creator: creator,
       pool_name: name,
+      pool_governance_token: {
+        token_name: tokenName,
+        token_symbol: tokenSymbol,
+      },
+      pool_creator: creator,
+      pool_members: members.map((m) => ({ members_address: m })),
       min_invest: minInvest,
-      pool_token_name: tokenName,
-      pool_token_symbol: tokenSymbol,
-      token_price: price,
+      max_invest: maxInvest,
+      initial_invest: amount,
+      max_members: maxMembers,
+      voting_threshold: votingThreshold,
+      voting_time: votingTime,
+      min_yes_voters: minYesVoters,
     };
 
     const resp = await axios({
       method: 'POST',
-      url: 'https://pools-service.wunderpass.org/web3Proxy/pools/createPool',
+      url: 'https://pools-service.wunderpass.org/web3Proxy/pools',
       headers: headers,
       data: body,
     });
     console.log(`[${new Date().toJSON()}] Pool created`, {
-      name,
       creator,
-      version,
+      name,
+      amount,
       minInvest,
-      tokenName,
-      tokenSymbol,
-      price,
+      maxInvest,
     });
     res.status(200).json(resp.data);
   } catch (error) {

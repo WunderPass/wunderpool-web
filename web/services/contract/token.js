@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import useWunderPass from '/hooks/useWunderPass';
 import {
   fetchPoolGovernanceTokenDelta,
   fetchPoolNftsDelta,
@@ -9,9 +10,10 @@ import {
   fetchPoolNftsGamma,
   fetchPoolTokensGamma,
 } from './gamma/token';
-import { tokenAbi, usdcAddress } from './init';
+import { gasPrice, tokenAbi, usdcAddress } from './init';
 import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
+import { fetchPoolGovernanceTokenEpsilon } from './epsilon/token';
 
 export function fetchERC20Data(address) {
   return new Promise(async (resolve, reject) => {
@@ -38,7 +40,9 @@ export function fetchPoolNfts(address, version) {
 }
 
 export function fetchPoolGovernanceToken(address, version) {
-  if (version > 3) {
+  if (version > 4) {
+    return fetchPoolGovernanceTokenEpsilon(address);
+  } else if (version > 3) {
     return fetchPoolGovernanceTokenDelta(address);
   } else {
     return fetchPoolGovernanceTokenGamma(address);
@@ -72,4 +76,39 @@ export function tokenBalanceOf(address, tokenAddress, decimals = null) {
 
 export async function usdcBalanceOf(address) {
   return await tokenBalanceOf(address, usdcAddress, 6);
+}
+
+export function approve(token, user, spender, amount) {
+  return new Promise(async (resolve, reject) => {
+    const provider = httpProvider;
+    const tokenContract = new ethers.Contract(token, tokenAbi, provider);
+
+    const { smartContractTransaction } = useWunderPass({
+      name: 'WunderPool',
+      accountId: 'ABCDEF',
+      userAddress: user,
+    });
+    const tx = await tokenContract.populateTransaction.approve(
+      spender,
+      amount,
+      {
+        gasPrice: await gasPrice(),
+      }
+    );
+
+    smartContractTransaction(tx)
+      .then((transaction) => {
+        provider
+          .waitForTransaction(transaction.hash)
+          .then(() => {
+            resolve(transaction.hash);
+          })
+          .catch((error) => {
+            reject(error?.error?.error?.error?.message || error);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 }

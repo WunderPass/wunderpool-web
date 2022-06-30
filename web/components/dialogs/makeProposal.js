@@ -45,7 +45,6 @@ export default function makeProposal(props) {
         value
       )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created Proposal to Ape into ${tokenSymbol}`);
         wunderPool.determineProposals();
         handleClose();
