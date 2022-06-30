@@ -8,16 +8,14 @@ import InitialsAvatar from '../utils/initialsAvatar';
 import { currency } from '/services/formatter';
 
 export default function CapTable(props) {
-  const { members } = props;
+  const { members, address } = props;
   const [showMore, setShowMore] = useState(false);
 
-  const visibleMembers = useMemo(
-    () =>
-      members
-        .sort((a, b) => b.tokens - a.tokens)
-        .slice(0, showMore ? members.length : 3),
-    [showMore, members]
-  );
+  const visibleMembers = useMemo(() => {
+    return members
+      .sort((a, b) => b.tokens - a.tokens)
+      .slice(0, showMore ? members.length : 3);
+  }, [showMore, members.length, address]);
 
   return (
     <>

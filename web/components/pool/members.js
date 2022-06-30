@@ -10,7 +10,7 @@ import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
 
 export default function PoolMembers(props) {
-  const { wunderPool, loginCallback, handleSuccess } = props;
+  const { wunderPool, loginCallback } = props;
   const { isReady, isMember, closed, governanceToken, version } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
@@ -54,7 +54,7 @@ export default function PoolMembers(props) {
             </div>
             {isMember ? (
               <>
-                <CapTable members={members} />
+                <CapTable members={members} address={wunderPool.poolAddress} />
                 {version.number > 3 && !closed && (
                   <div>
                     <button
