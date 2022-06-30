@@ -40,7 +40,6 @@ export default function VotingButtons(props) {
         );
         setUserHasVoted(mode);
         wunderPool.determineProposals();
-        console.log(res);
       })
       .catch((err) => {
         handleError(err);
