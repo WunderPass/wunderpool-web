@@ -25,6 +25,7 @@ export default function JoinPoolDialog(props) {
     wunderPool,
     user,
   } = props;
+
   const { price, totalSupply, entryBarrier } = wunderPool.governanceToken;
   const [amount, setAmount] = useState(
     polyValueToUsd(wunderPool.governanceToken.entryBarrier, {})

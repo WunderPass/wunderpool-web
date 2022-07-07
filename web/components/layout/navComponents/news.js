@@ -1,18 +1,46 @@
-import { useState } from 'react';
-import { Menu, Badge } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Menu, Badge, Typography, Divider, MenuItem } from '@mui/material';
 import { IoMdNotifications } from 'react-icons/io';
 import { motion } from 'framer-motion';
-import { GiFalloutShelter } from 'react-icons/gi';
+import Link from 'next/link';
 
+const axios = require('axios');
+
+let timer;
 const news = (props) => {
   const { user } = props;
   const [newsListOpen, setNewsListOpen] = useState(false);
   const animateFrom = { opacity: 0, y: -40 };
   const animateTo = { opacity: 1, y: 0 };
+  const [authorized, setAuthorized] = useState(false);
+  const [notifications, setNotifications] = useState(0);
+
+  const checkAuthForClaim = () => {
+    clearTimeout(timer);
+    axios({
+      method: 'get',
+      url: '/api/claimable',
+      params: { wunderId: user?.wunderId },
+    }).then((res) => {
+      if (res?.data?.resp) {
+        console.log(res?.data?.res);
+        setNotifications(1);
+      } else {
+        console.log(res?.data?.res);
+
+        setNotifications(0);
+      }
+      setAuthorized(res?.data?.resp);
+    });
+  };
 
   const handleMenuClose = () => {
-    setNewsListOpen(null);
+    setNewsListOpen(false);
   };
+
+  useEffect(() => {
+    checkAuthForClaim();
+  }, [user]);
 
   return (
     <>
@@ -24,12 +52,43 @@ const news = (props) => {
       >
         <button
           onClick={(e) => setNewsListOpen(e.currentTarget)}
-          className={`  ${false ? '' : 'opacity-50'}`}
+          className={`  ${notifications > 0 ? '' : 'opacity-50'}`}
         >
-          <Badge color="red" badgeContent={0} max={99}>
+          <Badge color="red" badgeContent={notifications} max={99}>
             <IoMdNotifications className="text-xl" />
           </Badge>
         </button>
+        <Menu
+          className="mt-5 "
+          open={Boolean(newsListOpen)}
+          onClose={handleMenuClose}
+          onClick={handleMenuClose}
+          anchorEl={newsListOpen}
+          sx={{ borderRadius: '50%' }}
+        >
+          <Typography className="p-4 text-md">
+            You have following notifications
+          </Typography>
+          <Divider className="mb-2" />
+
+          {authorized && (
+            <>
+              <Link
+                href={`https://app.wunderpass.org/`}
+                sx={{ textDecoration: 'none', color: 'inherit' }}
+                passHref
+              >
+                <MenuItem>
+                  <Typography className="text-sm">
+                    Claim your 50$ in WunderPass
+                  </Typography>
+                </MenuItem>
+              </Link>
+            </>
+          )}
+
+          {notifications == 0 && <MenuItem> - no notifications - </MenuItem>}
+        </Menu>
       </motion.li>
     </>
   );
