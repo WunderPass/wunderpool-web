@@ -37,7 +37,6 @@ export default function SellTokenDialog(props) {
         ethers.utils.parseUnits(amount, decimals)
       )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created Proposal to sell ${name}`);
         wunderPool.determineProposals();
         handleClose();

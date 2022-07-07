@@ -81,7 +81,6 @@ export default function CustomForm(props) {
       Math.round(new Date(proposalDeadline).getTime() / 1000)
     )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Created Custom Proposal`);
         fetchProposals();
         handleClose();
