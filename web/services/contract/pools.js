@@ -193,8 +193,6 @@ async function formatPool(pool, user = null) {
       : 0;
     const userBalance = (totalBalance * userShare) / 100;
 
-    console.log('poolversion:', version.number);
-
     const shareholderAgreement =
       version.number > 4
         ? await formatShareholderAgreement(pool.shareholder_agreement)
@@ -226,7 +224,6 @@ export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
     axios({ url: `/api/proxy/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
-        console.log('userPools res:', res);
         const pools = await Promise.all(
           res.data
             .filter((pool) => pool.active)
