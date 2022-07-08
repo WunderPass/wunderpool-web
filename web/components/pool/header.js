@@ -13,7 +13,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider } from '@mui/material';
-import { GiMoneyStack } from 'react-icons/gi';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;

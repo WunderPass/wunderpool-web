@@ -41,9 +41,9 @@ export default function NewPoolDialog(props) {
   const [maxMembers, setMaxMembers] = useState('50');
 
   const [votingEnabled, setVotingEnabled] = useState(true);
-  const [votingThreshold, setVotingThreshold] = useState('');
-  const [votingTime, setVotingTime] = useState('');
-  const [minYesVoters, setMinYesVoters] = useState('');
+  const [votingThreshold, setVotingThreshold] = useState('50');
+  const [votingTime, setVotingTime] = useState('24');
+  const [minYesVoters, setMinYesVoters] = useState('2');
   const [showCustomDuration, setShowCustomDuration] = useState(false);
   const [showCustomPercent, setShowCustomPercent] = useState(false);
   const [showCustomPerson, setShowCustomPerson] = useState(false);
@@ -136,9 +136,9 @@ export default function NewPoolDialog(props) {
     setMaxInvestErrorMsg(null);
     setMaxMembers('50');
     setVotingEnabled(true);
-    setVotingThreshold('');
-    setVotingTime('');
-    setMinYesVoters('');
+    setVotingThreshold('50');
+    setVotingTime('24');
+    setMinYesVoters('2');
     setShowCustomDuration(false);
     setShowCustomPercent(false);
     setShowCustomPerson(false);

@@ -69,7 +69,7 @@ export default function NewPoolVotingStep(props) {
   ];
 
   const VotingThresholds = [
-    { label: '50%', value: '50' },
+    { label: '> 50%', value: '50' },
     { label: 'Custom', value: null },
   ];
 

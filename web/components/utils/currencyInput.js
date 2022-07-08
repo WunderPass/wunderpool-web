@@ -25,7 +25,10 @@ export default function CurrencyInput(props) {
   return (
     <>
       <ReactCurrencyInput
+        intlConfig={{ locale: 'en-US', currency: 'USD' }}
+        decimalsLimit={2}
         value={value}
+        type="text"
         className={`${className || 'textfield py-4 mt-2'} ${
           error && 'border-red-600 focus:border-red-600'
         }`}
