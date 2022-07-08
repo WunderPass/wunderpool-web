@@ -30,6 +30,10 @@ export default function Pool(props) {
   };
 
   useEffect(() => {
+    console.log('in id:', wunderPool.totalBalance);
+  }, [wunderPool.totalBalance]);
+
+  useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
       if (wunderPool.exists) {
         if (wunderPool.isMember) {

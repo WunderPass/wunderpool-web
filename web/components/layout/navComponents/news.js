@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 const axios = require('axios');
 
-let timer;
 const news = (props) => {
   const { user } = props;
   const [newsListOpen, setNewsListOpen] = useState(false);
@@ -16,7 +15,6 @@ const news = (props) => {
   const [notifications, setNotifications] = useState(0);
 
   const checkAuthForClaim = () => {
-    clearTimeout(timer);
     axios({
       method: 'get',
       url: '/api/claimable',
@@ -26,8 +24,6 @@ const news = (props) => {
         console.log(res?.data?.res);
         setNotifications(1);
       } else {
-        console.log(res?.data?.res);
-
         setNotifications(0);
       }
       setAuthorized(res?.data?.resp);

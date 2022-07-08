@@ -23,6 +23,7 @@ export default function PoolHeader(props) {
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
+    console.log('wunderPool.totalBalance', Number(wunderPool.usdcBalance));
   };
 
   return (
@@ -63,7 +64,11 @@ export default function PoolHeader(props) {
             </Typography>
             <div className="flex flex-row justify-end ">
               <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
-                Cash: {currency(wunderPool.totalBalance, {})}
+                Cash:{' '}
+                {currency(
+                  polyValueToUsd(Number(wunderPool.usdcBalance), {}),
+                  {}
+                )}
               </Typography>
             </div>
           </div>

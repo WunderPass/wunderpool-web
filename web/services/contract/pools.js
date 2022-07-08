@@ -158,10 +158,13 @@ async function formatPool(pool, user = null) {
       pool.pool_assets.map(async (asset) => await formatAsset(asset))
     );
     const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
+    console.log('usd Balance in usePools:', usdBalance);
+
     const cashInTokens = tokens
       .map((tkn) => tkn.usdValue * tkn.balance)
       .reduce((a, b) => a + b, 0);
     const totalBalance = cashInTokens + usdBalance;
+    console.log('cashInTokens in usePools:', cashInTokens);
 
     const governanceToken = await formatGovernanceToken(pool.pool_shares);
     const members = await Promise.all(
