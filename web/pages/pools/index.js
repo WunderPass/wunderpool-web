@@ -136,6 +136,10 @@ export default function Pools(props) {
   const [page, setPage] = useState(1);
   const pageSize = 4;
 
+  useEffect(() => {
+    console.log('in index:', user.pools);
+  }, [user]);
+
   return (
     <>
       <div className="font-graphik">
