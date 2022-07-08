@@ -151,6 +151,23 @@ async function formatGovernanceToken(token) {
     totalSupply: (await govToken.totalSupply()).toNumber(), // token.emmited_shares,
   };
 }
+async function formatShareholderAgreement(shareholderAgreement) {
+  const minInvest = shareholderAgreement.min_invest;
+  const maxInvest = shareholderAgreement.max_invest;
+  const maxMembers = shareholderAgreement.max_members;
+  const votingThreshold = shareholderAgreement.voting_threshold;
+  const votingTime = shareholderAgreement.voting_time;
+  const minYesVoters = shareholderAgreement.min_yes_voters;
+
+  return {
+    minInvest,
+    maxInvest,
+    maxMembers,
+    votingThreshold,
+    votingTime,
+    minYesVoters,
+  };
+}
 
 async function formatPool(pool, user = null) {
   try {
@@ -158,7 +175,7 @@ async function formatPool(pool, user = null) {
       pool.pool_assets.map(async (asset) => await formatAsset(asset))
     );
     const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
-
+    const version = versionLookup[pool.launcher.launcher_version];
     const cashInTokens = tokens
       .map((tkn) => tkn.usdValue * tkn.balance)
       .reduce((a, b) => a + b, 0);
@@ -176,6 +193,13 @@ async function formatPool(pool, user = null) {
       : 0;
     const userBalance = (totalBalance * userShare) / 100;
 
+    console.log('poolversion:', version.number);
+
+    const shareholderAgreement =
+      version.number > 4
+        ? await formatShareholderAgreement(pool.shareholder_agreement)
+        : null;
+
     return {
       active: pool.active,
       closed: pool.closed,
@@ -191,6 +215,7 @@ async function formatPool(pool, user = null) {
       tokens,
       members,
       governanceToken,
+      shareholderAgreement,
     };
   } catch (error) {
     return null;
@@ -201,6 +226,7 @@ export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
     axios({ url: `/api/proxy/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
+        console.log('userPools res:', res);
         const pools = await Promise.all(
           res.data
             .filter((pool) => pool.active)
@@ -285,6 +311,20 @@ export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPool(poolAddress);
     resolve(await wunderPool.isMember(userAddress));
+  });
+}
+
+export function fetchPoolShareholderAgreement(poolAddress, version = null) {
+  return new Promise(async (resolve, reject) => {
+    axios({
+      url: `/api/proxy/pools/shareholderAgreement?address=${poolAddress}`,
+    })
+      .then((res) => {
+        resolve(res.data.shareholder_agreement);
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }
 
