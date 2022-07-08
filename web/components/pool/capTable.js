@@ -55,9 +55,9 @@ export default function CapTable(props) {
                   </div>
                 </td>
                 <td className="pb-2">
-                  <div className="flex flex-row items-center ">
+                  <div className="flex flex-row items-center lg:ml-16">
                     <Typography>{b.tokens.toString()}</Typography>
-                    <Typography className="opacity-50 ml-1">
+                    <Typography className="opacity-50 ml-1 ">
                       ({b.share.toString()}%)
                     </Typography>
                   </div>{' '}
