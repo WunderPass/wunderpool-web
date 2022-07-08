@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
-import { currency, polyValueToUsd } from '/services/formatter';
+import { currency, polyValueToUsd, secondsToHours } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
@@ -13,7 +13,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider } from '@mui/material';
-import { GiMoneyStack } from 'react-icons/gi';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
@@ -23,7 +22,6 @@ export default function PoolHeader(props) {
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
-    console.log('wunderPool.totalBalance', Number(wunderPool.usdcBalance));
   };
 
   return (
@@ -121,21 +119,16 @@ export default function PoolHeader(props) {
                     Min
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.governanceToken &&
-                      currency(
-                        polyValueToUsd(
-                          wunderPool.governanceToken.entryBarrier,
-                          {}
-                        ),
-                        {}
-                      )}
+                    {wunderPool.minInvest && currency(wunderPool.minInvest, {})}
                   </Typography>
                 </div>
                 <div>
                   <Typography className="text-sm opacity-40 py-1 pt-6">
                     Max
                   </Typography>
-                  <Typography className="text-sm opacity-90 py-1">-</Typography>
+                  <Typography className="text-sm opacity-90 py-1">
+                    {wunderPool.maxInvest && currency(wunderPool.maxInvest, {})}
+                  </Typography>
                 </div>
               </div>
 
@@ -246,7 +239,9 @@ export default function PoolHeader(props) {
                         Duration of Voting
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        -
+                        {wunderPool.votingTime &&
+                          secondsToHours(wunderPool.votingTime)}
+                        h
                       </Typography>
                     </div>
                     <div>
@@ -254,23 +249,18 @@ export default function PoolHeader(props) {
                         Min % vor win
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        -
+                        {'> '}
+                        {wunderPool.votingThreshold &&
+                          wunderPool.votingThreshold}
+                        %
                       </Typography>
                     </div>
                     <div>
                       <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Type of Voting
+                        Min voters needed
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        -
-                      </Typography>
-                    </div>
-                    <div>
-                      <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Available answers
-                      </Typography>
-                      <Typography className="text-sm opacity-90 py-1">
-                        -
+                        {wunderPool.minYesVoters && wunderPool.minYesVoters}
                       </Typography>
                     </div>
                   </div>

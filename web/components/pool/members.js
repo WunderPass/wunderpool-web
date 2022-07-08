@@ -44,11 +44,11 @@ export default function PoolMembers(props) {
       >
         <div className="flex flex-col items-start justify-center grow">
           <div className="flex flex-col w-full">
-            <div className="flex flex-row items-end">
+            <div className="flex flex-row items-end mb-2">
               <Typography className="my-2 sm:mt-2 text-4xl mr-4">
                 {members.length}
               </Typography>
-              <Typography className="my-2 sm:mt-2 text-lg">
+              <Typography className="my-2 sm:mt-2 text-lg ">
                 Pool members
               </Typography>
             </div>

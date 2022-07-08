@@ -164,7 +164,7 @@ export default function makeProposal(props) {
                       intlConfig={{ locale: 'en-US', currency: 'USD' }}
                       className="textfield py-4 mt-2"
                       prefix={'$'}
-                      placeholder="$1,00"
+                      placeholder="$1.00"
                       decimalsLimit={2}
                       type="text"
                       value={value}

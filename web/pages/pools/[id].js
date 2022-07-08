@@ -29,9 +29,7 @@ export default function Pool(props) {
     setupPoolListener(address);
   };
 
-  useEffect(() => {
-    console.log('in id:', wunderPool.totalBalance);
-  }, [wunderPool.totalBalance]);
+  useEffect(() => {}, [wunderPool.totalBalance]);
 
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {

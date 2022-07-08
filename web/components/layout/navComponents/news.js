@@ -21,7 +21,6 @@ const news = (props) => {
       params: { wunderId: user?.wunderId },
     }).then((res) => {
       if (res?.data?.resp) {
-        console.log(res?.data?.res);
         setNotifications(1);
       } else {
         setNotifications(0);

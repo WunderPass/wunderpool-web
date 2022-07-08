@@ -67,7 +67,7 @@ button:disabled {
 }
 
 .btn-warning {
-  @apply bg-[#f7b91b] hover:bg-[#dba418] cursor-pointer rounded-xl;
+  @apply bg-[#f7b91b] hover:bg-[#dba418]  text-black text-opacity-70 cursor-pointer rounded-full;
 }
 
 .btn-kaico {
