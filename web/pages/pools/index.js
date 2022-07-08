@@ -13,6 +13,7 @@ import {
   Paper,
   Skeleton,
   Typography,
+  Avatar,
 } from '@mui/material';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
@@ -85,10 +86,10 @@ function PoolCard(props) {
               </div>
               {members && members.length > 3 && (
                 <div className="flex flex-row">
-                  <Typography className="pt-2.5 pl-2 ">+</Typography>
-                  <Typography className="pt-2.5 pl-2 ">
-                    {members.length - 3}
-                  </Typography>
+                  <InitialsAvatar
+                    text={`+${members.length - 3}`}
+                    color={'casama'}
+                  />
                 </div>
               )}
             </div>
