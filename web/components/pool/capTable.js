@@ -5,7 +5,7 @@ import {
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
 import InitialsAvatar from '../utils/initialsAvatar';
-import { currency, polyValueToUsd } from '/services/formatter';
+import { currency, toEthString } from '/services/formatter';
 
 export default function CapTable(props) {
   const { members, wunderPool } = props;
@@ -36,39 +36,35 @@ export default function CapTable(props) {
           </tr>
         </thead>
         <tbody>
-          {visibleMembers.map((b, i) => {
+          {visibleMembers.map((member, i) => {
             return (
               <tr key={`member-${i}`}>
                 <td className="pb-2">
                   <div className="flex flex-row items-center md:ml-2">
                     <InitialsAvatar
                       tooltip={`${
-                        b.wunderId || 'External User'
-                      }: ${b.share.toString()}%`}
-                      text={b.wunderId ? b.wunderId : '0-X'}
+                        member.wunderId || 'External User'
+                      }: ${member.share.toString()}%`}
+                      text={member.wunderId || '0-X'}
                       separator="-"
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                     />
                     <Typography className="ml-1 md:hidden">
-                      {b.wunderId ? b.wunderId : 'External User'}
+                      {member.wunderId || 'External User'}
                     </Typography>{' '}
                   </div>
                 </td>
                 <td className="pb-2">
                   <div className="flex flex-row items-center lg:ml-16">
-                    <Typography>{b.tokens.toString()}</Typography>
-                    <Typography className="opacity-50 ml-1 ">
-                      ({b.share.toString()}%)
+                    <Typography>{member.tokens.toString()}</Typography>
+                    <Typography className="opacity-50 ml-1">
+                      ({member.share.toString()}%)
                     </Typography>
                   </div>{' '}
                 </td>
                 <td className="text-right pb-2">
                   <Typography className="">
-                    {currency(
-                      b.tokens.toString() *
-                        polyValueToUsd(wunderPool.governanceToken.price, {}),
-                      {}
-                    )}
+                    {currency(toEthString(member.invested, 6), {})}
                   </Typography>
                 </td>
               </tr>

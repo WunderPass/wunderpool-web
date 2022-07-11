@@ -11,7 +11,16 @@ import {
   fetchTransactionDataDelta,
   isLiquidateProposalDelta,
 } from './delta/proposals';
-import { fetchPoolProposalsEpsilon } from './epsilon/proposals';
+import {
+  createApeSuggestionEpsilon,
+  createCustomProposalEpsilon,
+  createFudSuggestionEpsilon,
+  createLiquidateSuggestionEpsilon,
+  createMultiActionProposalEpsilon,
+  createSwapSuggestionEpsilon,
+  fetchPoolProposalsEpsilon,
+  isLiquidateProposalEpsilon,
+} from './epsilon/proposals';
 import {
   createApeSuggestionGamma,
   createCustomProposalGamma,
@@ -57,10 +66,21 @@ export function createMultiActionProposal(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createMultiActionProposalEpsilon(
+      poolAddress,
+      title,
+      description,
+      contractAddresses,
+      actions,
+      params,
+      transactionValues,
+      deadline,
+      userAddress
+    );
+  } else if (version > 3) {
     return createMultiActionProposalDelta(
       poolAddress,
-
       title,
       description,
       contractAddresses,
@@ -96,7 +116,19 @@ export function createCustomProposal(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createCustomProposalEpsilon(
+      poolAddress,
+      title,
+      description,
+      contractAddresses,
+      actions,
+      params,
+      transactionValues,
+      deadline,
+      userAddress
+    );
+  } else if (version > 3) {
     return createCustomProposalDelta(
       poolAddress,
       title,
@@ -131,7 +163,16 @@ export function createApeSuggestion(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createApeSuggestionEpsilon(
+      poolAddress,
+      tokenAddress,
+      title,
+      description,
+      value,
+      userAddress
+    );
+  } else if (version > 3) {
     return createApeSuggestionDelta(
       poolAddress,
       tokenAddress,
@@ -160,7 +201,16 @@ export function createFudSuggestion(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createFudSuggestionEpsilon(
+      poolAddress,
+      tokenAddress,
+      title,
+      description,
+      value,
+      userAddress
+    );
+  } else if (version > 3) {
     return createFudSuggestionDelta(
       poolAddress,
       tokenAddress,
@@ -187,7 +237,14 @@ export function createLiquidateSuggestion(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createLiquidateSuggestionEpsilon(
+      poolAddress,
+      title,
+      description,
+      userAddress
+    );
+  } else if (version > 3) {
     return createLiquidateSuggestionDelta(
       poolAddress,
       title,
@@ -209,7 +266,17 @@ export async function createSwapSuggestion(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createSwapSuggestionEpsilon(
+      poolAddress,
+      tokenIn,
+      tokenOut,
+      title,
+      description,
+      amount,
+      userAddress
+    );
+  } else if (version > 3) {
     return createSwapSuggestionDelta(
       poolAddress,
       tokenIn,
@@ -306,7 +373,9 @@ export function executeProposal(poolAddress, id, version = null) {
 }
 
 export function isLiquidateProposal(poolAddress, id, version) {
-  if (version > 3) {
+  if (version > 4) {
+    return isLiquidateProposalEpsilon(poolAddress, id);
+  } else if (version > 3) {
     return isLiquidateProposalDelta(poolAddress, id);
   } else {
     return isLiquidateProposalGamma(poolAddress, id);

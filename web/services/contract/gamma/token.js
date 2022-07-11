@@ -95,7 +95,7 @@ export function fetchPoolGovernanceTokenGamma(address) {
         name: await govToken.name(),
         symbol: await govToken.symbol(),
         price: await govToken.price(),
-        entryBarrier: await wunderPool.entryBarrier(),
+        minInvest: await wunderPool.entryBarrier(),
         totalSupply: totalSupply,
         holders: holders,
       });

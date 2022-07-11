@@ -366,7 +366,7 @@ export function isLiquidateProposalDelta(poolAddress, id) {
         transactions.find(
           (trx) =>
             trx.action == 'liquidatePool()' &&
-            trx.contractAddress == poolAddress
+            trx.contractAddress.toLowerCase() == poolAddress.toLowerCase()
         )
       ) {
         resolve(true);

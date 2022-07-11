@@ -54,7 +54,7 @@ export default function PoolInfoDialog(props) {
           >
             <Typography variant="subtitle1">Entry Barrier:</Typography>
             <Typography variant="subtitle1">
-              {toEthString(governanceTokenData.entryBarrier, 6)} USD
+              {toEthString(governanceTokenData.minInvest, 6)} USD
             </Typography>
           </Stack>
           <Typography variant="h6" textAlign="center">
