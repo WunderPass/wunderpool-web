@@ -34,8 +34,8 @@ const news = (props) => {
   };
 
   useEffect(() => {
-    checkAuthForClaim();
-  }, [user]);
+    if (user?.wunderId) checkAuthForClaim();
+  }, [user?.wunderId]);
 
   return (
     <>
@@ -67,19 +67,17 @@ const news = (props) => {
           <Divider className="mb-2" />
 
           {authorized && (
-            <>
-              <Link
-                href={`https://app.wunderpass.org/`}
-                sx={{ textDecoration: 'none', color: 'inherit' }}
-                passHref
-              >
-                <MenuItem>
-                  <Typography className="text-sm">
-                    Claim your 50$ in WunderPass
-                  </Typography>
-                </MenuItem>
-              </Link>
-            </>
+            <Link
+              href={`https://app.wunderpass.org/`}
+              sx={{ textDecoration: 'none', color: 'inherit' }}
+              passHref
+            >
+              <MenuItem>
+                <Typography className="text-sm">
+                  Claim your 50$ in WunderPass
+                </Typography>
+              </MenuItem>
+            </Link>
           )}
 
           {notifications == 0 && <MenuItem> - no notifications - </MenuItem>}
