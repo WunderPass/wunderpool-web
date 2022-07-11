@@ -60,6 +60,7 @@ export default function ProposalCard(props) {
     wunderPool
       .execute(proposal.id)
       .then((res) => {
+        console.log(res);
         handleClose(false);
         if (res) {
           handleSuccess('Pool liquidated');

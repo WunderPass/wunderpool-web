@@ -4,6 +4,7 @@ import { currency, toEthString } from '/services/formatter';
 import { fetchPoolMembers } from '/services/contract/pools';
 import { initPoolEpsilon } from '/services/contract/epsilon/init';
 import { nftAbi, tokenAbi } from '/services/contract/init';
+import { initPoolConfigEpsilon } from './init';
 
 export function fetchPoolTokensEpsilon(address) {
   return new Promise(async (resolve, reject) => {
@@ -72,6 +73,7 @@ export function fetchPoolNftsEpsilon(address) {
 export function fetchPoolGovernanceTokenEpsilon(address) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool, provider] = initPoolEpsilon(address);
+    const [poolConfig] = initPoolConfigEpsilon();
     const govTokenAddress = await wunderPool.governanceToken();
     const govToken = new ethers.Contract(govTokenAddress, tokenAbi, provider);
     const totalSupply = await govToken.totalSupply();
@@ -84,12 +86,21 @@ export function fetchPoolGovernanceTokenEpsilon(address) {
               address: addr,
               tokens: tokens,
               share: tokens.mul(100).div(totalSupply),
+              invested: await wunderPool.investOfUser(addr),
             };
           } catch (err) {
             return null;
           }
         })
       );
+      const {
+        minInvest,
+        maxInvest,
+        maxMembers,
+        votingThreshold,
+        votingTime,
+        minYesVoters,
+      } = await poolConfig.getConfig(address);
       resolve({
         address: govTokenAddress,
         name: await govToken.name(),
@@ -97,6 +108,12 @@ export function fetchPoolGovernanceTokenEpsilon(address) {
         price: await govToken.price(),
         totalSupply: totalSupply,
         holders: holders,
+        minInvest,
+        maxInvest,
+        maxMembers,
+        votingThreshold,
+        votingTime,
+        minYesVoters,
       });
     });
   });

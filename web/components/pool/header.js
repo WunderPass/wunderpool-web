@@ -246,7 +246,7 @@ export default function PoolHeader(props) {
                     </div>
                     <div>
                       <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Min % vor win
+                        Min % to win
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
                         {'> '}

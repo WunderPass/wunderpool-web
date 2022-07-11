@@ -61,7 +61,7 @@ export function initProposalEpsilon() {
 export function initPoolConfigEpsilon() {
   const address = '0x1e2227686F1015B0EEa9A55F88461D15fFD0E87c';
   const abi = [
-    'function getConfig(address _pool) view returns (uint256 _minInvest, uint256 _maxInvest, uint256 _maxMembers, uint8 _votingThreshold, uint256 _votingTime, uint256 _minYesVoters)',
+    'function getConfig(address _pool) view returns (uint256 minInvest, uint256 maxInvest, uint256 maxMembers, uint8 votingThreshold, uint256 votingTime, uint256 minYesVoters)',
     'function maxInvest(address _pool) view returns (uint256)',
     'function maxMembers(address _pool) view returns (uint256)',
     'function memberCanJoin(address _pool, uint256 _amount, uint256 _invested, uint256 _tokenPrice, uint256 _members) view returns (bool, string)',

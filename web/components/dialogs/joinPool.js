@@ -25,10 +25,9 @@ export default function JoinPoolDialog(props) {
     wunderPool,
     user,
   } = props;
-
-  const { price, totalSupply, entryBarrier } = wunderPool.governanceToken;
+  const { price, totalSupply, minInvest } = wunderPool.governanceToken;
   const [amount, setAmount] = useState(
-    polyValueToUsd(wunderPool.governanceToken.entryBarrier, {})
+    polyValueToUsd(wunderPool.governanceToken.minInvest)
   );
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -77,9 +76,9 @@ export default function JoinPoolDialog(props) {
 
   const handleInput = (value, float) => {
     setAmount(value);
-    if (float && entryBarrier.gt(float * 1000000)) {
+    if (float && minInvest.gt(float * 1000000)) {
       setErrorMsg(
-        `Minimum of ${entryBarrier
+        `Minimum of ${minInvest
           .div(1000000)
           .toString()} $ required for the Pool`
       );
@@ -113,7 +112,7 @@ export default function JoinPoolDialog(props) {
             <CurrencyInput
               value={amount}
               placeholder={currency(
-                polyValueToUsd(wunderPool.governanceToken.entryBarrier, {}),
+                polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
                 {}
               )}
               onChange={handleInput}
@@ -128,10 +127,7 @@ export default function JoinPoolDialog(props) {
                 <Typography>
                   {wunderPool.governanceToken &&
                     currency(
-                      polyValueToUsd(
-                        wunderPool.governanceToken.entryBarrier,
-                        {}
-                      ),
+                      polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
                       {}
                     )}{' '}
                   min
