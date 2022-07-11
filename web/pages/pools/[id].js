@@ -29,6 +29,8 @@ export default function Pool(props) {
     setupPoolListener(address);
   };
 
+  useEffect(() => {}, [wunderPool.totalBalance]);
+
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
       if (wunderPool.exists) {

@@ -70,7 +70,7 @@ export default function InitialsAvatar(props) {
         )
         ?.slice(1, 3)
         ?.join('')
-    : text.substr(0, 2);
+    : text;
 
   return (
     <div className={className}>

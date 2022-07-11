@@ -103,7 +103,7 @@ export default function VotingButtons(props) {
 
   return (
     <>
-      <div className="flex flex-row justify-center mt-2">
+      <div className="flex flex-row justify-center mr-2">
         <button className="bg-black btn-vote" onClick={() => handleVote(1)}>
           Yes
         </button>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
-import { currency, polyValueToUsd } from '/services/formatter';
+import { currency, polyValueToUsd, secondsToHours } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
@@ -13,7 +13,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider } from '@mui/material';
-import { GiMoneyStack } from 'react-icons/gi';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
@@ -63,7 +62,11 @@ export default function PoolHeader(props) {
             </Typography>
             <div className="flex flex-row justify-end ">
               <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
-                Cash: {currency(wunderPool.totalBalance, {})}
+                Cash:{' '}
+                {currency(
+                  polyValueToUsd(Number(wunderPool.usdcBalance), {}),
+                  {}
+                )}
               </Typography>
             </div>
           </div>
@@ -116,11 +119,7 @@ export default function PoolHeader(props) {
                     Min
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.governanceToken &&
-                      currency(
-                        polyValueToUsd(wunderPool.governanceToken.minInvest),
-                        {}
-                      )}
+                    {wunderPool.minInvest && currency(wunderPool.minInvest, {})}
                   </Typography>
                 </div>
                 <div>
@@ -128,11 +127,7 @@ export default function PoolHeader(props) {
                     Max
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.governanceToken &&
-                      currency(
-                        polyValueToUsd(wunderPool.governanceToken.maxInvest),
-                        {}
-                      )}
+                    {wunderPool.maxInvest && currency(wunderPool.maxInvest, {})}
                   </Typography>
                 </div>
               </div>
@@ -244,8 +239,8 @@ export default function PoolHeader(props) {
                         Duration of Voting
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.governanceToken.votingTime?.toString() /
-                          3600 || '- '}
+                        {wunderPool.votingTime &&
+                          secondsToHours(wunderPool.votingTime)}
                         h
                       </Typography>
                     </div>
@@ -254,25 +249,18 @@ export default function PoolHeader(props) {
                         Min % to win
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.governanceToken.votingThreshold?.toString() ||
-                          '- '}
+                        {'> '}
+                        {wunderPool.votingThreshold &&
+                          wunderPool.votingThreshold}
                         %
                       </Typography>
                     </div>
                     <div>
                       <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Type of Voting
+                        Min voters needed
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        -
-                      </Typography>
-                    </div>
-                    <div>
-                      <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Available answers
-                      </Typography>
-                      <Typography className="text-sm opacity-90 py-1">
-                        -
+                        {wunderPool.minYesVoters && wunderPool.minYesVoters}
                       </Typography>
                     </div>
                   </div>

@@ -47,7 +47,7 @@ export default function NewPoolConfigStep(props) {
 
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
-  const valueAsDollarString = value ? `$ ${value}` : '$ 3,00';
+  const valueAsDollarString = value ? `$ ${value}` : '$ 3.00';
 
   const uploadToClient = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -61,23 +61,23 @@ export default function NewPoolConfigStep(props) {
   const handleValueChange = (val, float) => {
     setValue(val);
     let msg = null;
-    if (float < 3) msg = 'Your Invest must be at least $ 3';
+    if (float < 3) msg = 'Your Invest must be at least $3.00';
     if (float > user.usdBalance) msg = 'Not enough USD';
     if (minInvest && float <= minInvest)
       msg = 'Your Invest must at least be the Minimum Invest';
     if (maxInvest && float >= maxInvest)
-      msg = 'Your Invest cant be larger than the Maximum Invest';
+      msg = "Your Invest can't be larger than the Maximum Invest";
     setValueErrorMsg(msg);
   };
 
   const handleMinInvest = (val, float) => {
     setMinInvest(val);
     let msg = null;
-    if (float < 3) msg = 'Minimum Invest must be at least $ 3';
+    if (float < 3) msg = 'Minimum Invest must be at least $3.00';
     if (maxInvest && float > Number(maxInvest))
-      msg = 'Minimum Invest cant be larger than Maximum Invest';
+      msg = "Minimum Invest can't be larger than Maximum Invest";
     if (value && float > Number(value))
-      msg = 'Minimum Invest cant be larger than your Invest';
+      msg = "Minimum Invest can't be larger than your Invest";
     setMinInvestErrorMsg(float ? msg : null);
   };
 
@@ -85,9 +85,9 @@ export default function NewPoolConfigStep(props) {
     setMaxInvest(val);
     let msg = null;
     if (minInvest && float < Number(minInvest))
-      msg = 'Maximum Invest cant be less than Minimum Invest';
+      msg = "Maximum Invest can't be less than Minimum Invest";
     if (value && float < Number(value))
-      msg = 'Maximum Invest cant be less than your Invest';
+      msg = "Maximum Invest can't be less than your Invest";
     setMaxInvestErrorMsg(float ? msg : null);
   };
 
@@ -184,7 +184,7 @@ export default function NewPoolConfigStep(props) {
         <div>
           <CurrencyInput
             value={value}
-            placeholder="$ 3,00"
+            placeholder="$ 3.00"
             onChange={handleValueChange}
             error={valueErrorMsg}
           />

@@ -43,9 +43,9 @@ export default async function handler(req, res) {
         max_members: maxMembers,
         voting_threshold: votingThreshold,
         voting_time: votingTime,
-        min_yes_voters: minYesVoters,
+        min_yes_voters: minYesVoters
       },
-      initial_invest: amount,
+      initial_invest: amount
     };
 
     const resp = await axios({

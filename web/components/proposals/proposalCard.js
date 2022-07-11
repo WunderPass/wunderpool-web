@@ -115,7 +115,7 @@ export default function ProposalCard(props) {
         <div>
           {!proposal.executed && (
             <button
-              className={executable ? 'p-8 btn btn-warning' : 'hidden'}
+              className={executable ? 'p-8 btn btn-warning ' : 'hidden'}
               disabled={signing}
               onClick={executeProposal}
             >

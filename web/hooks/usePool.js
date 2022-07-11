@@ -12,6 +12,7 @@ import {
   joinPool,
   addToWhiteList,
   fetchPoolBalance,
+  fetchPoolShareholderAgreement,
 } from '/services/contract/pools';
 import {
   createApeSuggestion,
@@ -49,6 +50,30 @@ export default function usePool(userAddr, poolAddr = null) {
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
   const [poolProposals, setPoolProposals] = useState([]);
+
+  const [minInvest, setMinInvest] = useState('');
+  const [maxInvest, setMaxInvest] = useState('');
+  const [maxMembers, setMaxMembers] = useState('');
+  const [minYesVoters, setMinYesVoter] = useState('');
+  const [votingThreshold, setVotingThreshold] = useState('');
+  const [votingTime, setVotingTime] = useState('');
+
+  const newPool = async (
+    poolName,
+    entryBarrier,
+    tokenName,
+    tokenSymbol,
+    tokenPrice
+  ) => {
+    createPool(
+      poolName,
+      entryBarrier,
+      tokenName,
+      tokenSymbol,
+      tokenPrice,
+      userAddress
+    );
+  };
 
   const join = async (amount) => {
     if (!version || userIsMember) return;
@@ -165,6 +190,19 @@ export default function usePool(userAddr, poolAddr = null) {
     setUsdcBalance(await fetchPoolBalance(poolAddress));
   };
 
+  const determineShareholderAgreement = async () => {
+    const shareholderAgreement = await fetchPoolShareholderAgreement(
+      poolAddress
+    );
+
+    setMinInvest(shareholderAgreement.min_invest);
+    setMaxInvest(shareholderAgreement.max_invest);
+    setMaxMembers(shareholderAgreement.max_members);
+    setMinYesVoter(shareholderAgreement.min_yes_voters);
+    setVotingThreshold(shareholderAgreement.voting_threshold);
+    setVotingTime(shareholderAgreement.voting_time);
+  };
+
   const determineCustomBalances = async (tokens) => {
     var totalBalance = 0;
     var assetBalance = 0;
@@ -260,6 +298,7 @@ export default function usePool(userAddr, poolAddr = null) {
           await determineClosed(await determineVersion());
           await determineIfMember();
           await determineUsdcBalance();
+          await determineShareholderAgreement();
 
           const tokens = await determinePoolTokens();
           await determineCustomBalances(tokens);
@@ -305,6 +344,12 @@ export default function usePool(userAddr, poolAddr = null) {
     poolName,
     version,
     poolAddress,
+    minInvest,
+    maxInvest,
+    maxMembers,
+    minYesVoters,
+    votingThreshold,
+    votingTime,
     setPoolAddress,
     userAddress,
     userShare,
@@ -335,5 +380,6 @@ export default function usePool(userAddr, poolAddr = null) {
     determineNfts: determinePoolNfts,
     determineProposals: determinePoolProposals,
     determineBalance: determineUsdcBalance,
+    determineShareholderAgreement: determineShareholderAgreement,
   };
 }

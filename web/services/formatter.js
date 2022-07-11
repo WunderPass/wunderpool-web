@@ -63,6 +63,10 @@ export function polyValueToUsd(balance) {
   return balance?.toString() / 1000000;
 }
 
+export function secondsToHours(seconds) {
+  return seconds / 3600;
+}
+
 export function currency(num, { symbol, locale, seperator, decimalSeperator }) {
   const sep = seperator || localeOptions[locale]?.separator || ',';
   const decSep = decimalSeperator || localeOptions[locale]?.decimals || '.';
