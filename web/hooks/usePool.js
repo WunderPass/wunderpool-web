@@ -9,7 +9,6 @@ import {
   isMember,
   fetchPoolIsClosed,
   poolVersion,
-  createPool,
   joinPool,
   addToWhiteList,
   fetchPoolBalance,
@@ -50,23 +49,6 @@ export default function usePool(userAddr, poolAddr = null) {
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
   const [poolProposals, setPoolProposals] = useState([]);
-
-  const newPool = async (
-    poolName,
-    entryBarrier,
-    tokenName,
-    tokenSymbol,
-    tokenPrice
-  ) => {
-    createPool(
-      poolName,
-      entryBarrier,
-      tokenName,
-      tokenSymbol,
-      tokenPrice,
-      userAddress
-    );
-  };
 
   const join = async (amount) => {
     if (!version || userIsMember) return;
@@ -327,7 +309,6 @@ export default function usePool(userAddr, poolAddr = null) {
     userAddress,
     userShare,
     isMember: userIsMember,
-    newPool,
     join,
     inviteUser,
     createInviteLink,

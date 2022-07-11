@@ -47,6 +47,20 @@ export function fetchPoolProposalsEpsilon(address) {
   });
 }
 
+export function fetchTransactionDataEpsilon(address, id, transactionCount) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderProposal] = initProposalEpsilon();
+    const transactions = await Promise.all(
+      [...Array(transactionCount).keys()].map(async (index) => {
+        const { action, param, transactionValue, contractAddress } =
+          await wunderProposal.getProposalTransaction(address, id, index);
+        return { action, params: param, transactionValue, contractAddress };
+      })
+    );
+    resolve(transactions);
+  });
+}
+
 export function createMultiActionProposalEpsilon(
   poolAddress,
   title,
@@ -144,6 +158,44 @@ export function createCustomProposalEpsilon(
     actions,
     encodedParams,
     formattedValues,
+    userAddress
+  );
+}
+
+export function createApeSuggestionEpsilon(
+  poolAddress,
+  tokenAddress,
+  title,
+  description,
+  value,
+  userAddress
+) {
+  return createSwapSuggestionEpsilon(
+    poolAddress,
+    usdcAddress,
+    tokenAddress,
+    title,
+    description,
+    usdc(value),
+    userAddress
+  );
+}
+
+export function createFudSuggestionEpsilon(
+  poolAddress,
+  tokenAddress,
+  title,
+  description,
+  value,
+  userAddress
+) {
+  return createSwapSuggestionEpsilon(
+    poolAddress,
+    tokenAddress,
+    usdcAddress,
+    title,
+    description,
+    value,
     userAddress
   );
 }
@@ -286,6 +338,36 @@ export async function createNftSellProposalEpsilon(
     [0, 0],
     userAddress
   );
+}
+
+export function isLiquidateProposalEpsilon(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [wunderProposal] = initProposalEpsilon();
+      const { transactionCount } = await wunderProposal.getProposal(
+        poolAddress,
+        id
+      );
+      const transactions = await fetchTransactionDataEpsilon(
+        poolAddress,
+        id,
+        transactionCount
+      );
+      if (
+        transactions.find(
+          (trx) =>
+            trx.action == 'liquidatePool()' &&
+            trx.contractAddress.toLowerCase() == poolAddress.toLowerCase()
+        )
+      ) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 export async function createJoinProposalEpsilon(

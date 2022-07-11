@@ -37,13 +37,15 @@ export default async function handler(req, res) {
       },
       pool_creator: creator,
       pool_members: members.map((m) => ({ members_address: m })),
-      min_invest: minInvest,
-      max_invest: maxInvest,
+      shareholder_agreement: {
+        min_invest: minInvest,
+        max_invest: maxInvest,
+        max_members: maxMembers,
+        voting_threshold: votingThreshold,
+        voting_time: votingTime,
+        min_yes_voters: minYesVoters,
+      },
       initial_invest: amount,
-      max_members: maxMembers,
-      voting_threshold: votingThreshold,
-      voting_time: votingTime,
-      min_yes_voters: minYesVoters,
     };
 
     const resp = await axios({

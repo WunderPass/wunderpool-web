@@ -118,10 +118,7 @@ export default function PoolHeader(props) {
                   <Typography className="text-sm opacity-90 py-1">
                     {wunderPool.governanceToken &&
                       currency(
-                        polyValueToUsd(
-                          wunderPool.governanceToken.entryBarrier,
-                          {}
-                        ),
+                        polyValueToUsd(wunderPool.governanceToken.minInvest),
                         {}
                       )}
                   </Typography>
@@ -130,7 +127,13 @@ export default function PoolHeader(props) {
                   <Typography className="text-sm opacity-40 py-1 pt-6">
                     Max
                   </Typography>
-                  <Typography className="text-sm opacity-90 py-1">-</Typography>
+                  <Typography className="text-sm opacity-90 py-1">
+                    {wunderPool.governanceToken &&
+                      currency(
+                        polyValueToUsd(wunderPool.governanceToken.maxInvest),
+                        {}
+                      )}
+                  </Typography>
                 </div>
               </div>
 
@@ -241,15 +244,19 @@ export default function PoolHeader(props) {
                         Duration of Voting
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        -
+                        {wunderPool.governanceToken.votingTime?.toString() /
+                          3600 || '- '}
+                        h
                       </Typography>
                     </div>
                     <div>
                       <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Min % vor win
+                        Min % to win
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        -
+                        {wunderPool.governanceToken.votingThreshold?.toString() ||
+                          '- '}
+                        %
                       </Typography>
                     </div>
                     <div>
