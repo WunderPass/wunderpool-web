@@ -79,7 +79,7 @@ function PoolCard(props) {
                           }: ${parseInt(member.share)}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
                           separator="-"
-                          color={['green', 'blue', 'red', 'teal'][i % 4]}
+                          color={['green', 'blue', 'red'][i % 3]}
                         />
                       );
                     })}
