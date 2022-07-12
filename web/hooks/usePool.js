@@ -75,13 +75,13 @@ export default function usePool(userAddr, poolAddr = null) {
     );
   };
 
-  const join = async (amount) => {
+  const join = async (amount, secret = '') => {
     if (!version || userIsMember) return;
-    joinPool(poolAddress, userAddress, amount, version.number)
+    joinPool(poolAddress, userAddress, amount, secret, version.number)
       .then((res) => {
         waitForTransaction(res)
           .then((tx) => {
-            window.location.reload();
+            return tx;
           })
           .catch((err) => {
             console.log(err);
@@ -183,6 +183,7 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const determineIfMember = async () => {
+    if (!userAddress) return false;
     setUserIsMember(await isMember(poolAddress, userAddress));
   };
 
@@ -313,7 +314,7 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const initialize2 = async () => {
-    if (poolAddress) {
+    if (poolAddress && exists) {
       await determinePoolGovernanceToken();
       if (userIsMember === true) {
         await determinePoolNfts();
@@ -326,7 +327,7 @@ export default function usePool(userAddr, poolAddr = null) {
     initialize2().then(() => {
       setIsReady2(true);
     });
-  }, [poolAddress, userIsMember]);
+  }, [poolAddress, userIsMember, exists]);
 
   useEffect(() => {
     setIsReady(false);

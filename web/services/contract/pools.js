@@ -12,6 +12,7 @@ import { fundPoolGamma, joinPoolGamma } from './gamma/pools';
 import {
   addToWhiteListWithSecretEpsilon,
   fetchWhitelistedUserPoolsEpsilon,
+  joinPoolEpsilon,
 } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
@@ -269,8 +270,10 @@ export function fetchAllPools() {
   });
 }
 
-export function joinPool(poolAddress, userAddress, value, version) {
-  if (version > 3) {
+export function joinPool(poolAddress, userAddress, value, secret, version) {
+  if (version > 4) {
+    return joinPoolEpsilon(poolAddress, userAddress, value, secret);
+  } else if (version > 3) {
     return joinPoolDelta(poolAddress, userAddress, value);
   } else {
     return joinPoolGamma(poolAddress, value);
