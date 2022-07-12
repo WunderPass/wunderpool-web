@@ -1,13 +1,4 @@
-import {
-  CircularProgress,
-  IconButton,
-  Stack,
-  Dialog,
-  LinearProgress,
-  Tooltip,
-} from '@mui/material';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import { Stack, Dialog, Tooltip } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useState, useEffect } from 'react';
 
@@ -25,21 +16,23 @@ export default function VotingButtons(props) {
   const handleVote = (mode) => {
     setWaitingForVote(true);
     setSigning(true);
-    wunderPool
-      .vote(proposal.id, mode)
-      .then((res) => {
-        handleSuccess(
-          `Voted ${mode == 1 ? 'YES' : 'NO'} for Proposal "${proposal.title}"`
-        );
-        setUserHasVoted(mode);
-        wunderPool.determineProposals();
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setWaitingForVote(false);
-      });
+    setTimeout(() => {
+      wunderPool
+        .vote(proposal.id, mode)
+        .then((res) => {
+          handleSuccess(
+            `Voted ${mode == 1 ? 'YES' : 'NO'} for Proposal "${proposal.title}"`
+          );
+          setUserHasVoted(mode);
+          wunderPool.determineProposals();
+        })
+        .catch((err) => {
+          handleError(err);
+        })
+        .then(() => {
+          setWaitingForVote(false);
+        });
+    }, 10);
   };
 
   useEffect(() => {
@@ -51,29 +44,6 @@ export default function VotingButtons(props) {
     }
   }, [user.address]);
 
-  if (waitingForVote) {
-    return (
-      <>
-        <Dialog
-          open={signing}
-          onClose={handleClose}
-          PaperProps={{
-            style: { borderRadius: 12 },
-          }}
-        >
-          <iframe
-            className="w-auto"
-            id="fr"
-            name="transactionFrame"
-            height="500"
-          ></iframe>
-          <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-        </Dialog>
-        <CircularProgress />
-      </>
-    );
-  }
-
   if (proposal.executed) {
     return (
       <Tooltip title="Proposal has been Executed">
@@ -84,13 +54,9 @@ export default function VotingButtons(props) {
 
   if (userHasVoted) {
     return userHasVoted == 1 ? (
-      <>
-        <button className="btn-vote-filled">Yes</button>
-      </>
+      <button className="btn-vote-filled">Yes</button>
     ) : (
-      <>
-        <button className="btn-vote-filled">No</button>
-      </>
+      <button className="btn-vote-filled">No</button>
     );
   }
 
@@ -104,6 +70,21 @@ export default function VotingButtons(props) {
           No
         </button>
       </div>
+      <Dialog
+        open={signing}
+        onClose={handleClose}
+        PaperProps={{
+          style: { borderRadius: 12 },
+        }}
+      >
+        <iframe
+          className="w-auto"
+          id="fr"
+          name="transactionFrame"
+          height="500"
+        ></iframe>
+        <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+      </Dialog>
     </>
   );
 }
