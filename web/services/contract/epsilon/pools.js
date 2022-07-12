@@ -43,27 +43,27 @@ export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
 }
 
 export function joinPoolEpsilon(poolAddress, userAddress, value, secret) {
-  return new Promise(async (resolve, reject) => {
-    if (secret) {
-      const [wunderPool] = initPoolEpsilon(poolAddress);
-      const tx = await connectContract(wunderPool).joinForUser(
-        usdc(value),
-        userAddress,
-        secret,
-        { gasPrice: await gasPrice() }
-      );
+  return new Promise((resolve, reject) => {
+    approve(usdcAddress, userAddress, poolAddress, usdc(value))
+      .then(async () => {
+        if (secret) {
+          const [wunderPool] = initPoolEpsilon(poolAddress);
+          const tx = await connectContract(wunderPool).joinForUser(
+            usdc(value),
+            userAddress,
+            secret,
+            { gasPrice: await gasPrice() }
+          );
 
-      const result = await tx.wait();
-      resolve(result);
-    } else {
-      const body = {
-        poolAddress: poolAddress,
-        userAddress: userAddress,
-        amount: value,
-      };
+          const result = await tx.wait();
+          resolve(result);
+        } else {
+          const body = {
+            poolAddress: poolAddress,
+            userAddress: userAddress,
+            amount: value,
+          };
 
-      approve(usdcAddress, userAddress, poolAddress, usdc(value))
-        .then(() => {
           axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
             .then((res) => {
               resolve(res.data);
@@ -71,11 +71,11 @@ export function joinPoolEpsilon(poolAddress, userAddress, value, secret) {
             .catch((err) => {
               reject(err);
             });
-        })
-        .catch((error) => {
-          reject(error?.error?.error?.error?.message || error);
-        });
-    }
+        }
+      })
+      .catch((error) => {
+        reject(error?.error?.error?.error?.message || error);
+      });
   });
 }
 
