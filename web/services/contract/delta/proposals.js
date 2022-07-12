@@ -374,7 +374,7 @@ export function isLiquidateProposalDelta(poolAddress, id) {
         resolve(false);
       }
     } catch (error) {
-      reject(error);
+      resolve(false);
     }
   });
 }

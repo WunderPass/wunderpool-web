@@ -436,7 +436,7 @@ export function isLiquidateProposalGamma(poolAddress, id) {
         resolve(false);
       }
     } catch (error) {
-      reject(error);
+      resolve(false);
     }
   });
 }
