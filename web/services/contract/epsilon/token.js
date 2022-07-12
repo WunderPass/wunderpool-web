@@ -89,6 +89,7 @@ export function fetchPoolGovernanceTokenEpsilon(address) {
               invested: await wunderPool.investOfUser(addr),
             };
           } catch (err) {
+            console.log(err);
             return null;
           }
         })
@@ -101,6 +102,7 @@ export function fetchPoolGovernanceTokenEpsilon(address) {
         votingTime,
         minYesVoters,
       } = await poolConfig.getConfig(address);
+
       resolve({
         address: govTokenAddress,
         name: await govToken.name(),

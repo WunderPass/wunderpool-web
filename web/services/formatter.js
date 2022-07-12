@@ -27,7 +27,7 @@ export function encodeParams(types, values) {
 }
 
 export function toEthString(num, decimals) {
-  const weiBalance = num.mul(
+  const weiBalance = ethers.BigNumber.from(num || 0).mul(
     ethers.BigNumber.from('10').pow(ethers.BigNumber.from(`${18 - decimals}`))
   );
   return ethers.utils.formatEther(`${weiBalance}`);

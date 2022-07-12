@@ -8,9 +8,14 @@ import {
   fundPoolDelta,
   joinPoolDelta,
 } from './delta/pools';
-import { fundPoolGamma, joinPoolGamma } from './gamma/pools';
+import {
+  fetchPoolShareholderAgreementGamma,
+  fundPoolGamma,
+  joinPoolGamma,
+} from './gamma/pools';
 import {
   addToWhiteListWithSecretEpsilon,
+  fetchPoolShareholderAgreementEpsilon,
   fetchWhitelistedUserPoolsEpsilon,
   joinPoolEpsilon,
 } from './epsilon/pools';
@@ -315,17 +320,11 @@ export function isMember(poolAddress, userAddress, version = null) {
 }
 
 export function fetchPoolShareholderAgreement(poolAddress, version = null) {
-  return new Promise(async (resolve, reject) => {
-    axios({
-      url: `/api/proxy/pools/shareholderAgreement?address=${poolAddress}`,
-    })
-      .then((res) => {
-        resolve(res.data.shareholder_agreement);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+  if (version > 4) {
+    return fetchPoolShareholderAgreementEpsilon(poolAddress);
+  } else {
+    return fetchPoolShareholderAgreementGamma(poolAddress);
+  }
 }
 
 export function fetchPoolBalance(poolAddress, version = null) {

@@ -4,6 +4,7 @@ import {
   voteDelta,
   voteForDelta,
 } from './delta/vote';
+import { hasVotedEpsilon } from './epsilon/vote';
 import {
   hasVotedGamma,
   voteAgainstGamma,
@@ -37,6 +38,8 @@ export function voteAgainst(address, proposalId, userAddress, version) {
 
 export function hasVoted(poolAddress, proposalId, address, version) {
   if (version > 3) {
+    return hasVotedEpsilon(poolAddress, proposalId, address);
+  } else if (version > 3) {
     return hasVotedDelta(poolAddress, proposalId, address);
   } else {
     return hasVotedGamma(poolAddress, proposalId, address);
