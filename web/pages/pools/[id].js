@@ -27,7 +27,7 @@ export default function Pool(props) {
 
   const loginCallback = () => {
     setupPoolListener(address);
-    window.location.reload();
+    // window.location.reload();
   };
 
   useEffect(() => {}, [wunderPool.totalBalance]);
