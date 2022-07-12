@@ -365,7 +365,7 @@ export function isLiquidateProposalEpsilon(poolAddress, id) {
         resolve(false);
       }
     } catch (error) {
-      reject(error);
+      resolve(false);
     }
   });
 }
