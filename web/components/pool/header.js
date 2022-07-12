@@ -119,7 +119,9 @@ export default function PoolHeader(props) {
                     Min
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.minInvest && currency(wunderPool.minInvest, {})}
+                    {wunderPool.minInvest
+                      ? currency(wunderPool.minInvest, {})
+                      : '-'}
                   </Typography>
                 </div>
                 <div>
@@ -127,7 +129,9 @@ export default function PoolHeader(props) {
                     Max
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.maxInvest && currency(wunderPool.maxInvest, {})}
+                    {wunderPool.maxInvest
+                      ? currency(wunderPool.maxInvest, {})
+                      : '-'}
                   </Typography>
                 </div>
               </div>
@@ -239,9 +243,9 @@ export default function PoolHeader(props) {
                         Duration of Voting
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.votingTime &&
-                          secondsToHours(wunderPool.votingTime)}
-                        h
+                        {wunderPool.votingTime
+                          ? `${secondsToHours(wunderPool.votingTime)}h`
+                          : '-'}
                       </Typography>
                     </div>
                     <div>

@@ -24,11 +24,7 @@ export function fetchERC20Data(address) {
 }
 
 export function fetchPoolTokens(address, version) {
-  if (version > 3) {
-    return fetchPoolTokensDelta(address);
-  } else {
-    return fetchPoolTokensGamma(address);
-  }
+  return fetchPoolTokensGamma(address);
 }
 
 export function fetchPoolNfts(address, version) {

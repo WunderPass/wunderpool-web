@@ -12,14 +12,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useState, useEffect } from 'react';
 
 export default function VotingButtons(props) {
-  const {
-    proposal,
-    user,
-    poolAddress,
-    wunderPool,
-    handleSuccess,
-    handleError,
-  } = props;
+  const { proposal, user, wunderPool, handleSuccess, handleError } = props;
   const [waitingForVote, setWaitingForVote] = useState(false);
   const [userHasVoted, setUserHasVoted] = useState(null);
   const [signing, setSigning] = useState(false);

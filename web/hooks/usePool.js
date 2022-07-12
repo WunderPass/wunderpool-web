@@ -172,8 +172,8 @@ export default function usePool(userAddr, poolAddr = null) {
     });
   };
 
-  const determineClosed = async (vers) => {
-    setClosed(await fetchPoolIsClosed(poolAddress, vers.number));
+  const determineClosed = async (vers = null) => {
+    setClosed(await fetchPoolIsClosed(poolAddress, (vers || version).number));
   };
 
   const determineVersion = async () => {
@@ -191,9 +191,10 @@ export default function usePool(userAddr, poolAddr = null) {
     setUsdcBalance(await fetchPoolBalance(poolAddress));
   };
 
-  const determineShareholderAgreement = async () => {
+  const determineShareholderAgreement = async (vers = null) => {
     const shareholderAgreement = await fetchPoolShareholderAgreement(
-      poolAddress
+      poolAddress,
+      (vers || version).number
     );
 
     setMinInvest(shareholderAgreement.min_invest);
@@ -232,9 +233,9 @@ export default function usePool(userAddr, poolAddr = null) {
       });
   };
 
-  const determinePoolTokens = async () => {
+  const determinePoolTokens = async (vers = null) => {
     if (liquidated) return;
-    const tokens = await fetchPoolTokens(poolAddress, version.number);
+    const tokens = await fetchPoolTokens(poolAddress, (vers || version).number);
     setPoolTokens(tokens);
     return tokens;
   };
@@ -244,11 +245,13 @@ export default function usePool(userAddr, poolAddr = null) {
     setPoolNfts(await fetchPoolNfts(poolAddress, version.number));
   };
 
-  const determinePoolGovernanceToken = async () => {
+  const determinePoolGovernanceToken = async (vers = null) => {
     if (liquidated) return;
-    setPoolGovernanceToken(
-      await fetchPoolGovernanceToken(poolAddress, version.number)
+    const tkn = await fetchPoolGovernanceToken(
+      poolAddress,
+      (vers || version).number
     );
+    setPoolGovernanceToken(tkn);
   };
 
   const determinePoolProposals = async () => {
@@ -282,10 +285,10 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const userShare = () => {
-    if (!poolGovernanceToken) return;
-    return poolGovernanceToken?.holders
+    if (!poolGovernanceToken || !poolGovernanceToken.holders) return 0;
+    return poolGovernanceToken.holders
       ?.find(
-        (holder) => holder.address.toLowerCase() == userAddress.toLowerCase()
+        (holder) => holder?.address?.toLowerCase() == userAddress.toLowerCase()
       )
       ?.share?.toNumber();
   };
@@ -296,12 +299,14 @@ export default function usePool(userAddr, poolAddr = null) {
         .then(async (name) => {
           setPoolName(name);
           setExists(true);
-          await determineClosed(await determineVersion());
+          const vers = await determineVersion();
+          console.log(vers);
+          await determineClosed(vers);
           await determineIfMember();
           await determineUsdcBalance();
-          await determineShareholderAgreement();
+          await determineShareholderAgreement(vers);
 
-          const tokens = await determinePoolTokens();
+          const tokens = await determinePoolTokens(vers);
           await determineCustomBalances(tokens);
         })
         .catch((err) => {
@@ -315,7 +320,8 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const initialize2 = async () => {
     if (poolAddress && exists) {
-      await determinePoolGovernanceToken();
+      const vers = await determineVersion();
+      await determinePoolGovernanceToken(vers);
       if (userIsMember === true) {
         await determinePoolNfts();
         await determinePoolProposals();
@@ -323,13 +329,15 @@ export default function usePool(userAddr, poolAddr = null) {
     }
   };
   useEffect(() => {
+    if (!version) return;
     setIsReady2(false);
     initialize2().then(() => {
       setIsReady2(true);
     });
-  }, [poolAddress, userIsMember, exists]);
+  }, [poolAddress, userIsMember, exists, version]);
 
   useEffect(() => {
+    setVersion(null);
     setIsReady(false);
     initialize().then(() => {
       setIsReady(true);
@@ -381,6 +389,6 @@ export default function usePool(userAddr, poolAddr = null) {
     determineNfts: determinePoolNfts,
     determineProposals: determinePoolProposals,
     determineBalance: determineUsdcBalance,
-    determineShareholderAgreement: determineShareholderAgreement,
+    determineShareholderAgreement,
   };
 }

@@ -2,6 +2,7 @@ import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { gasPrice } from '/services/contract/init';
 import { initPoolGamma } from './init';
+import { polyValueToUsd } from '../../formatter';
 
 export function joinPoolGamma(poolAddress, value) {
   return new Promise(async (resolve, reject) => {
@@ -58,5 +59,20 @@ export function fundPoolGamma(poolAddress, amount) {
       .catch((err) => {
         reject(err);
       });
+  });
+}
+
+export function fetchPoolShareholderAgreementGamma(poolAddress) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool] = initPoolGamma(poolAddress);
+
+    resolve({
+      min_invest: polyValueToUsd(await wunderPool.entryBarrier()),
+      max_invest: null,
+      max_members: null,
+      min_yes_voters: 1,
+      voting_threshold: 50,
+      voting_time: null,
+    });
   });
 }

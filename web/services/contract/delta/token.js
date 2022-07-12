@@ -78,18 +78,15 @@ export function fetchPoolGovernanceTokenDelta(address) {
     fetchPoolMembers(address).then(async (memberAddresses) => {
       const holders = await Promise.all(
         memberAddresses.map(async (addr) => {
-          try {
-            const tokens = await govToken.balanceOf(addr);
-            return {
-              address: addr,
-              tokens: tokens,
-              share: tokens.mul(100).div(totalSupply),
-            };
-          } catch (err) {
-            return null;
-          }
+          const tokens = await govToken.balanceOf(addr);
+          return {
+            address: addr,
+            tokens: tokens,
+            share: tokens.mul(100).div(totalSupply),
+          };
         })
       );
+
       resolve({
         address: govTokenAddress,
         name: await govToken.name(),
