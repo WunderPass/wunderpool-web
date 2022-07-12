@@ -138,16 +138,14 @@ export default function JoinPoolDialog(props) {
                 <Typography>
                   Estimated shares: {shareOfPool.toString()}%
                 </Typography>
-                <Typography /*
-                >
+                <Typography>
                   {wunderPool.governanceToken &&
                     currency(
                       polyValueToUsd(wunderPool.governanceToken.maxInvest, {}),
                       {}
                     )}{' '}
                   max
-                */
-                ></Typography>
+                </Typography>
               </div>
             </DialogContentText>
             <Divider className="my-6 opacity-70" />
