@@ -55,7 +55,7 @@ export default function JoinPoolDialog(props) {
       .join(amount)
       .then((res) => {
         user.fetchUsdBalance();
-        //handleSuccess(`Joined Pool with ${amount} USD`);
+        handleSuccess(`Joined Pool with ${amount} USD`);
         loginCallback();
         //handleClose();
       })

@@ -36,7 +36,7 @@ export default function LoginWithWunderPass(props) {
 
           if (event.data?.wunderId) {
             onSuccess(event.data);
-            event.source.window.close();
+            event.source?.window?.close();
             setPopup(null);
           }
         }
