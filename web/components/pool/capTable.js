@@ -5,7 +5,7 @@ import {
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
 import InitialsAvatar from '../utils/initialsAvatar';
-import { currency, toEthString } from '/services/formatter';
+import { currency, polyValueToUsd } from '/services/formatter';
 
 export default function CapTable(props) {
   const { members, wunderPool } = props;
@@ -45,26 +45,30 @@ export default function CapTable(props) {
                       tooltip={`${
                         member.wunderId || 'External User'
                       }: ${member.share.toString()}%`}
-                      text={member.wunderId || '0-X'}
+                      text={member.wunderId ? member.wunderId : '0-X'}
                       separator="-"
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                     />
                     <Typography className="ml-1 md:hidden">
-                      {member.wunderId || 'External User'}
+                      {member.wunderId ? member.wunderId : 'External User'}
                     </Typography>{' '}
                   </div>
                 </td>
                 <td className="pb-2">
                   <div className="flex flex-row items-center lg:ml-16">
                     <Typography>{member.tokens.toString()}</Typography>
-                    <Typography className="opacity-50 ml-1">
+                    <Typography className="opacity-50 ml-1 ">
                       ({member.share.toString()}%)
                     </Typography>
                   </div>{' '}
                 </td>
                 <td className="text-right pb-2">
                   <Typography className="">
-                    {currency(toEthString(member.invested, 6), {})}
+                    {currency(
+                      member.tokens.toString() *
+                        polyValueToUsd(wunderPool.governanceToken.price, {}),
+                      {}
+                    )}
                   </Typography>
                 </td>
               </tr>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { toEthString } from '../services/formatter';
+import { toEthString, currency, polyValueToUsd } from '../services/formatter';
 import { initPoolSocket } from '/services/contract/init';
 
 export default function usePoolListener(handleInfo) {
@@ -52,7 +52,10 @@ export default function usePoolListener(handleInfo) {
       console.log('NewMember:', address, stake);
       const wunderId = await resolveUser(address);
       handleInfo(
-        `${wunderId || address} joined the Pool with ${toEthString(stake, 6)} $`
+        `${wunderId || address} joined the Pool with ${currency(
+          polyValueToUsd(stake),
+          {}
+        )}`
       );
     });
 

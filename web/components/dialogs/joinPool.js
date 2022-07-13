@@ -100,85 +100,88 @@ export default function JoinPoolDialog(props) {
         }}
       >
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>
-        <DialogContent>
-          <div>
-            <DialogContentText className="text-sm pb-2">
-              You will receive Governance Tokens proportionally to your invest
-            </DialogContentText>
+        <DialogContent
+          sx={{
+            height: loading ? '0px' : 'unset',
+            paddingBottom: loading ? '0px' : 'unset',
+            transition: 'height 300ms ease',
+          }}
+        >
+          <DialogContentText className="text-sm pb-2">
+            You will receive Governance Tokens proportionally to your invest
+          </DialogContentText>
 
-            <Divider className="mt-2 mb-4 opacity-70" />
-            <Typography>Invest Amount</Typography>
-            <CurrencyInput
-              value={amount}
-              placeholder={currency(
-                polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
-                {}
-              )}
-              onChange={handleInput}
-              error={errorMsg}
-            />
-            <DialogContentText className="text-sm pt-2">
-              <div className="flex flex-row justify-between items-center">
-                <Typography>
-                  1 {wunderPool.governanceToken.symbol} ={' '}
-                  {currency(polyValueToUsd(price, {}), {})}
-                </Typography>
-                <Typography>
-                  {wunderPool.governanceToken &&
-                    currency(
-                      polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
-                      {}
-                    )}{' '}
-                  min
-                </Typography>
-              </div>
-            </DialogContentText>
-            <DialogContentText className="text-sm">
-              <div className="flex flex-row justify-between items-center">
-                <Typography>
-                  Estimated shares: {shareOfPool.toString()}%
-                </Typography>
-                <Typography /*
-                >
-                  {wunderPool.governanceToken &&
-                    currency(
-                      polyValueToUsd(wunderPool.governanceToken.maxInvest, {}),
-                      {}
-                    )}{' '}
-                  max
-                */
-                ></Typography>
-              </div>
-            </DialogContentText>
-            <Divider className="my-6 opacity-70" />
-            <Typography>Choose payment method</Typography>
+          <Divider className="mt-2 mb-4 opacity-70" />
+          <Typography>Invest Amount</Typography>
+          <CurrencyInput
+            value={amount}
+            placeholder={currency(
+              polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
+              {}
+            )}
+            onChange={handleInput}
+            error={errorMsg}
+          />
+          <DialogContentText className="text-sm pt-2">
+            <div className="flex flex-row justify-between items-center">
+              <Typography>
+                1 {wunderPool.governanceToken.symbol} ={' '}
+                {currency(polyValueToUsd(price, {}), {})}
+              </Typography>
+              <Typography>
+                {wunderPool.governanceToken &&
+                  currency(
+                    polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
+                    {}
+                  )}{' '}
+                min
+              </Typography>
+            </div>
+          </DialogContentText>
+          <DialogContentText className="text-sm">
+            <div className="flex flex-row justify-between items-center">
+              <Typography>
+                Estimated shares: {shareOfPool.toString()}%
+              </Typography>
+              <Typography>
+                {wunderPool.governanceToken &&
+                  currency(
+                    polyValueToUsd(wunderPool.governanceToken.maxInvest, {}),
+                    {}
+                  )}{' '}
+                max
+              </Typography>
+            </div>
+          </DialogContentText>
+          <Divider className="my-6 opacity-70" />
+          <Typography>Choose payment method</Typography>
 
+          <button
+            className={
+              isWallet
+                ? 'border-2 border-kaico-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
+                : 'border container-checkbox flex flex-row items-center py-4 mt-2 z-2'
+            }
+            onClick={chooseWallet}
+          >
             <button
+              onClick={chooseWallet}
               className={
                 isWallet
-                  ? 'border-2 border-kaico-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
-                  : 'border container-checkbox flex flex-row items-center py-4 mt-2 z-2'
+                  ? 'bg-kaico-blue border-kaico-blue rounded-md border'
+                  : 'border border-gray-300  rounded-md'
               }
-              onClick={chooseWallet}
             >
-              <button
-                onClick={chooseWallet}
-                className={
-                  isWallet
-                    ? 'bg-kaico-blue border-kaico-blue rounded-md border'
-                    : 'border border-gray-300  rounded-md'
-                }
-              >
-                <BiCheck className="text-gray-100 text-lg" />
-              </button>
-              <div className="flex flex-row justify-between items-center w-full">
-                <Typography className="ml-2"> WunderPass</Typography>
-                <Typography className="ml-2 opacity-70">
-                  Balance: {currency(user.usdBalance, {})}
-                </Typography>
-              </div>
+              <BiCheck className="text-gray-100 text-lg" />
             </button>
-            <button /*
+            <div className="flex flex-row justify-between items-center w-full">
+              <Typography className="ml-2"> WunderPass</Typography>
+              <Typography className="ml-2 opacity-70">
+                Balance: {currency(user.usdBalance, {})}
+              </Typography>
+            </div>
+          </button>
+          <button /*
               className={
                 isPayPal
                   ? 'border-2 border-kaico-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
@@ -197,8 +200,7 @@ export default function JoinPoolDialog(props) {
               </div>
               <Typography className="ml-2"> PayPal</Typography>
             */
-            ></button>
-          </div>
+          ></button>
         </DialogContent>
         {loading ? (
           <></>
@@ -213,15 +215,13 @@ export default function JoinPoolDialog(props) {
             </button>
           </DialogActions>
         )}
-        {loading && (
-          <iframe
-            className="w-auto"
-            id="fr"
-            name="transactionFrame"
-            height="500"
-            style={{ transition: 'height 300ms ease' }}
-          ></iframe>
-        )}
+        <iframe
+          className="w-auto"
+          id="fr"
+          name="transactionFrame"
+          height={loading ? '500' : '0'}
+          style={{ transition: 'height 300ms ease' }}
+        ></iframe>
       </Dialog>
     </>
   );

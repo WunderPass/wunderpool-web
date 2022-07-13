@@ -31,11 +31,12 @@ export default function DestroyPoolDialog(props) {
       .then((res) => {
         handleSuccess(`Created new Proposal to Liquidate the Pool ${name}`);
         wunderPool.determineProposals();
-        handleClose();
       })
       .catch((err) => {
-        handleError(err);
         setLoading(false);
+      })
+      .then(() => {
+        handleClose();
       });
   };
 
