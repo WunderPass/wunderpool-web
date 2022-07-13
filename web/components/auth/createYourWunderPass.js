@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function LoginWithWunderPass(props) {
+export default function CreateYourWunderPass(props) {
   const { name, image, intent = [], onSuccess } = props;
   const [popup, setPopup] = useState(null);
 
