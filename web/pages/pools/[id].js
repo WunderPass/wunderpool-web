@@ -30,8 +30,6 @@ export default function Pool(props) {
     // window.location.reload();
   };
 
-  useEffect(() => {}, [wunderPool.totalBalance]);
-
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
       if (wunderPool.exists) {
@@ -39,11 +37,11 @@ export default function Pool(props) {
           loginCallback();
           setLoading(false);
         }
-      } else {
+      } else if (wunderPool.exists === false) {
         router.push('/pools');
       }
     }
-  }, [wunderPool.isReady, wunderPool.isMember]);
+  }, [wunderPool.isReady, wunderPool.isMember, wunderPool.exists]);
 
   useEffect(() => {
     if (wunderPool.liquidated) {
