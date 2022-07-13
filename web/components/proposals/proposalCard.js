@@ -31,8 +31,9 @@ export default function ProposalCard(props) {
   const [signing, setSigning] = useState(false);
   const [executable, setExecutable] = useState(false);
 
-  useEffect(() => {
-    setExecutable(proposal.yesVotes.toNumber() > totalSupply?.toNumber() / 2);
+  useEffect(async () => {
+    const [executable, reason] = await wunderPool.executable(proposal.id);
+    setExecutable(executable);
   }, [proposal.yesVotes.toNumber()]);
 
   const handleClose = () => {
@@ -65,6 +66,7 @@ export default function ProposalCard(props) {
         if (res) {
           handleSuccess('Pool liquidated');
           user.fetchUsdBalance();
+          user.fetchPools();
         } else {
           handleSuccess(`Proposal "${proposal.title}" executed`);
           wunderPool.determineProposals();

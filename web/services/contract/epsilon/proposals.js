@@ -340,6 +340,20 @@ export async function createNftSellProposalEpsilon(
   );
 }
 
+export function proposalExecutableEpsilon(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderProposal] = initProposalEpsilon(poolAddress);
+
+    try {
+      const { executable, errorMessage } =
+        await wunderProposal.proposalExecutable(poolAddress, id);
+      resolve([executable, errorMessage]);
+    } catch (error) {
+      resolve([false, 'Proposal does not exist']);
+    }
+  });
+}
+
 export function isLiquidateProposalEpsilon(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
     try {
