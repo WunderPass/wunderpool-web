@@ -26,7 +26,7 @@ export default function Pool(props) {
   const wunderPool = usePool(user.address, address);
 
   const loginCallback = () => {
-    setupPoolListener(address);
+    setupPoolListener(address, user.address);
     // window.location.reload();
   };
 
