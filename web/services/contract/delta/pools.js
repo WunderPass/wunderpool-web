@@ -9,7 +9,7 @@ import {
 } from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherDelta, initPoolDelta } from './init';
-import { httpProvider } from '../provider';
+import { httpProvider, waitForTransaction } from '../provider';
 import { approve } from '../token';
 
 export function fetchWhitelistedUserPoolsDelta(userAddress) {
@@ -64,7 +64,17 @@ export function joinPoolDelta(poolAddress, userAddress, value, secret) {
 
         axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
           .then((res) => {
-            resolve(res.data);
+            waitForTransaction(res.data)
+              .then((tx) => {
+                if (tx.status === 0) {
+                  reject('Could not Join');
+                } else {
+                  resolve(tx);
+                }
+              })
+              .catch((err) => {
+                reject(err);
+              });
           })
           .catch((err) => {
             reject(err);

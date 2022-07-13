@@ -35,7 +35,7 @@ import {
 import { addToWhiteListWithSecret } from '../services/contract/pools';
 
 export default function usePool(userAddr, poolAddr = null) {
-  const userAddress = userAddr;
+  const [userAddress, setUserAddress] = useState(userAddr);
   const [poolAddress, setPoolAddress] = useState(poolAddr);
   const [isReady, setIsReady] = useState(false);
   const [isReady2, setIsReady2] = useState(false);
@@ -81,6 +81,11 @@ export default function usePool(userAddr, poolAddr = null) {
   const join = async (amount, secret = '') => {
     if (!version || userIsMember) return;
     return joinPool(poolAddress, userAddress, amount, secret, version.number);
+  };
+
+  const updateUserAddress = (addr) => {
+    setUserAddress(addr);
+    determineIfMember(addr);
   };
 
   const inviteUser = (newMember) => {
@@ -177,9 +182,10 @@ export default function usePool(userAddr, poolAddr = null) {
     return vers;
   };
 
-  const determineIfMember = async () => {
-    if (!userAddress) return false;
-    setUserIsMember(await isMember(poolAddress, userAddress));
+  const determineIfMember = async (addr = null) => {
+    const userAddr = userAddress || addr;
+    if (!userAddr) return false;
+    setUserIsMember(await isMember(poolAddress, userAddr));
   };
 
   const determineUsdcBalance = async () => {
@@ -289,7 +295,7 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const initialize = async () => {
-    if (poolAddress) {
+    if (poolAddress && userAddress) {
       await fetchPoolName(poolAddress)
         .then(async (name) => {
           setPoolName(name);
@@ -314,7 +320,7 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const initialize2 = async () => {
-    if (poolAddress && exists) {
+    if (poolAddress && userAddress && exists) {
       const vers = await determineVersion();
       await determinePoolGovernanceToken(vers);
       if (userIsMember === true) {
@@ -337,7 +343,7 @@ export default function usePool(userAddr, poolAddr = null) {
     initialize().then(() => {
       setIsReady(true);
     });
-  }, [poolAddress]);
+  }, [poolAddress, userAddress]);
 
   return {
     isReady,
@@ -356,6 +362,8 @@ export default function usePool(userAddr, poolAddr = null) {
     votingTime,
     setPoolAddress,
     userAddress,
+    setUserAddress,
+    updateUserAddress,
     userShare,
     isMember: userIsMember,
     join,

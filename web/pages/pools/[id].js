@@ -50,12 +50,13 @@ export default function Pool(props) {
   }, [wunderPool.liquidated]);
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && router.query.id && user.address) {
       setAddress(router.query.id);
       setName(router.query.name);
       wunderPool.setPoolAddress(router.query.id);
+      wunderPool.setUserAddress(user.address);
     }
-  }, [router.isReady, router.query.id]);
+  }, [router.isReady, router.query.id, user.address]);
 
   useEffect(() => {
     if (!address || !user.address) return;
