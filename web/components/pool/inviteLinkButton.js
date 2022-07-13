@@ -11,6 +11,86 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
 
+function ContentWithLink(props) {
+  const { inviteLink, handleSuccess } = props;
+
+  return (
+    <DialogContent>
+      <label className="label" htmlFor="validFor">
+        Your Invite Link
+      </label>
+      <CopyToClipboard
+        text={inviteLink}
+        onCopy={() => handleSuccess('Copied Invite Link')}
+      >
+        <span className="cursor-pointer text-md">
+          <div className="flex flex-row items-center my-6">
+            <div className="text-kaico-blue truncate ...">{inviteLink}</div>
+            <MdContentCopy className="text-gray-500 text-2xl ml-2" />
+          </div>
+        </span>
+      </CopyToClipboard>
+      <CopyToClipboard
+        text={inviteLink}
+        onCopy={() => handleSuccess('Copied Invite Link')}
+      >
+        <button className="btn btn-kaico w-full">Copy Link</button>
+      </CopyToClipboard>
+    </DialogContent>
+  );
+}
+
+function ContentWithoutLink(props) {
+  const { loading, validFor, setValidFor, handleSubmit, handleClose } = props;
+
+  return (
+    <>
+      <DialogContent>
+        <label className="label" htmlFor="validFor">
+          How many users can use this link?
+        </label>
+        <input
+          className="textfield py-4 px-3 mt-2"
+          id="validFor"
+          type="number"
+          min={1}
+          placeholder="1"
+          disabled={loading}
+          value={validFor}
+          onChange={(e) => {
+            setValidFor(e.target.value);
+          }}
+        />
+      </DialogContent>
+      {loading ? (
+        <Stack spacing={2} sx={{ textAlign: 'center' }}>
+          <Typography variant="subtitle1">Generating Link...</Typography>
+        </Stack>
+      ) : (
+        <DialogActions>
+          <button className="btn btn-default" onClick={handleClose}>
+            Cancel
+          </button>
+          <button
+            className="btn btn-kaico"
+            onClick={handleSubmit}
+            disabled={validFor < 1}
+          >
+            Generate Link
+          </button>
+        </DialogActions>
+      )}
+      <iframe
+        className="w-auto"
+        id="fr"
+        name="transactionFrame"
+        height={loading ? '500' : '0'}
+        style={{ transition: 'height 300ms ease' }}
+      ></iframe>
+    </>
+  );
+}
+
 export default function InviteLinkButton(props) {
   const { wunderPool, handleSuccess, handleError } = props;
   const [open, setOpen] = useState(false);
@@ -20,6 +100,7 @@ export default function InviteLinkButton(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setLoading(false);
     setValidFor('');
     setInviteLink('');
   };
@@ -63,59 +144,20 @@ export default function InviteLinkButton(props) {
         }}
       >
         <DialogTitle>Generate Invite Link</DialogTitle>
-        <DialogContent>
-          <label className="label" htmlFor="validFor">
-            How many users can use this link?
-          </label>
-          <input
-            className="textfield py-4 px-3 mt-2 "
-            id="validFor"
-            type="number"
-            min={1}
-            placeholder="1"
-            onChange={(e) => {
-              setValidFor(e.target.value);
-            }}
+        {inviteLink ? (
+          <ContentWithLink
+            inviteLink={inviteLink}
+            handleSuccess={handleSuccess}
           />
-          {inviteLink && (
-            <CopyToClipboard
-              text={inviteLink}
-              onCopy={() => handleSuccess('Copied Invite Link')}
-            >
-              <span className="cursor-pointer text-md">
-                <div className="flex flex-row items-center mt-2">
-                  <div className="truncate ...">{inviteLink}</div>
-                  <MdContentCopy className="text-gray-500 ml-4" />
-                </div>
-              </span>
-            </CopyToClipboard>
-          )}
-        </DialogContent>
-        {loading ? (
-          <Stack spacing={2} sx={{ textAlign: 'center' }}>
-            <Typography variant="subtitle1">Generating Link...</Typography>
-          </Stack>
         ) : (
-          <DialogActions>
-            <button className="btn btn-default" onClick={handleClose}>
-              Cancel
-            </button>
-            <button
-              className="btn btn-kaico"
-              onClick={handleSubmit}
-              disabled={validFor < 1}
-            >
-              Generate Link
-            </button>
-          </DialogActions>
+          <ContentWithoutLink
+            loading={loading}
+            validFor={validFor}
+            setValidFor={setValidFor}
+            handleSubmit={handleSubmit}
+            handleClose={handleClose}
+          />
         )}
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height={loading ? '500' : '0'}
-          style={{ transition: 'height 300ms ease' }}
-        ></iframe>
       </Dialog>
     </>
   ) : (
