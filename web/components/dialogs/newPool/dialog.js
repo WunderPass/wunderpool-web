@@ -173,6 +173,7 @@ export default function NewPoolDialog(props) {
             handleSuccess(`Created Pool "${poolName}"`);
             getPoolAddressFromTx(res)
               .then(({ address, name }) => {
+                user.fetchUsdBalance();
                 router.push(`/pools/${address}?name=${name}`);
               })
               .catch((err) => {
