@@ -2,21 +2,21 @@ import axios from 'axios';
 
 export default async function handler(req, res) {
   try {
-    const { poolAddress, userAddress, amount } = req.body;
+    const { poolAddress, userAddress, amount, secret } = req.body;
     const headers = {
       'Content-Type': 'application/json',
       authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
     };
 
     const body = {
-      pool_address: poolAddress?.toLowerCase(),
       joining_user_address: userAddress,
       invest: amount,
     };
 
     const resp = await axios({
       method: 'POST',
-      url: 'https://pools-service.wunderpass.org/web3Proxy/pools/byPoolAddress/joinPool',
+      url: `https://pools-service.wunderpass.org/web3Proxy/pools/${poolAddress.toLowerCase()}/members`,
+      query: { secret: secret },
       headers: headers,
       data: body,
     });

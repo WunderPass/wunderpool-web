@@ -1,14 +1,8 @@
-import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import axios from 'axios';
-import {
-  usdcAddress,
-  connectContract,
-  gasPrice,
-} from '/services/contract/init';
+import { connectContract, gasPrice } from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherEpsilon, initPoolEpsilon } from './init';
-import { approve } from '../token';
 
 export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -39,43 +33,6 @@ export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
       })
     );
     resolve(pools.filter((elem) => elem));
-  });
-}
-
-export function joinPoolEpsilon(poolAddress, userAddress, value, secret) {
-  return new Promise((resolve, reject) => {
-    approve(usdcAddress, userAddress, poolAddress, usdc(value))
-      .then(async () => {
-        if (secret) {
-          const [wunderPool] = initPoolEpsilon(poolAddress);
-          const tx = await connectContract(wunderPool).joinForUser(
-            usdc(value),
-            userAddress,
-            secret,
-            { gasPrice: await gasPrice() }
-          );
-
-          const result = await tx.wait();
-          resolve(result);
-        } else {
-          const body = {
-            poolAddress: poolAddress,
-            userAddress: userAddress,
-            amount: value,
-          };
-
-          axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-            .then((res) => {
-              resolve(res.data);
-            })
-            .catch((err) => {
-              reject(err);
-            });
-        }
-      })
-      .catch((error) => {
-        reject(error?.error?.error?.error?.message || error);
-      });
   });
 }
 
