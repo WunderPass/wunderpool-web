@@ -153,7 +153,7 @@ export function addToWhiteListWithSecretEpsilon(
 export function fetchPoolShareholderAgreementEpsilon(poolAddress) {
   return new Promise(async (resolve, reject) => {
     axios({
-      url: `/api/proxy/pools/shareholderAgreement?address=${poolAddress}`,
+      url: `/api/proxy/pools/show?address=${poolAddress}`,
     })
       .then((res) => {
         resolve(res.data.shareholder_agreement);
