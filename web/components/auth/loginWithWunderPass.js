@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, LinearProgress, Stack } from '@mui/material';
 
 export default function LoginWithWunderPass(props) {
-  const { dev, name, image, intent = [], onSuccess } = props;
+  const { dev, name, image, intent = [], onSuccess, disablePopup } = props;
   const [popup, setPopup] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -77,7 +77,7 @@ export default function LoginWithWunderPass(props) {
           <p className="pl-2 lg:pl-3 pt-1 text-white">Login with WunderPass</p>
         </div>
       </button>
-      {loading && (
+      {loading && !disablePopup && (
         <>
           <Dialog
             open={open}

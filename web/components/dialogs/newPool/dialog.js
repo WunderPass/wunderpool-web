@@ -173,6 +173,7 @@ export default function NewPoolDialog(props) {
             handleSuccess(`Created Pool "${poolName}"`);
             getPoolAddressFromTx(res)
               .then(({ address, name }) => {
+                user.fetchUsdBalance();
                 router.push(`/pools/${address}?name=${name}`);
               })
               .catch((err) => {
@@ -240,14 +241,13 @@ export default function NewPoolDialog(props) {
           />
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <iframe
+        className="w-auto"
+        id="fr"
+        name="transactionFrame"
+        height={loading ? '500' : '0'}
+        style={{ transition: 'height 300ms ease' }}
+      ></iframe>
     </Dialog>
   );
 }

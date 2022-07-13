@@ -84,24 +84,22 @@ export function approve(token, user, spender, amount) {
       accountId: 'ABCDEF',
       userAddress: user,
     });
-    const tx = await tokenContract.populateTransaction.approve(
-      spender,
-      amount,
-      {
-        gasPrice: await gasPrice(),
-      }
-    );
 
-    smartContractTransaction(tx)
+    smartContractTransaction(null, { amount, spender })
       .then((transaction) => {
-        provider
-          .waitForTransaction(transaction.hash)
-          .then(() => {
-            resolve(transaction.hash);
-          })
-          .catch((error) => {
-            reject(error?.error?.error?.error?.message || error);
-          });
+        if (transaction.hash) {
+          provider
+            .waitForTransaction(transaction.hash)
+            .then(() => {
+              console.log('DONE');
+              resolve(transaction.hash);
+            })
+            .catch((error) => {
+              reject(error?.error?.error?.error?.message || error);
+            });
+        } else {
+          resolve(true);
+        }
       })
       .catch((err) => {
         reject(err);

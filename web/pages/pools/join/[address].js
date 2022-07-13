@@ -1,4 +1,4 @@
-import { Container, Divider, Typography } from '@mui/material';
+import { Container, Dialog, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { currency, polyValueToUsd } from '/services/formatter';
@@ -7,6 +7,7 @@ import usePool from '/hooks/usePool';
 import { ethers } from 'ethers';
 import { usdc } from '../../../services/formatter';
 import LoginWithWunderPass from '../../../components/auth/loginWithWunderPass';
+import Link from 'next/link';
 
 export default function JoinPool(props) {
   const router = useRouter();
@@ -15,9 +16,10 @@ export default function JoinPool(props) {
   const [address, setAddress] = useState(null);
   const [amount, setAmount] = useState('');
   const [secret, setSecret] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [signing, setSigning] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const wunderPool = usePool(user.address, address);
+  const [redirectUrl, setRedirectUrl] = useState(null);
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
@@ -50,19 +52,24 @@ export default function JoinPool(props) {
   const handleLogin = (data) => {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
+    wunderPool.updateUserAddress(data.address);
   };
 
   const handleSubmit = () => {
-    wunderPool
-      .join(amount, secret)
-      .then((res) => {
-        handleSuccess(`Joined Pool with $ ${amount}`);
-        loginCallback();
-      })
-      .catch((err) => {
-        console.log(err);
-        handleError('Could not join the Pool');
-      });
+    setSigning(true);
+    setTimeout(() => {
+      wunderPool
+        .join(amount, secret)
+        .then(() => {
+          user.fetchUsdBalance();
+          handleSuccess(`Joined Pool with $ ${amount}`);
+          loginCallback();
+        })
+        .catch((err) => {
+          console.log(err);
+          handleError('Could not join the Pool');
+        });
+    }, 10);
   };
 
   const loginCallback = () => {
@@ -76,7 +83,6 @@ export default function JoinPool(props) {
         if (wunderPool.isMember) {
           handleInfo('You already joined the Pool');
           loginCallback();
-          setLoading(false);
         }
       } else {
         handleInfo('This Pool does not exist');
@@ -99,6 +105,10 @@ export default function JoinPool(props) {
       wunderPool.setPoolAddress(router.query.address);
     }
   }, [router.isReady, router.query.address]);
+
+  useEffect(() => {
+    setRedirectUrl(new URL(document.URL));
+  }, []);
 
   return (
     <Container className="flex justify-center items-center" maxWidth="xl">
@@ -130,31 +140,50 @@ export default function JoinPool(props) {
           </div>
         </div>
         {user?.loggedIn ? (
-          <>
-            <div>
+          user?.usdBalance < 3 ? (
+            <>
               <Typography className="text-sm mt-3">
-                You will receive Governance Tokens proportionally to your invest
+                To continue, your Account needs at least $ 3.00
               </Typography>
-              <Divider className="mt-2 mb-4 opacity-70" />
-              <Typography>Invest Amount</Typography>
-              <CurrencyInput
-                value={amount}
-                placeholder={currency(polyValueToUsd(minInvest, {}), {})}
-                onChange={handleInput}
-                error={errorMsg}
-              />
-              <Typography className="text-sm float-right mt-2">
-                Estimated shares: {shareOfPool.toString()}%
+              <Typography className="text-xl my-3">
+                TopUp your WunderId
               </Typography>
-            </div>
-            <button
-              className="btn-kaico w-full py-3 mt-3"
-              onClick={handleSubmit}
-              disabled={!Boolean(amount) || Boolean(errorMsg)}
-            >
-              Join
-            </button>
-          </>
+              {redirectUrl && (
+                <Link
+                  href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+                >
+                  <button className="btn btn-info w-full">TopUp Now</button>
+                </Link>
+              )}
+            </>
+          ) : (
+            <>
+              <div>
+                <Typography className="text-sm mt-3">
+                  You will receive Governance Tokens proportionally to your
+                  invest
+                </Typography>
+                <Divider className="mt-2 mb-4 opacity-70" />
+                <Typography>Invest Amount</Typography>
+                <CurrencyInput
+                  value={amount}
+                  placeholder={currency(polyValueToUsd(minInvest, {}), {})}
+                  onChange={handleInput}
+                  error={errorMsg}
+                />
+                <Typography className="text-sm float-right mt-2">
+                  Estimated shares: {shareOfPool.toString()}%
+                </Typography>
+              </div>
+              <button
+                className="btn-kaico w-full py-3 mt-3"
+                onClick={handleSubmit}
+                disabled={!Boolean(amount) || Boolean(errorMsg)}
+              >
+                Join
+              </button>
+            </>
+          )
         ) : (
           <>
             <Typography className="text-sm mt-3">
@@ -162,6 +191,7 @@ export default function JoinPool(props) {
             </Typography>
             <Divider className="mt-2 mb-4 opacity-70" />
             <LoginWithWunderPass
+              disablePopup
               className="text-xs"
               name="WunderPool"
               redirect={'pools'}
@@ -171,6 +201,22 @@ export default function JoinPool(props) {
           </>
         )}
       </div>
+      <Dialog
+        open={signing}
+        onClose={() => {
+          setSigning(false);
+        }}
+        PaperProps={{
+          style: { borderRadius: 12 },
+        }}
+      >
+        <iframe
+          className="w-auto"
+          id="fr"
+          name="transactionFrame"
+          height="500"
+        ></iframe>
+      </Dialog>
     </Container>
   );
 }

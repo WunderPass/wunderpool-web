@@ -9,7 +9,8 @@ import {
 } from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherDelta, initPoolDelta } from './init';
-import { httpProvider } from '../provider';
+import { httpProvider, waitForTransaction } from '../provider';
+import { approve } from '../token';
 
 export function fetchWhitelistedUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -50,49 +51,37 @@ export function fetchPoolIsClosedDelta(poolAddress) {
   });
 }
 
-export function joinPoolDelta(poolAddress, userAddress, value) {
-  return new Promise(async (resolve, reject) => {
-    const body = {
-      poolAddress: poolAddress,
-      userAddress: userAddress,
-      amount: value,
-    };
+export function joinPoolDelta(poolAddress, userAddress, value, secret) {
+  return new Promise((resolve, reject) => {
+    approve(usdcAddress, userAddress, poolAddress, usdc(value))
+      .then(async () => {
+        const body = {
+          poolAddress: poolAddress,
+          userAddress: userAddress,
+          amount: value,
+          secret: secret,
+        };
 
-    const provider = httpProvider;
-    const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
-
-    const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-      userAddress: userAddress,
-    });
-    const tx = await usdcContract.populateTransaction.approve(
-      poolAddress,
-      usdc(value),
-      {
-        gasPrice: await gasPrice(),
-      }
-    );
-
-    smartContractTransaction(tx)
-      .then((transaction) => {
-        provider
-          .waitForTransaction(transaction.hash)
-          .then(() => {
-            axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-              .then((res) => {
-                resolve(res.data);
+        axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
+          .then((res) => {
+            waitForTransaction(res.data)
+              .then((tx) => {
+                if (tx.status === 0) {
+                  reject('Could not Join');
+                } else {
+                  resolve(tx);
+                }
               })
               .catch((err) => {
                 reject(err);
               });
           })
-          .catch((error) => {
-            reject(error?.error?.error?.error?.message || error);
+          .catch((err) => {
+            reject(err);
           });
       })
-      .catch((err) => {
-        reject(err);
+      .catch((error) => {
+        reject(error?.error?.error?.error?.message || error);
       });
   });
 }
