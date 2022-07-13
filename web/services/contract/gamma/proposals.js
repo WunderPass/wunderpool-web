@@ -7,6 +7,7 @@ import {
   wunderSwapperAddress,
   usdcAddress,
 } from '/services/contract/init';
+import { tokenAbi } from '../init';
 
 export function fetchPoolProposalsGamma(address) {
   return new Promise(async (resolve, reject) => {
