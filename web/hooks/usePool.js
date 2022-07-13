@@ -28,7 +28,10 @@ import { latestVersion } from '/services/contract/init';
 import { waitForTransaction } from '/services/contract/provider';
 import axios from 'axios';
 import { usdcAddress } from '/services/contract/init';
-import { isLiquidateProposal } from '../services/contract/proposals';
+import {
+  isLiquidateProposal,
+  proposalExecutable,
+} from '../services/contract/proposals';
 import { addToWhiteListWithSecret } from '../services/contract/pools';
 
 export default function usePool(userAddr, poolAddr = null) {
@@ -37,7 +40,7 @@ export default function usePool(userAddr, poolAddr = null) {
   const [isReady, setIsReady] = useState(false);
   const [isReady2, setIsReady2] = useState(false);
   const [poolName, setPoolName] = useState(null);
-  const [exists, setExists] = useState(true);
+  const [exists, setExists] = useState(null);
   const [closed, setClosed] = useState(null);
   const [liquidated, setLiquidated] = useState(false);
   const [version, setVersion] = useState(null);
@@ -139,6 +142,10 @@ export default function usePool(userAddr, poolAddr = null) {
       userAddress,
       version.number
     );
+  };
+
+  const executable = (id) => {
+    return proposalExecutable(poolAddress, id, version.number);
   };
 
   const execute = (id) => {
@@ -371,6 +378,7 @@ export default function usePool(userAddr, poolAddr = null) {
     voteForProposal,
     voteAgainstProposal,
     userHasVoted,
+    executable,
     execute,
     determineIfMember,
     determineTokens: determinePoolTokens,
