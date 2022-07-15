@@ -9,7 +9,6 @@ import {
   OutlinedInput,
   Stack,
   Typography,
-  LinearProgress,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';

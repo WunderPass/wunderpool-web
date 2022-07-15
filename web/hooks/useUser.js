@@ -17,6 +17,7 @@ export default function useUser() {
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const [image, setImage] = useState()
 
   const loggedIn = wunderId || address;
 
@@ -56,6 +57,10 @@ export default function useUser() {
           reject(err);
         });
     });
+  };
+
+  const defineImage = () => {
+    setImage(`/api/proxy/users/getImage?wunderId=d-bitschnau`)
   };
 
   const fetchUsdBalance = async () => {
@@ -98,6 +103,10 @@ export default function useUser() {
     }
   }, [address]);
 
+  useEffect(async () => {
+    defineImage()
+  }, [wunderId]);
+
   useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
@@ -106,6 +115,7 @@ export default function useUser() {
 
   return {
     wunderId,
+    image,
     updateWunderId,
     address,
     updateAddress,
