@@ -25,7 +25,6 @@ import {
 } from '/services/contract/proposals';
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
-import { waitForTransaction } from '/services/contract/provider';
 import axios from 'axios';
 import { usdcAddress } from '/services/contract/init';
 import {
@@ -60,23 +59,6 @@ export default function usePool(userAddr, poolAddr = null) {
   const [minYesVoters, setMinYesVoter] = useState('');
   const [votingThreshold, setVotingThreshold] = useState('');
   const [votingTime, setVotingTime] = useState('');
-
-  const newPool = async (
-    poolName,
-    entryBarrier,
-    tokenName,
-    tokenSymbol,
-    tokenPrice
-  ) => {
-    createPool(
-      poolName,
-      entryBarrier,
-      tokenName,
-      tokenSymbol,
-      tokenPrice,
-      userAddress
-    );
-  };
 
   const join = async (amount, secret = '') => {
     if (!version || userIsMember) return;
@@ -206,12 +188,12 @@ export default function usePool(userAddr, poolAddr = null) {
     setVotingTime(shareholderAgreement.voting_time);
   };
 
-  const determineCustomBalances = async (tokens) => {
+  const determineCustomBalances = (tokens = null) => {
     var totalBalance = 0;
     var assetBalance = 0;
     var curAssetBalance = 0;
     var assetCount = 0;
-    tokens
+    (tokens || poolTokens)
       .filter((tkn) => tkn.balance > 0)
       .map((token, i) => {
         if (token.address && token.address.length == 42) {
@@ -238,6 +220,7 @@ export default function usePool(userAddr, poolAddr = null) {
     if (liquidated) return;
     const tokens = await fetchPoolTokens(poolAddress, (vers || version).number);
     setPoolTokens(tokens);
+    determineCustomBalances(tokens);
     return tokens;
   };
 
@@ -307,8 +290,7 @@ export default function usePool(userAddr, poolAddr = null) {
           await determineUsdcBalance();
           await determineShareholderAgreement(vers);
 
-          const tokens = await determinePoolTokens(vers);
-          await determineCustomBalances(tokens);
+          await determinePoolTokens(vers);
         })
         .catch((err) => {
           setExists(false);
