@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import TimerBar from '/components/proposals/timerBar';
 
 const Timer = (props) => {
-  const { proposal, wunderPool, user } = props;
+  const { proposal } = props;
   const finalTime = proposal.deadline.toNumber();
   const start = proposal.createdAt.toNumber();
   const [timer, setTimer] = useState(0);
@@ -30,9 +30,12 @@ const Timer = (props) => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setTimer(Math.floor(new Date(finalTime) - new Date() / 1000));
     }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [timer]);
 
   return (
