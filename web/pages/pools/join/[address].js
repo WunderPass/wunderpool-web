@@ -1,4 +1,11 @@
-import { Container, Dialog, Divider, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Container,
+  Dialog,
+  Divider,
+  Typography,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { currency, polyValueToUsd } from '/services/formatter';
@@ -9,6 +16,88 @@ import { usdc } from '../../../services/formatter';
 import LoginWithWunderPass from '../../../components/auth/loginWithWunderPass';
 import Link from 'next/link';
 
+function NotLoggedIn({ handleLogin }) {
+  return (
+    <>
+      <Typography className="text-sm mt-3">
+        To join this Pool, you need a WunderPass Account
+      </Typography>
+      <Divider className="mt-2 mb-4 opacity-70" />
+      <LoginWithWunderPass
+        disablePopup
+        className="text-xs"
+        name="WunderPool"
+        redirect={'pools'}
+        intent={['wunderId', 'address']}
+        onSuccess={handleLogin}
+      />
+    </>
+  );
+}
+
+function TopUpRequired() {
+  const [redirectUrl, setRedirectUrl] = useState(null);
+
+  useEffect(() => {
+    setRedirectUrl(new URL(document.URL));
+  }, []);
+
+  return (
+    <>
+      <Typography className="text-sm mt-3">
+        To continue, your Account needs at least $ 3.00
+      </Typography>
+      <Typography className="text-xl my-3">TopUp your WunderId</Typography>
+      {redirectUrl && (
+        <Link
+          href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+        >
+          <button className="btn btn-info w-full">TopUp Now</button>
+        </Link>
+      )}
+    </>
+  );
+}
+
+function InputJoinAmount(props) {
+  const {
+    amount,
+    minInvest,
+    handleInput,
+    errorMsg,
+    shareOfPool,
+    handleSubmit,
+  } = props;
+
+  return (
+    <>
+      <div>
+        <Typography className="text-sm mt-3">
+          You will receive Governance Tokens proportionally to your invest
+        </Typography>
+        <Divider className="mt-2 mb-4 opacity-70" />
+        <Typography>Invest Amount</Typography>
+        <CurrencyInput
+          value={amount}
+          placeholder={currency(polyValueToUsd(minInvest, {}), {})}
+          onChange={handleInput}
+          error={errorMsg}
+        />
+        <Typography className="text-sm float-right mt-2">
+          Estimated shares: {shareOfPool.toString()}%
+        </Typography>
+      </div>
+      <button
+        className="btn-kaico w-full py-3 mt-3"
+        onClick={handleSubmit}
+        disabled={!Boolean(amount) || Boolean(errorMsg)}
+      >
+        Join
+      </button>
+    </>
+  );
+}
+
 export default function JoinPool(props) {
   const router = useRouter();
   const { setupPoolListener, user, handleSuccess, handleInfo, handleError } =
@@ -16,10 +105,9 @@ export default function JoinPool(props) {
   const [address, setAddress] = useState(null);
   const [amount, setAmount] = useState('');
   const [secret, setSecret] = useState(null);
-  const [signing, setSigning] = useState(null);
+  const [signing, setSigning] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const wunderPool = usePool(user.address, address);
-  const [redirectUrl, setRedirectUrl] = useState(null);
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
@@ -74,7 +162,7 @@ export default function JoinPool(props) {
 
   const loginCallback = () => {
     setupPoolListener(address, user.address);
-    router.push(`/pools/${address}?name=${wunderPool.poolName}`);
+    // router.push(`/pools/${address}?name=${wunderPool.poolName}`);
   };
 
   useEffect(() => {
@@ -84,7 +172,7 @@ export default function JoinPool(props) {
           handleInfo('You already joined the Pool');
           loginCallback();
         }
-      } else {
+      } else if (wunderPool.exists === false) {
         handleInfo('This Pool does not exist');
         router.push('/pools');
       }
@@ -103,12 +191,9 @@ export default function JoinPool(props) {
       setAddress(router.query.address);
       setSecret(router.query.secret);
       wunderPool.setPoolAddress(router.query.address);
+      wunderPool.setUserAddress(user.address);
     }
   }, [router.isReady, router.query.address]);
-
-  useEffect(() => {
-    setRedirectUrl(new URL(document.URL));
-  }, []);
 
   return (
     <Container className="flex justify-center items-center" maxWidth="xl">
@@ -139,66 +224,26 @@ export default function JoinPool(props) {
             </Typography>
           </div>
         </div>
+        {wunderPool.closed && (
+          <Alert severity="warning" className="w-full">
+            This Pool is already closed
+          </Alert>
+        )}
         {user?.loggedIn ? (
           user?.usdBalance < 3 ? (
-            <>
-              <Typography className="text-sm mt-3">
-                To continue, your Account needs at least $ 3.00
-              </Typography>
-              <Typography className="text-xl my-3">
-                TopUp your WunderId
-              </Typography>
-              {redirectUrl && (
-                <Link
-                  href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
-                >
-                  <button className="btn btn-info w-full">TopUp Now</button>
-                </Link>
-              )}
-            </>
+            <TopUpRequired />
           ) : (
-            <>
-              <div>
-                <Typography className="text-sm mt-3">
-                  You will receive Governance Tokens proportionally to your
-                  invest
-                </Typography>
-                <Divider className="mt-2 mb-4 opacity-70" />
-                <Typography>Invest Amount</Typography>
-                <CurrencyInput
-                  value={amount}
-                  placeholder={currency(polyValueToUsd(minInvest, {}), {})}
-                  onChange={handleInput}
-                  error={errorMsg}
-                />
-                <Typography className="text-sm float-right mt-2">
-                  Estimated shares: {shareOfPool.toString()}%
-                </Typography>
-              </div>
-              <button
-                className="btn-kaico w-full py-3 mt-3"
-                onClick={handleSubmit}
-                disabled={!Boolean(amount) || Boolean(errorMsg)}
-              >
-                Join
-              </button>
-            </>
+            <InputJoinAmount
+              amount={amount}
+              minInvest={minInvest}
+              handleInput={handleInput}
+              errorMsg={errorMsg}
+              shareOfPool={shareOfPool}
+              handleSubmit={handleSubmit}
+            />
           )
         ) : (
-          <>
-            <Typography className="text-sm mt-3">
-              To join this Pool, you need a WunderPass Account
-            </Typography>
-            <Divider className="mt-2 mb-4 opacity-70" />
-            <LoginWithWunderPass
-              disablePopup
-              className="text-xs"
-              name="WunderPool"
-              redirect={'pools'}
-              intent={['wunderId', 'address']}
-              onSuccess={handleLogin}
-            />
-          </>
+          <NotLoggedIn handleLogin={handleLogin} />
         )}
       </div>
       <Dialog
