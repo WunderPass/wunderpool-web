@@ -23,11 +23,18 @@ import VotingButtons from './votingButtons';
 import Timer from '/components/proposals/timer';
 
 export default function ProposalCard(props) {
-  const { proposal, wunderPool, user, handleSuccess, handleError } = props;
+  const {
+    proposal,
+    wunderPool,
+    user,
+    openProposal,
+    setOpenProposal,
+    handleSuccess,
+    handleError,
+  } = props;
   const { totalSupply } = wunderPool.governanceToken;
   const [loading, setLoading] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
-  const [opening, setOpen] = useState(null);
   const [signing, setSigning] = useState(false);
   const [executable, setExecutable] = useState(false);
 
@@ -42,10 +49,10 @@ export default function ProposalCard(props) {
   };
 
   const handleOpen = () => {
-    if (opening == proposal.id) {
-      setOpen(null);
+    if (openProposal == proposal.id) {
+      setOpenProposal(null);
     } else {
-      setOpen(proposal.id);
+      setOpenProposal(proposal.id);
       setLoading(true);
       wunderPool
         .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
@@ -83,7 +90,12 @@ export default function ProposalCard(props) {
   };
 
   return (
-    <div className="container-gray mb-6">
+    <div
+      className="container-gray mb-6"
+      style={{
+        gridColumn: openProposal == proposal.id ? '1 / 3' : '',
+      }}
+    >
       <div className="flex flex-row items-center">
         <Typography className="text-xl ">{proposal.title}</Typography>
         <Tooltip title="Show details">
@@ -150,7 +162,7 @@ export default function ProposalCard(props) {
           </>
         </div>
       </div>
-      <Collapse className="mt-2" in={opening == proposal.id}>
+      <Collapse className="mt-2" in={openProposal == proposal.id}>
         <Stack spacing={1}>
           <Divider />
           <Typography
