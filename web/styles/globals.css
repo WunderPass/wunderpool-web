@@ -12,6 +12,7 @@
 body {
   font-family: 'Grapik';
 }
+
 body {
   background-color: #f3f3f3;
 
@@ -67,7 +68,7 @@ button:disabled {
 }
 
 .btn-warning {
-  @apply bg-[#f7b91b] hover:bg-[#dba418]  text-black text-opacity-70 cursor-pointer rounded-full;
+  @apply bg-[#f7b91b] hover:bg-[#dba418] text-black text-opacity-70 cursor-pointer rounded-full;
 }
 
 .btn-kaico {
@@ -103,7 +104,7 @@ button:disabled {
 }
 
 .container-white-p-0 {
-  @apply border-solid text-black rounded-xl bg-white  shadow-sm;
+  @apply border-solid text-black rounded-xl bg-white shadow-sm;
 }
 
 .container-image-round {
