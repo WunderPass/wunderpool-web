@@ -1,16 +1,9 @@
 import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
-import axios from 'axios';
-import {
-  tokenAbi,
-  usdcAddress,
-  connectContract,
-  gasPrice,
-} from '/services/contract/init';
-import { ethers } from 'ethers';
+import { usdcAddress, gasPrice } from '/services/contract/init';
 import { initLauncherDelta, initPoolDelta } from './init';
-import { httpProvider, waitForTransaction } from '../provider';
 import { approve } from '../token';
+import { postAndWaitForTransaction } from '../../backendApi';
 
 export function fetchWhitelistedUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -62,19 +55,9 @@ export function joinPoolDelta(poolAddress, userAddress, value, secret) {
           secret: secret,
         };
 
-        axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
+        postAndWaitForTransaction({ url: '/api/proxy/pools/join', body: body })
           .then((res) => {
-            waitForTransaction(res.data)
-              .then((tx) => {
-                if (tx.status === 0) {
-                  reject('Could not Join');
-                } else {
-                  resolve(tx);
-                }
-              })
-              .catch((err) => {
-                reject(err);
-              });
+            resolve(res);
           })
           .catch((err) => {
             reject(err);
@@ -102,16 +85,22 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const [wunderPool] = initPoolDelta(poolAddress);
-        const tx = await connectContract(wunderPool).addToWhiteListForUser(
+        const body = {
+          poolAddress,
           userAddress,
           newMember,
-          signature.signature,
-          { gasPrice: await gasPrice() }
-        );
-
-        const result = await tx.wait();
-        resolve(result);
+          signature: signature.signature,
+        };
+        postAndWaitForTransaction({
+          url: '/api/proxy/pools/whitelist',
+          body: body,
+        })
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       })
       .catch((err) => {
         reject(err);

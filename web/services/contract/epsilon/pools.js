@@ -1,8 +1,8 @@
 import useWunderPass from '/hooks/useWunderPass';
 import axios from 'axios';
-import { connectContract, gasPrice } from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherEpsilon, initPoolEpsilon } from './init';
+import { postAndWaitForTransaction } from '../../backendApi';
 
 export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -36,39 +36,6 @@ export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   });
 }
 
-export function addToWhiteListEpsilon(poolAddress, userAddress, newMember) {
-  return new Promise(async (resolve, reject) => {
-    if (userAddress == newMember) {
-      reject('You cant invite yourself');
-      return;
-    }
-    const { sendSignatureRequest } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
-    const types = ['address', 'address', 'address'];
-    const values = [userAddress, poolAddress, newMember];
-
-    sendSignatureRequest(types, values)
-      .then(async (signature) => {
-        const [wunderPool] = initPoolEpsilon(poolAddress);
-        const tx = await connectContract(wunderPool).addToWhiteListForUser(
-          userAddress,
-          newMember,
-          signature.signature,
-          { gasPrice: await gasPrice() }
-        );
-
-        const result = await tx.wait();
-        resolve(result);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
 export function addToWhiteListWithSecretEpsilon(
   poolAddress,
   userAddress,
@@ -89,17 +56,23 @@ export function addToWhiteListWithSecretEpsilon(
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const [wunderPool] = initPoolEpsilon(poolAddress);
-        const tx = await connectContract(wunderPool).addToWhiteListWithSecret(
+        const body = {
+          poolAddress,
           userAddress,
-          hashedSecret,
+          secret: hashedSecret,
           validFor,
-          signature.signature,
-          { gasPrice: await gasPrice() }
-        );
-
-        const result = await tx.wait();
-        resolve(result);
+          signature: signature.signature,
+        };
+        postAndWaitForTransaction({
+          url: '/api/proxy/pools/whitelist',
+          body: body,
+        })
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       })
       .catch((err) => {
         reject(err);

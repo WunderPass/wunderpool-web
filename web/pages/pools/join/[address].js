@@ -73,7 +73,7 @@ export default function JoinPool(props) {
   };
 
   const loginCallback = () => {
-    setupPoolListener(address);
+    setupPoolListener(address, user.address);
     router.push(`/pools/${address}?name=${wunderPool.poolName}`);
   };
 
