@@ -78,6 +78,7 @@ export default function Home(props) {
                   <div className="my-2 w-72 items-center mb-1 lg:mt-6">
                     <a>
                       <LoginWithWunderPass
+                        disablePopup
                         className="text-xs"
                         name="WunderPool"
                         redirect={'pools'}

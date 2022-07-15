@@ -4,11 +4,16 @@ export default function useWunderPass(config) {
   const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
       try {
+        const isSafari =
+          navigator.userAgent.toLowerCase().match(/safari/) &&
+          navigator.vendor.toLowerCase().match(/apple/);
+        console.log('isSafari', isSafari);
+
         const popup = window.open(
           encodeURI(
             `${process.env.WUNDERPASS_URL}/sign?name=${name}&imageUrl=${image}`
           ),
-          'transactionFrame'
+          isSafari ? 'newWindow' : 'transactionFrame'
         );
 
         if (Array.isArray(types) && Array.isArray(types[0])) {
@@ -55,11 +60,15 @@ export default function useWunderPass(config) {
   const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
     return new Promise(async (resolve, reject) => {
       try {
+        const isSafari =
+          navigator.userAgent.toLowerCase().match(/safari/) &&
+          navigator.vendor.toLowerCase().match(/apple/);
+        console.log('isSafari', isSafari);
         const popup = window.open(
           encodeURI(
             `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
           ),
-          'transactionFrame'
+          isSafari ? 'newWindow' : 'transactionFrame'
         );
 
         const requestInterval = setInterval(() => {
