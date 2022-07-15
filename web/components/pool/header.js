@@ -12,7 +12,7 @@ import { FaLongArrowAltDown } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import ape from '/public/poolPictures/ape.png';
-import { Typography, Collapse, Divider } from '@mui/material';
+import { Typography, Collapse, Divider, Box } from '@mui/material';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
@@ -26,13 +26,7 @@ export default function PoolHeader(props) {
 
   return (
     <>
-      <div
-        className={
-          !showMoreInfo
-            ? 'flex flex-col container-white-p-0 w-full sm:mt-6 md:max-h-72 '
-            : 'flex flex-col container-white-p-0 w-full sm:mt-6 '
-        }
-      >
+      <div className="flex flex-col container-white-p-0 w-full sm:mt-6">
         <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
           <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
             <FaLongArrowAltDown className="text-2xl" />
@@ -74,38 +68,43 @@ export default function PoolHeader(props) {
           <Divider className="my-6 mt-8 opacity-70" />
 
           <div className="mb-1">
-            <Collapse in={!showMoreInfo}>
-              <button
-                className="text-black text-sm mt-0 opacity-40"
-                onClick={toggleAdvanced}
-              >
-                <div className="flex flex-row items-center">
-                  <Typography className="text-lg">Advanced Info</Typography>
-                  <MdOutlineKeyboardArrowDown className="ml-3 text-2xl" />
+            <div className="flex flex-row items-center justify-between">
+              <button className="mt-2 opacity-60" onClick={toggleAdvanced}>
+                <div className="text-black flex flex-row items-center">
+                  <Typography className="text-lg text-black">
+                    Advanced Info
+                  </Typography>
+                  <div
+                    style={{
+                      transform: showMoreInfo
+                        ? 'rotateX(180deg)'
+                        : 'rotateX(0deg)',
+                      transition:
+                        'transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <MdOutlineKeyboardArrowDown className="ml-3 text-2xl" />
+                  </div>
                 </div>
               </button>
-            </Collapse>
+              <button
+                style={{
+                  transition: 'transform 200ms ease',
+                  transform:
+                    wunderPool.isMember && showMoreInfo
+                      ? 'scaleY(1)'
+                      : 'scaleY(0)',
+                }}
+                className="btn-danger p-3 px-4"
+                onClick={() => setDestroyDialog(true)}
+              >
+                Liquidate Pool
+              </button>
+            </div>
             <Collapse in={showMoreInfo}>
-              <div className="flex flex-row  items-center  justify-between">
-                <button
-                  className="text-black text-sm mt-2 opacity-40"
-                  onClick={toggleAdvanced}
-                >
-                  <div className="flex flex-row items-center">
-                    <Typography className="text-lg">Advanced Info</Typography>
-                    <MdOutlineKeyboardArrowUp className="ml-3 text-2xl" />
-                  </div>
-                </button>
-                <button
-                  className={
-                    wunderPool.isMember ? 'btn-danger p-3 px-4' : 'hidden'
-                  }
-                  onClick={() => setDestroyDialog(true)}
-                >
-                  Liquidate Pool
-                </button>
-              </div>
-
               <div className="lg:flex lg:flex-row lg:w-3/4 lg:justify-between">
                 <div>
                   <Typography className="text-sm opacity-40 py-1 pt-6">

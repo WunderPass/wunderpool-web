@@ -1,13 +1,4 @@
-import {
-  Box,
-  Paper,
-  Slide,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  Skeleton,
-} from '@mui/material';
+import { Box, Stack, Typography, Skeleton } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import ProposalCard from './proposalCard';
@@ -19,6 +10,7 @@ export default function ProposalList(props) {
   const slidingContainer = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openProposal, setOpenProposal] = useState(false);
 
   useEffect(() => {
     if (wunderPool.isReady2) {
@@ -50,6 +42,8 @@ export default function ProposalList(props) {
                   <ProposalCard
                     key={`proposal-${proposal.id}`}
                     proposal={proposal}
+                    openProposal={openProposal}
+                    setOpenProposal={setOpenProposal}
                     {...props}
                   />
                 );
@@ -71,6 +65,8 @@ export default function ProposalList(props) {
                     <ProposalCard
                       key={`proposal-${proposal.id}`}
                       proposal={proposal}
+                      openProposal={openProposal}
+                      setOpenProposal={setOpenProposal}
                       {...props}
                     />
                   );

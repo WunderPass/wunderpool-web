@@ -33,12 +33,8 @@ export default function Navbar(props) {
                 </div>
 
                 <div className="sm:hidden block pl-2 pb-1">
-                  <InitialsAvatar
-                    className=""
-                    text={user.wunderId}
-                    separator="-"
-                    color={'purple'}
-                  />
+                  <img className="w-12 border border-black rounded-full" src={user.image} alt="" />
+
                 </div>
               </div>
             </Link>
