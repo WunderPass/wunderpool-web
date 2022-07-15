@@ -7,6 +7,7 @@ import {
   wunderSwapperAddress,
   usdcAddress,
 } from '/services/contract/init';
+import { tokenAbi } from '../init';
 
 export function fetchPoolProposalsGamma(address) {
   return new Promise(async (resolve, reject) => {
@@ -388,6 +389,28 @@ export async function createNftSellProposalGamma(
   );
 }
 
+export function proposalExecutableGamma(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool, provider] = initPoolGamma(poolAddress);
+    const govTokenAddress = await wunderPool.governanceToken();
+    const govToken = new ethers.Contract(govTokenAddress, tokenAbi, provider);
+    const totalSupply = await govToken.totalSupply();
+
+    try {
+      const { deadline, yesVotes, noVotes, executed } =
+        await wunderPool.getProposal(id);
+      if (executed) resolve([false, 'Already Executed']);
+      if (noVotes.mul(2).lte(totalSupply))
+        resolve([false, 'Majority voted against execution']);
+      if (yesVotes.mul(2).gt(totalSupply) || deadline.lte(Number(new Date())))
+        resolve([false, 'Voting still allowed']);
+      resolve([true, '']);
+    } catch (error) {
+      resolve([false, 'Proposal does not exist']);
+    }
+  });
+}
+
 export function executeProposalGamma(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
@@ -402,6 +425,7 @@ export function executeProposalGamma(poolAddress, id) {
     smartContractTransaction(tx)
       .then(async (transaction) => {
         try {
+          console.log(transaction.hash);
           const receipt = await provider.waitForTransaction(transaction.hash);
           resolve(receipt);
         } catch (error) {

@@ -26,11 +26,9 @@ export default function Pool(props) {
   const wunderPool = usePool(user.address, address);
 
   const loginCallback = () => {
-    setupPoolListener(address);
+    setupPoolListener(address, user.address);
     // window.location.reload();
   };
-
-  useEffect(() => {}, [wunderPool.totalBalance]);
 
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
@@ -39,11 +37,11 @@ export default function Pool(props) {
           loginCallback();
           setLoading(false);
         }
-      } else {
+      } else if (wunderPool.exists === false) {
         router.push('/pools');
       }
     }
-  }, [wunderPool.isReady, wunderPool.isMember]);
+  }, [wunderPool.isReady, wunderPool.isMember, wunderPool.exists]);
 
   useEffect(() => {
     if (wunderPool.liquidated) {
@@ -52,12 +50,13 @@ export default function Pool(props) {
   }, [wunderPool.liquidated]);
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && router.query.id && user.address) {
       setAddress(router.query.id);
       setName(router.query.name);
       wunderPool.setPoolAddress(router.query.id);
+      wunderPool.setUserAddress(user.address);
     }
-  }, [router.isReady, router.query.id]);
+  }, [router.isReady, router.query.id, user.address]);
 
   useEffect(() => {
     if (!address || !user.address) return;

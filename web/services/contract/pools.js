@@ -17,7 +17,6 @@ import {
   addToWhiteListWithSecretEpsilon,
   fetchPoolShareholderAgreementEpsilon,
   fetchWhitelistedUserPoolsEpsilon,
-  joinPoolEpsilon,
 } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
@@ -276,10 +275,8 @@ export function fetchAllPools() {
 }
 
 export function joinPool(poolAddress, userAddress, value, secret, version) {
-  if (version > 4) {
-    return joinPoolEpsilon(poolAddress, userAddress, value, secret);
-  } else if (version > 3) {
-    return joinPoolDelta(poolAddress, userAddress, value);
+  if (version > 3) {
+    return joinPoolDelta(poolAddress, userAddress, value, secret);
   } else {
     return joinPoolGamma(poolAddress, value);
   }

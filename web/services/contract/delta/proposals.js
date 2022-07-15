@@ -349,6 +349,20 @@ export async function createNftSellProposalDelta(
   );
 }
 
+export function proposalExecutableDelta(poolAddress, id) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderProposal] = initProposalDelta(poolAddress);
+
+    try {
+      const { executable, errorMessage } =
+        await wunderProposal.proposalExecutable(poolAddress, id);
+      resolve([executable, errorMessage]);
+    } catch (error) {
+      resolve([false, 'Proposal does not exist']);
+    }
+  });
+}
+
 export function isLiquidateProposalDelta(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
     try {

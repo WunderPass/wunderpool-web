@@ -5,6 +5,7 @@ import { initPoolSocket } from '/services/contract/init';
 
 export default function usePoolListener(handleInfo) {
   const [poolAddress, setPoolAddress] = useState(null);
+  const [userAddress, setUserAddress] = useState(null);
   const [votedEvent, setVotedEvent] = useState(null);
   const [newProposalEvent, setNewProposalEvent] = useState(null);
   const [tokenAddedEvent, setTokenAddedEvent] = useState(null);
@@ -17,8 +18,9 @@ export default function usePoolListener(handleInfo) {
     setProposalExecutedEvent(null);
   };
 
-  const setupPoolListener = (address) => {
+  const setupPoolListener = (address, user = null) => {
     setPoolAddress(address);
+    setUserAddress(user);
   };
 
   const resolveUser = (address) => {
@@ -34,6 +36,12 @@ export default function usePoolListener(handleInfo) {
     });
   };
 
+  const notifyIfRelevant = (msg, creator) => {
+    if (userAddress && userAddress.toLowerCase() == creator.toLowerCase())
+      return;
+    handleInfo(msg);
+  };
+
   const startListener = async () => {
     const [wunderPool] = initPoolSocket(poolAddress);
 
@@ -42,8 +50,9 @@ export default function usePoolListener(handleInfo) {
     wunderPool.on('NewProposal', async (id, creator, title) => {
       console.log('NewProposal:', id, creator, title);
       const wunderId = await resolveUser(creator);
-      handleInfo(
-        `New Proposal: ${title}${wunderId ? ' from User ' + wunderId : ''}`
+      notifyIfRelevant(
+        `New Proposal: ${title}${wunderId ? ' from User ' + wunderId : ''}`,
+        creator
       );
       setNewProposalEvent({ id: id.toNumber(), creator });
     });
@@ -62,10 +71,11 @@ export default function usePoolListener(handleInfo) {
     wunderPool.on('Voted', async (proposalId, voter, mode) => {
       const modeLookup = ['NONE', 'YES', 'NO'];
       const wunderId = await resolveUser(voter);
-      handleInfo(
+      notifyIfRelevant(
         `${wunderId || voter} voted ${
           modeLookup[mode.toNumber()]
-        } for Proposal #${proposalId.toNumber()}`
+        } for Proposal #${proposalId.toNumber()}`,
+        voter
       );
       setVotedEvent({ id: proposalId.toNumber(), voter });
     });
@@ -73,10 +83,11 @@ export default function usePoolListener(handleInfo) {
     wunderPool.on('ProposalExecuted', async (proposalId, executor, result) => {
       console.log('ProposalExecuted:', proposalId, executor, result);
       const wunderId = await resolveUser(executor);
-      handleInfo(
+      notifyIfRelevant(
         `Proposal #${proposalId.toNumber()} was executed by ${
           wunderId || executor
-        }`
+        }`,
+        executor
       );
       setProposalExecutedEvent({ id: proposalId.toNumber(), executor });
     });

@@ -1,14 +1,8 @@
-import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import axios from 'axios';
-import {
-  usdcAddress,
-  connectContract,
-  gasPrice,
-} from '/services/contract/init';
 import { ethers } from 'ethers';
 import { initLauncherEpsilon, initPoolEpsilon } from './init';
-import { approve } from '../token';
+import { postAndWaitForTransaction } from '../../backendApi';
 
 export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -42,76 +36,6 @@ export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   });
 }
 
-export function joinPoolEpsilon(poolAddress, userAddress, value, secret) {
-  return new Promise((resolve, reject) => {
-    approve(usdcAddress, userAddress, poolAddress, usdc(value))
-      .then(async () => {
-        if (secret) {
-          const [wunderPool] = initPoolEpsilon(poolAddress);
-          const tx = await connectContract(wunderPool).joinForUser(
-            usdc(value),
-            userAddress,
-            secret,
-            { gasPrice: await gasPrice() }
-          );
-
-          const result = await tx.wait();
-          resolve(result);
-        } else {
-          const body = {
-            poolAddress: poolAddress,
-            userAddress: userAddress,
-            amount: value,
-          };
-
-          axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-            .then((res) => {
-              resolve(res.data);
-            })
-            .catch((err) => {
-              reject(err);
-            });
-        }
-      })
-      .catch((error) => {
-        reject(error?.error?.error?.error?.message || error);
-      });
-  });
-}
-
-export function addToWhiteListEpsilon(poolAddress, userAddress, newMember) {
-  return new Promise(async (resolve, reject) => {
-    if (userAddress == newMember) {
-      reject('You cant invite yourself');
-      return;
-    }
-    const { sendSignatureRequest } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
-    const types = ['address', 'address', 'address'];
-    const values = [userAddress, poolAddress, newMember];
-
-    sendSignatureRequest(types, values)
-      .then(async (signature) => {
-        const [wunderPool] = initPoolEpsilon(poolAddress);
-        const tx = await connectContract(wunderPool).addToWhiteListForUser(
-          userAddress,
-          newMember,
-          signature.signature,
-          { gasPrice: await gasPrice() }
-        );
-
-        const result = await tx.wait();
-        resolve(result);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
 export function addToWhiteListWithSecretEpsilon(
   poolAddress,
   userAddress,
@@ -132,17 +56,23 @@ export function addToWhiteListWithSecretEpsilon(
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const [wunderPool] = initPoolEpsilon(poolAddress);
-        const tx = await connectContract(wunderPool).addToWhiteListWithSecret(
+        const body = {
+          poolAddress,
           userAddress,
-          hashedSecret,
+          secret: hashedSecret,
           validFor,
-          signature.signature,
-          { gasPrice: await gasPrice() }
-        );
-
-        const result = await tx.wait();
-        resolve(result);
+          signature: signature.signature,
+        };
+        postAndWaitForTransaction({
+          url: '/api/proxy/pools/whitelist',
+          body: body,
+        })
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       })
       .catch((err) => {
         reject(err);
@@ -153,7 +83,7 @@ export function addToWhiteListWithSecretEpsilon(
 export function fetchPoolShareholderAgreementEpsilon(poolAddress) {
   return new Promise(async (resolve, reject) => {
     axios({
-      url: `/api/proxy/pools/shareholderAgreement?address=${poolAddress}`,
+      url: `/api/proxy/pools/show?address=${poolAddress}`,
     })
       .then((res) => {
         resolve(res.data.shareholder_agreement);

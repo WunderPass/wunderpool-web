@@ -10,6 +10,7 @@ import {
   fetchPoolProposalsDelta,
   fetchTransactionDataDelta,
   isLiquidateProposalDelta,
+  proposalExecutableDelta,
 } from './delta/proposals';
 import {
   createApeSuggestionEpsilon,
@@ -19,7 +20,9 @@ import {
   createMultiActionProposalEpsilon,
   createSwapSuggestionEpsilon,
   fetchPoolProposalsEpsilon,
+  fetchTransactionDataEpsilon,
   isLiquidateProposalEpsilon,
+  proposalExecutableEpsilon,
 } from './epsilon/proposals';
 import {
   createApeSuggestionGamma,
@@ -34,6 +37,7 @@ import {
   fetchPoolProposalsGamma,
   fetchTransactionDataGamma,
   isLiquidateProposalGamma,
+  proposalExecutableGamma,
 } from './gamma/proposals';
 
 export function fetchPoolProposals(address, version) {
@@ -47,7 +51,9 @@ export function fetchPoolProposals(address, version) {
 }
 
 export function fetchTransactionData(address, id, transactionCount, version) {
-  if (version > 3) {
+  if (version > 4) {
+    return fetchTransactionDataEpsilon(address, id, transactionCount);
+  } else if (version > 3) {
     return fetchTransactionDataDelta(address, id, transactionCount);
   } else {
     return fetchTransactionDataGamma(address, id, transactionCount);
@@ -365,6 +371,16 @@ export async function createNftSellProposal(
       description,
       amount
     );
+  }
+}
+
+export function proposalExecutable(poolAddress, id, version) {
+  if (version > 4) {
+    return proposalExecutableEpsilon(poolAddress, id);
+  } else if (version > 3) {
+    return proposalExecutableDelta(poolAddress, id);
+  } else {
+    return proposalExecutableGamma(poolAddress, id);
   }
 }
 

@@ -1,15 +1,9 @@
 import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
-import axios from 'axios';
-import {
-  tokenAbi,
-  usdcAddress,
-  connectContract,
-  gasPrice,
-} from '/services/contract/init';
-import { ethers } from 'ethers';
+import { usdcAddress, gasPrice } from '/services/contract/init';
 import { initLauncherDelta, initPoolDelta } from './init';
-import { httpProvider } from '../provider';
+import { approve } from '../token';
+import { postAndWaitForTransaction } from '../../backendApi';
 
 export function fetchWhitelistedUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -50,49 +44,27 @@ export function fetchPoolIsClosedDelta(poolAddress) {
   });
 }
 
-export function joinPoolDelta(poolAddress, userAddress, value) {
-  return new Promise(async (resolve, reject) => {
-    const body = {
-      poolAddress: poolAddress,
-      userAddress: userAddress,
-      amount: value,
-    };
+export function joinPoolDelta(poolAddress, userAddress, value, secret) {
+  return new Promise((resolve, reject) => {
+    approve(usdcAddress, userAddress, poolAddress, usdc(value))
+      .then(async () => {
+        const body = {
+          poolAddress: poolAddress,
+          userAddress: userAddress,
+          amount: value,
+          secret: secret,
+        };
 
-    const provider = httpProvider;
-    const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
-
-    const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
-      accountId: 'ABCDEF',
-      userAddress: userAddress,
-    });
-    const tx = await usdcContract.populateTransaction.approve(
-      poolAddress,
-      usdc(value),
-      {
-        gasPrice: await gasPrice(),
-      }
-    );
-
-    smartContractTransaction(tx)
-      .then((transaction) => {
-        provider
-          .waitForTransaction(transaction.hash)
-          .then(() => {
-            axios({ method: 'POST', url: '/api/proxy/pools/join', data: body })
-              .then((res) => {
-                resolve(res.data);
-              })
-              .catch((err) => {
-                reject(err);
-              });
+        postAndWaitForTransaction({ url: '/api/proxy/pools/join', body: body })
+          .then((res) => {
+            resolve(res);
           })
-          .catch((error) => {
-            reject(error?.error?.error?.error?.message || error);
+          .catch((err) => {
+            reject(err);
           });
       })
-      .catch((err) => {
-        reject(err);
+      .catch((error) => {
+        reject(error?.error?.error?.error?.message || error);
       });
   });
 }
@@ -113,16 +85,22 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 
     sendSignatureRequest(types, values)
       .then(async (signature) => {
-        const [wunderPool] = initPoolDelta(poolAddress);
-        const tx = await connectContract(wunderPool).addToWhiteListForUser(
+        const body = {
+          poolAddress,
           userAddress,
           newMember,
-          signature.signature,
-          { gasPrice: await gasPrice() }
-        );
-
-        const result = await tx.wait();
-        resolve(result);
+          signature: signature.signature,
+        };
+        postAndWaitForTransaction({
+          url: '/api/proxy/pools/whitelist',
+          body: body,
+        })
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       })
       .catch((err) => {
         reject(err);
