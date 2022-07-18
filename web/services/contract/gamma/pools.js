@@ -6,19 +6,25 @@ import { polyValueToUsd } from '../../formatter';
 
 export function joinPoolGamma(poolAddress, value) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
     });
+    const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.joinPool(usdc(value), {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx, {
-      amount: usdc(value),
-      spender: poolAddress,
-    })
+    smartContractTransaction(
+      tx,
+      {
+        amount: usdc(value),
+        spender: poolAddress,
+      },
+      'polygon',
+      popup
+    )
       .then(async (transaction) => {
         try {
           const receipt = await provider.waitForTransaction(transaction.hash);
@@ -35,19 +41,26 @@ export function joinPoolGamma(poolAddress, value) {
 
 export function fundPoolGamma(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
     });
+    const popup = openPopup('smartContract');
+
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx, {
-      amount: usdc(amount),
-      spender: poolAddress,
-    })
+    smartContractTransaction(
+      tx,
+      {
+        amount: usdc(amount),
+        spender: poolAddress,
+      },
+      'polygon',
+      popup
+    )
       .then(async (transaction) => {
         try {
           const receipt = await provider.waitForTransaction(transaction.hash);

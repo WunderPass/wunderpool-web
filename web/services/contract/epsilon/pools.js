@@ -43,18 +43,20 @@ export function addToWhiteListWithSecretEpsilon(
   validFor
 ) {
   return new Promise(async (resolve, reject) => {
-    const { sendSignatureRequest } = useWunderPass({
+    const { openPopup, sendSignatureRequest } = useWunderPass({
       name: 'WunderPool',
       accountId: 'ABCDEF',
       userAddress,
     });
+    const popup = openPopup('sign');
+
     const hashedSecret = ethers.utils.keccak256(
       ethers.utils.toUtf8Bytes(secret)
     );
     const types = ['address', 'address', 'bytes32', 'uint256'];
     const values = [userAddress, poolAddress, hashedSecret, validFor];
 
-    sendSignatureRequest(types, values)
+    sendSignatureRequest(types, values, true, popup)
       .then(async (signature) => {
         const body = {
           poolAddress,
