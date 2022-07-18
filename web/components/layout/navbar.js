@@ -32,9 +32,15 @@ export default function Navbar(props) {
                   </div>
                 </div>
 
-                <div className="sm:hidden block pl-2 pb-1">
-                  <img className="w-12 border border-black rounded-full" src={user.image} alt="" />
-
+                <div
+                  className="sm:hidden flex w-12 h-12 mb-1 rounded-full overflow-hidden items-center justify-center border border-white"
+                  type="file"
+                  name="profilePicture"
+                >
+                  <img
+                    className="object-cover min-w-full min-h-full"
+                    src={user.image}
+                  />
                 </div>
               </div>
             </Link>
