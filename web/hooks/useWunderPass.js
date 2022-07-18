@@ -1,33 +1,38 @@
 export default function useWunderPass(config) {
   const { name, image, accountId, userAddress } = config;
 
-  const sendSignatureRequest = (types, values, packed = true) => {
+  // method: sign or smartContract
+  const openPopup = (method) => {
+    const isSafari =
+      navigator.userAgent.toLowerCase().match(/safari/) &&
+      navigator.vendor.toLowerCase().match(/apple/);
+
+    const popup = window.open(
+      encodeURI(
+        `${process.env.WUNDERPASS_URL}/${method}?name=${name}&imageUrl=${image}`
+      ),
+      isSafari ? 'newWindow' : 'transactionFrame'
+    );
+    return popup;
+  };
+
+  const sendSignatureRequest = (types, values, packed = true, popup = null) => {
     return new Promise((resolve, reject) => {
       try {
-        const isSafari =
-          navigator.userAgent.toLowerCase().match(/safari/) &&
-          navigator.vendor.toLowerCase().match(/apple/);
-        console.log('isSafari', isSafari);
-
-        const popup = window.open(
-          encodeURI(
-            `${process.env.WUNDERPASS_URL}/sign?name=${name}&imageUrl=${image}`
-          ),
-          isSafari ? 'newWindow' : 'transactionFrame'
-        );
+        const openPopup = popup || openPopup('sign');
 
         if (Array.isArray(types) && Array.isArray(types[0])) {
           if (!Array.isArray(packed)) {
             packed = new Array(types.length).fill(packed);
           }
           if (types.length != values.length) {
-            popup.close();
+            openPopup.close();
             throw `Array lengths do not match: Types(${types.length}), Values(${values.length}), Packed(${packed.length})`;
           }
         }
 
         const requestInterval = setInterval(() => {
-          popup.postMessage(
+          openPopup.postMessage(
             JSON.parse(
               JSON.stringify({
                 accountId: accountId,
@@ -57,22 +62,18 @@ export default function useWunderPass(config) {
     });
   };
 
-  const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
+  const smartContractTransaction = (
+    tx,
+    usdc = {},
+    network = 'polygon',
+    popup = null
+  ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const isSafari =
-          navigator.userAgent.toLowerCase().match(/safari/) &&
-          navigator.vendor.toLowerCase().match(/apple/);
-        console.log('isSafari', isSafari);
-        const popup = window.open(
-          encodeURI(
-            `${process.env.WUNDERPASS_URL}/smartContract?name=${name}&imageUrl=${image}`
-          ),
-          isSafari ? 'newWindow' : 'transactionFrame'
-        );
+        const openPopup = popup || openPopup('smartContract');
 
         const requestInterval = setInterval(() => {
-          popup.postMessage(
+          openPopup.postMessage(
             JSON.parse(
               JSON.stringify({
                 accountId: accountId,
@@ -106,5 +107,5 @@ export default function useWunderPass(config) {
     });
   };
 
-  return { sendSignatureRequest, smartContractTransaction };
+  return { sendSignatureRequest, smartContractTransaction, openPopup };
 }
