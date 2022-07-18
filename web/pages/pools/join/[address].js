@@ -12,9 +12,41 @@ import { currency, polyValueToUsd } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import usePool from '/hooks/usePool';
 import { ethers } from 'ethers';
-import { usdc } from '../../../services/formatter';
-import LoginWithWunderPass from '../../../components/auth/loginWithWunderPass';
+import { usdc } from '/services/formatter';
+import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
+
+function InfoBlock({ label, value }) {
+  return (
+    <div className="flex flex-col items-center justify-center m-3">
+      <Typography className="text-md">{label}</Typography>
+      <Typography className="text-2xl text-kaico-blue">{value}</Typography>
+    </div>
+  );
+}
+
+function PoolStats({
+  minInvest,
+  maxInvest,
+  members,
+  maxMembers,
+  totalBalance,
+}) {
+  return (
+    <div className="flex flex-wrap flex-row items-center justify-center w-full mt-6">
+      {minInvest == maxInvest ? (
+        <InfoBlock label="Required Invest" value={currency(minInvest, {})} />
+      ) : (
+        <>
+          <InfoBlock label="Minimum Invest" value={currency(minInvest, {})} />
+          <InfoBlock label="Maximum Invest" value={currency(maxInvest, {})} />
+        </>
+      )}
+      <InfoBlock label="Total Assets" value={currency(totalBalance, {})} />
+      <InfoBlock label="Members" value={`${members || '-'} / ${maxMembers}`} />
+    </div>
+  );
+}
 
 function NotLoggedIn({ handleLogin }) {
   return (
@@ -79,7 +111,7 @@ function InputJoinAmount(props) {
         <Typography>Invest Amount</Typography>
         <CurrencyInput
           value={amount}
-          placeholder={currency(polyValueToUsd(minInvest, {}), {})}
+          placeholder={currency(minInvest, {})}
           onChange={handleInput}
           error={errorMsg}
         />
@@ -167,6 +199,7 @@ export default function JoinPool(props) {
 
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
+      console.log(wunderPool);
       if (wunderPool.exists) {
         if (wunderPool.isMember) {
           handleInfo('You already joined the Pool');
@@ -202,28 +235,13 @@ export default function JoinPool(props) {
         <Typography className="text-2xl text-kaico-blue">
           {wunderPool.poolName}
         </Typography>
-        <div className="flex flex-col md:flex-row items-center justify-center mt-6">
-          <div className="flex flex-col items-center justify-center m-3">
-            <Typography className="text-md">Minimum Invest</Typography>
-            <Typography className="text-2xl text-kaico-blue">
-              {currency(minInvest, {})}
-            </Typography>
-          </div>
-          <div className="flex flex-col items-center justify-center m-3">
-            <Typography className="text-md">Maximum Invest</Typography>
-            <Typography className="text-2xl text-kaico-blue">
-              {currency(maxInvest, {})}
-            </Typography>
-          </div>
-          <div className="flex flex-col items-center justify-center m-3">
-            <Typography className="text-md">Members</Typography>
-            <Typography className="text-2xl text-kaico-blue">
-              {`${wunderPool.governanceToken?.holders?.length || '-'} / ${
-                wunderPool.maxMembers
-              }`}
-            </Typography>
-          </div>
-        </div>
+        <PoolStats
+          minInvest={minInvest}
+          maxInvest={maxInvest}
+          members={wunderPool.governanceToken?.holders?.length}
+          maxMembers={wunderPool.maxMembers}
+          totalBalance={wunderPool.totalBalance}
+        />
         {wunderPool.closed && (
           <Alert severity="warning" className="w-full">
             This Pool is already closed

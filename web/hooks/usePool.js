@@ -278,19 +278,21 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const initialize = async () => {
-    if (poolAddress && userAddress) {
+    if (poolAddress) {
       await fetchPoolName(poolAddress)
         .then(async (name) => {
           setPoolName(name);
           setExists(true);
           const vers = await determineVersion();
-          console.log(vers);
+
           await determineClosed(vers);
-          await determineIfMember();
           await determineUsdcBalance();
           await determineShareholderAgreement(vers);
-
           await determinePoolTokens(vers);
+
+          if (userAddress) {
+            await determineIfMember();
+          }
         })
         .catch((err) => {
           setExists(false);
