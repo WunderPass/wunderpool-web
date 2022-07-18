@@ -304,7 +304,7 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const initialize2 = async () => {
-    if (poolAddress && userAddress && exists) {
+    if (poolAddress && exists) {
       const vers = await determineVersion();
       await determinePoolGovernanceToken(vers);
       if (userIsMember === true) {

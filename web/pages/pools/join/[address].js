@@ -199,7 +199,6 @@ export default function JoinPool(props) {
 
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
-      console.log(wunderPool);
       if (wunderPool.exists) {
         if (wunderPool.isMember) {
           handleInfo('You already joined the Pool');
