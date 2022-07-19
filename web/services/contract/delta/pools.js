@@ -76,7 +76,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
       return;
     }
     const { sendSignatureRequest } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
       userAddress,
     });

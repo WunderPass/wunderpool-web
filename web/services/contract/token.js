@@ -80,7 +80,7 @@ export function approve(token, user, spender, amount) {
     const tokenContract = new ethers.Contract(token, tokenAbi, provider);
 
     const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
       userAddress: user,
     });

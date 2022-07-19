@@ -5,7 +5,7 @@ import { gasPrice } from '/services/contract/init';
 export function voteGamma(poolAddress, proposalId, mode) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPoolGamma(poolAddress);

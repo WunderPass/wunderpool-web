@@ -26,7 +26,7 @@ function NotLoggedIn({ handleLogin }) {
       <LoginWithWunderPass
         disablePopup
         className="text-xs"
-        name="WunderPool"
+        name="Casama"
         redirect={'pools'}
         intent={['wunderId', 'address']}
         onSuccess={handleLogin}

@@ -72,7 +72,7 @@ export function createSingleActionProposalGamma(
 ) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPoolGamma(poolAddress);
@@ -114,7 +114,7 @@ export function createMultiActionProposalGamma(
 ) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPoolGamma(poolAddress);
@@ -414,7 +414,7 @@ export function proposalExecutableGamma(poolAddress, id) {
 export function executeProposalGamma(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPoolGamma(poolAddress);

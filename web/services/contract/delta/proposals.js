@@ -72,7 +72,7 @@ export function createMultiActionProposalDelta(
 ) {
   return new Promise(async (resolve, reject) => {
     const { sendSignatureRequest } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
       userAddress,
     });
