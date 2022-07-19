@@ -36,7 +36,7 @@ export default function NewPoolInviteStep(props) {
 
       <div>
         <label className="label pr-52" htmlFor="poolName">
-          Invite your friends via Wunderpass
+          Invite your friends via WunderPass
         </label>
         <Autocomplete
           className="w-full text-gray-700 my-4 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
@@ -87,7 +87,7 @@ export default function NewPoolInviteStep(props) {
       <div className="flex justify-between items-center pt-4">
         <div className="flex flex-row justify-between items-center">
           <Typography className="mr-3">
-            You can invite friends without a Wunderpass after creating the Pool!
+            You can invite friends without a WunderPass after creating the Pool!
           </Typography>
         </div>
       </div>
