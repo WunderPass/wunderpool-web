@@ -80,7 +80,7 @@ export default function Home(props) {
                       <LoginWithWunderPass
                         disablePopup
                         className="text-xs"
-                        name="WunderPool"
+                        name="Casama"
                         redirect={'pools'}
                         intent={['wunderId', 'address']}
                         onSuccess={handleSuccess}
@@ -90,7 +90,7 @@ export default function Home(props) {
                   </div>
                   <p className="text-gray-400 text-xs my-2 mb-1 lg:mb-1">or</p>
                   <CreateYourWunderPass
-                    name="WunderPool"
+                    name="Casama"
                     redirect={'pools'}
                     intent={['wunderId', 'address']}
                     onSuccess={handleSuccess}

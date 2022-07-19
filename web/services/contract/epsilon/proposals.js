@@ -73,7 +73,7 @@ export function createMultiActionProposalEpsilon(
 ) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
       userAddress,
     });

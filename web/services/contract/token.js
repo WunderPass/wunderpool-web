@@ -78,7 +78,7 @@ export function approve(user, spender, amount) {
     const provider = httpProvider;
 
     const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
       userAddress: user,
     });

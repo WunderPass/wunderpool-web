@@ -9,7 +9,7 @@ import { gasPrice } from '/services/contract/init';
 export function voteDelta(poolAddress, proposalId, mode, userAddress) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
       userAddress,
     });

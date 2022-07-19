@@ -7,7 +7,7 @@ import { polyValueToUsd } from '../../formatter';
 export function joinPoolGamma(poolAddress, value) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const popup = openPopup('smartContract');
@@ -42,7 +42,7 @@ export function joinPoolGamma(poolAddress, value) {
 export function fundPoolGamma(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const popup = openPopup('smartContract');
