@@ -111,7 +111,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 export function fundPoolDelta(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
     const { smartContractTransaction } = useWunderPass({
-      name: 'WunderPool',
+      name: 'Casama',
       accountId: 'ABCDEF',
     });
     const [wunderPool, provider] = initPoolDelta(poolAddress);
