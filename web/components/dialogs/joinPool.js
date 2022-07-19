@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { ethers } from 'ethers';
 import { useState } from 'react';
-import { toEthString, usdc } from '/services/formatter';
+import { currency, usdc, polyValueToUsd } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import { currency, polyValueToUsd } from '/services/formatter';
 import { BiCheck } from 'react-icons/bi';
@@ -55,7 +55,7 @@ export default function JoinPoolDialog(props) {
       .join(amount)
       .then((res) => {
         user.fetchUsdBalance();
-        handleSuccess(`Joined Pool with ${amount} USD`);
+        handleSuccess(`Joined Pool with $${currency(amount, {})}`);
         window.location.reload();
       })
       .catch((err) => {
@@ -77,12 +77,13 @@ export default function JoinPoolDialog(props) {
     setAmount(value);
     if (float && minInvest.gt(float * 1000000)) {
       setErrorMsg(
-        `Minimum of ${minInvest
-          .div(1000000)
-          .toString()} $ required for the Pool`
+        `Minimum of $${currency(
+          polyValueToUsd(minInvest),
+          {}
+        )} required for the Pool`
       );
     } else if (float && 0 > float) {
-      setErrorMsg(`Minimum of 3 $ required`);
+      setErrorMsg(`Minimum of $3.00 required`);
     } else if (user.usdBalance < float) {
       setErrorMsg(`Not enough balance`);
     } else {
