@@ -129,9 +129,7 @@ export default function InviteLinkButton(props) {
       >
         <span className="cursor-pointer">
           <div className="flex flex-row items-center justify-center">
-            <Typography className="text-lg mr-5 ml-2">
-              Generate Invite Link
-            </Typography>
+            <Typography className="text-lg ">Generate Invite Link</Typography>
           </div>
         </span>
       </button>

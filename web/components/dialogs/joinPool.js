@@ -12,7 +12,6 @@ import { ethers } from 'ethers';
 import { useState } from 'react';
 import { currency, usdc, polyValueToUsd } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
-import { currency, polyValueToUsd } from '/services/formatter';
 import { BiCheck } from 'react-icons/bi';
 
 export default function JoinPoolDialog(props) {
