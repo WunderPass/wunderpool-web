@@ -7,7 +7,7 @@ services:
     volumes:
       - './web:/web'
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - 3000:3000
     stdin_open: true
     env_file:
       - ./.env
@@ -15,7 +15,7 @@ services:
     image: nginx
     restart: always
     volumes:
-      - ./nginx/${NGINX_CONFIG_DIR}:/etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/html:/var/www/html
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot

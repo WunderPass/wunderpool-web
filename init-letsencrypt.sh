@@ -5,8 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(dev.casama.io)
-# domains=(app.casama.io)
+domains=(app.casama.io)
 rsa_key_size=4096
 data_path="./certbot"
 email="m.loechner@wunderpass.io" # Adding a valid address is strongly recommended
