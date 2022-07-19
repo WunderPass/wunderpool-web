@@ -15,7 +15,7 @@ services:
     image: nginx
     restart: always
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/${NGINX_CONFIG_DIR}:/etc/nginx/conf.d
       - ./nginx/html:/var/www/html
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
