@@ -51,7 +51,7 @@ export function usdc(num) {
 }
 
 export function round(num, precision = 0) {
-  return Math.round(Number(num) * 10 ** precision) / 10 ** precision;
+  return Math.floor(Number(num) * 10 ** precision) / 10 ** precision;
 }
 
 const localeOptions = {
