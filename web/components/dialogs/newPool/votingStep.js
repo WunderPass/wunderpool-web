@@ -24,7 +24,10 @@ function CustomInput({ show, value, placeholder, onChange }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (show) inputRef.current.focus();
+    if (show) {
+      inputRef.current.value = '';
+      inputRef.current.focus();
+    }
   }, [show]);
 
   return (

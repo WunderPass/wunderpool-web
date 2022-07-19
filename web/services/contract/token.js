@@ -3,14 +3,13 @@ import useWunderPass from '/hooks/useWunderPass';
 import {
   fetchPoolGovernanceTokenDelta,
   fetchPoolNftsDelta,
-  fetchPoolTokensDelta,
 } from './delta/token';
 import {
   fetchPoolGovernanceTokenGamma,
   fetchPoolNftsGamma,
   fetchPoolTokensGamma,
 } from './gamma/token';
-import { gasPrice, tokenAbi, usdcAddress } from './init';
+import { tokenAbi, usdcAddress } from './init';
 import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
 import { fetchPoolGovernanceTokenEpsilon } from './epsilon/token';
@@ -74,18 +73,18 @@ export async function usdcBalanceOf(address) {
   return await tokenBalanceOf(address, usdcAddress, 6);
 }
 
-export function approve(token, user, spender, amount) {
+export function approve(user, spender, amount) {
   return new Promise(async (resolve, reject) => {
     const provider = httpProvider;
-    const tokenContract = new ethers.Contract(token, tokenAbi, provider);
 
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
       userAddress: user,
     });
+    const popup = openPopup('smartContract');
 
-    smartContractTransaction(null, { amount, spender })
+    smartContractTransaction(null, { amount, spender }, 'polygon', popup)
       .then((transaction) => {
         if (transaction.hash) {
           provider

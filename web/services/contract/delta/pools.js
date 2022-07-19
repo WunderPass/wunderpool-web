@@ -1,6 +1,6 @@
 import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
-import { usdcAddress, gasPrice } from '/services/contract/init';
+import { gasPrice } from '/services/contract/init';
 import { initLauncherDelta, initPoolDelta } from './init';
 import { approve } from '../token';
 import { postAndWaitForTransaction } from '../../backendApi';
@@ -46,7 +46,7 @@ export function fetchPoolIsClosedDelta(poolAddress) {
 
 export function joinPoolDelta(poolAddress, userAddress, value, secret) {
   return new Promise((resolve, reject) => {
-    approve(usdcAddress, userAddress, poolAddress, usdc(value))
+    approve(userAddress, poolAddress, usdc(value))
       .then(async () => {
         const body = {
           poolAddress: poolAddress,
@@ -75,15 +75,16 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
       reject('You cant invite yourself');
       return;
     }
-    const { sendSignatureRequest } = useWunderPass({
+    const { openPopup, sendSignatureRequest } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
       userAddress,
     });
+    const popup = openPopup('sign');
     const types = ['address', 'address', 'address'];
     const values = [userAddress, poolAddress, newMember];
 
-    sendSignatureRequest(types, values)
+    sendSignatureRequest(types, values, true, popup)
       .then(async (signature) => {
         const body = {
           poolAddress,
@@ -110,19 +111,26 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 
 export function fundPoolDelta(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
+      userAddress: user,
     });
+    const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolDelta(poolAddress);
     const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx, {
-      amount: usdc(amount),
-      spender: poolAddress,
-    })
+    smartContractTransaction(
+      tx,
+      {
+        amount: usdc(amount),
+        spender: poolAddress,
+      },
+      'polygon',
+      popup
+    )
       .then(async (transaction) => {
         try {
           const receipt = await provider.waitForTransaction(transaction.hash);

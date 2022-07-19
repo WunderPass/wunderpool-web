@@ -71,10 +71,11 @@ export function createSingleActionProposalGamma(
   deadline
 ) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
     });
+    const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.createProposal(
       title,
@@ -87,7 +88,7 @@ export function createSingleActionProposalGamma(
       { gasPrice: await gasPrice() }
     );
 
-    smartContractTransaction(tx)
+    smartContractTransaction(tx, null, 'polygon', popup)
       .then(async (transaction) => {
         try {
           const receipt = await provider.waitForTransaction(transaction.hash);
@@ -113,10 +114,11 @@ export function createMultiActionProposalGamma(
   deadline
 ) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
     });
+    const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.createMultiActionProposal(
       title,
@@ -129,7 +131,7 @@ export function createMultiActionProposalGamma(
       { gasPrice: await gasPrice() }
     );
 
-    smartContractTransaction(tx)
+    smartContractTransaction(tx, null, 'polygon', popup)
       .then(async (transaction) => {
         try {
           const receipt = await provider.waitForTransaction(transaction.hash);
@@ -413,16 +415,17 @@ export function proposalExecutableGamma(poolAddress, id) {
 
 export function executeProposalGamma(poolAddress, id) {
   return new Promise(async (resolve, reject) => {
-    const { smartContractTransaction } = useWunderPass({
+    const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
     });
+    const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.executeProposal(id, {
       gasPrice: await gasPrice(),
     });
 
-    smartContractTransaction(tx)
+    smartContractTransaction(tx, null, 'polygon', popup)
       .then(async (transaction) => {
         try {
           console.log(transaction.hash);

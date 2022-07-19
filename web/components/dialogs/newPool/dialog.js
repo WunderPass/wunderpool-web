@@ -204,10 +204,20 @@ export default function NewPoolDialog(props) {
         ) {
           setDisabled(true);
         }
+      case 2:
+        if (!votingThreshold || !votingTime || !minYesVoters) setDisabled(true);
       default:
         break;
     }
-  }, [step, value, minInvest, maxInvest]);
+  }, [
+    step,
+    value,
+    minInvest,
+    maxInvest,
+    votingThreshold,
+    votingTime,
+    minYesVoters,
+  ]);
 
   return (
     <Dialog

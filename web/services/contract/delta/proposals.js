@@ -71,11 +71,12 @@ export function createMultiActionProposalDelta(
   userAddress
 ) {
   return new Promise(async (resolve, reject) => {
-    const { sendSignatureRequest } = useWunderPass({
+    const { openPopup, sendSignatureRequest } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
       userAddress,
     });
+    const popup = openPopup('sign');
     const [wunderPool] = initPoolDelta(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
     const types = [
@@ -102,9 +103,8 @@ export function createMultiActionProposalDelta(
       deadline,
       proposalId,
     ];
-    sendSignatureRequest(types, values, false)
+    sendSignatureRequest(types, values, false, popup)
       .then(async (signature) => {
-        console.log(signature);
         const tx = await connectContract(wunderPool).createProposalForUser(
           userAddress,
           title,

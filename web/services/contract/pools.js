@@ -59,12 +59,7 @@ export function createPool(
       minYesVoters,
     };
 
-    approve(
-      usdcAddress,
-      creator,
-      '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E',
-      usdc(amount)
-    )
+    approve(creator, '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E', usdc(amount))
       .then(() => {
         axios({
           method: 'POST',

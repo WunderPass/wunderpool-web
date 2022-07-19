@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usdcBalanceOf } from '/services/contract/token';
 import {
   fetchUserPools,
@@ -17,7 +17,10 @@ export default function useUser() {
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
-  const [image, setImage] = useState()
+  const image = useMemo(
+    () => `/api/proxy/users/getImage?wunderId=${wunderId}`,
+    [wunderId]
+  );
 
   const loggedIn = wunderId || address;
 
@@ -59,10 +62,6 @@ export default function useUser() {
     });
   };
 
-  const defineImage = () => {
-    setImage(`/api/proxy/users/getImage?wunderId=d-bitschnau`)
-  };
-
   const fetchUsdBalance = async () => {
     return new Promise((res, rej) => {
       usdcBalanceOf(address).then((balance) => {
@@ -102,10 +101,6 @@ export default function useUser() {
       setIsReady(true);
     }
   }, [address]);
-
-  useEffect(async () => {
-    defineImage()
-  }, [wunderId]);
 
   useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
