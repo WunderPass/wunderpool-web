@@ -55,7 +55,6 @@ export default function TokenCard(props) {
                     : tokenPrice > 0.001
                     ? parseFloat(tokenPrice).toFixed(6)
                     : tokenPrice}{' '}
-                  {token.symbol}
                 </Typography>
                 <Typography className="w-full sm:w-auto">
                   {token.formattedBalance > 1
