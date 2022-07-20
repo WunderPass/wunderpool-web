@@ -73,7 +73,7 @@ export default function makeProposal(props) {
       setTokenTouched(true);
       setWaitingForPrice(true);
       axios({
-        url: `/api/tokens/price`,
+        url: `/api/tokens/show`,
         params: { address: tokenAddress },
       }).then((res) => {
         setTokenPrice(res.data?.dollar_price);

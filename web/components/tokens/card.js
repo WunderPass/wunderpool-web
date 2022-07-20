@@ -19,7 +19,7 @@ export default function TokenCard(props) {
     if (token.address && token.address.length == 42) {
       setWaitingForPrice(true);
       axios({
-        url: `/api/tokens/price`,
+        url: `/api/tokens/show`,
         params: { address: token.address },
       }).then((res) => {
         setTokenPrice(res.data?.dollar_price);

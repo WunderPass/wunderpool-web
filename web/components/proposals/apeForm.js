@@ -66,7 +66,7 @@ export default function ApeForm(props) {
     if (tokenAddress && tokenAddress.length == 42) {
       setWaitingForPrice(true);
       axios({
-        url: `/api/tokens/price`,
+        url: `/api/tokens/show`,
         params: { address: tokenAddress },
       }).then((res) => {
         setTokenPrice(res.data?.dollar_price);
