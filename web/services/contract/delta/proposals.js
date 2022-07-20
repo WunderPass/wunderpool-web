@@ -68,7 +68,8 @@ export function createMultiActionProposalDelta(
   params,
   transactionValues,
   deadline,
-  userAddress
+  userAddress,
+  popupWindow = null
 ) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, sendSignatureRequest } = useWunderPass({
@@ -76,7 +77,7 @@ export function createMultiActionProposalDelta(
       accountId: 'ABCDEF',
       userAddress,
     });
-    const popup = openPopup('sign');
+    const popup = popupWindow || openPopup('sign');
     const [wunderPool] = initPoolDelta(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
     const types = [
@@ -232,6 +233,12 @@ export async function createSwapSuggestionDelta(
   amount,
   userAddress
 ) {
+  const { openPopup } = useWunderPass({
+    name: 'Casama',
+    accountId: 'ABCDEF',
+    userAddress,
+  });
+  const popup = openPopup('sign');
   const [wunderPool] = initPoolDelta(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
@@ -251,7 +258,8 @@ export async function createSwapSuggestionDelta(
       ],
       [0, 0],
       1846183041,
-      userAddress
+      userAddress,
+      popup
     );
   } else {
     return createMultiActionProposalDelta(
@@ -274,7 +282,8 @@ export async function createSwapSuggestionDelta(
       ],
       [0, 0, 0],
       1846183041,
-      userAddress
+      userAddress,
+      popup
     );
   }
 }

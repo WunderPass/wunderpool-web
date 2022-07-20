@@ -19,20 +19,20 @@ export default function useWunderPass(config) {
   const sendSignatureRequest = (types, values, packed = true, popup = null) => {
     return new Promise((resolve, reject) => {
       try {
-        const openPopup = popup || openPopup('sign');
+        const popupWindow = popup || openPopup('sign');
 
         if (Array.isArray(types) && Array.isArray(types[0])) {
           if (!Array.isArray(packed)) {
             packed = new Array(types.length).fill(packed);
           }
           if (types.length != values.length) {
-            openPopup.close();
+            popupWindow.close();
             throw `Array lengths do not match: Types(${types.length}), Values(${values.length}), Packed(${packed.length})`;
           }
         }
 
         const requestInterval = setInterval(() => {
-          openPopup.postMessage(
+          popupWindow?.postMessage(
             JSON.parse(
               JSON.stringify({
                 accountId: accountId,
@@ -70,10 +70,10 @@ export default function useWunderPass(config) {
   ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const openPopup = popup || openPopup('smartContract');
+        const popupWindow = popup || openPopup('smartContract');
 
         const requestInterval = setInterval(() => {
-          openPopup.postMessage(
+          popupWindow?.postMessage(
             JSON.parse(
               JSON.stringify({
                 accountId: accountId,

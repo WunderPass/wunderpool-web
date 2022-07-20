@@ -69,7 +69,8 @@ export function createMultiActionProposalEpsilon(
   actions,
   params,
   transactionValues,
-  userAddress
+  userAddress,
+  popupWindow = null
 ) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, sendSignatureRequest } = useWunderPass({
@@ -77,7 +78,7 @@ export function createMultiActionProposalEpsilon(
       accountId: 'ABCDEF',
       userAddress,
     });
-    const popup = openPopup('sign');
+    const popup = popupWindow || openPopup('sign');
     const [wunderPool] = initPoolEpsilon(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
     const types = [
@@ -227,6 +228,12 @@ export async function createSwapSuggestionEpsilon(
   amount,
   userAddress
 ) {
+  const { openPopup } = useWunderPass({
+    name: 'Casama',
+    accountId: 'ABCDEF',
+    userAddress,
+  });
+  const popup = openPopup('sign');
   const [wunderPool] = initPoolEpsilon(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
@@ -245,7 +252,8 @@ export async function createSwapSuggestionEpsilon(
         ),
       ],
       [0, 0],
-      userAddress
+      userAddress,
+      popup
     );
   } else {
     return createMultiActionProposalEpsilon(
@@ -267,7 +275,8 @@ export async function createSwapSuggestionEpsilon(
         encodeParams(['address', 'bool', 'uint256'], [tokenOut, false, 0]),
       ],
       [0, 0, 0],
-      userAddress
+      userAddress,
+      popup
     );
   }
 }
