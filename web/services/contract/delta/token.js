@@ -1,47 +1,7 @@
-import axios from 'axios';
 import { ethers } from 'ethers';
-import { currency, toEthString } from '/services/formatter';
 import { fetchPoolMembers } from '/services/contract/pools';
 import { initPoolDelta } from '/services/contract/delta/init';
 import { nftAbi, tokenAbi } from '/services/contract/init';
-
-export function fetchPoolTokensDelta(address) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool, provider] = initPoolDelta(address);
-    const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
-
-    const tokens = await Promise.all(
-      tokenAddresses.map(async (addr) => {
-        const token = new ethers.Contract(addr, tokenAbi, provider);
-        const balance = await token.balanceOf(address);
-        const decimals = await token.decimals();
-        const formattedBalance = toEthString(balance, decimals);
-        const { name, symbol, price, image_url } = (
-          await axios({ url: `/api/tokens/data`, params: { address: addr } })
-        ).data;
-
-        const usdValue = balance
-          .mul(price)
-          .div(10000)
-          .div(ethers.BigNumber.from(10).pow(decimals))
-          .toNumber();
-
-        return {
-          address: addr,
-          name: name,
-          symbol: symbol,
-          balance: balance.toString(),
-          decimals: decimals,
-          formattedBalance: formattedBalance,
-          image: image_url,
-          price: price,
-          usdValue: usdValue / 100,
-        };
-      })
-    );
-    resolve(tokens);
-  });
-}
 
 export function fetchPoolNftsDelta(address) {
   return new Promise(async (resolve, reject) => {

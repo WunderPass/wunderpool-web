@@ -1,32 +1,22 @@
-import {
-  Button,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Typography } from '@mui/material';
 import { currency } from '/services/formatter';
+import Trend from 'react-trend';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
 
 export default function TokenCard(props) {
   const { token, handleSell, handleSwap } = props;
-  const [waitingForPrice, setWaitingForPrice] = useState(false);
-  const [tokenPrice, setTokenPrice] = useState(false);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    if (token.address && token.address.length == 42) {
-      setWaitingForPrice(true);
-      axios({
-        url: `/api/tokens/show`,
-        params: { address: token.address },
-      }).then((res) => {
-        setTokenPrice(res.data?.dollar_price);
-        setWaitingForPrice(false);
-      });
-    }
-  }, [token.address]);
+    axios({
+      url: '/api/tokens/history',
+      params: { address: token.address, time: 'week' },
+    }).then((res) => {
+      setData(res.data.map((d) => d.price));
+    });
+  }, []);
 
   return (
     <div className="container-gray">
@@ -43,18 +33,32 @@ export default function TokenCard(props) {
             <div className="flex flex-col w-full justify-between">
               <div className="flex flex-row justify-between items-center mb-1">
                 <Typography className="text-2xl">{token.name}</Typography>
-                <Typography className="text-2xl" width="fit-content">
+                {data && (
+                  <Trend
+                    data={data}
+                    gradient={
+                      data[0] < data[data.length - 1]
+                        ? ['#462cf1', '#01BFFF']
+                        : ['#F00', '#F0A']
+                    }
+                    width={100}
+                    height={30}
+                    autoDraw
+                    autoDrawDuration={2000}
+                    strokeWidth={2}
+                    autoDrawEasing="ease-in"
+                  />
+                )}
+                <Typography
+                  className="text-2xl flex-grow text-right"
+                  width="fit-content"
+                >
                   {currency(token.usdValue, {})}
                 </Typography>
               </div>
               <div className="flex flex-col sm:flex-row  justify-between items-center ">
                 <Typography className="w-full sm:w-auto">
-                  1 {token.symbol} = $
-                  {tokenPrice >= 0.01
-                    ? parseFloat(tokenPrice).toFixed(2)
-                    : tokenPrice > 0.001
-                    ? parseFloat(tokenPrice).toFixed(6)
-                    : tokenPrice}{' '}
+                  1 {token.symbol} = {currency(token.dollarPrice, {})}
                 </Typography>
                 <Typography className="w-full sm:w-auto">
                   {token.formattedBalance > 1

@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { createFilterOptions } from '@mui/material/Autocomplete';
@@ -6,12 +5,17 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Stack } from '@mui/material';
-import { currency } from '../../services/formatter';
+import { currency } from '/services/formatter';
 
 let timer;
 export default function TokenInput(props) {
-  const { setTokenAddress, setTokenName, setTokenSymbol, setTokenImage } =
-    props;
+  const {
+    setTokenAddress,
+    setTokenName,
+    setTokenSymbol,
+    setTokenImage,
+    setTokenPrice,
+  } = props;
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,11 +51,13 @@ export default function TokenInput(props) {
       setTokenName(null);
       setTokenSymbol(null);
       setTokenImage(null);
+      if (setTokenPrice) setTokenPrice(null);
     } else {
       setTokenAddress(value.address);
       setTokenName(value.name);
       setTokenSymbol(value.symbol);
       setTokenImage(value.image_url);
+      if (setTokenPrice) setTokenPrice(value.dollar_price);
     }
   };
 

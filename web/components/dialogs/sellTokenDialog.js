@@ -8,18 +8,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import { ethers } from 'ethers';
 
 export default function SellTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
     props;
-  const { address, decimals, formattedBalance, name, symbol } = token;
+  const { address, decimals, formattedBalance, name, symbol, dollarPrice } =
+    token;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
-  const [waitingForPrice, setWaitingForPrice] = useState(false);
-  const [tokenPrice, setTokenPrice] = useState(false);
 
   const handleClose = () => {
     setAmount('');
@@ -53,19 +51,6 @@ export default function SellTokenDialog(props) {
     setAmount(e.target.value);
   };
 
-  useEffect(() => {
-    if (address && address.length == 42) {
-      setWaitingForPrice(true);
-      axios({
-        url: `/api/tokens/show`,
-        params: { address: address },
-      }).then((res) => {
-        setTokenPrice(res.data?.dollar_price);
-        setWaitingForPrice(false);
-      });
-    }
-  }, [address]);
-
   return (
     <Dialog
       open={open}
@@ -77,7 +62,7 @@ export default function SellTokenDialog(props) {
     >
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
-        <Typography>Price per token: {tokenPrice} $</Typography>
+        <Typography>Price per token: {dollarPrice} $</Typography>
         <Typography>Tokens owned: {formattedBalance} </Typography>
         <TextField
           className="mt-4"

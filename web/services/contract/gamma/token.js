@@ -16,8 +16,8 @@ export function fetchPoolTokensGamma(address) {
         const balance = await token.balanceOf(address);
         const decimals = await token.decimals();
         const formattedBalance = toEthString(balance, decimals);
-        const { name, symbol, price, image_url } = (
-          await axios({ url: `/api/tokens/data`, params: { address: addr } })
+        const { name, symbol, price, image_url, dollar_price } = (
+          await axios({ url: `/api/tokens/show`, params: { address: addr } })
         ).data;
 
         const usdValue = balance
@@ -35,6 +35,7 @@ export function fetchPoolTokensGamma(address) {
           formattedBalance: formattedBalance,
           image: image_url,
           price: price,
+          dollarPrice: dollar_price,
           usdValue: usdValue / 100,
         };
       })
