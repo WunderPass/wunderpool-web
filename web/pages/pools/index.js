@@ -155,8 +155,8 @@ export default function Pools(props) {
             content="initial-scale=1.0, width=device-width"
           />
         </Head>
-        {loadingCircle && <LoadingCircle />}
 
+        {loadingCircle && <LoadingCircle />}
         <Container className={loadingCircle && 'blur'}>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">

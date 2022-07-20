@@ -59,12 +59,20 @@ export default function DestroyPoolDialog(props) {
           This will transfer all Funds from the Pool equally to all of its
           Members.
         </DialogContentText>
-        <Alert severity="warning">
+        <Alert className="mb-1" severity="warning">
           This will create a Proposal to Liquidate the Pool
         </Alert>
+        {wunderPool.tokens.length > 1 && (
+          <Alert severity="error">
+            Currently all tokens will be split amongst the members! If you only
+            want to get USD please sell all tokens before liquidating the pool!
+          </Alert>
+        )}
+
         <Typography variant="h6" mt={1}>
           You will receive:
         </Typography>
+
         {userShare ? (
           <>
             {wunderPool.tokens
@@ -80,6 +88,12 @@ export default function DestroyPoolDialog(props) {
                     .toNumber() / 100,
                   {}
                 );
+                var tokenAmount = (tkn.formattedBalance * userShare) / 100;
+                tokenAmount =
+                  tokenAmount > 1
+                    ? parseFloat(tokenAmount).toFixed(3)
+                    : parseFloat(tokenAmount).toFixed(8);
+
                 return (
                   <Stack
                     key={`tkn-prev-${i}`}
@@ -91,8 +105,16 @@ export default function DestroyPoolDialog(props) {
                     borderTop="1px solid lightgray"
                   >
                     <img width="40" src={tkn.image || '/favicon.ico'} alt="" />
+
                     <Typography sx={{ flexGrow: 1 }}>{tkn.name}</Typography>
-                    <Typography color="green">+ {tokenValue}</Typography>
+                    <div className="flex justify-end items-center">
+                      <Typography sx={{ flexGrow: 1 }}>
+                        {tokenAmount}
+                      </Typography>
+                      <Typography className="ml-2" color="green">
+                        ({tokenValue})
+                      </Typography>
+                    </div>
                   </Stack>
                 );
               })}
