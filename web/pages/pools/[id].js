@@ -112,7 +112,7 @@ export default function Pool(props) {
           <div
             className="hidden md:flex md:flex-row" //Desktop
           >
-            <div className="md:flex md:flex-col max-w-4xl">
+            <div className="md:flex md:flex-col max-w-4xl w-screen">
               <PoolHeader
                 name={name}
                 address={address}
@@ -128,7 +128,7 @@ export default function Pool(props) {
                 {...props}
               />
             </div>{' '}
-            <div className="flex-col max-w-2xl">
+            <div className="flex-col max-w-sm w-screen">
               {!wunderPool.isMember && <></>}
               <PoolDetails
                 address={address}
@@ -136,6 +136,7 @@ export default function Pool(props) {
                 {...props}
               />
               <PoolMembers
+                user={user}
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}

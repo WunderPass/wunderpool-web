@@ -26,7 +26,7 @@ export default function PoolHeader(props) {
 
   return (
     <>
-      <div className="flex flex-col container-white-p-0 w-full sm:mt-6">
+      <div className="flex flex-col container-white-p-0 max-w-full sm:mt-6 ">
         <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
           <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
             <FaLongArrowAltDown className="text-2xl" />
@@ -140,7 +140,7 @@ export default function PoolHeader(props) {
                 <Typography className="text-lg font-semi py-1">
                   Pool Description
                 </Typography>
-                <Typography className="text-sm opacity-40 py-1">-</Typography>
+                <Typography className="text-sm opacity-40 py-1 ">-</Typography>
               </div>
               <div>
                 <Typography className="text-lg py-1 pt-6">

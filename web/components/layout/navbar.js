@@ -7,6 +7,7 @@ import MobileNavigation from './mobileNavigation';
 import Navigation from './navigation';
 import Link from 'next/link';
 import InitialsAvatar from '/components/utils/initialsAvatar';
+import ImageAvatar from '/components/utils/imageAvatar';
 
 export default function Navbar(props) {
   const { user } = props;
@@ -31,16 +32,8 @@ export default function Navbar(props) {
                     />
                   </div>
                 </div>
-
-                <div
-                  className="sm:hidden flex w-12 h-12 mb-1 rounded-full overflow-hidden items-center justify-center border border-white"
-                  type="file"
-                  name="profilePicture"
-                >
-                  <img
-                    className="object-cover min-w-full min-h-full"
-                    src={user.image}
-                  />
+                <div className="sm:hidden">
+                  <ImageAvatar image={user.image} />
                 </div>
               </div>
             </Link>

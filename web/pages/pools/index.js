@@ -18,6 +18,7 @@ import {
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
 import LoadingCircle from '/components/utils/loadingCircle';
+import ImageAvatar from '/components/utils/imageAvatar';
 
 function PoolCard(props) {
   const { pool } = props;
@@ -161,9 +162,15 @@ export default function Pools(props) {
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <div>
-                <Typography className=" text-2xl my-5 sm:text-4xl">
-                  Hello {user?.wunderId},
-                </Typography>
+                <div className="flex flex-row items-center">
+                  <Typography className=" text-2xl my-5 sm:text-4xl">
+                    Hello {user?.wunderId},
+                  </Typography>
+                  <div className="hidden sm:block ml-2">
+                    <ImageAvatar image={user?.image} />
+                  </div>
+                </div>
+
                 <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 ">
                   <CopyToClipboard
                     text={user?.address}

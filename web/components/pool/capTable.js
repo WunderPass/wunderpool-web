@@ -5,10 +5,11 @@ import {
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
 import InitialsAvatar from '../utils/initialsAvatar';
+import Avatar from '../utils/Avatar';
 import { currency, polyValueToUsd } from '/services/formatter';
 
 export default function CapTable(props) {
-  const { members, wunderPool } = props;
+  const { user, members, wunderPool } = props;
   const [showMore, setShowMore] = useState(false);
 
   const visibleMembers = useMemo(() => {
@@ -42,6 +43,15 @@ export default function CapTable(props) {
                 <td className="pb-2">
                   <div className="flex flex-row items-center md:ml-2">
                     <InitialsAvatar
+                      tooltip={`${
+                        member.wunderId || 'External User'
+                      }: ${member.share.toString()}%`}
+                      text={member.wunderId ? member.wunderId : '0-X'}
+                      separator="-"
+                      color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
+                    />
+                    <Avatar
+                      wunderId={member.wunderId ? member.wunderId : null}
                       tooltip={`${
                         member.wunderId || 'External User'
                       }: ${member.share.toString()}%`}

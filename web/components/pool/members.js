@@ -10,7 +10,7 @@ import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
 
 export default function PoolMembers(props) {
-  const { wunderPool, loginCallback } = props;
+  const { user, wunderPool, loginCallback } = props;
   const { isReady, isMember, closed, governanceToken, version } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
@@ -36,7 +36,7 @@ export default function PoolMembers(props) {
   }, [governanceToken]);
 
   return isReady ? (
-    <div className="md:ml-4">
+    <div className="md:ml-4 w-full">
       <div
         className={`flex container-white overflow-clip justify-start md:justify-center ${
           isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
