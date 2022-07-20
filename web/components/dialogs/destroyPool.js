@@ -45,10 +45,6 @@ export default function DestroyPoolDialog(props) {
     setUserShare(wunderPool.userShare());
   }, [wunderPool.governanceToken]);
 
-  useEffect(() => {
-    console.log('tkns', wunderPool.tokens.length);
-  }, [wunderPool.tokens]);
-
   return (
     <Dialog
       open={open}

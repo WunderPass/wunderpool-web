@@ -36,7 +36,7 @@ export default function PoolMembers(props) {
   }, [governanceToken]);
 
   return isReady ? (
-    <div className="md:ml-4">
+    <div className="md:ml-4 w-full">
       <div
         className={`flex container-white overflow-clip justify-start md:justify-center ${
           isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
