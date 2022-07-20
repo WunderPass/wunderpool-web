@@ -2,7 +2,6 @@ import ImageAvatar from '/components/utils/imageAvatar';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import { useState, useEffect } from 'react';
 import ape from '/public/poolPictures/ape.png';
-import Resemble from 'resemblejs';
 import FileBase64 from 'react-file-base64';
 import axios from 'axios';
 
