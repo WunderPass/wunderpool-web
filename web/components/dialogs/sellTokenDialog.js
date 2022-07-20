@@ -57,7 +57,7 @@ export default function SellTokenDialog(props) {
     if (address && address.length == 42) {
       setWaitingForPrice(true);
       axios({
-        url: `/api/tokens/price`,
+        url: `/api/tokens/show`,
         params: { address: address },
       }).then((res) => {
         setTokenPrice(res.data?.dollar_price);
