@@ -111,14 +111,15 @@ export function createMultiActionProposalGamma(
   actions,
   params,
   transactionValues,
-  deadline
+  deadline,
+  popupWindow = null
 ) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
       accountId: 'ABCDEF',
     });
-    const popup = openPopup('smartContract');
+    const popup = popupWindow || openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.createMultiActionProposal(
       title,
@@ -280,6 +281,11 @@ export async function createSwapSuggestionGamma(
   description,
   amount
 ) {
+  const { openPopup } = useWunderPass({
+    name: 'Casama',
+    accountId: 'ABCDEF',
+  });
+  const popup = openPopup('smartContract');
   const [wunderPool] = initPoolGamma(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
 
@@ -298,7 +304,8 @@ export async function createSwapSuggestionGamma(
         ),
       ],
       [0, 0],
-      1846183041
+      1846183041,
+      popup
     );
   } else {
     return createMultiActionProposalGamma(
@@ -320,7 +327,8 @@ export async function createSwapSuggestionGamma(
         encodeParams(['address', 'bool', 'uint256'], [tokenOut, false, 0]),
       ],
       [0, 0, 0],
-      1846183041
+      1846183041,
+      popup
     );
   }
 }

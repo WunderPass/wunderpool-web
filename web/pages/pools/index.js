@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
+import LoadingCircle from '/components/utils/loadingCircle';
 
 function PoolCard(props) {
   const { pool } = props;
@@ -134,9 +135,15 @@ export default function Pools(props) {
   const [demoPools, setDemoPools] = useState([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [loadingCircle, setLoadingCircle] = useState(true);
+
   const pageSize = 4;
 
   useEffect(() => {}, [user]);
+
+  useEffect(() => {
+    setLoadingCircle(!user.isReady);
+  }, [user.isReady]);
 
   return (
     <>
@@ -149,7 +156,8 @@ export default function Pools(props) {
           />
         </Head>
 
-        <Container>
+        {loadingCircle && <LoadingCircle />}
+        <Container className={loadingCircle && 'blur'}>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <div>
