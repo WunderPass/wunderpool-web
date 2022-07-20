@@ -237,9 +237,7 @@ export default function NewPoolDialog(props) {
         {step === 3 && <NewPoolInviteStep {...inviteProps} />}
       </DialogContent>
       {waitingForPool ? (
-        <Stack spacing={2} sx={{ textAlign: 'center' }}>
-          <Typography variant="subtitle1">Creating your Pool...</Typography>
-        </Stack>
+        <></>
       ) : (
         <DialogActions className="flex items-center justify-center mx-4">
           <NewPoolButtons
