@@ -135,6 +135,10 @@ button:disabled {
   @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white pt-0.5;
 }
 
+.avatar {
+  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white pt-0.5 overflow-hidden;
+}
+
 .loading-circle {
   @apply w-24 h-24 text-gray-200 animate-spin dark:text-gray-400 fill-kaico-blue;
 }

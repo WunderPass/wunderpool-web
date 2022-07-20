@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import InitialsAvatar from '/components/utils/initialsAvatar';
+import Avatar from '/components/utils/avatar';
 
 export default function NewPoolInviteStep(props) {
   const { members, setMembers } = props;
@@ -66,7 +66,11 @@ export default function NewPoolInviteStep(props) {
                   spacing={2}
                   sx={{ width: '100%' }}
                 >
-                  <InitialsAvatar text={option.wunderId} separator="-" />
+                  <Avatar
+                    wunderId={option.wunderId ? option.wunderId : null}
+                    text={option.wunderId}
+                    separator="-"
+                  />
                   <Typography
                     variant="subtitle1"
                     whiteSpace="nowrap"

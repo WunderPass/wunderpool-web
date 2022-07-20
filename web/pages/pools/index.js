@@ -13,12 +13,11 @@ import {
   Paper,
   Skeleton,
   Typography,
-  Avatar,
 } from '@mui/material';
-import InitialsAvatar from '/components/utils/initialsAvatar';
+import Avatar from '/components/utils/avatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
 import LoadingCircle from '/components/utils/loadingCircle';
-import ImageAvatar from '/components/utils/imageAvatar';
+import InitialsAvatar from '/components/utils/initialsAvatar';
 
 function PoolCard(props) {
   const { pool } = props;
@@ -74,14 +73,15 @@ function PoolCard(props) {
                     .slice(0, 3)
                     .map((member, i) => {
                       return (
-                        <InitialsAvatar
-                          key={`member-${i}`}
+                        <Avatar
+                          wunderId={member.wunderId ? member.wunderId : null}
                           tooltip={`${
                             member.wunderId || 'External User'
-                          }: ${parseInt(member.share)}%`}
+                          }: ${member.share.toString()}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
                           separator="-"
                           color={['green', 'blue', 'red'][i % 3]}
+                          i={i}
                         />
                       );
                     })}
@@ -166,8 +166,8 @@ export default function Pools(props) {
                   <Typography className=" text-2xl my-5 sm:text-4xl">
                     Hello {user?.wunderId},
                   </Typography>
-                  <div className="hidden sm:block ml-2">
-                    <ImageAvatar image={user?.image} />
+                  <div className="hidden sm:block ml-4 mb-2">
+                    <Avatar wunderId={user.wunderId} />
                   </div>
                 </div>
 

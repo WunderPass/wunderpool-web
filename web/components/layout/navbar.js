@@ -6,14 +6,19 @@ import { useRouter } from 'next/router';
 import MobileNavigation from './mobileNavigation';
 import Navigation from './navigation';
 import Link from 'next/link';
-import InitialsAvatar from '/components/utils/initialsAvatar';
-import ImageAvatar from '/components/utils/imageAvatar';
+import Avatar from '/components/utils/avatar';
+import { useEffect, useState } from 'react';
 
 export default function Navbar(props) {
   const { user } = props;
   const { asPath } = useRouter();
+  const [loading, setLoading] = useState(true);
 
   if (asPath === '/') return null;
+
+  useEffect(() => {
+    if (user.wunderId != null) setLoading(false);
+  }, [user.wunderId]);
 
   return (
     <>
@@ -33,7 +38,9 @@ export default function Navbar(props) {
                   </div>
                 </div>
                 <div className="sm:hidden">
-                  <ImageAvatar image={user.image} />
+                  {!loading && (
+                    <Avatar wunderId={user.wunderId} tooltip={user.wunderId} />
+                  )}
                 </div>
               </div>
             </Link>

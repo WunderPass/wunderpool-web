@@ -4,7 +4,7 @@ import { Skeleton, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
-import InitialsAvatar from '../utils/initialsAvatar';
+import Avatar from '/components/utils/avatar';
 import { FaBan } from 'react-icons/fa';
 import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
@@ -72,14 +72,15 @@ export default function PoolMembers(props) {
                 <div className="flex flex-row flex-wrap w-full mt-2">
                   {members.map((member, i) => {
                     return (
-                      <InitialsAvatar
-                        key={`member-${i}`}
+                      <Avatar
+                        wunderId={member.wunderId ? member.wunderId : null}
                         tooltip={`${
                           member.wunderId || 'External User'
                         }: ${member.share.toString()}%`}
-                        text={member.wunderId ?? '0-X'}
+                        text={member.wunderId ? member.wunderId : '0-X'}
                         separator="-"
                         color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
+                        i={i}
                       />
                     );
                   })}
