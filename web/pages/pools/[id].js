@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Container, Stack } from '@mui/material';
+import { Container, Stack, Dialog } from '@mui/material';
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import PoolHeader from '/components/pool/header';
 import PoolBody from '/components/pool/body';
 import usePool from '/hooks/usePool';
 import PoolDetails from '/components/pool/assetDetails';
 import PoolMembers from '/components/pool/members';
+import LoadingCircle from '/components/utils/loadingCircle';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function Pool(props) {
   const [fundDialog, setFundDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const wunderPool = usePool(user.address, address);
+  const [loadingCircle, setLoadingCircle] = useState(true);
 
   const loginCallback = () => {
     setupPoolListener(address, user.address);
@@ -93,71 +95,95 @@ export default function Pool(props) {
     }
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
+  useEffect(() => {
+    setLoadingCircle(!wunderPool.isReady);
+  }, [wunderPool.isReady]);
+
   return (
-    <Container className="flex justify-center items-center" maxWidth="xl">
-      <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
-        <div
-          className="hidden md:flex md:flex-row" //Desktop
-        >
-          <div className="md:flex md:flex-col max-w-4xl">
-            <PoolHeader
-              name={name}
-              address={address}
-              wunderPool={wunderPool}
-              {...props}
-            />
-            <PoolBody
-              address={address}
-              loading={loading}
-              wunderPool={wunderPool}
-              tokenAddedEvent={tokenAddedEvent}
-              newProposalEvent={newProposalEvent}
-              {...props}
-            />
-          </div>{' '}
-          <div className="flex-col max-w-2xl">
-            {!wunderPool.isMember && <></>}
-            <PoolDetails address={address} wunderPool={wunderPool} {...props} />
-            <PoolMembers
-              address={address}
-              wunderPool={wunderPool}
-              loginCallback={loginCallback}
-              {...props}
-            />
+    <>
+      {loadingCircle && <LoadingCircle />}
+      <Container
+        className={`flex justify-center items-center ${
+          loadingCircle && 'blur'
+        }`}
+        maxWidth="xl"
+      >
+        <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
+          <div
+            className="hidden md:flex md:flex-row" //Desktop
+          >
+            <div className="md:flex md:flex-col max-w-4xl">
+              <PoolHeader
+                name={name}
+                address={address}
+                wunderPool={wunderPool}
+                {...props}
+              />
+              <PoolBody
+                address={address}
+                loading={loading}
+                wunderPool={wunderPool}
+                tokenAddedEvent={tokenAddedEvent}
+                newProposalEvent={newProposalEvent}
+                {...props}
+              />
+            </div>{' '}
+            <div className="flex-col max-w-2xl">
+              {!wunderPool.isMember && <></>}
+              <PoolDetails
+                address={address}
+                wunderPool={wunderPool}
+                {...props}
+              />
+              <PoolMembers
+                address={address}
+                wunderPool={wunderPool}
+                loginCallback={loginCallback}
+                {...props}
+              />
+            </div>
           </div>
-        </div>
 
-        <div
-          className="block md:hidden" //Mobile
-        >
-          <div className="flex-col ">
-            <PoolHeader name={name} address={address} wunderPool={wunderPool} />
+          <div
+            className="block md:hidden" //Mobile
+          >
+            <div className="flex-col ">
+              <PoolHeader
+                name={name}
+                address={address}
+                wunderPool={wunderPool}
+              />
 
-            <PoolDetails address={address} wunderPool={wunderPool} {...props} />
-            <PoolMembers
-              address={address}
-              wunderPool={wunderPool}
-              loginCallback={loginCallback}
-              {...props}
-            />
+              <PoolDetails
+                address={address}
+                wunderPool={wunderPool}
+                {...props}
+              />
+              <PoolMembers
+                address={address}
+                wunderPool={wunderPool}
+                loginCallback={loginCallback}
+                {...props}
+              />
 
-            <PoolBody
-              address={address}
-              loading={loading}
-              wunderPool={wunderPool}
-              loginCallback={loginCallback}
-              {...props}
-            />
+              <PoolBody
+                address={address}
+                loading={loading}
+                wunderPool={wunderPool}
+                loginCallback={loginCallback}
+                {...props}
+              />
+            </div>
           </div>
-        </div>
-      </Stack>
+        </Stack>
 
-      <FundPoolDialog
-        open={fundDialog}
-        setOpen={setFundDialog}
-        address={address}
-        {...props}
-      />
-    </Container>
+        <FundPoolDialog
+          open={fundDialog}
+          setOpen={setFundDialog}
+          address={address}
+          {...props}
+        />
+      </Container>
+    </>
   );
 }

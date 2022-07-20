@@ -17,6 +17,7 @@ export default function useUser() {
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+
   const image = useMemo(
     () => `/api/proxy/users/getImage?wunderId=${wunderId}`,
     [wunderId]
