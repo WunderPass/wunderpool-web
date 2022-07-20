@@ -25,12 +25,11 @@ import {
 } from '/services/contract/proposals';
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
-import axios from 'axios';
 import { usdcAddress } from '/services/contract/init';
 import {
   isLiquidateProposal,
   proposalExecutable,
-} from '../services/contract/proposals';
+} from '/services/contract/proposals';
 import { addToWhiteListWithSecret } from '../services/contract/pools';
 
 export default function usePool(userAddr, poolAddr = null) {
@@ -189,31 +188,21 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const determineCustomBalances = (tokens = null) => {
-    var totalBalance = 0;
-    var assetBalance = 0;
-    var curAssetBalance = 0;
-    var assetCount = 0;
+    let totalBalance = 0;
+    let assetBalance = 0;
+    let assetCount = 0;
     (tokens || poolTokens)
       .filter((tkn) => tkn.balance > 0)
-      .map((token, i) => {
-        if (token.address && token.address.length == 42) {
-          axios({
-            url: `/api/tokens/show`,
-            params: { address: token.address },
-          }).then((res) => {
-            var tokenPrice = res.data?.dollar_price;
-            curAssetBalance = token.formattedBalance * tokenPrice;
-            totalBalance += curAssetBalance;
-            if (token.address !== usdcAddress) {
-              assetBalance += curAssetBalance;
-              assetCount++;
-            }
-            setAssetBalance(assetBalance);
-            setTotalBalance(totalBalance);
-            setAssetCount(assetCount);
-          });
+      .forEach((token) => {
+        totalBalance += token.usdValue;
+        if (token.address !== usdcAddress) {
+          assetBalance += token.usdValue;
+          assetCount++;
         }
       });
+    setAssetBalance(assetBalance);
+    setTotalBalance(totalBalance);
+    setAssetCount(assetCount);
   };
 
   const determinePoolTokens = async (vers = null) => {

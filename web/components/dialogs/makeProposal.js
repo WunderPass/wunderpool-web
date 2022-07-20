@@ -6,13 +6,8 @@ import {
   Stack,
   Typography,
   Collapse,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
 } from '@mui/material';
-import { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import { useMemo, useState } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import TokenInput from '../tokens/input';
 import { currency, round } from '/services/formatter';
@@ -24,15 +19,15 @@ export default function makeProposal(props) {
   const [tokenName, setTokenName] = useState('');
   const [tokenImage, setTokenImage] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState('');
-  const [tokenPrice, setTokenPrice] = useState(false);
-  const [tokenTouched, setTokenTouched] = useState(false);
-  const [waitingForPrice, setWaitingForPrice] = useState(false);
+  const [tokenPrice, setTokenPrice] = useState(null);
   const [value, setValue] = useState('');
   const [valueTouched, setValueTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasEnoughBalance, setHasEnoughBalance] = useState(false);
-
-  const receivedTokens = value / tokenPrice;
+  const receivedTokens = useMemo(
+    () => (value && tokenPrice ? value / tokenPrice : null),
+    [value, tokenPrice, tokenAddress]
+  );
 
   const handleApe = (e) => {
     e.preventDefault();
@@ -61,26 +56,12 @@ export default function makeProposal(props) {
     setOpen(false);
     setProposalName('');
     setTokenAddress('');
-    setTokenName(null);
-    setTokenSymbol(null);
+    setTokenName('');
+    setTokenSymbol('');
     setTokenImage(null);
-    setValue(0);
+    setValue('');
     setLoading(false);
   };
-
-  useEffect(() => {
-    if (tokenAddress && tokenAddress.length == 42) {
-      setTokenTouched(true);
-      setWaitingForPrice(true);
-      axios({
-        url: `/api/tokens/show`,
-        params: { address: tokenAddress },
-      }).then((res) => {
-        setTokenPrice(res.data?.dollar_price);
-        setWaitingForPrice(false);
-      });
-    }
-  }, [tokenAddress]);
 
   const convertToRawValue = (value) => {
     return value.replace(/[^0-9.]/g, '');
@@ -142,15 +123,18 @@ export default function makeProposal(props) {
                       setTokenName={setTokenName}
                       setTokenSymbol={setTokenSymbol}
                       setTokenImage={setTokenImage}
+                      setTokenPrice={setTokenPrice}
                     />
                   </div>
                 </div>
                 <Collapse in={tokenName && tokenSymbol ? true : false}>
-                  <div className="flex flex-row justify-between items-center pr-2">
+                  <div className="flex flex-row justify-between items-center pr-2 gap-1">
                     <img className="w-9" src={tokenImage || '/favicon.ico'} />
-                    <Typography className="text-md">{tokenName}</Typography>
+                    <Typography className="text-md flex-grow">
+                      {tokenName}
+                    </Typography>
                     <Typography className="text-md" color="GrayText">
-                      {!waitingForPrice && currency(tokenPrice, {})}
+                      {currency(tokenPrice, {})}
                     </Typography>
                   </div>
                 </Collapse>
@@ -171,7 +155,7 @@ export default function makeProposal(props) {
                       onChange={handleValueInputNew}
                       label="amount"
                     />
-                    {tokenTouched && (
+                    {receivedTokens && (
                       <Typography variant="subtitle1" textAlign="right">
                         {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
                         {tokenSymbol}
