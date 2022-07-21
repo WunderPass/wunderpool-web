@@ -13,9 +13,13 @@ export default function TokenCard(props) {
     axios({
       url: '/api/tokens/history',
       params: { address: token.address, time: 'week' },
-    }).then((res) => {
-      setData(res.data.map((d) => d.price));
-    });
+    })
+      .then((res) => {
+        setData(res.data.map((d) => d.price));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
@@ -39,7 +43,7 @@ export default function TokenCard(props) {
                     gradient={
                       data[0] < data[data.length - 1]
                         ? ['#462cf1', '#01BFFF']
-                        : ['#F00', '#F0A']
+                        : ['#F00', '#F0C']
                     }
                     width={100}
                     height={30}
