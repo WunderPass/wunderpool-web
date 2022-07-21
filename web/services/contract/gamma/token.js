@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { currency, toEthString } from '/services/formatter';
+import { toEthString } from '/services/formatter';
 import { fetchPoolMembers } from '/services/contract/pools';
 import { initPoolGamma } from '/services/contract/gamma/init';
 import { nftAbi, tokenAbi } from '/services/contract/init';
@@ -16,7 +16,13 @@ export function fetchPoolTokensGamma(address) {
         const balance = await token.balanceOf(address);
         const decimals = await token.decimals();
         const formattedBalance = toEthString(balance, decimals);
-        const { name, symbol, price, image_url, dollar_price } = (
+        const {
+          name = 'Unknown Token',
+          symbol = 'TOKEN',
+          price = 0,
+          image_url,
+          dollar_price = 0,
+        } = (
           await axios({ url: `/api/tokens/show`, params: { address: addr } })
         ).data;
 

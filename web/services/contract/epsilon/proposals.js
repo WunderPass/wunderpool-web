@@ -1,7 +1,11 @@
 import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
-import { initPoolEpsilon, initProposalEpsilon } from './init';
+import {
+  initPoolConfigEpsilon,
+  initPoolEpsilon,
+  initProposalEpsilon,
+} from './init';
 import {
   gasPrice,
   usdcAddress,
@@ -9,10 +13,42 @@ import {
   connectContract,
 } from '/services/contract/init';
 
+function determineDeclined(
+  noVotes,
+  totalVotes,
+  votingThreshold,
+  minYesVoters,
+  memberCount,
+  address,
+  id
+) {
+  return new Promise(async (resolve, reject) => {
+    if (
+      noVotes
+        .mul(100)
+        .div(totalVotes)
+        .gt(ethers.BigNumber.from(100).sub(votingThreshold))
+    ) {
+      resolve(true);
+    } else {
+      const [wunderProposal] = initProposalEpsilon();
+      const { noVoters } = await wunderProposal.calculateVotes(address, id);
+      resolve(
+        ethers.BigNumber.from(memberCount).sub(noVoters).lt(minYesVoters)
+      );
+    }
+  });
+}
+
 export function fetchPoolProposalsEpsilon(address) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolEpsilon(address);
     const [wunderProposal] = initProposalEpsilon();
+    const [poolConfig] = initPoolConfigEpsilon();
+    const { votingThreshold, minYesVoters } = await poolConfig.getConfig(
+      address
+    );
+    const members = await wunderPool.poolMembers();
     const proposalIds = await wunderPool.getAllProposalIds();
     const proposals = await Promise.all(
       proposalIds.map(async (id) => {
@@ -28,6 +64,23 @@ export function fetchPoolProposalsEpsilon(address) {
           executed,
           creator,
         } = await wunderProposal.getProposal(address, id);
+
+        const { executable } = executed
+          ? { executable: false }
+          : await wunderProposal.proposalExecutable(address, id);
+        const declined =
+          executable || executed
+            ? false
+            : await determineDeclined(
+                noVotes,
+                totalVotes,
+                votingThreshold,
+                minYesVoters,
+                members.length,
+                address,
+                id
+              );
+
         return {
           id: id,
           title,
@@ -39,6 +92,8 @@ export function fetchPoolProposalsEpsilon(address) {
           totalVotes,
           createdAt,
           executed,
+          executable,
+          declined,
           creator,
         };
       })

@@ -1,184 +1,80 @@
-import { Collapse, Skeleton, Typography, Divider } from '@mui/material';
+import { Skeleton, Typography, Divider } from '@mui/material';
 import ProposalList from '/components/proposals/list';
-import CustomForm from '/components/proposals/customForm';
 import TokenList from '/components/tokens/list';
 import NftList from '/components/tokens/nfts';
 import TransactionsList from '/components/pool/transactions';
 import { useState, useEffect } from 'react';
-import React from 'react';
 
-function body(props) {
-  const { address, loading, wunderPool, tokenAddedEvent, newProposalEvent } =
-    props;
+function TabBar({ tabs, tab, setTab }) {
+  return (
+    <div className="flex flex-row justify-start items-center w-full">
+      {tabs.map((tb, i) => {
+        const title = tb?.title || tb;
+        const index = tb?.index || i;
+        return (
+          <button
+            key={`tab-item-${title}-${index}`}
+            className={
+              tab == i ? 'py-4 pr-3 sm:pr-6' : 'py-4 pr-3 sm:pr-6 opacity-40'
+            }
+            onClick={() => setTab(index)}
+          >
+            <div className="flex flex-row items-center justify-center">
+              <Typography>{title}</Typography>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
-  const [ape, setApe] = useState(false);
-  const [customProposal, setCustomProposal] = useState(false);
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
-  const [isProposalTab, setIsProposalTab] = useState(true);
-  const [isAssetTab, setIsAssetTab] = useState(false);
-  const [isNftTab, setIsNftTab] = useState(false);
-  const [isTransactionsTab, setIsTransactionsTab] = useState(false);
-
-  const activateAssetTab = () => {
-    setIsAssetTab(true);
-    setIsProposalTab(false);
-    setIsNftTab(false);
-    setIsTransactionsTab(false);
-  };
-
-  const activateProposalTab = () => {
-    setIsProposalTab(true);
-    setIsAssetTab(false);
-    setIsNftTab(false);
-    setIsTransactionsTab(false);
-  };
-
-  const activateNftTab = () => {
-    setIsNftTab(true);
-    setIsProposalTab(false);
-    setIsAssetTab(false);
-    setIsTransactionsTab(false);
-  };
-
-  const activateTransactionsTab = () => {
-    setIsTransactionsTab(true);
-    setIsNftTab(false);
-    setIsProposalTab(false);
-    setIsAssetTab(false);
-  };
+export default function body(props) {
+  const { loading, wunderPool, tokenAddedEvent, newProposalEvent } = props;
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (!tokenAddedEvent) return;
     if (tokenAddedEvent.nft) {
-      activateNftTab();
+      setTab(2);
     } else {
-      activateAssetTab();
+      setTab(1);
     }
   }, [tokenAddedEvent]);
 
   useEffect(() => {
     if (!newProposalEvent) return;
-    activateProposalTab();
+    setTab(0);
   }, [newProposalEvent]);
 
   return (
     <div className="mt-4 mb-8 ">
       {wunderPool.isMember ? ( //POOL WHEN YOU ARE A MEMBER
-        <>
-          <Collapse
-            in={customProposal}
-            sx={{ width: '100%', margin: '0 !important' }}
-          >
-            <CustomForm
-              customProposal={customProposal}
-              setCustomProposal={setCustomProposal}
-              poolAddress={address}
-              fetchProposals={wunderPool.determineProposals}
-              {...props}
-            />
-          </Collapse>
+        loading ? (
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            sx={{ height: '100px', borderRadius: 3 }}
+          />
+        ) : (
+          <div className="flex container-white ">
+            <div className="flex flex-col w-full">
+              <TabBar
+                tabs={['Proposals', 'Assets', "NFT's", 'Transactions']}
+                tab={tab}
+                setTab={setTab}
+              />
+              <Divider className="mb-6 mt-1 opacity-70" />
 
-          {loading ? (
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              sx={{ height: '100px', borderRadius: 3 }}
-            />
-          ) : (
-            <>
-              <div className="flex container-white ">
-                <div className="flex flex-col w-full">
-                  <div className="flex flex-row justify-start items-center w-full">
-                    <button
-                      className={
-                        isProposalTab
-                          ? 'py-4 pr-2 sm:pr-4'
-                          : 'py-4 pr-2 sm:pr-4 opacity-40'
-                      }
-                      onClick={activateProposalTab}
-                    >
-                      <div className="flex flex-row items-center justify-center">
-                        <Typography>Proposals</Typography>
-                      </div>
-                    </button>
-                    <button
-                      className={
-                        isAssetTab
-                          ? ' py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
-                          : 'opacity-40 py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
-                      }
-                      onClick={activateAssetTab}
-                    >
-                      <div className="flex flex-row items-center justify-center">
-                        <Typography>Assets</Typography>
-                      </div>
-                    </button>
-                    <button
-                      className={
-                        isNftTab
-                          ? 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
-                          : 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4 opacity-40'
-                      }
-                      onClick={activateNftTab}
-                    >
-                      <div className="flex flex-row items-center justify-center">
-                        <Typography>NFT's</Typography>
-                      </div>
-                    </button>
-                    <button
-                      className={
-                        isTransactionsTab
-                          ? 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4'
-                          : 'py-4 pr-2 pl-1 sm:pl-4 sm:pr-4 opacity-40'
-                      }
-                      onClick={activateTransactionsTab}
-                    >
-                      <div className="flex flex-row items-center justify-center">
-                        <Typography>Transactions</Typography>
-                      </div>
-                    </button>
-                  </div>
-                  <Divider className="mb-6 mt-1 opacity-70" />
-
-                  {isProposalTab && (
-                    <ProposalList
-                      poolAddress={address}
-                      setApe={setApe}
-                      wunderPool={wunderPool}
-                      {...props}
-                    />
-                  )}
-                  {isAssetTab && (
-                    <TokenList
-                      tokens={wunderPool.tokens}
-                      poolAddress={address}
-                      fetchProposals={wunderPool.determineProposals}
-                      handleFund={() => setFundDialog(true)}
-                      handleWithdraw={() => setWithdrawDialog(true)}
-                      poolBalance={wunderPool.usdcBalance}
-                      {...props}
-                    />
-                  )}
-                  {isNftTab && (
-                    <NftList
-                      nfts={wunderPool.nfts}
-                      poolAddress={address}
-                      fetchProposals={wunderPool.determineProposals}
-                      {...props}
-                    />
-                  )}
-                  {isTransactionsTab && (
-                    <TransactionsList
-                      wunderPool={wunderPool}
-                      poolAddress={address}
-                      {...props}
-                    />
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </>
+              {tab == 0 && <ProposalList wunderPool={wunderPool} {...props} />}
+              {tab == 1 && <TokenList tokens={wunderPool.tokens} {...props} />}
+              {tab == 2 && <NftList nfts={wunderPool.nfts} {...props} />}
+              {tab == 3 && (
+                <TransactionsList wunderPool={wunderPool} {...props} />
+              )}
+            </div>
+          </div>
+        )
       ) : !wunderPool.isMember ? ( //POOL BEFORE YOU ARE A MEMBER
         <></>
       ) : (
@@ -188,5 +84,3 @@ function body(props) {
     </div>
   );
 }
-
-export default body;

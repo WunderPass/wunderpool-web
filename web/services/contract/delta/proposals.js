@@ -9,6 +9,19 @@ import {
   connectContract,
 } from '/services/contract/init';
 
+function determineExecutable(
+  executed,
+  yesVotes,
+  noVotes,
+  totalVotes,
+  deadline
+) {
+  if (executed) return false;
+  if (noVotes.mul(2).gte(totalVotes)) return false;
+  if (yesVotes.mul(2).lt(totalVotes)) return false;
+  return deadline.mul(1000).lt(Number(new Date()));
+}
+
 export function fetchPoolProposalsDelta(address) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolDelta(address);
@@ -27,6 +40,16 @@ export function fetchPoolProposalsDelta(address) {
           createdAt,
           executed,
         } = await wunderProposal.getProposal(address, id);
+
+        const executable = determineExecutable(
+          executed,
+          yesVotes,
+          noVotes,
+          totalVotes,
+          deadline
+        );
+        const declined = noVotes.mul(2).gte(totalVotes);
+
         return {
           id: id,
           title,
@@ -38,6 +61,8 @@ export function fetchPoolProposalsDelta(address) {
           totalVotes,
           createdAt,
           executed,
+          executable,
+          declined,
         };
       })
     );

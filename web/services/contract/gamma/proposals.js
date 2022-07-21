@@ -9,6 +9,19 @@ import {
 } from '/services/contract/init';
 import { tokenAbi } from '../init';
 
+function determineExecutable(
+  executed,
+  yesVotes,
+  noVotes,
+  totalVotes,
+  deadline
+) {
+  if (executed) return false;
+  if (noVotes.mul(2).gte(totalVotes)) return false;
+  if (yesVotes.mul(2).lt(totalVotes)) return false;
+  return deadline.mul(1000).lt(Number(new Date()));
+}
+
 export function fetchPoolProposalsGamma(address) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolGamma(address);
@@ -27,6 +40,16 @@ export function fetchPoolProposalsGamma(address) {
           createdAt,
           executed,
         } = await wunderPool.getProposal(id);
+
+        const executable = determineExecutable(
+          executed,
+          yesVotes,
+          noVotes,
+          totalVotes,
+          deadline
+        );
+        const declined = noVotes.mul(2).gte(totalVotes);
+
         return {
           id: id,
           title,
@@ -39,6 +62,8 @@ export function fetchPoolProposalsGamma(address) {
           totalVotes,
           createdAt,
           executed,
+          executable,
+          declined,
         };
       })
     );
