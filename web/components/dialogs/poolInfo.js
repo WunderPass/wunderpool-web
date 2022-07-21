@@ -24,10 +24,11 @@ export default function PoolInfoDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
       TransitionComponent={Transition}
-      fullWidth
     >
       <DialogTitle sx={{ textAlign: 'center' }}>{name}</DialogTitle>
       <DialogContent>

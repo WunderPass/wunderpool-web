@@ -62,9 +62,10 @@ export default function SellTokenDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
-      maxWidth="md"
       PaperProps={{
         style: { borderRadius: 12 },
       }}

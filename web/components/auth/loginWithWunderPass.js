@@ -80,6 +80,8 @@ export default function LoginWithWunderPass(props) {
       {loading && !disablePopup && (
         <>
           <Dialog
+            fullWidth
+            maxWidth="sm"
             open={open}
             onClose={dialogClose}
             PaperProps={{
