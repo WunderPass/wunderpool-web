@@ -1,20 +1,18 @@
 import { Stack, Dialog, Tooltip } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import BlockIcon from '@mui/icons-material/Block';
 import { useState, useEffect } from 'react';
 
 export default function VotingButtons(props) {
   const { proposal, user, wunderPool, handleSuccess, handleError } = props;
-  const [waitingForVote, setWaitingForVote] = useState(false);
   const [userHasVoted, setUserHasVoted] = useState(null);
   const [signing, setSigning] = useState(false);
 
   const handleClose = () => {
     setSigning(false);
-    setWaitingForVote(false);
   };
 
   const handleVote = (mode) => {
-    setWaitingForVote(true);
     setSigning(true);
     setTimeout(() => {
       wunderPool
@@ -30,7 +28,7 @@ export default function VotingButtons(props) {
           handleError(err);
         })
         .then(() => {
-          setWaitingForVote(false);
+          setSigning(false);
         });
     }, 10);
   };
@@ -38,7 +36,6 @@ export default function VotingButtons(props) {
   useEffect(() => {
     if (user.address) {
       wunderPool.userHasVoted(proposal.id).then((res) => {
-        setWaitingForVote(false);
         setUserHasVoted(res);
       });
     }
@@ -48,6 +45,14 @@ export default function VotingButtons(props) {
     return (
       <Tooltip title="Proposal has been Executed">
         <CheckCircleOutlineIcon fontSize="large" color="success" />
+      </Tooltip>
+    );
+  }
+
+  if (proposal.declined) {
+    return (
+      <Tooltip title="Proposal was declined">
+        <BlockIcon fontSize="large" color="error" />
       </Tooltip>
     );
   }

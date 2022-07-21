@@ -1,11 +1,9 @@
 import {
   Dialog,
-  LinearProgress,
   Box,
   Collapse,
   Divider,
   IconButton,
-  Paper,
   Skeleton,
   Stack,
   Tooltip,
@@ -13,7 +11,7 @@ import {
   Alert,
   AlertTitle,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
 import { ethers } from 'ethers';
 import { decodeParams } from '/services/formatter';
@@ -32,16 +30,9 @@ export default function ProposalCard(props) {
     handleSuccess,
     handleError,
   } = props;
-  const { totalSupply } = wunderPool.governanceToken;
   const [loading, setLoading] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
   const [signing, setSigning] = useState(false);
-  const [executable, setExecutable] = useState(false);
-
-  useEffect(async () => {
-    const [executable, reason] = await wunderPool.executable(proposal.id);
-    setExecutable(executable);
-  }, [proposal.yesVotes.toNumber()]);
 
   const handleClose = () => {
     setSigning(false);
@@ -49,7 +40,7 @@ export default function ProposalCard(props) {
   };
 
   const handleOpen = () => {
-    if (openProposal == proposal.id) {
+    if (openProposal === proposal.id) {
       setOpenProposal(null);
     } else {
       setOpenProposal(proposal.id);
@@ -93,7 +84,7 @@ export default function ProposalCard(props) {
     <div
       className="container-gray mb-6"
       style={{
-        gridColumn: openProposal == proposal.id ? '1 / 3' : '',
+        gridColumn: openProposal === proposal.id ? '1 / 3' : '',
       }}
     >
       <div className="flex flex-row items-center">
@@ -110,59 +101,49 @@ export default function ProposalCard(props) {
       </Typography>
 
       <div className="mt-4 mb-8 ">
-        {proposal.executed == false &&
-          proposal.noVotes.toNumber() <= proposal.totalVotes.toNumber() / 2 && (
-            <Timer {...props} />
-          )}
+        {!proposal.executed && !proposal.declined && <Timer {...props} />}
       </div>
 
       <VotingResults
         yes={proposal.yesVotes.toNumber()}
         no={proposal.noVotes.toNumber()}
-        total={totalSupply?.toNumber()}
+        total={proposal.totalVotes.toNumber()}
       />
       <div className="flex flex-row justify-center">
-        <VotingButtons
-          deadLine={proposal.deadline.mul(1000).toNumber()}
-          {...props}
-        />
+        <VotingButtons {...props} />
         <div>
-          {!proposal.executed && (
-            <button
-              className={executable ? 'p-8 btn btn-warning ' : 'hidden'}
-              disabled={signing}
-              onClick={executeProposal}
-            >
-              Execute
-            </button>
-          )}
-          <>
-            <Dialog
-              open={signing}
-              onClose={handleClose}
-              PaperProps={{
-                style: { borderRadius: 12 },
-              }}
-            >
-              {!wunderPool.closed && (
-                <Alert severity="warning">
-                  <AlertTitle>
-                    After execution, no new members can join this Pool
-                  </AlertTitle>
-                </Alert>
-              )}
-              <iframe
-                className="w-auto"
-                id="fr"
-                name="transactionFrame"
-                height="500"
-              ></iframe>
-              <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-            </Dialog>
-          </>
+          <button
+            className={proposal.executable ? 'p-8 btn btn-warning ' : 'hidden'}
+            disabled={signing}
+            onClick={executeProposal}
+          >
+            Execute
+          </button>
+          <Dialog
+            open={signing}
+            onClose={handleClose}
+            PaperProps={{
+              style: { borderRadius: 12 },
+            }}
+          >
+            {!wunderPool.closed && (
+              <Alert severity="warning">
+                <AlertTitle>
+                  After execution, no new members can join this Pool
+                </AlertTitle>
+              </Alert>
+            )}
+            <iframe
+              className="w-auto"
+              id="fr"
+              name="transactionFrame"
+              height="500"
+            ></iframe>
+            <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+          </Dialog>
         </div>
       </div>
-      <Collapse className="mt-2" in={openProposal == proposal.id}>
+      <Collapse className="mt-2" in={openProposal === proposal.id}>
         <Stack spacing={1}>
           <Divider />
           <Typography
@@ -172,7 +153,8 @@ export default function ProposalCard(props) {
             <Typography variant="span" fontStyle="italic">
               Zustimmungen
             </Typography>
-            {proposal.yesVotes.toString()} / {totalSupply?.toString()} Stimmen
+            {proposal.yesVotes.toString()} / {proposal.totalVotes.toString()}{' '}
+            Stimmen
           </Typography>
           <Divider />
           <Typography
@@ -182,7 +164,8 @@ export default function ProposalCard(props) {
             <Typography variant="span" fontStyle="italic">
               Ablehnungen
             </Typography>
-            {proposal.noVotes.toString()} / {totalSupply?.toString()} Stimmen
+            {proposal.noVotes.toString()} / {proposal.totalVotes.toString()}{' '}
+            Stimmen
           </Typography>
           <Divider />
           <Typography

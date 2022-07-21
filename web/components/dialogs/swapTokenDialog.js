@@ -5,14 +5,12 @@ import {
   DialogContentText,
   DialogTitle,
   InputAdornment,
-  LinearProgress,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { fetchERC20Data } from '/services/contract/token';
-import { createSwapSuggestion } from '/services/contract/proposals';
 import TokenInput from '../tokens/input';
 
 export default function SwapTokenDialog(props) {

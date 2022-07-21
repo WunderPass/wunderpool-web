@@ -1,6 +1,5 @@
 import {
   Dialog,
-  Button,
   Collapse,
   FormControl,
   IconButton,
@@ -10,10 +9,9 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import TokenInput from '../tokens/input';
-import axios from 'axios';
 import { currency, round } from '/services/formatter';
 
 export default function ApeForm(props) {
@@ -25,9 +23,10 @@ export default function ApeForm(props) {
   const [tokenPrice, setTokenPrice] = useState(false);
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [waitingForPrice, setWaitingForPrice] = useState(false);
-
-  const receivedTokens = value / tokenPrice;
+  const receivedTokens = useMemo(
+    () => (value && tokenPrice ? value / tokenPrice : null),
+    [value, tokenPrice, tokenAddress]
+  );
 
   const handleClose = () => {
     setTokenAddress('');
@@ -62,19 +61,6 @@ export default function ApeForm(props) {
       });
   };
 
-  useEffect(() => {
-    if (tokenAddress && tokenAddress.length == 42) {
-      setWaitingForPrice(true);
-      axios({
-        url: `/api/tokens/show`,
-        params: { address: tokenAddress },
-      }).then((res) => {
-        setTokenPrice(res.data?.dollar_price);
-        setWaitingForPrice(false);
-      });
-    }
-  }, [tokenAddress]);
-
   const handleValueInput = (e) => {
     setValue(e.target.value);
   };
@@ -97,6 +83,7 @@ export default function ApeForm(props) {
           setTokenName={setTokenName}
           setTokenSymbol={setTokenSymbol}
           setTokenImage={setTokenImage}
+          setTokenPrice={setTokenPrice}
         />
         <Collapse in={tokenName && tokenSymbol ? true : false}>
           <Stack spacing={3}>
@@ -111,7 +98,7 @@ export default function ApeForm(props) {
                 {tokenName}
               </Typography>
               <Typography variant="h4" color="GrayText">
-                {!waitingForPrice && currency(tokenPrice, {})}
+                {tokenPrice && currency(tokenPrice, {})}
               </Typography>
             </Stack>
             <FormControl fullWidth variant="outlined">
@@ -126,10 +113,12 @@ export default function ApeForm(props) {
                   <InputAdornment position="end">USD</InputAdornment>
                 }
               />
-              <Typography variant="subtitle1" textAlign="right">
-                {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
-                {tokenSymbol}
-              </Typography>
+              {receivedTokens && (
+                <Typography variant="subtitle1" textAlign="right">
+                  {round(receivedTokens, receivedTokens > 1 ? 2 : 5)}{' '}
+                  {tokenSymbol}
+                </Typography>
+              )}
             </FormControl>
           </Stack>
         </Collapse>
