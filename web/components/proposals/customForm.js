@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { TransactionForm } from '/components/proposals/transactionForm';
 import { createCustomProposal } from '/services/contract/proposals';
+import TransactionDialog from '../utils/transactionDialog';
 
 export default function CustomForm(props) {
   const {
@@ -160,23 +161,7 @@ export default function CustomForm(props) {
             <button className="btn btn-default" disabled variant="contained">
               Submitting Proposal...
             </button>
-            {signing && (
-              <Dialog
-                open={open}
-                onClose={dialogClose}
-                PaperProps={{
-                  style: { borderRadius: 12 },
-                }}
-              >
-                <iframe
-                  className="w-auto"
-                  id="fr"
-                  name="transactionFrame"
-                  height="500"
-                ></iframe>
-                <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-              </Dialog>
-            )}
+            <TransactionDialog open={signing} onClose={dialogClose} />
           </>
         ) : (
           <>

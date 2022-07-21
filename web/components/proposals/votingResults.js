@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 
 export default function VotingBarBox(props) {
-  const { yes, no, abstain, total } = props;
+  const { yes, no, total } = props;
   const yesPercent = Math.round((yes * 100) / total);
   const noPercent = Math.round((no * 100) / total);
   const restPercent = 100 - yesPercent - noPercent;
