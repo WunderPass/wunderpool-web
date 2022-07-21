@@ -3,14 +3,18 @@ import { useMemo } from 'react';
 export default function useWunderPass(config) {
   const { name, image, accountId, userAddress } = config;
   const isSafari = useMemo(() => {
-    if (window?.navigator?.vendor && window?.navigator?.userAgent) {
+    if (
+      typeof window !== 'undefined' &&
+      window?.navigator?.vendor &&
+      window?.navigator?.userAgent
+    ) {
       return (
         window.navigator.userAgent.toLowerCase().match(/safari/) &&
         window.navigator.vendor.toLowerCase().match(/apple/)
       );
     }
     return false;
-  }, [window?.navigator?.vendor, window?.navigator?.userAgent]);
+  }, [typeof window, window?.navigator?.vendor, window?.navigator?.userAgent]);
 
   // method: sign or smartContract
   const openPopup = (method) => {
