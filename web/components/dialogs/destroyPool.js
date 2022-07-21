@@ -64,7 +64,7 @@ export default function DestroyPoolDialog(props) {
         <Alert className="mb-1" severity="warning">
           This will create a Proposal to Liquidate the Pool
         </Alert>
-        {wunderPool.tokens.length > 1 && (
+        {wunderPool.tokens.filter((t) => t.balance > 0).length > 1 && (
           <Alert severity="error">
             Currently all tokens will be split amongst the members! If you only
             want to get USD please sell all tokens before liquidating the pool!
