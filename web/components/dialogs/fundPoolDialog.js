@@ -43,6 +43,8 @@ export default function FundPoolDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
       PaperProps={{

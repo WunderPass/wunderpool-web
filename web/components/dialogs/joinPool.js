@@ -93,6 +93,8 @@ export default function JoinPoolDialog(props) {
   return (
     <>
       <Dialog
+        fullWidth
+        maxWidth="sm"
         open={open}
         onClose={handleClose}
         PaperProps={{

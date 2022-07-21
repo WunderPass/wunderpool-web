@@ -7,6 +7,8 @@ export default function TransactionDialog({ open, onClose, children }) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={!isSafari && open}
       onClose={onClose}
       PaperProps={{
