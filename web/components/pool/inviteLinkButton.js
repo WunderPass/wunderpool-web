@@ -10,6 +10,7 @@ import { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
+import TransactionFrame from '../utils/transactionFrame';
 
 function ContentWithLink(props) {
   const { inviteLink, handleSuccess } = props;
@@ -80,13 +81,7 @@ function ContentWithoutLink(props) {
           </button>
         </DialogActions>
       )}
-      <iframe
-        className="w-auto"
-        id="fr"
-        name="transactionFrame"
-        height={loading ? '500' : '0'}
-        style={{ transition: 'height 300ms ease' }}
-      ></iframe>
+      <TransactionFrame open={loading} />
     </>
   );
 }

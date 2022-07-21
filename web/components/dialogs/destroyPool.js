@@ -5,14 +5,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  LinearProgress,
   Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { currency } from '../../services/formatter';
+import { currency } from '/services/formatter';
+import TransactionFrame from '/components/utils/transactionFrame';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
@@ -137,14 +137,7 @@ export default function DestroyPoolDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }

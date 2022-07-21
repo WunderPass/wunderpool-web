@@ -37,7 +37,7 @@ export function voteAgainst(address, proposalId, userAddress, version) {
 }
 
 export function hasVoted(poolAddress, proposalId, address, version) {
-  if (version > 3) {
+  if (version > 4) {
     return hasVotedEpsilon(poolAddress, proposalId, address);
   } else if (version > 3) {
     return hasVotedDelta(poolAddress, proposalId, address);

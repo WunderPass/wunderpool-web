@@ -1,5 +1,4 @@
 import {
-  Dialog,
   Box,
   Collapse,
   Divider,
@@ -9,7 +8,6 @@ import {
   Tooltip,
   Typography,
   Alert,
-  AlertTitle,
 } from '@mui/material';
 import { useState } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
@@ -19,6 +17,7 @@ import VotingResults from '/components/proposals/votingResults';
 
 import VotingButtons from './votingButtons';
 import Timer from '/components/proposals/timer';
+import TransactionDialog from '../utils/transactionDialog';
 
 export default function ProposalCard(props) {
   const {
@@ -59,7 +58,7 @@ export default function ProposalCard(props) {
     wunderPool
       .execute(proposal.id)
       .then((res) => {
-        console.log(res);
+        console.log('LiqProp', res);
         handleClose(false);
         if (res) {
           handleSuccess('Pool liquidated');
@@ -119,28 +118,13 @@ export default function ProposalCard(props) {
           >
             Execute
           </button>
-          <Dialog
-            open={signing}
-            onClose={handleClose}
-            PaperProps={{
-              style: { borderRadius: 12 },
-            }}
-          >
+          <TransactionDialog open={signing} onClose={handleClose}>
             {!wunderPool.closed && (
-              <Alert severity="warning">
-                <AlertTitle>
-                  After execution, no new members can join this Pool
-                </AlertTitle>
+              <Alert severity="warning" sx={{ alignItems: 'center' }}>
+                After execution, no new members can join this Pool
               </Alert>
             )}
-            <iframe
-              className="w-auto"
-              id="fr"
-              name="transactionFrame"
-              height="500"
-            ></iframe>
-            <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-          </Dialog>
+          </TransactionDialog>
         </div>
       </div>
       <Collapse className="mt-2" in={openProposal === proposal.id}>

@@ -18,8 +18,9 @@ function determineExecutable(
 ) {
   if (executed) return false;
   if (noVotes.mul(2).gte(totalVotes)) return false;
-  if (yesVotes.mul(2).lt(totalVotes)) return false;
-  return deadline.mul(1000).lt(Number(new Date()));
+  return (
+    deadline.mul(1000).lt(Number(new Date())) || yesVotes.mul(2).gte(totalVotes)
+  );
 }
 
 export function fetchPoolProposalsDelta(address) {

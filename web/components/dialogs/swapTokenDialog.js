@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,11 +13,12 @@ import {
 import { useState } from 'react';
 import { fetchERC20Data } from '/services/contract/token';
 import TokenInput from '../tokens/input';
+import TransactionFrame from '../utils/transactionFrame';
 
 export default function SwapTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
     props;
-  const { address, decimals, formattedBalance, name, symbol } = token;
+  const { address, decimals, formattedBalance, name, symbol, tradable } = token;
   const [amount, setAmount] = useState('');
   const [receiveName, setReceiveName] = useState('');
   const [receiveSymbol, setReceiveSymbol] = useState('');
@@ -81,6 +83,15 @@ export default function SwapTokenDialog(props) {
     >
       <DialogTitle>Swap {name}</DialogTitle>
       <DialogContent>
+        {!tradable && (
+          <Alert
+            severity="warning"
+            sx={{ marginBottom: 3, alignItems: 'center' }}
+          >
+            Trading this token is not recommended by Casama. Proceed at your own
+            risk
+          </Alert>
+        )}
         <Stack spacing={2}>
           <TextField
             autoFocus
@@ -148,14 +159,7 @@ export default function SwapTokenDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }
