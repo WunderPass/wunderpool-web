@@ -18,8 +18,8 @@ export default function handler(req, res) {
         .send(resp);
       return;
     } else {
-      const file = fs.createReadStream('./public/blank-profile-pic.png');
-      res.status(200).setHeader('content-type', 'image/png').send(file);
+      const json = JSON.stringify({ wunderId: req.query.wunderId });
+      res.status(200).setHeader('content-type', 'plain/text').json(json);
     }
   });
 }
