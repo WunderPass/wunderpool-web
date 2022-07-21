@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Skeleton, Link, Typography } from '@mui/material';
 import { normalTransactions } from '/services/contract/pools';
 import { weiToMatic } from '/services/formatter';
-import { encodeParams } from '/services/formatter';
 
 export default function Transactions(props) {
   const { wunderPool } = props;
