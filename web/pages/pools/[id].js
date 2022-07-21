@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Container, Stack, Dialog } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import PoolHeader from '/components/pool/header';
 import PoolBody from '/components/pool/body';
@@ -8,6 +8,8 @@ import usePool from '/hooks/usePool';
 import PoolDetails from '/components/pool/assetDetails';
 import PoolMembers from '/components/pool/members';
 import LoadingCircle from '/components/utils/loadingCircle';
+import Head from 'next/head';
+import { currency } from '/services/formatter';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -101,6 +103,12 @@ export default function Pool(props) {
 
   return (
     <>
+      <Head>
+        <title>
+          Casama - {name} - {currency(wunderPool.totalBalance, {})}
+        </title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       {loadingCircle && <LoadingCircle />}
       <Container
         className={`flex justify-center items-center ${
