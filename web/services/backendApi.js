@@ -23,3 +23,7 @@ export function postAndWaitForTransaction(config) {
       });
   });
 }
+
+export function logToServer(any) {
+  axios({ url: '/api/logToServer', params: { log: JSON.stringify(any) } });
+}

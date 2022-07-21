@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Badge, Typography, Divider, MenuItem } from '@mui/material';
+import { Menu, Badge, Divider, MenuItem, ListItemIcon } from '@mui/material';
 import { IoMdNotifications } from 'react-icons/io';
+import RedeemIcon from '@mui/icons-material/Redeem';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -47,7 +48,7 @@ const news = (props) => {
       >
         <button
           onClick={(e) => setNewsListOpen(e.currentTarget)}
-          className={`  ${notifications > 0 ? '' : 'opacity-50'}`}
+          className={notifications > 0 ? '' : 'opacity-50'}
         >
           <Badge color="red" badgeContent={notifications} max={99}>
             <IoMdNotifications className="text-xl" />
@@ -61,11 +62,6 @@ const news = (props) => {
           anchorEl={newsListOpen}
           sx={{ borderRadius: '50%' }}
         >
-          <Typography className="p-4 text-md">
-            You have following notifications
-          </Typography>
-          <Divider className="mb-2" />
-
           {authorized && (
             <Link
               href={`https://app.wunderpass.org/`}
@@ -73,9 +69,10 @@ const news = (props) => {
               passHref
             >
               <MenuItem>
-                <Typography className="text-sm">
-                  Claim your 50$ in WunderPass
-                </Typography>
+                <ListItemIcon>
+                  <RedeemIcon fontSize="small" />
+                </ListItemIcon>
+                Claim 50$ for your WunderPass NFT
               </MenuItem>
             </Link>
           )}

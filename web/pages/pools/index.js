@@ -161,29 +161,11 @@ export default function Pools(props) {
         <Container className={loadingCircle && 'blur'}>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
-              <div>
-                <div className="flex flex-row items-center">
-                  <Typography className=" text-2xl my-5 sm:text-4xl">
-                    Hello {user?.wunderId},
-                  </Typography>
-                </div>
-
-                <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 ">
-                  <CopyToClipboard
-                    text={user?.address}
-                    onCopy={() => handleSuccess('address copied!')}
-                  >
-                    <span className=" cursor-pointer text-md">
-                      <div className="flex flex-row items-center">
-                        <div className="truncate ...">{user?.address}</div>
-                        <MdContentCopy className="text-gray-500 ml-4" />
-                      </div>
-                    </span>
-                  </CopyToClipboard>
-                </div>
-              </div>
+              <Typography className=" text-2xl mt-5 sm:text-4xl">
+                Hello {user?.wunderId},
+              </Typography>
               <button
-                className="btn-kaico w-full my-4 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:mt-7 sm:py-0 "
+                className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
                 onClick={() => setOpen(true)}
               >
                 Create pool
