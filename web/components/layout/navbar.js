@@ -14,11 +14,11 @@ export default function Navbar(props) {
   const { asPath } = useRouter();
   const [loading, setLoading] = useState(true);
 
-  if (asPath === '/') return null;
-
   useEffect(() => {
     if (user.wunderId != null) setLoading(false);
   }, [user.wunderId]);
+
+  if (asPath === '/') return null;
 
   return (
     <>

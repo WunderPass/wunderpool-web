@@ -302,13 +302,14 @@ export default function usePool(userAddr, poolAddr = null) {
       }
     }
   };
+
   useEffect(() => {
     if (!version) return;
     setIsReady2(false);
     initialize2().then(() => {
       setIsReady2(true);
     });
-  }, [poolAddress, userIsMember, exists, version]);
+  }, [poolAddress, userIsMember]);
 
   useEffect(() => {
     setVersion(null);
