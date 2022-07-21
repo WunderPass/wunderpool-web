@@ -1,23 +1,11 @@
-import { useMemo } from 'react';
-
 export default function useWunderPass(config) {
   const { name, image, accountId, userAddress } = config;
-  const isSafari = useMemo(() => {
-    if (
-      typeof window !== 'undefined' &&
-      window?.navigator?.vendor &&
-      window?.navigator?.userAgent
-    ) {
-      return (
-        window.navigator.userAgent.toLowerCase().match(/safari/) &&
-        window.navigator.vendor.toLowerCase().match(/apple/)
-      );
-    }
-    return false;
-  }, [typeof window, window?.navigator?.vendor, window?.navigator?.userAgent]);
 
   // method: sign or smartContract
   const openPopup = (method) => {
+    const isSafari =
+      window.navigator.userAgent.toLowerCase().match(/safari/) &&
+      window.navigator.vendor.toLowerCase().match(/apple/);
     const popup = window.open(
       encodeURI(
         `${process.env.WUNDERPASS_URL}/${method}?name=${name}&imageUrl=${image}`
@@ -122,6 +110,5 @@ export default function useWunderPass(config) {
     sendSignatureRequest,
     smartContractTransaction,
     openPopup,
-    isSafari,
   };
 }
