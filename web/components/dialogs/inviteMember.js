@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import InitialsAvatar from '../utils/initialsAvatar';
+import Avatar from '/components/utils/avatar';
 
 export default function InviteMemberDialog(props) {
   const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
@@ -108,7 +108,11 @@ export default function InviteMemberDialog(props) {
                   spacing={2}
                   sx={{ height: '50px', width: '100%' }}
                 >
-                  <InitialsAvatar text={option.wunderId} separator="-" />
+                  <Avatar
+                    wunderId={option.wunderId ? option.wunderId : null}
+                    text={option.wunderId}
+                    separator="-"
+                  />
                   <Stack flexGrow={1} overflow="hidden">
                     <Typography
                       variant="subtitle1"

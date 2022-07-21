@@ -136,6 +136,7 @@ export default function Pool(props) {
                 {...props}
               />
               <PoolMembers
+                user={user}
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}
