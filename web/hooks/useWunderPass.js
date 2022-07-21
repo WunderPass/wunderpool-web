@@ -46,6 +46,7 @@ export default function useWunderPass(config) {
         }, 1000);
 
         window.addEventListener('message', (event) => {
+          console.log(event.origin, process.env.WUNDERPASS_URL);
           if (event.origin == process.env.WUNDERPASS_URL) {
             clearInterval(requestInterval);
 
@@ -87,6 +88,7 @@ export default function useWunderPass(config) {
         }, 1000);
 
         window.addEventListener('message', (event) => {
+          console.log(event.origin, process.env.WUNDERPASS_URL);
           if (event.origin == process.env.WUNDERPASS_URL) {
             clearInterval(requestInterval);
 
