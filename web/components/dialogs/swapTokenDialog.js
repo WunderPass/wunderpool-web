@@ -74,9 +74,10 @@ export default function SwapTokenDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
-      maxWidth="md"
       PaperProps={{
         style: { borderRadius: 12 },
       }}

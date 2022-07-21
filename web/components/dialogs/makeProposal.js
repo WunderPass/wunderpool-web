@@ -81,6 +81,8 @@ export default function makeProposal(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       className="rounded-2xl"
       open={open}
       onClose={handleClose}

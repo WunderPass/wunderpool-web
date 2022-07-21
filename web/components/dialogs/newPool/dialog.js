@@ -220,6 +220,8 @@ export default function NewPoolDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       className="flex rounded-2xl w-full justify-center"
       open={open}
       onClose={handleClose}

@@ -37,11 +37,12 @@ export default function TopUpAlert(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       className="rounded-xl"
       open={open || false}
       onClose={handleClose}
       TransitionComponent={Transition}
-      fullWidth
     >
       <DialogTitle sx={{ textAlign: 'center' }}>
         {user.usdBalance > 1 ? 'TopUp your Account' : 'TopUp Required'}

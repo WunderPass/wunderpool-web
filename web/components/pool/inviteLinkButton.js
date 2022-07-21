@@ -130,6 +130,7 @@ export default function InviteLinkButton(props) {
       </button>
       <Dialog
         fullWidth
+        maxWidth="sm"
         open={open}
         onClose={handleClose}
         PaperProps={{

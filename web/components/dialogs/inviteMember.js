@@ -71,6 +71,8 @@ export default function InviteMemberDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
       PaperProps={{

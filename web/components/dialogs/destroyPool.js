@@ -47,6 +47,8 @@ export default function DestroyPoolDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
       PaperProps={{
