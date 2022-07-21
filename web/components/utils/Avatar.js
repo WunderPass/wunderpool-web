@@ -1,13 +1,10 @@
 import ImageAvatar from '/components/utils/imageAvatar';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import { useState, useEffect } from 'react';
-import ape from '/public/poolPictures/ape.png';
-import FileBase64 from 'react-file-base64';
 import axios from 'axios';
 
 export default function Avatar(props) {
   const { tooltip, text, separator, wunderId, i } = props;
-
   const [hasPicture, setHasPicture] = useState(true);
 
   const checkIfPictureExists = () => {
@@ -34,7 +31,7 @@ export default function Avatar(props) {
   }, [wunderId]);
 
   return hasPicture ? (
-    <ImageAvatar wunderId={wunderId} />
+    <ImageAvatar wunderId={wunderId} tooltip={tooltip} />
   ) : (
     <InitialsAvatar
       tooltip={tooltip}

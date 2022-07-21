@@ -77,7 +77,7 @@ function PoolCard(props) {
                           wunderId={member.wunderId ? member.wunderId : null}
                           tooltip={`${
                             member.wunderId || 'External User'
-                          }: ${member.share.toString()}%`}
+                          }: ${member.share.toFixed(0)}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
                           separator="-"
                           color={['green', 'blue', 'red'][i % 3]}
@@ -166,9 +166,6 @@ export default function Pools(props) {
                   <Typography className=" text-2xl my-5 sm:text-4xl">
                     Hello {user?.wunderId},
                   </Typography>
-                  <div className="hidden sm:block ml-4 mb-2">
-                    <Avatar wunderId={user.wunderId} />
-                  </div>
                 </div>
 
                 <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 ">

@@ -4,9 +4,21 @@ import { HiOutlineLogout } from 'react-icons/hi';
 import PoolInvites from './navComponents/poolInvites';
 import MyPools from './navComponents/myPools';
 import News from './navComponents/news';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Avatar from '/components/utils/avatar';
+import Link from 'next/link';
 
 const navigation = (props) => {
   const { user } = props;
+  const [open, setOpen] = useState(false);
+  const animateFrom = { opacity: 0, y: -40 };
+  const animateTo = { opacity: 1, y: 0 };
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user.wunderId != null) setLoading(false);
+  }, [user.wunderId]);
 
   return (
     <div className="hidden sm:block w-full">
@@ -34,13 +46,55 @@ const navigation = (props) => {
           </div>
 
           <button
-            className="hidden sm:block text-2xl pl-2  hover:text-red-500"
-            onClick={user?.logOut}
+            className="hidden sm:block text-2xl pl-4  hover:text-red-500"
+            onClick={() => setOpen(!open)}
           >
-            <HiOutlineLogout />
+            {!loading && <Avatar wunderId={user.wunderId} tooltip={null} />}
           </button>
         </div>
       </ul>
+      {open && (
+        <div>
+          <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-kaico-blue right-0 border-t-2 border-t-white pl-8 shadow-xl text-right">
+            <motion.li
+              className="px-2 py-1 pt-2"
+              initial={animateFrom}
+              animate={animateTo}
+              transition={{ delay: 0.05 }}
+            >
+              <MyPools {...props} />
+            </motion.li>
+
+            <motion.li
+              initial={animateFrom}
+              animate={animateTo}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="px-2 py-1">
+                <a
+                  target="_blank"
+                  href={`${process.env.WUNDERPASS_URL}/profile`}
+                >
+                  Profile
+                </a>
+              </div>
+            </motion.li>
+
+            <motion.li
+              initial={animateFrom}
+              animate={animateTo}
+              transition={{ delay: 0.15 }}
+            >
+              <button
+                className="px-2 pb-2 py-1 hover:text-[#ff0000]"
+                onClick={user?.logOut}
+              >
+                Log out
+              </button>
+            </motion.li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
