@@ -1,21 +1,14 @@
-import {
-  Alert,
-  AlertTitle,
-  Container,
-  Dialog,
-  Divider,
-  Typography,
-} from '@mui/material';
+import { Alert, Container, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { currency, polyValueToUsd } from '/services/formatter';
+import { currency } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import usePool from '/hooks/usePool';
 import { ethers } from 'ethers';
 import { usdc } from '/services/formatter';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
-import TransactionDialog from '../../../components/utils/transactionDialog';
+import TransactionDialog from '/components/utils/transactionDialog';
 
 function InfoBlock({ label, value }) {
   return (
