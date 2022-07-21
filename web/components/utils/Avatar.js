@@ -8,7 +8,7 @@ export default function Avatar(props) {
   const [hasPicture, setHasPicture] = useState(true);
 
   const checkIfPictureExists = () => {
-    //if external User
+    //if external Userr
     if (wunderId == null) {
       setHasPicture(false);
       return;
