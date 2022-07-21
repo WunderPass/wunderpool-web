@@ -8,7 +8,6 @@ import {
   Tooltip,
   Typography,
   Alert,
-  AlertTitle,
 } from '@mui/material';
 import { useState } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
@@ -121,10 +120,8 @@ export default function ProposalCard(props) {
           </button>
           <TransactionDialog open={signing} onClose={handleClose}>
             {!wunderPool.closed && (
-              <Alert severity="warning">
-                <AlertTitle>
-                  After execution, no new members can join this Pool
-                </AlertTitle>
+              <Alert severity="warning" sx={{ alignItems: 'center' }}>
+                After execution, no new members can join this Pool
               </Alert>
             )}
           </TransactionDialog>
