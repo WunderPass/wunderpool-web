@@ -17,7 +17,10 @@ const navigation = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user.wunderId != null) setLoading(false);
+    if (user.wunderId != null) {
+      console.log(user.wunderId);
+      setLoading(false);
+    }
   }, [user.wunderId]);
 
   return (
@@ -49,7 +52,15 @@ const navigation = (props) => {
             className="hidden sm:block text-2xl pl-4  hover:text-red-500"
             onClick={() => setOpen(!open)}
           >
-            {!loading && <Avatar wunderId={user.wunderId} tooltip={null} />}
+            {!loading && (
+              <Avatar
+                wunderId={user.wunderId}
+                tooltip={null}
+                text={user.wunderId ? user.wunderId : '0-X'}
+                separator="-"
+                i={1}
+              />
+            )}
           </button>
         </div>
       </ul>
