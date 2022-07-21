@@ -9,6 +9,7 @@ import { usdc } from '/services/formatter';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
+import Head from 'next/head';
 
 function InfoBlock({ label, value }) {
   return (
@@ -222,47 +223,53 @@ export default function JoinPool(props) {
   }, [router.isReady, router.query.address]);
 
   return (
-    <Container className="flex justify-center items-center" maxWidth="xl">
-      <div className="flex flex-col container-white items-center justify-center mt-6">
-        <Typography className="text-md">Join Pool</Typography>
-        <Typography className="text-2xl text-kaico-blue">
-          {wunderPool.poolName}
-        </Typography>
-        <PoolStats
-          minInvest={minInvest}
-          maxInvest={maxInvest}
-          members={wunderPool.governanceToken?.holders?.length}
-          maxMembers={wunderPool.maxMembers}
-          totalBalance={wunderPool.totalBalance}
-        />
-        {wunderPool.closed && (
-          <Alert severity="warning" className="w-full">
-            This Pool is already closed
-          </Alert>
-        )}
-        {user?.loggedIn ? (
-          user?.usdBalance < 3 ? (
-            <TopUpRequired />
+    <>
+      <Head>
+        <title>Casama - Join {wunderPool.poolName}</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Container className="flex justify-center items-center" maxWidth="xl">
+        <div className="flex flex-col container-white items-center justify-center mt-6">
+          <Typography className="text-md">Join Pool</Typography>
+          <Typography className="text-2xl text-kaico-blue">
+            {wunderPool.poolName}
+          </Typography>
+          <PoolStats
+            minInvest={minInvest}
+            maxInvest={maxInvest}
+            members={wunderPool.governanceToken?.holders?.length}
+            maxMembers={wunderPool.maxMembers}
+            totalBalance={wunderPool.totalBalance}
+          />
+          {wunderPool.closed && (
+            <Alert severity="warning" className="w-full">
+              This Pool is already closed
+            </Alert>
+          )}
+          {user?.loggedIn ? (
+            user?.usdBalance < 3 ? (
+              <TopUpRequired />
+            ) : (
+              <InputJoinAmount
+                amount={amount}
+                minInvest={minInvest}
+                handleInput={handleInput}
+                errorMsg={errorMsg}
+                shareOfPool={shareOfPool}
+                handleSubmit={handleSubmit}
+              />
+            )
           ) : (
-            <InputJoinAmount
-              amount={amount}
-              minInvest={minInvest}
-              handleInput={handleInput}
-              errorMsg={errorMsg}
-              shareOfPool={shareOfPool}
-              handleSubmit={handleSubmit}
-            />
-          )
-        ) : (
-          <NotLoggedIn handleLogin={handleLogin} />
-        )}
-      </div>
-      <TransactionDialog
-        open={signing}
-        onClose={() => {
-          setSigning(false);
-        }}
-      />
-    </Container>
+            <NotLoggedIn handleLogin={handleLogin} />
+          )}
+        </div>
+        <TransactionDialog
+          open={signing}
+          onClose={() => {
+            setSigning(false);
+          }}
+        />
+      </Container>
+    </>
   );
 }

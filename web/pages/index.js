@@ -1,14 +1,12 @@
 import CreateYourWunderPass from '/components/auth/createYourWunderPass';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import CasamaIcon from '/public/casama-wht.svg';
-import { Dialog, LinearProgress, Stack } from '@mui/material';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-//import { FaFacebookF } from 'react-icons/fa';
 
 export default function Home(props) {
   const { user } = props;

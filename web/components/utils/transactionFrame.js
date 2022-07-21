@@ -1,7 +1,14 @@
-import useWunderPass from '/hooks/useWunderPass';
+import { useEffect, useState } from 'react';
 
 export default function TransactionFrame({ open }) {
-  const { isSafari } = useWunderPass({});
+  const [isSafari, setIsSafari] = useState(false);
+
+  useEffect(() => {
+    setIsSafari(
+      window.navigator.userAgent.toLowerCase().match(/safari/) &&
+        window.navigator.vendor.toLowerCase().match(/apple/)
+    );
+  }, []);
 
   return (
     <iframe
