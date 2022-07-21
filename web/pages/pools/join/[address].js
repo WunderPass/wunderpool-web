@@ -15,6 +15,7 @@ import { ethers } from 'ethers';
 import { usdc } from '/services/formatter';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
+import TransactionDialog from '../../../components/utils/transactionDialog';
 
 function InfoBlock({ label, value }) {
   return (
@@ -263,22 +264,12 @@ export default function JoinPool(props) {
           <NotLoggedIn handleLogin={handleLogin} />
         )}
       </div>
-      <Dialog
+      <TransactionDialog
         open={signing}
         onClose={() => {
           setSigning(false);
         }}
-        PaperProps={{
-          style: { borderRadius: 12 },
-        }}
-      >
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      </Dialog>
+      />
     </Container>
   );
 }

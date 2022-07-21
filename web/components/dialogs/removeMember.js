@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { Fragment, useState } from 'react';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import TransactionFrame from '../utils/transactionFrame';
 
 export default function RemoveMemberDialog(props) {
   const { open, setOpen, poolAddress, members, handleError, handleSuccess } =
@@ -69,14 +70,7 @@ export default function RemoveMemberDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }

@@ -1,20 +1,16 @@
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Input,
   InputAdornment,
-  InputLabel,
-  LinearProgress,
-  OutlinedInput,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import TransactionFrame from '/components/utils/transactionFrame';
 import { fundPool } from '/services/contract/pools';
 
 export default function FundPoolDialog(props) {
@@ -91,14 +87,7 @@ export default function FundPoolDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }
