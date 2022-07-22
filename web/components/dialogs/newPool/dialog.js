@@ -3,8 +3,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
-  Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
@@ -15,6 +13,7 @@ import NewPoolConfigStep from './configStep';
 import NewPoolInviteStep from './inviteStep';
 import NewPoolVotingStep from './votingStep';
 import NewPoolButtons from './buttons';
+import TransactionFrame from '/components/utils/transactionFrame';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
@@ -221,6 +220,8 @@ export default function NewPoolDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       className="flex rounded-2xl w-full justify-center"
       open={open}
       onClose={handleClose}
@@ -249,13 +250,7 @@ export default function NewPoolDialog(props) {
           />
         </DialogActions>
       )}
-      <iframe
-        className="w-auto"
-        id="fr"
-        name="transactionFrame"
-        height={loading ? '500' : '0'}
-        style={{ transition: 'height 300ms ease' }}
-      ></iframe>
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }

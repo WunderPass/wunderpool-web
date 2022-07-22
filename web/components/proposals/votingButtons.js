@@ -1,16 +1,13 @@
-import { Stack, Dialog, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BlockIcon from '@mui/icons-material/Block';
 import { useState, useEffect } from 'react';
+import TransactionDialog from '../utils/transactionDialog';
 
 export default function VotingButtons(props) {
   const { proposal, user, wunderPool, handleSuccess, handleError } = props;
   const [userHasVoted, setUserHasVoted] = useState(null);
   const [signing, setSigning] = useState(false);
-
-  const handleClose = () => {
-    setSigning(false);
-  };
 
   const handleVote = (mode) => {
     setSigning(true);
@@ -75,21 +72,12 @@ export default function VotingButtons(props) {
           No
         </button>
       </div>
-      <Dialog
+      <TransactionDialog
         open={signing}
-        onClose={handleClose}
-        PaperProps={{
-          style: { borderRadius: 12 },
+        onClose={() => {
+          setSigning(false);
         }}
-      >
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-        <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-      </Dialog>
+      />
     </>
   );
 }

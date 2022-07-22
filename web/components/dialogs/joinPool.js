@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Stack,
   Typography,
   Divider,
 } from '@mui/material';
@@ -13,6 +12,7 @@ import { useState } from 'react';
 import { currency, usdc, polyValueToUsd } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import { BiCheck } from 'react-icons/bi';
+import TransactionFrame from '/components/utils/transactionFrame';
 
 export default function JoinPoolDialog(props) {
   const {
@@ -93,6 +93,8 @@ export default function JoinPoolDialog(props) {
   return (
     <>
       <Dialog
+        fullWidth
+        maxWidth="sm"
         open={open}
         onClose={handleClose}
         PaperProps={{
@@ -215,13 +217,7 @@ export default function JoinPoolDialog(props) {
             </button>
           </DialogActions>
         )}
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height={loading ? '500' : '0'}
-          style={{ transition: 'height 300ms ease' }}
-        ></iframe>
+        <TransactionFrame open={loading} />
       </Dialog>
     </>
   );

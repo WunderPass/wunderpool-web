@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import TransactionFrame from '/components/utils/transactionFrame';
 import Avatar from '/components/utils/avatar';
 
 export default function InviteMemberDialog(props) {
@@ -70,6 +71,8 @@ export default function InviteMemberDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
       PaperProps={{
@@ -155,13 +158,7 @@ export default function InviteMemberDialog(props) {
           </button>
         </DialogActions>
       )}
-      <iframe
-        className="w-auto"
-        id="fr"
-        name="transactionFrame"
-        height={loading ? '500' : '0'}
-        style={{ transition: 'height 300ms ease' }}
-      ></iframe>
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }

@@ -13,6 +13,7 @@ import { useMemo, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import TokenInput from '../tokens/input';
 import { currency, round } from '/services/formatter';
+import TransactionDialog from '../utils/transactionDialog';
 
 export default function ApeForm(props) {
   const { setApe, wunderPool, handleSuccess, handleError } = props;
@@ -127,21 +128,7 @@ export default function ApeForm(props) {
             <button className="btn btn-default" disabled variant="contained">
               Submitting Proposal...
             </button>
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              PaperProps={{
-                style: { borderRadius: 12 },
-              }}
-            >
-              <iframe
-                className="w-auto"
-                id="fr"
-                name="transactionFrame"
-                height="500"
-              ></iframe>
-              <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-            </Dialog>
+            <TransactionDialog open={open} onClose={handleClose} />
           </>
         ) : (
           <button

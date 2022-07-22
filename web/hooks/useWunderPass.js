@@ -4,9 +4,8 @@ export default function useWunderPass(config) {
   // method: sign or smartContract
   const openPopup = (method) => {
     const isSafari =
-      navigator.userAgent.toLowerCase().match(/safari/) &&
-      navigator.vendor.toLowerCase().match(/apple/);
-
+      window.navigator.userAgent.toLowerCase().match(/safari/) &&
+      window.navigator.vendor.toLowerCase().match(/apple/);
     const popup = window.open(
       encodeURI(
         `${process.env.WUNDERPASS_URL}/${method}?name=${name}&imageUrl=${image}`
@@ -107,5 +106,9 @@ export default function useWunderPass(config) {
     });
   };
 
-  return { sendSignatureRequest, smartContractTransaction, openPopup };
+  return {
+    sendSignatureRequest,
+    smartContractTransaction,
+    openPopup,
+  };
 }

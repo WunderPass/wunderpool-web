@@ -16,15 +16,21 @@ export function fetchPoolTokensGamma(address) {
         const balance = await token.balanceOf(address);
         const decimals = await token.decimals();
         const formattedBalance = toEthString(balance, decimals);
-        const {
-          name = 'Unknown Token',
-          symbol = 'TOKEN',
+        const apiResponse = (
+          await axios({ url: `/api/tokens/show`, params: { address: addr } })
+        ).data;
+
+        let {
+          name,
+          symbol,
           price = 0,
           image_url,
           dollar_price = 0,
-        } = (
-          await axios({ url: `/api/tokens/show`, params: { address: addr } })
-        ).data;
+          tradable = false,
+        } = apiResponse;
+
+        name = name || (await token.name());
+        symbol = symbol || (await token.symbol());
 
         const usdValue = balance
           .mul(price)
@@ -43,6 +49,8 @@ export function fetchPoolTokensGamma(address) {
           price: price,
           dollarPrice: dollar_price,
           usdValue: usdValue / 100,
+          verified: Boolean(apiResponse),
+          tradable,
         };
       })
     );

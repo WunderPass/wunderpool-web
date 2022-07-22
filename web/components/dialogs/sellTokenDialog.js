@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dialog,
   DialogActions,
   DialogContent,
@@ -10,12 +11,20 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { ethers } from 'ethers';
+import TransactionFrame from '../utils/transactionFrame';
 
 export default function SellTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
     props;
-  const { address, decimals, formattedBalance, name, symbol, dollarPrice } =
-    token;
+  const {
+    address,
+    decimals,
+    formattedBalance,
+    name,
+    symbol,
+    dollarPrice,
+    tradable,
+  } = token;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -53,15 +62,25 @@ export default function SellTokenDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
-      maxWidth="md"
       PaperProps={{
         style: { borderRadius: 12 },
       }}
     >
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
+        {!tradable && (
+          <Alert
+            severity="warning"
+            sx={{ marginBottom: 3, alignItems: 'center' }}
+          >
+            Trading this token is not recommended by Casama. Proceed at your own
+            risk
+          </Alert>
+        )}
         <Typography>Price per token: {dollarPrice} $</Typography>
         <Typography>Tokens owned: {formattedBalance} </Typography>
         <TextField
@@ -107,14 +126,7 @@ export default function SellTokenDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }

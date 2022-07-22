@@ -5,14 +5,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  LinearProgress,
   Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { currency } from '../../services/formatter';
+import { currency } from '/services/formatter';
+import TransactionFrame from '/components/utils/transactionFrame';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
@@ -47,6 +47,8 @@ export default function DestroyPoolDialog(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleClose}
       PaperProps={{
@@ -62,7 +64,7 @@ export default function DestroyPoolDialog(props) {
         <Alert className="mb-1" severity="warning">
           This will create a Proposal to Liquidate the Pool
         </Alert>
-        {wunderPool.tokens.length > 1 && (
+        {wunderPool.tokens.filter((t) => t.balance > 0).length > 1 && (
           <Alert severity="error">
             Currently all tokens will be split amongst the members! If you only
             want to get USD please sell all tokens before liquidating the pool!
@@ -137,14 +139,7 @@ export default function DestroyPoolDialog(props) {
           </button>
         </DialogActions>
       )}
-      {loading && (
-        <iframe
-          className="w-auto"
-          id="fr"
-          name="transactionFrame"
-          height="500"
-        ></iframe>
-      )}
+      <TransactionFrame open={loading} />
     </Dialog>
   );
 }

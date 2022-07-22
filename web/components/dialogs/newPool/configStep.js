@@ -3,11 +3,13 @@ import {
   DialogContent,
   DialogContentText,
   Stack,
+  Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
 import { BsImage } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
+import HintLabel from '../../utils/hintLabel';
 import CurrencyInput from '/components/utils/currencyInput';
 
 export default function NewPoolConfigStep(props) {
@@ -248,9 +250,12 @@ export default function NewPoolConfigStep(props) {
           </div>
 
           <div>
-            <label className="label pb-2" htmlFor="value">
-              Governance token
-            </label>
+            <HintLabel
+              className="label pb-2"
+              htmlFor="value"
+              title="Governance Token Name"
+              hint="Your Pool will have a Governance Token which represents Votes in the Pool. The more you invest, the more Governance Tokens you receive. 1 Governance Token = 1 Vote"
+            />
             <input
               className="textfield py-4 mt-2"
               id="governance"
