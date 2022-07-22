@@ -19,6 +19,7 @@ function determineDeclined(
   votingThreshold,
   minYesVoters,
   memberCount,
+  deadline,
   address,
   id
 ) {
@@ -32,9 +33,14 @@ function determineDeclined(
       resolve(true);
     } else {
       const [wunderProposal] = initProposalEpsilon();
-      const { noVoters } = await wunderProposal.calculateVotes(address, id);
+      const { noVoters, yesVoters } = await wunderProposal.calculateVotes(
+        address,
+        id
+      );
       resolve(
-        ethers.BigNumber.from(memberCount).sub(noVoters).lt(minYesVoters)
+        ethers.BigNumber.from(memberCount).sub(noVoters).lt(minYesVoters) ||
+          (yesVoters.lt(minYesVoters) &&
+            deadline.lte(Math.floor(Number(new Date()) / 1000)))
       );
     }
   });
@@ -77,6 +83,7 @@ export function fetchPoolProposalsEpsilon(address) {
                 votingThreshold,
                 minYesVoters,
                 members.length,
+                deadline,
                 address,
                 id
               );

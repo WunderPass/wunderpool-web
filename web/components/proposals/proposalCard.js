@@ -108,11 +108,13 @@ export default function ProposalCard(props) {
         no={proposal.noVotes.toNumber()}
         total={proposal.totalVotes.toNumber()}
       />
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-row justify-center items-center">
         <VotingButtons {...props} />
         <div>
           <button
-            className={proposal.executable ? 'p-8 btn btn-warning ' : 'hidden'}
+            className={
+              proposal.executable ? 'p-8 btn btn-warning ml-2' : 'hidden'
+            }
             disabled={signing}
             onClick={executeProposal}
           >
