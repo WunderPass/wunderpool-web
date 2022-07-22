@@ -177,7 +177,7 @@ export default function JoinPool(props) {
         .join(amount, secret)
         .then(() => {
           user.fetchUsdBalance();
-          handleSuccess(`Joined Pool with $${currency(amount, {})}`);
+          handleSuccess(`Joined Pool with ${currency(amount, {})}`);
           loginCallback();
         })
         .catch((err) => {
