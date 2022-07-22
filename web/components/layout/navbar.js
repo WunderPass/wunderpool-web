@@ -39,7 +39,13 @@ export default function Navbar(props) {
                 </div>
                 <div className="sm:hidden">
                   {!loading && (
-                    <Avatar wunderId={user.wunderId} tooltip={user.wunderId} />
+                    <Avatar
+                      wunderId={user.wunderId}
+                      tooltip={null}
+                      text={user.wunderId ? user.wunderId : '0-X'}
+                      separator="-"
+                      i={1}
+                    />
                   )}
                 </div>
               </div>
