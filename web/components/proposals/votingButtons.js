@@ -1,4 +1,4 @@
-import { Tooltip } from '@mui/material';
+import { Tooltip, Typography } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BlockIcon from '@mui/icons-material/Block';
 import { useState, useEffect } from 'react';
@@ -60,6 +60,10 @@ export default function VotingButtons(props) {
     ) : (
       <button className="btn-vote-filled">No</button>
     );
+  }
+
+  if (proposal.deadline.lte(Math.floor(Number(new Date()) / 1000))) {
+    return <Typography>Voting Period has ended</Typography>;
   }
 
   return (
