@@ -181,7 +181,17 @@ async function formatPool(pool, user = null) {
       .reduce((a, b) => a + b, 0);
     const totalBalance = cashInTokens + usdBalance;
 
-    const governanceToken = await formatGovernanceToken(pool.pool_shares);
+    // const governanceToken = await formatGovernanceToken(pool.pool_shares);
+    // Dirty FIX ANFANG
+    if (totalBalance < 0.01) return null;
+    const governanceToken = {
+      name: pool?.pool_governance_token?.token_name,
+      symbol: pool?.pool_governance_token?.token_symbol,
+      totalSupply: pool.pool_members
+        .map((m) => m.pool_shares_balance)
+        .reduce((a, b) => a + b),
+    };
+    // Dirty FIX ENDE
     const members = await Promise.all(
       pool.pool_members.map(
         async (member) =>
@@ -224,6 +234,7 @@ export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
     axios({ url: `/api/proxy/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
+        console.log(res.data);
         const pools = await Promise.all(
           res.data
             .filter((pool) => pool.active)

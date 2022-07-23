@@ -54,7 +54,7 @@ export default function JoinPoolDialog(props) {
       .join(amount)
       .then((res) => {
         user.fetchUsdBalance();
-        handleSuccess(`Joined Pool with $${currency(amount, {})}`);
+        handleSuccess(`Joined Pool with ${currency(amount, {})}`);
         window.location.reload();
       })
       .catch((err) => {
@@ -76,7 +76,7 @@ export default function JoinPoolDialog(props) {
     setAmount(value);
     if (float && minInvest.gt(float * 1000000)) {
       setErrorMsg(
-        `Minimum of $${currency(
+        `Minimum of ${currency(
           polyValueToUsd(minInvest),
           {}
         )} required for the Pool`
