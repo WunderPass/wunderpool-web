@@ -99,7 +99,7 @@ export default function TokenInput(props) {
               sx={{ height: '50px', width: '100%' }}
             >
               <img
-                width="50px"
+                className="w-8 sm:w-12"
                 src={option.image_url || '/favicon.ico'}
                 alt="TKN"
               />
@@ -118,10 +118,18 @@ export default function TokenInput(props) {
                   textOverflow="ellipsis"
                   overflow="hidden"
                 >
-                  {option.address}
+                  <div className="hidden sm:block">{option.address}</div>
+                  <div className="block sm:hidden">
+                    {currency(option.dollar_price, {})}
+                  </div>
                 </Typography>
               </Stack>
-              <Typography variant="h6" textAlign="end" whiteSpace="nowrap">
+              <Typography
+                className="hidden sm:block"
+                variant="h6"
+                textAlign="end"
+                whiteSpace="nowrap"
+              >
                 {currency(option.dollar_price, {})}
               </Typography>
             </Stack>
