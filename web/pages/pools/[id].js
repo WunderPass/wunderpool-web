@@ -10,12 +10,15 @@ import PoolMembers from '/components/pool/members';
 import LoadingCircle from '/components/utils/loadingCircle';
 import Head from 'next/head';
 import { currency } from '/services/formatter';
+import { fetchPoolName } from '/services/contract/pools';
+import { usdcBalanceOf } from '/services/contract/token';
 
 export default function Pool(props) {
   const router = useRouter();
   const {
     setupPoolListener,
     user,
+    metaTagInfo,
     tokenAddedEvent,
     votedEvent,
     newProposalEvent,
@@ -105,7 +108,8 @@ export default function Pool(props) {
     <>
       <Head>
         <title>
-          Casama - {name} - {currency(wunderPool.totalBalance, {})}
+          Casama - {metaTagInfo.name} -{' '}
+          {currency(wunderPool.totalBalance || metaTagInfo.balance, {})}
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -195,4 +199,16 @@ export default function Pool(props) {
       </Container>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const address = context.query.id;
+  const name = await fetchPoolName(address);
+  const balance = (await usdcBalanceOf(address)).toString();
+
+  return {
+    props: {
+      metaTagInfo: { name, balance },
+    },
+  };
 }
