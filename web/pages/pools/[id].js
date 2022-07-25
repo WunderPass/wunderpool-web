@@ -22,6 +22,7 @@ export default function Pool(props) {
     tokenAddedEvent,
     votedEvent,
     newProposalEvent,
+    newMemberEvent,
     proposalExecutedEvent,
     resetEvents,
   } = props;
@@ -75,6 +76,13 @@ export default function Pool(props) {
     }
     resetEvents();
   }, [tokenAddedEvent]);
+
+  useEffect(() => {
+    if (!address || !user.address) return;
+    if (!newMemberEvent) return;
+    wunderPool.determineGovernanceToken();
+    resetEvents();
+  }, [newMemberEvent]);
 
   useEffect(() => {
     if (!address || !user.address) return;

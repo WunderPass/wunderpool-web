@@ -8,12 +8,14 @@ export default function usePoolListener(handleInfo) {
   const [userAddress, setUserAddress] = useState(null);
   const [votedEvent, setVotedEvent] = useState(null);
   const [newProposalEvent, setNewProposalEvent] = useState(null);
+  const [newMemberEvent, setNewMemberEvent] = useState(null);
   const [tokenAddedEvent, setTokenAddedEvent] = useState(null);
   const [proposalExecutedEvent, setProposalExecutedEvent] = useState(null);
 
   const reset = () => {
     setVotedEvent(null);
     setNewProposalEvent(null);
+    setNewMemberEvent(null);
     setTokenAddedEvent(null);
     setProposalExecutedEvent(null);
   };
@@ -66,6 +68,7 @@ export default function usePoolListener(handleInfo) {
           {}
         )}`
       );
+      setNewMemberEvent({ address, stake });
     });
 
     wunderPool.on('Voted', async (proposalId, voter, mode) => {
@@ -124,6 +127,7 @@ export default function usePoolListener(handleInfo) {
     setupPoolListener,
     votedEvent,
     newProposalEvent,
+    newMemberEvent,
     tokenAddedEvent,
     proposalExecutedEvent,
     reset,
