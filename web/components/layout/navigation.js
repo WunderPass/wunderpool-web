@@ -18,7 +18,6 @@ const navigation = (props) => {
 
   useEffect(() => {
     if (user.wunderId != null) {
-      console.log(user.wunderId);
       setLoading(false);
     }
   }, [user.wunderId]);

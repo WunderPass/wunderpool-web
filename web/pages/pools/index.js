@@ -18,10 +18,40 @@ import Avatar from '/components/utils/avatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
 import LoadingCircle from '/components/utils/loadingCircle';
 import InitialsAvatar from '/components/utils/initialsAvatar';
+import axios from 'axios';
+
 
 function PoolCard(props) {
   const { pool } = props;
+  const [image, setImage] = useState(null)
+  const [hasPicture, setHasPicture] = useState(null)
+
   const members = pool.members;
+
+  const getImage = () => {
+    setImage(`/api/proxy/pools/getImage?poolAddress=${pool.address}`)
+  };
+
+  const checkIfPictureExists = () => {
+    axios({
+      url: `/api/proxy/pools/getImage?poolAddress=${pool.address}`,
+    }).then((res) => {
+      if (typeof res.data != typeof '') {
+        setHasPicture(false);
+        return;
+      }
+    });
+    setHasPicture(true);
+  };
+
+  useEffect(() => {
+    console.log(pool)
+    if (pool.address != null) {
+      getImage();
+      checkIfPictureExists();
+    }
+  }, [pool.address])
+
 
   return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
@@ -33,7 +63,14 @@ function PoolCard(props) {
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <Typography className="text-md">{pool.name}</Typography>
-            <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
+            <div className={`bg-white hover:bg-[#ededed] rounded-md border-2 border-kaico-extra-light-blue text-md font-semibold cursor-pointer${!hasPicture && ` p-6`}`}>
+              {hasPicture && <img
+                className="object-scale-down w-12 h-12 rounded-md"
+                src={image && image}
+                type="file"
+
+              />}
+            </div>
           </div>
           <Typography className="text-lg pt-3 font-semibold">
             {currency(pool.totalBalance, {})}
@@ -75,9 +112,8 @@ function PoolCard(props) {
                       return (
                         <Avatar
                           wunderId={member.wunderId ? member.wunderId : null}
-                          tooltip={`${
-                            member.wunderId || 'External User'
-                          }: ${member.share.toFixed(0)}%`}
+                          tooltip={`${member.wunderId || 'External User'
+                            }: ${member.share.toFixed(0)}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
                           separator="-"
                           color={['green', 'blue', 'red'][i % 3]}
@@ -140,7 +176,7 @@ export default function Pools(props) {
 
   const pageSize = 4;
 
-  useEffect(() => {}, [user]);
+  useEffect(() => { }, [user]);
 
   useEffect(() => {
     setLoadingCircle(!user.isReady);

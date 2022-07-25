@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAlert } from 'react-alert';
@@ -10,19 +10,79 @@ import { BsLink45Deg } from 'react-icons/bs';
 import { BsImage } from 'react-icons/bs';
 import { FaLongArrowAltDown } from 'react-icons/fa';
 import Link from 'next/link';
-import Image from 'next/image';
-import ape from '/public/poolPictures/ape.png';
 import { Typography, Collapse, Divider, Box } from '@mui/material';
+import axios from 'axios';
+const FormData = require('form-data');
+
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
+  const [image, setImage] = useState(null)
+  const [imageUrl, setImageUrl] = useState(null)
+  const [hasPicture, setHasPicture] = useState(false)
+  const [hideButton, setHideButton] = useState(true)
+
   const alert = useAlert();
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
   };
+
+  const uploadToClient = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const i = event.target.files[0];
+      setImage(i);
+      setImageUrl(URL.createObjectURL(i));
+      setHasPicture(true);
+      setHideButton(false)
+    }
+  };
+
+  const uploadToServer = async () => {
+    const formData = new FormData()
+    formData.append("pool_image", image)
+    formData.append("poolAddress", address)
+    axios({
+      method: 'post',
+      url: '/api/proxy/pools/setImage',
+      data: formData,
+    })
+      .then(() => {
+        setHideButton(true)
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const getImage = () => {
+    setImage(`/api/proxy/pools/getImage?poolAddress=${address}`)
+  };
+
+  const checkIfPictureExists = () => {
+    axios({
+      url: `/api/proxy/pools/getImage?poolAddress=${address}`,
+    }).then((res) => {
+      if (typeof res.data != typeof '') {
+        setHasPicture(false);
+        return;
+      }
+    });
+    setHasPicture(true);
+  };
+
+  useEffect(() => {
+    if (address != null) {
+      getImage();
+      checkIfPictureExists();
+    }
+  }, [address])
+
+  useEffect(() => {
+    console.log(image)
+  }, [image])
 
   return (
     <>
@@ -34,23 +94,51 @@ export default function PoolHeader(props) {
           <Typography className="opacity-30">Add Pool banner image</Typography>
         </div>
         <div className="flex flex-col container-white w-full">
-          {false ? (
-            <div className="flex-col w-20 container-image-round -mt-14 rounded-full ">
-              <Image
-                src={ape}
-                alt="poolIcon"
-                layout="responsive"
-                className="rounded-full"
+          {hasPicture ? (
+
+            <div className="flex-col w-20 container-image-round -mt-14 rounded-full " type="file">
+              <label htmlFor="fileUpload" className="cursor-pointer">
+
+                <img
+                  className="object-cover min-w-full min-h-full rounded-full"
+                  src={imageUrl ? imageUrl : image}
+                  type="file"
+
+                />
+              </label>
+
+              <input
+                className="hidden"
+                id="fileUpload"
+                type="file"
+                name="myImage"
+                accept="image/*"
+                onChange={uploadToClient}
               />
             </div>
           ) : (
-            <div className="flex-col w-20 container-image-round -mt-14 rounded-full items-center justify-center bg-white cursor-pointer">
-              <div className="flex items-center justify-center w-full bg-white rounded-full">
-                <BsImage className="text-kaico-light-blue text-4xl m-5 bg-white " />
-              </div>
+            <div className="flex-col w-20 container-image-round -mt-14 rounded-full items-center justify-center bg-white ">
+              <label htmlFor="fileUpload">
+                <div className="flex items-center justify-center w-full bg-white rounded-full cursor-pointer" type="file"
+                >
+                  <BsImage className="text-kaico-light-blue text-4xl m-5 bg-white " />
+
+                </div>
+              </label>
+              <input
+                className="hidden"
+                id="fileUpload"
+                type="file"
+                name="myImage"
+                accept="image/*"
+                onChange={uploadToClient}
+              />
             </div>
           )}
           <div className="flex flex-row justify-between">
+            <button onClick={uploadToServer} className={hideButton ? "hidden" : ""}>
+              SAVE
+            </button>
             <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
               {name}
             </Typography>
