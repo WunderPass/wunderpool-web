@@ -10,7 +10,7 @@ import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
 import Head from 'next/head';
-import { fetchPoolName } from '../../../services/contract/pools';
+import { fetchPoolName } from '/services/contract/pools';
 
 function InfoBlock({ label, value }) {
   return (
@@ -227,7 +227,7 @@ export default function JoinPool(props) {
       wunderPool.setPoolAddress(router.query.address);
       wunderPool.setUserAddress(user.address);
     }
-  }, [router.isReady, router.query.address]);
+  }, [router.isReady, router.query.address, user.address]);
 
   return (
     <>
