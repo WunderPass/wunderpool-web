@@ -33,7 +33,7 @@ export default function PoolMembers(props) {
       );
       setMembers(resolvedMembers);
     }
-  }, [governanceToken]);
+  }, [governanceToken?.holders?.length]);
 
   return isReady ? (
     <div className="md:ml-4 w-full">

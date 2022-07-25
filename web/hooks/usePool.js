@@ -366,6 +366,7 @@ export default function usePool(userAddr, poolAddr = null) {
     determineTokens: determinePoolTokens,
     determineNfts: determinePoolNfts,
     determineProposals: determinePoolProposals,
+    determineGovernanceToken: determinePoolGovernanceToken,
     determineBalance: determineUsdcBalance,
     determineShareholderAgreement,
   };
