@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { toEthString, currency, polyValueToUsd } from '../services/formatter';
 import { initPoolSocket } from '/services/contract/init';
