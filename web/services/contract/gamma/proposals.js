@@ -52,7 +52,7 @@ export function fetchPoolProposalsGamma(address) {
         const declined = noVotes.mul(2).gte(totalVotes);
 
         return {
-          id: id,
+          id: id.toNumber(),
           title,
           description,
           transactionCount,
