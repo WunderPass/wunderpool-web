@@ -10,6 +10,7 @@ import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
 import Head from 'next/head';
+import { fetchPoolName } from '../../../services/contract/pools';
 
 function InfoBlock({ label, value }) {
   return (
@@ -127,8 +128,14 @@ function InputJoinAmount(props) {
 
 export default function JoinPool(props) {
   const router = useRouter();
-  const { setupPoolListener, user, handleSuccess, handleInfo, handleError } =
-    props;
+  const {
+    setupPoolListener,
+    user,
+    metaTagInfo,
+    handleSuccess,
+    handleInfo,
+    handleError,
+  } = props;
   const [address, setAddress] = useState(null);
   const [amount, setAmount] = useState('');
   const [secret, setSecret] = useState(null);
@@ -225,7 +232,7 @@ export default function JoinPool(props) {
   return (
     <>
       <Head>
-        <title>Casama - Join {wunderPool.poolName}</title>
+        <title>Casama - Join {metaTagInfo.name}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container className="flex justify-center items-center" maxWidth="xl">
@@ -272,4 +279,15 @@ export default function JoinPool(props) {
       </Container>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const address = context.query.address;
+  const name = await fetchPoolName(address);
+
+  return {
+    props: {
+      metaTagInfo: { name },
+    },
+  };
 }

@@ -69,10 +69,18 @@ export default function VotingButtons(props) {
   return (
     <>
       <div className="flex flex-row justify-center mr-2">
-        <button className="bg-black btn-vote" onClick={() => handleVote(1)}>
+        <button
+          disabled={signing}
+          className="bg-black btn-vote"
+          onClick={() => handleVote(1)}
+        >
           Yes
         </button>
-        <button className="btn-vote" onClick={() => handleVote(2)}>
+        <button
+          disabled={signing}
+          className="btn-vote"
+          onClick={() => handleVote(2)}
+        >
           No
         </button>
       </div>
