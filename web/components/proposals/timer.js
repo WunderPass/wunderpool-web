@@ -19,7 +19,7 @@ const Timer = (props) => {
     const days = Math.floor(millis / 60 / 60 / 24);
 
     if (days >= 1) {
-      return `${days}`;
+      return `${Math.round(millis / 60 / 60 / 24)}`;
     } else if (millis >= 1) {
       return `${formatDecimals(hours)}:${formatDecimals(
         minutes
