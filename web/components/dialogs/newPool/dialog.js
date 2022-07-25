@@ -3,6 +3,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
@@ -14,6 +15,7 @@ import NewPoolInviteStep from './inviteStep';
 import NewPoolVotingStep from './votingStep';
 import NewPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
+import { currency } from '/services/formatter';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
@@ -21,6 +23,7 @@ export default function NewPoolDialog(props) {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [disabled, setDisabled] = useState(true);
+  const [retry, setRetry] = useState(false);
   const router = useRouter();
 
   const [poolName, setPoolName] = useState('');
@@ -118,6 +121,7 @@ export default function NewPoolDialog(props) {
     setWaitingForPool(false);
     setLoading(false);
     setStep(1);
+    setRetry(false);
     setDisabled(true);
     setPoolName('');
     setPoolDescription('');
@@ -146,6 +150,7 @@ export default function NewPoolDialog(props) {
   };
 
   const submit = () => {
+    setRetry(false);
     setStep((val) => val + 1);
     setLoading(true);
     setWaitingForPool(true);
@@ -185,6 +190,8 @@ export default function NewPoolDialog(props) {
           });
       })
       .catch((err) => {
+        setLoading(false);
+        setRetry(true);
         handleError(err);
         setWaitingForPool(false);
       });
@@ -236,10 +243,20 @@ export default function NewPoolDialog(props) {
         {step === 1 && <NewPoolConfigStep {...configProps} />}
         {step === 2 && <NewPoolVotingStep {...votingProps} />}
         {step === 3 && <NewPoolInviteStep {...inviteProps} />}
+        {waitingForPool && (
+          <div className="flex flex-row justify-between items-center gap-1 w-full">
+            <Typography className="text-md" color="GrayText">
+              {poolName}
+            </Typography>
+            <Typography className="text-md" color="GrayText">
+              {currency(value, {})}
+            </Typography>
+          </div>
+        )}
+        {retry &&
+          'We could not create your Pool. This could be due to Blockchain issues. Do you want to try again?'}
       </DialogContent>
-      {waitingForPool ? (
-        <></>
-      ) : (
+      {!waitingForPool && (
         <DialogActions className="flex items-center justify-center mx-4">
           <NewPoolButtons
             step={step}
@@ -247,6 +264,7 @@ export default function NewPoolDialog(props) {
             disabled={disabled}
             setStep={setStep}
             submit={submit}
+            retry={retry}
           />
         </DialogActions>
       )}
