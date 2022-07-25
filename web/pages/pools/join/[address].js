@@ -141,6 +141,7 @@ export default function JoinPool(props) {
   const [secret, setSecret] = useState(null);
   const [signing, setSigning] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [invalidLink, setInvalidLink] = useState(false);
   const wunderPool = usePool(user.address, address);
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
@@ -188,8 +189,11 @@ export default function JoinPool(props) {
           loginCallback();
         })
         .catch((err) => {
-          console.log(err);
-          handleError('Could not join the Pool');
+          setSigning(false);
+          if (err == 'Not On Whitelist') setInvalidLink(true);
+          handleError(
+            `Could not join the Pool${typeof err == 'string' ? `: ${err}` : ''}`
+          );
         });
     }, 10);
   };
@@ -249,8 +253,14 @@ export default function JoinPool(props) {
             totalBalance={wunderPool.totalBalance}
           />
           {wunderPool.closed && (
-            <Alert severity="warning" className="w-full">
+            <Alert severity="warning" className="w-full items-center my-1">
               This Pool is already closed
+            </Alert>
+          )}
+          {invalidLink && (
+            <Alert severity="error" className="w-full items-center my-1">
+              This Link has most likely expired. Please ask the Pool Members for
+              a new Link
             </Alert>
           )}
           {user?.loggedIn ? (

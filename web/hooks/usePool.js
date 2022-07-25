@@ -227,9 +227,11 @@ export default function usePool(userAddr, poolAddr = null) {
     setPoolGovernanceToken(tkn);
   };
 
-  const determinePoolProposals = async () => {
+  const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
-    setPoolProposals(await fetchPoolProposals(poolAddress, version.number));
+    setPoolProposals(
+      await fetchPoolProposals(poolAddress, (vers || version).number)
+    );
   };
 
   const getTransactionData = async (id, transactionCount) => {
@@ -298,7 +300,7 @@ export default function usePool(userAddr, poolAddr = null) {
       await determinePoolGovernanceToken(vers);
       if (userIsMember === true) {
         await determinePoolNfts();
-        await determinePoolProposals();
+        await determinePoolProposals(vers);
       }
     }
   };
