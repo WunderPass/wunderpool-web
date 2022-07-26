@@ -290,11 +290,19 @@ export default function JoinPool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.address;
-  const name = await fetchPoolName(address);
+  try {
+    const name = await fetchPoolName(address);
 
-  return {
-    props: {
-      metaTagInfo: { name },
-    },
-  };
+    return {
+      props: {
+        metaTagInfo: { name },
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        metaTagInfo: { name: 'Liquidated Pool' },
+      },
+    };
+  }
 }

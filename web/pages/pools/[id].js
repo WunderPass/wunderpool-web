@@ -25,6 +25,7 @@ export default function Pool(props) {
     newMemberEvent,
     proposalExecutedEvent,
     resetEvents,
+    handleInfo,
   } = props;
   const [address, setAddress] = useState(null);
   const [name, setName] = useState('');
@@ -46,6 +47,7 @@ export default function Pool(props) {
           setLoading(false);
         }
       } else if (wunderPool.exists === false) {
+        handleInfo('Pool was liquidated');
         router.push('/pools');
       }
     }
@@ -53,6 +55,7 @@ export default function Pool(props) {
 
   useEffect(() => {
     if (wunderPool.liquidated) {
+      handleInfo('Pool was liquidated');
       router.push('/pools');
     }
   }, [wunderPool.liquidated]);
@@ -210,12 +213,20 @@ export default function Pool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.id;
-  const name = await fetchPoolName(address);
-  const balance = (await usdcBalanceOf(address)).toString();
+  try {
+    const name = await fetchPoolName(address);
+    const balance = (await usdcBalanceOf(address)).toString();
 
-  return {
-    props: {
-      metaTagInfo: { name, balance },
-    },
-  };
+    return {
+      props: {
+        metaTagInfo: { name, balance },
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        metaTagInfo: { name: 'Liquidated Pool', balance: '0' },
+      },
+    };
+  }
 }
