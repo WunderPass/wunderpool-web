@@ -53,12 +53,12 @@ function WunderPool({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <meta name="application-name" content="Casama" />
         <meta
           name="description"
           content="Pool capital with your friends, vote on crypto plays and make bank together!"
         />
-
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#5F45FD" />
         <link rel="apple-touch-icon" href="/images/touch/homescreen512.png" />
         <link
           rel="apple-touch-icon"
@@ -75,28 +75,12 @@ function WunderPool({ Component, pageProps }) {
           sizes="192x192"
           href="/images/touch/homescreen192.png"
         />
-        <link rel="shortcut icon" href="/favicon.ico" />
-
-        <meta name="twitter:card" content="Casama" />
-        <meta name="twitter:url" content="https://app.casama.io" />
-        <meta name="twitter:title" content="Casama" />
-        <meta
-          name="twitter:description"
-          content="Pool capital with your friends, vote on crypto plays and make bank together!"
-        />
         <meta
           name="twitter:image"
           content="https://app.casama.io/images/touch/homescreen192.png"
         />
         <meta name="twitter:creator" content="@casama_io" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Casama" />
-        <meta
-          property="og:description"
-          content="Pool capital with your friends, vote on crypto plays and make bank together!"
-        />
-        <meta property="og:site_name" content="Casama" />
-        <meta property="og:url" content="https://app.casama.io" />
         <meta
           property="og:image"
           content="https://app.casama.io/images/touch/homescreen512.png"

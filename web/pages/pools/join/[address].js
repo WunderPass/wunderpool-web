@@ -237,7 +237,6 @@ export default function JoinPool(props) {
     <>
       <Head>
         <title>Casama - Join {metaTagInfo.name}</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container className="flex justify-center items-center" maxWidth="xl">
         <div className="flex flex-col container-white items-center justify-center mt-6">

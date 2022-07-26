@@ -119,7 +119,6 @@ export default function Pool(props) {
           Casama - {metaTagInfo.name} -{' '}
           {currency(wunderPool.totalBalance || metaTagInfo.balance, {})}
         </title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       {loadingCircle && <LoadingCircle />}
       <Container
