@@ -1,6 +1,5 @@
 import {
   Box,
-  Collapse,
   Divider,
   IconButton,
   Skeleton,
@@ -8,129 +7,102 @@ import {
   Tooltip,
   Typography,
   Alert,
+  Dialog,
+  DialogContent,
 } from '@mui/material';
 import { useState } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
 import { ethers } from 'ethers';
 import { decodeParams } from '/services/formatter';
 import VotingResults from '/components/proposals/votingResults';
-
 import VotingButtons from './votingButtons';
 import Timer from '/components/proposals/timer';
 import TransactionDialog from '../utils/transactionDialog';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import ShareIcon from '@mui/icons-material/Share';
+import { handleShare } from '../../services/shareLink';
 
-export default function ProposalCard(props) {
+function OpenProposalDialog(props) {
   const {
+    open,
+    handleOpen,
     proposal,
+    signing,
+    executeProposal,
+    handleClose,
     wunderPool,
-    user,
-    openProposal,
-    setOpenProposal,
+    loading,
+    transactionData,
     handleSuccess,
-    handleError,
   } = props;
-  const [loading, setLoading] = useState(false);
-  const [transactionData, setTransactionData] = useState(null);
-  const [signing, setSigning] = useState(false);
-
-  const handleClose = () => {
-    setSigning(false);
-    setLoading(false);
-  };
-
-  const handleOpen = () => {
-    if (openProposal === proposal.id) {
-      setOpenProposal(null);
-    } else {
-      setOpenProposal(proposal.id);
-      setLoading(true);
-      wunderPool
-        .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
-        .then((res) => {
-          setLoading(false);
-          setTransactionData(res);
-        });
-    }
-  };
-
-  const executeProposal = () => {
-    setSigning(true);
-    wunderPool
-      .execute(proposal.id)
-      .then((res) => {
-        console.log('LiqProp', res);
-        handleClose(false);
-        if (res) {
-          handleSuccess('Pool liquidated');
-          user.fetchUsdBalance();
-          user.fetchPools();
-        } else {
-          handleSuccess(`Proposal "${proposal.title}" executed`);
-          wunderPool.determineProposals();
-          wunderPool.determineTokens();
-          wunderPool.determineBalance();
-        }
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setSigning(false);
-      });
-  };
 
   return (
-    <div
-      className="container-gray mb-6"
-      style={{
-        gridColumn: openProposal === proposal.id ? '1 / 3' : '',
+    <Dialog
+      open={open}
+      onClose={handleOpen}
+      fullWidth
+      maxWidth="md"
+      className="flex justify-center"
+      PaperProps={{
+        style: { borderRadius: 12, maxWidth: '95vw', width: '500px' },
       }}
     >
-      <div className="flex flex-row items-center">
-        <Typography className="text-xl ">{proposal.title}</Typography>
-        <Tooltip title="Show details">
-          <IconButton color="info" onClick={handleOpen}>
-            <LoupeIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-
-      <Typography className="font-light text-sm opacity-50 mt-4  text-ellipsis  overflow-hidden">
-        {proposal.description}
-      </Typography>
-
-      <div className="mt-4 mb-8 ">
-        {!proposal.executed && !proposal.declined && <Timer {...props} />}
-      </div>
-
-      <VotingResults
-        yes={proposal.yesVotes.toNumber()}
-        no={proposal.noVotes.toNumber()}
-        total={proposal.totalVotes.toNumber()}
-      />
-      <div className="flex flex-row justify-center items-center">
-        <VotingButtons {...props} />
-        <div>
-          <button
-            className={
-              proposal.executable ? 'p-8 btn btn-warning ml-2' : 'hidden'
+      <DialogContent className="container-gray">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography className="text-xl ">{proposal.title}</Typography>
+          <IconButton
+            onClick={() =>
+              handleShare(
+                location.href,
+                `Look at this Proposal: ${proposal.title}`,
+                proposal.description,
+                handleSuccess
+              )
             }
-            disabled={signing}
-            onClick={executeProposal}
           >
-            Execute
-          </button>
-          <TransactionDialog open={signing} onClose={handleClose}>
-            {!wunderPool.closed && (
-              <Alert severity="warning" sx={{ alignItems: 'center' }}>
-                After execution, no new members can join this Pool
-              </Alert>
-            )}
-          </TransactionDialog>
+            <ShareIcon className="text-kaico-blue" />
+          </IconButton>
+        </Stack>
+
+        <Typography className="font-light text-sm opacity-50 mt-4 text-ellipsis overflow-hidden">
+          {proposal.description}
+        </Typography>
+
+        <div className="mt-4 mb-8">
+          {!proposal.executed && !proposal.declined && <Timer {...props} />}
         </div>
-      </div>
-      <Collapse className="mt-2" in={openProposal === proposal.id}>
-        <Stack spacing={1}>
+
+        <VotingResults
+          yes={proposal.yesVotes.toNumber()}
+          no={proposal.noVotes.toNumber()}
+          total={proposal.totalVotes.toNumber()}
+        />
+        <div className="flex flex-row justify-center items-center">
+          <VotingButtons {...props} />
+          <div>
+            <button
+              className={
+                proposal.executable ? 'p-8 btn btn-warning ml-2' : 'hidden'
+              }
+              disabled={signing}
+              onClick={executeProposal}
+            >
+              Execute
+            </button>
+            <TransactionDialog open={signing} onClose={handleClose}>
+              {!wunderPool.closed && (
+                <Alert severity="warning" sx={{ alignItems: 'center' }}>
+                  After execution, no new members can join this Pool
+                </Alert>
+              )}
+            </TransactionDialog>
+          </div>
+        </div>
+        <Stack spacing={1} mt={2}>
           <Divider />
           <Typography
             variant="subtitle1"
@@ -178,7 +150,7 @@ export default function ProposalCard(props) {
             )}
           </Typography>
 
-          {loading ? (
+          {/* {loading ? (
             <Skeleton
               variant="rectangular"
               width="100%"
@@ -262,9 +234,154 @@ export default function ProposalCard(props) {
                   );
                 })}
             </>
-          )}
+          )} */}
         </Stack>
-      </Collapse>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ClosedProposal(props) {
+  const {
+    proposal,
+    handleOpen,
+    signing,
+    executeProposal,
+    handleClose,
+    wunderPool,
+  } = props;
+
+  return (
+    <div className="container-gray mb-6">
+      <div className="flex flex-row items-center">
+        <Typography className="text-xl ">{proposal.title}</Typography>
+        <Tooltip title="Show details">
+          <IconButton color="info" onClick={handleOpen}>
+            <LoupeIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+
+      <Typography className="font-light text-sm opacity-50 mt-4  text-ellipsis  overflow-hidden">
+        {proposal.description}
+      </Typography>
+
+      <div className="mt-4 mb-8 ">
+        {!proposal.executed && !proposal.declined && <Timer {...props} />}
+      </div>
+
+      <VotingResults
+        yes={proposal.yesVotes.toNumber()}
+        no={proposal.noVotes.toNumber()}
+        total={proposal.totalVotes.toNumber()}
+      />
+      <div className="flex flex-row justify-center items-center">
+        <VotingButtons {...props} />
+        <div>
+          <button
+            className={
+              proposal.executable ? 'p-8 btn btn-warning ml-2' : 'hidden'
+            }
+            disabled={signing}
+            onClick={executeProposal}
+          >
+            Execute
+          </button>
+          <TransactionDialog open={signing} onClose={handleClose}>
+            {!wunderPool.closed && (
+              <Alert severity="warning" sx={{ alignItems: 'center' }}>
+                After execution, no new members can join this Pool
+              </Alert>
+            )}
+          </TransactionDialog>
+        </div>
+      </div>
     </div>
+  );
+}
+
+export default function ProposalCard(props) {
+  const {
+    proposal,
+    wunderPool,
+    user,
+    openProposal,
+    setOpenProposal,
+    handleSuccess,
+    handleError,
+  } = props;
+  const [loading, setLoading] = useState(false);
+  const [transactionData, setTransactionData] = useState(null);
+  const [signing, setSigning] = useState(false);
+  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
+
+  const handleClose = () => {
+    setSigning(false);
+    setLoading(false);
+  };
+
+  const handleOpen = () => {
+    if (openProposal === proposal.id) {
+      setOpenProposal(null);
+      removeQueryParam('proposal');
+    } else {
+      addQueryParam({ proposal: `${proposal.id}` });
+      setOpenProposal(proposal.id);
+      setLoading(true);
+      wunderPool
+        .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
+        .then((res) => {
+          setLoading(false);
+          setTransactionData(res);
+        });
+    }
+  };
+
+  const executeProposal = () => {
+    setSigning(true);
+    wunderPool
+      .execute(proposal.id)
+      .then((res) => {
+        console.log('LiqProp', res);
+        handleClose(false);
+        if (res) {
+          handleSuccess('Pool liquidated');
+          user.fetchUsdBalance();
+          user.fetchPools();
+        } else {
+          handleSuccess(`Proposal "${proposal.title}" executed`);
+          wunderPool.determineProposals();
+          wunderPool.determineTokens();
+          wunderPool.determineBalance();
+        }
+      })
+      .catch((err) => {
+        handleError(err);
+      })
+      .then(() => {
+        setSigning(false);
+      });
+  };
+
+  return (
+    <>
+      <ClosedProposal
+        handleOpen={handleOpen}
+        signing={signing}
+        executeProposal={executeProposal}
+        handleClose={handleClose}
+        {...props}
+      />
+      <OpenProposalDialog
+        open={openProposal === proposal.id}
+        handleOpen={handleOpen}
+        signing={signing}
+        executeProposal={executeProposal}
+        handleClose={handleClose}
+        loading={loading}
+        transactionData={transactionData}
+        {...props}
+      />
+    </>
   );
 }

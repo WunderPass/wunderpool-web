@@ -89,7 +89,7 @@ export function fetchPoolProposalsEpsilon(address) {
               );
 
         return {
-          id: id,
+          id: id.toNumber(),
           title,
           description,
           transactionCount,
