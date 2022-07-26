@@ -161,11 +161,15 @@ export default function Pools(props) {
         <Container className={loadingCircle && 'blur'}>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
-              <Typography className=" text-2xl mt-5 sm:text-4xl">
-                Hello {user?.wunderId},
-              </Typography>
+              <div>
+                <div className="flex flex-row items-center">
+                  <Typography className=" text-2xl my-5 sm:text-4xl">
+                    Hello {user?.wunderId},
+                  </Typography>
+                </div>
+              </div>
               <button
-                className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
+                className="btn-kaico w-full my-4 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:mt-7 sm:py-0 "
                 onClick={() => setOpen(true)}
               >
                 Create pool
