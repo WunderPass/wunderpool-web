@@ -136,13 +136,8 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const execute = (id) => {
     return new Promise(async (resolve, reject) => {
-      const isLiquidate = await isLiquidateProposal(
-        poolAddress,
-        id,
-        version.number
-      );
       executeProposal(poolAddress, id, version.number)
-        .then((res) => {
+        .then((isLiquidate) => {
           setClosed(true);
           setLiquidated(isLiquidate);
           resolve(isLiquidate);

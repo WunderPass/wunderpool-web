@@ -8,6 +8,7 @@ import {
   usdcAddress,
 } from '/services/contract/init';
 import { tokenAbi } from '../init';
+import { isLiquidateProposal } from '../proposals';
 
 function determineExecutable(
   executed,
@@ -447,7 +448,7 @@ export function proposalExecutableGamma(poolAddress, id) {
   });
 }
 
-export function executeProposalGamma(poolAddress, id) {
+export function executeProposalGamma(poolAddress, id, version) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, smartContractTransaction } = useWunderPass({
       name: 'Casama',
@@ -458,13 +459,13 @@ export function executeProposalGamma(poolAddress, id) {
     const tx = await wunderPool.populateTransaction.executeProposal(id, {
       gasPrice: await gasPrice(),
     });
+    const isLiquidate = await isLiquidateProposal(poolAddress, id, version);
 
     smartContractTransaction(tx, null, 'polygon', popup)
       .then(async (transaction) => {
         try {
-          console.log(transaction.hash);
-          const receipt = await provider.waitForTransaction(transaction.hash);
-          resolve(receipt);
+          await provider.waitForTransaction(transaction.hash);
+          resolve(isLiquidate);
         } catch (error) {
           reject(error?.error?.error?.error?.message || error);
         }
