@@ -67,14 +67,15 @@ export function secondsToHours(seconds) {
   return seconds / 3600;
 }
 
-export function currency(num, { symbol, locale, seperator, decimalSeperator }) {
+export function formatNumber(num, options = {}) {
+  const { locale, seperator, decimalSeperator, precision = 0 } = options;
+
   const sep = seperator || localeOptions[locale]?.separator || ',';
   const decSep = decimalSeperator || localeOptions[locale]?.decimals || '.';
-  const sym = symbol || localeOptions[locale]?.symbol || '$';
 
-  const str = String(round(num, 2));
+  const str = String(round(num, precision));
   const amount = str.split('.')[0] || '0';
-  const decimals = str.split('.')[1] || '00';
+  const decimals = str.split('.')[1] || '';
   const formattedAmount = amount
     .split('')
     .reverse()
@@ -83,7 +84,50 @@ export function currency(num, { symbol, locale, seperator, decimalSeperator }) {
     .join('')
     .slice(0, -1);
 
-  return `${sym}${formattedAmount}${decSep}${decimals}${
-    decimals.length == 1 ? '0' : ''
-  }`;
+  const formattedDecimals = `${decimals}${'0'.repeat(
+    precision - decimals.length
+  )}`;
+
+  return `${formattedAmount}${
+    formattedDecimals.length > 0 ? decSep : ''
+  }${formattedDecimals}`;
+}
+
+export function currency(num, options = {}) {
+  const {
+    symbol,
+    locale,
+    seperator,
+    decimalSeperator,
+    precision = 2,
+  } = options;
+
+  const sym = symbol || localeOptions[locale]?.symbol || '$';
+  const formattedNum = formatNumber(num, {
+    locale,
+    seperator,
+    decimalSeperator,
+    precision,
+  });
+
+  return `${sym}${formattedNum}`;
+}
+
+export function formatTokenBalance(balance) {
+  const float = parseFloat(balance);
+  // When Balance is 1.00 or 1,000,000
+  if (float === Math.round(float) || float > 10000) return formatNumber(float);
+  // When Balance is between 10 and 10,000
+  if (float > 10) return formatNumber(float, { precision: 2 });
+  // When Balance is between 0.1 and 10
+  if (float > 0.1) return formatNumber(float, { precision: 3 });
+  // When Balance is between 0.01 and 0.1
+  if (float > 0.01) return formatNumber(float, { precision: 4 });
+  // When Balance is between 0.001 and 0.01
+  if (float > 0.001) return formatNumber(float, { precision: 5 });
+  // When Balance is between 0.0001 and 0.001
+  if (float > 0.0001) return formatNumber(float, { precision: 6 });
+  // When Balance is between 0.00001 and 0.0001
+  if (float > 0.00001) return formatNumber(float, { precision: 7 });
+  return formatNumber(float, { precision: 8 });
 }

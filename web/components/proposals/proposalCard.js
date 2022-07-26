@@ -322,28 +322,30 @@ export default function ProposalCard(props) {
 
   const executeProposal = () => {
     setSigning(true);
-    wunderPool
-      .execute(proposal.id)
-      .then((res) => {
-        console.log('LiqProp', res);
-        handleClose(false);
-        if (res) {
-          handleSuccess('Pool liquidated');
-          user.fetchUsdBalance();
-          user.fetchPools();
-        } else {
-          handleSuccess(`Proposal "${proposal.title}" executed`);
-          wunderPool.determineProposals();
-          wunderPool.determineTokens();
-          wunderPool.determineBalance();
-        }
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setSigning(false);
-      });
+    setTimeout(() => {
+      wunderPool
+        .execute(proposal.id)
+        .then((res) => {
+          console.log('LiqProp', res);
+          handleClose(false);
+          if (res) {
+            handleSuccess('Pool liquidated');
+            user.fetchUsdBalance();
+            user.fetchPools();
+          } else {
+            handleSuccess(`Proposal "${proposal.title}" executed`);
+            wunderPool.determineProposals();
+            wunderPool.determineTokens();
+            wunderPool.determineBalance();
+          }
+        })
+        .catch((err) => {
+          handleError(err);
+        })
+        .then(() => {
+          setSigning(false);
+        });
+    }, 10);
   };
 
   return (
@@ -365,7 +367,10 @@ export default function ProposalCard(props) {
       />
       <TransactionDialog open={signing} onClose={handleClose}>
         {!wunderPool.closed && (
-          <Alert severity="warning" sx={{ alignItems: 'center' }}>
+          <Alert
+            severity="warning"
+            sx={{ alignItems: 'center', justifyContent: 'center' }}
+          >
             After execution, no new members can join this Pool
           </Alert>
         )}

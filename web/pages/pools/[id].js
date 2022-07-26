@@ -25,6 +25,7 @@ export default function Pool(props) {
     newMemberEvent,
     proposalExecutedEvent,
     resetEvents,
+    handleInfo,
   } = props;
   const [address, setAddress] = useState(null);
   const [name, setName] = useState('');
@@ -46,6 +47,7 @@ export default function Pool(props) {
           setLoading(false);
         }
       } else if (wunderPool.exists === false) {
+        handleInfo('Pool was liquidated');
         router.push('/pools');
       }
     }
@@ -53,6 +55,7 @@ export default function Pool(props) {
 
   useEffect(() => {
     if (wunderPool.liquidated) {
+      handleInfo('Pool was liquidated');
       router.push('/pools');
     }
   }, [wunderPool.liquidated]);
@@ -81,6 +84,7 @@ export default function Pool(props) {
     if (!address || !user.address) return;
     if (!newMemberEvent) return;
     wunderPool.determineGovernanceToken();
+    wunderPool.determineBalance();
     resetEvents();
   }, [newMemberEvent]);
 
@@ -103,7 +107,17 @@ export default function Pool(props) {
     )
       return;
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {
-      wunderPool.determineProposals();
+      if (proposalExecutedEvent) {
+        fetchPoolName(address)
+          .then(() => wunderPool.determineProposals())
+          .catch(() => {
+            handleInfo('Pool was liquidated');
+            user.fetchUsdBalance();
+            router.push('/pools');
+          });
+      } else {
+        wunderPool.determineProposals();
+      }
       resetEvents();
     }
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
@@ -117,7 +131,7 @@ export default function Pool(props) {
       <Head>
         <title>
           Casama - {metaTagInfo.name} -{' '}
-          {currency(wunderPool.totalBalance || metaTagInfo.balance, {})}
+          {currency(wunderPool.totalBalance || metaTagInfo.balance)}
         </title>
       </Head>
       {loadingCircle && <LoadingCircle />}
@@ -210,12 +224,20 @@ export default function Pool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.id;
-  const name = await fetchPoolName(address);
-  const balance = (await usdcBalanceOf(address)).toString();
+  try {
+    const name = await fetchPoolName(address);
+    const balance = (await usdcBalanceOf(address)).toString();
 
-  return {
-    props: {
-      metaTagInfo: { name, balance },
-    },
-  };
+    return {
+      props: {
+        metaTagInfo: { name, balance },
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        metaTagInfo: { name: 'Liquidated Pool', balance: '0' },
+      },
+    };
+  }
 }
