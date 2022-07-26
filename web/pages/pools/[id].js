@@ -84,6 +84,7 @@ export default function Pool(props) {
     if (!address || !user.address) return;
     if (!newMemberEvent) return;
     wunderPool.determineGovernanceToken();
+    wunderPool.determineBalance();
     resetEvents();
   }, [newMemberEvent]);
 
@@ -106,7 +107,17 @@ export default function Pool(props) {
     )
       return;
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {
-      wunderPool.determineProposals();
+      if (proposalExecutedEvent) {
+        fetchPoolName(address)
+          .then(() => wunderPool.determineProposals())
+          .catch(() => {
+            handleInfo('Pool was liquidated');
+            user.fetchUsdBalance();
+            router.push('/pools');
+          });
+      } else {
+        wunderPool.determineProposals();
+      }
       resetEvents();
     }
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
