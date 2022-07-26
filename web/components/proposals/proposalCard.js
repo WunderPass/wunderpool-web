@@ -20,6 +20,7 @@ import Timer from '/components/proposals/timer';
 import TransactionDialog from '../utils/transactionDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import ShareIcon from '@mui/icons-material/Share';
+import CloseIcon from '@mui/icons-material/Close';
 import { handleShare } from '../../services/shareLink';
 
 function OpenProposalDialog(props) {
@@ -29,7 +30,6 @@ function OpenProposalDialog(props) {
     proposal,
     signing,
     executeProposal,
-    handleClose,
     wunderPool,
     loading,
     transactionData,
@@ -54,18 +54,22 @@ function OpenProposalDialog(props) {
           alignItems="center"
         >
           <Typography className="text-xl ">{proposal.title}</Typography>
-          <IconButton
-            onClick={() =>
-              handleShare(
-                location.href,
-                `Look at this Proposal: ${proposal.title}`,
-                proposal.description,
-                handleSuccess
-              )
-            }
-          >
-            <ShareIcon className="text-kaico-blue" />
-          </IconButton>
+          <Stack direction="row" alignItems="center">
+            <IconButton
+              onClick={() =>
+                handleShare(
+                  location.href,
+                  `Look at this Proposal: ${proposal.title} || ${proposal.description}`,
+                  handleSuccess
+                )
+              }
+            >
+              <ShareIcon className="text-kaico-blue" />
+            </IconButton>
+            <IconButton onClick={handleOpen}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
         </Stack>
 
         <Typography className="font-light text-sm opacity-50 mt-4 text-ellipsis overflow-hidden">
@@ -93,13 +97,6 @@ function OpenProposalDialog(props) {
             >
               Execute
             </button>
-            <TransactionDialog open={signing} onClose={handleClose}>
-              {!wunderPool.closed && (
-                <Alert severity="warning" sx={{ alignItems: 'center' }}>
-                  After execution, no new members can join this Pool
-                </Alert>
-              )}
-            </TransactionDialog>
           </div>
         </div>
         <Stack spacing={1} mt={2}>
@@ -242,14 +239,7 @@ function OpenProposalDialog(props) {
 }
 
 function ClosedProposal(props) {
-  const {
-    proposal,
-    handleOpen,
-    signing,
-    executeProposal,
-    handleClose,
-    wunderPool,
-  } = props;
+  const { proposal, handleOpen, signing, executeProposal } = props;
 
   return (
     <div className="container-gray mb-6">
@@ -287,13 +277,6 @@ function ClosedProposal(props) {
           >
             Execute
           </button>
-          <TransactionDialog open={signing} onClose={handleClose}>
-            {!wunderPool.closed && (
-              <Alert severity="warning" sx={{ alignItems: 'center' }}>
-                After execution, no new members can join this Pool
-              </Alert>
-            )}
-          </TransactionDialog>
         </div>
       </div>
     </div>
@@ -369,7 +352,6 @@ export default function ProposalCard(props) {
         handleOpen={handleOpen}
         signing={signing}
         executeProposal={executeProposal}
-        handleClose={handleClose}
         {...props}
       />
       <OpenProposalDialog
@@ -377,11 +359,17 @@ export default function ProposalCard(props) {
         handleOpen={handleOpen}
         signing={signing}
         executeProposal={executeProposal}
-        handleClose={handleClose}
         loading={loading}
         transactionData={transactionData}
         {...props}
       />
+      <TransactionDialog open={signing} onClose={handleClose}>
+        {!wunderPool.closed && (
+          <Alert severity="warning" sx={{ alignItems: 'center' }}>
+            After execution, no new members can join this Pool
+          </Alert>
+        )}
+      </TransactionDialog>
     </>
   );
 }

@@ -24,10 +24,11 @@ export default function JoinPoolDialog(props) {
     wunderPool,
     user,
   } = props;
-  const { price, totalSupply, minInvest } = wunderPool.governanceToken;
-  const [amount, setAmount] = useState(
-    polyValueToUsd(wunderPool.governanceToken.minInvest)
-  );
+  const { minInvest, maxInvest } = wunderPool;
+  const price = wunderPool.governanceToken?.price || 0;
+  const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
+
+  const [amount, setAmount] = useState(minInvest || 3);
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isWallet, setIsWallet] = useState(false);
@@ -74,15 +75,12 @@ export default function JoinPoolDialog(props) {
 
   const handleInput = (value, float) => {
     setAmount(value);
-    if (float && minInvest.gt(float * 1000000)) {
+    if (float && minInvest > float) {
       setErrorMsg(
-        `Minimum of ${currency(
-          polyValueToUsd(minInvest),
-          {}
-        )} required for the Pool`
+        `Minimum of ${currency(minInvest, {})} required for the Pool`
       );
-    } else if (float && 0 > float) {
-      setErrorMsg(`Minimum of $3.00 required`);
+    } else if (float && maxInvest && float > maxInvest) {
+      setErrorMsg(`Maximum Invest of ${currency(maxInvest, {})} surpassed`);
     } else if (user.usdBalance < float) {
       setErrorMsg(`Not enough balance`);
     } else {
@@ -117,10 +115,7 @@ export default function JoinPoolDialog(props) {
           <Typography>Invest Amount</Typography>
           <CurrencyInput
             value={amount}
-            placeholder={currency(
-              polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
-              {}
-            )}
+            placeholder={currency(minInvest, {})}
             onChange={handleInput}
             error={errorMsg}
           />
@@ -131,12 +126,7 @@ export default function JoinPoolDialog(props) {
                 {currency(polyValueToUsd(price, {}), {})}
               </Typography>
               <Typography>
-                {wunderPool.governanceToken &&
-                  currency(
-                    polyValueToUsd(wunderPool.governanceToken.minInvest, {}),
-                    {}
-                  )}{' '}
-                min
+                {wunderPool.governanceToken && currency(minInvest, {})} min
               </Typography>
             </div>
           </DialogContentText>
@@ -145,14 +135,9 @@ export default function JoinPoolDialog(props) {
               <Typography>
                 Estimated shares: {shareOfPool.toString()}%
               </Typography>
-              <Typography>
-                {wunderPool.governanceToken &&
-                  currency(
-                    polyValueToUsd(wunderPool.governanceToken.maxInvest, {}),
-                    {}
-                  )}{' '}
-                max
-              </Typography>
+              {maxInvest && (
+                <Typography>{currency(maxInvest, {})} max</Typography>
+              )}
             </div>
           </DialogContentText>
           <Divider className="my-6 opacity-70" />
