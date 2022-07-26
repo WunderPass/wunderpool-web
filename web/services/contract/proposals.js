@@ -385,7 +385,7 @@ export function proposalExecutable(poolAddress, id, version) {
 }
 
 export function executeProposal(poolAddress, id, version = null) {
-  return executeProposalGamma(poolAddress, id);
+  return executeProposalGamma(poolAddress, id, version);
 }
 
 export function isLiquidateProposal(poolAddress, id, version) {

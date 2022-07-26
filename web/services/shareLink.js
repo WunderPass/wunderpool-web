@@ -1,29 +1,28 @@
-export async function handleShare(url, title, text, handleSuccess) {
-  const shareDetails = { url, title, text };
+export async function handleShare(url, text, handleSuccess) {
+  const shareDetails = { url, text };
   if (navigator.share) {
     try {
-      if (navigator.canShare({ title }) && navigator.canShare({ text })) {
-        await navigator.share(shareDetails);
-      } else if (navigator.canShare({ title })) {
-        await navigator.share({ url, title: `${title} || ${text}` });
-      } else {
-        await navigator.share({ url, text: `${title} || ${text}` });
-      }
+      await navigator.share(shareDetails);
     } catch (error) {
-      copyToClipboard(url);
-      handleSuccess('Copied URL to Clipboard');
+      copyToClipboard(url)
+        .then(() => handleSuccess('Copied URL to Clipboard'))
+        .catch((err) => console.log(err));
     }
   } else {
-    copyToClipboard(url);
-    handleSuccess('Copied URL to Clipboard');
+    copyToClipboard(url)
+      .then(() => handleSuccess('Copied URL to Clipboard'))
+      .catch((err) => console.log(err));
   }
 }
 
 export default function copyToClipboard(text, setState = () => {}) {
-  try {
-    navigator.clipboard.writeText(text);
-    setState(true);
-  } catch (error) {
-    console.error(error);
-  }
+  return new Promise((resolve, reject) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setState(true);
+        resolve(text);
+      })
+      .catch(reject);
+  });
 }
