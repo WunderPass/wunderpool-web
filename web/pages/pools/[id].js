@@ -117,7 +117,7 @@ export default function Pool(props) {
       <Head>
         <title>
           Casama - {metaTagInfo.name} -{' '}
-          {currency(wunderPool.totalBalance || metaTagInfo.balance, {})}
+          {currency(wunderPool.totalBalance || metaTagInfo.balance)}
         </title>
       </Head>
       {loadingCircle && <LoadingCircle />}

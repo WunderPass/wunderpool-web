@@ -64,8 +64,7 @@ export default function usePoolListener(handleInfo) {
       const wunderId = await resolveUser(address);
       handleInfo(
         `${wunderId || address} joined the Pool with ${currency(
-          polyValueToUsd(stake),
-          {}
+          polyValueToUsd(stake)
         )}`
       );
       setNewMemberEvent({ address, stake });

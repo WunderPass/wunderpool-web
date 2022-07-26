@@ -56,11 +56,7 @@ export default function PoolHeader(props) {
             </Typography>
             <div className="flex flex-row justify-end ">
               <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
-                Cash:{' '}
-                {currency(
-                  polyValueToUsd(Number(wunderPool.usdcBalance), {}),
-                  {}
-                )}
+                Cash: {currency(polyValueToUsd(Number(wunderPool.usdcBalance)))}
               </Typography>
             </div>
           </div>
@@ -119,7 +115,7 @@ export default function PoolHeader(props) {
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
                     {wunderPool.minInvest
-                      ? currency(wunderPool.minInvest, {})
+                      ? currency(wunderPool.minInvest)
                       : '-'}
                   </Typography>
                 </div>
@@ -129,7 +125,7 @@ export default function PoolHeader(props) {
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
                     {wunderPool.maxInvest
-                      ? currency(wunderPool.maxInvest, {})
+                      ? currency(wunderPool.maxInvest)
                       : '-'}
                   </Typography>
                 </div>
@@ -183,10 +179,7 @@ export default function PoolHeader(props) {
                         Price per Token
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {currency(
-                          wunderPool.governanceToken.price / 1000000,
-                          {}
-                        )}
+                        {currency(wunderPool.governanceToken.price / 1000000)}
                       </Typography>
                     </div>
                     <div>

@@ -31,14 +31,14 @@ function PoolStats({
   return (
     <div className="flex flex-wrap flex-row items-center justify-center w-full mt-6">
       {minInvest == maxInvest ? (
-        <InfoBlock label="Required Invest" value={currency(minInvest, {})} />
+        <InfoBlock label="Required Invest" value={currency(minInvest)} />
       ) : (
         <>
-          <InfoBlock label="Minimum Invest" value={currency(minInvest, {})} />
-          <InfoBlock label="Maximum Invest" value={currency(maxInvest, {})} />
+          <InfoBlock label="Minimum Invest" value={currency(minInvest)} />
+          <InfoBlock label="Maximum Invest" value={currency(maxInvest)} />
         </>
       )}
-      <InfoBlock label="Total Assets" value={currency(totalBalance, {})} />
+      <InfoBlock label="Total Assets" value={currency(totalBalance)} />
       <InfoBlock label="Members" value={`${members || '-'} / ${maxMembers}`} />
     </div>
   );
@@ -107,7 +107,7 @@ function InputJoinAmount(props) {
         <Typography>Invest Amount</Typography>
         <CurrencyInput
           value={amount}
-          placeholder={currency(minInvest, {})}
+          placeholder={currency(minInvest)}
           onChange={handleInput}
           error={errorMsg}
         />
@@ -160,11 +160,9 @@ export default function JoinPool(props) {
   const handleInput = (value, float) => {
     setAmount(value);
     if (float && minInvest > float) {
-      setErrorMsg(
-        `Minimum of ${currency(minInvest, {})} required for the Pool`
-      );
+      setErrorMsg(`Minimum of ${currency(minInvest)} required for the Pool`);
     } else if (float && float > maxInvest) {
-      setErrorMsg(`Maximum Invest of ${currency(maxInvest, {})} surpassed`);
+      setErrorMsg(`Maximum Invest of ${currency(maxInvest)} surpassed`);
     } else if (user.usdBalance < float) {
       setErrorMsg(`Not enough balance`);
     } else {
@@ -185,7 +183,7 @@ export default function JoinPool(props) {
         .join(amount, secret)
         .then(() => {
           user.fetchUsdBalance();
-          handleSuccess(`Joined Pool with ${currency(amount, {})}`);
+          handleSuccess(`Joined Pool with ${currency(amount)}`);
           loginCallback();
         })
         .catch((err) => {

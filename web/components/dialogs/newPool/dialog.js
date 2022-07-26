@@ -249,7 +249,7 @@ export default function NewPoolDialog(props) {
               {poolName}
             </Typography>
             <Typography className="text-md" color="GrayText">
-              {currency(value, {})}
+              {currency(value)}
             </Typography>
           </div>
         )}

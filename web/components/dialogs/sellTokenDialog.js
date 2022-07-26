@@ -12,6 +12,7 @@ import {
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import TransactionFrame from '../utils/transactionFrame';
+import { formatTokenBalance } from '/services/formatter';
 
 export default function SellTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
@@ -82,7 +83,9 @@ export default function SellTokenDialog(props) {
           </Alert>
         )}
         <Typography>Price per token: {dollarPrice} $</Typography>
-        <Typography>Tokens owned: {formattedBalance} </Typography>
+        <Typography>
+          Tokens owned: {formatTokenBalance(formattedBalance)}{' '}
+        </Typography>
         <TextField
           className="mt-4"
           autoFocus

@@ -37,14 +37,14 @@ function BalanceBox(props) {
         <div className="flex sm:h-full flex-col justify-between container-kaico mb-1 m:mr-8 w-full ">
           <Typography className="pb-6">Total Pool Balances</Typography>
           <Typography className="text-3xl ">
-            {currency(totalBalance, {})}
+            {currency(totalBalance)}
           </Typography>
 
           {topThree.length > 0 && (
             <div className="flex flex-row items-center">
               <div className="h-3 w-3 mt-3 bg-red-500 rounded-sm mr-2" />
               <Typography className="pt-5 py-2 truncate">
-                {currency(topThree[0]?.userBalance, {})} {topThree[0]?.name}
+                {currency(topThree[0]?.userBalance)} {topThree[0]?.name}
               </Typography>
             </div>
           )}
@@ -53,7 +53,7 @@ function BalanceBox(props) {
             <div className="flex flex-row items-center">
               <div className="h-3 w-3 mt-3 bg-yellow-200 rounded-sm mr-2" />
               <Typography className="pt-5 py-2 truncate">
-                {currency(topThree[1]?.userBalance, {})} {topThree[1]?.name}
+                {currency(topThree[1]?.userBalance)} {topThree[1]?.name}
               </Typography>
             </div>
           )}
@@ -62,7 +62,7 @@ function BalanceBox(props) {
             <div className="flex flex-row items-center">
               <div className="h-3 w-3 mt-3 bg-pink-300 rounded-sm mr-2" />
               <Typography className="pt-5 py-2 truncate">
-                {currency(topThree[2].userBalance, {})} {topThree[2]?.name}
+                {currency(topThree[2].userBalance)} {topThree[2]?.name}
               </Typography>
             </div>
           )}

@@ -36,7 +36,7 @@ function PoolCard(props) {
             <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
           </div>
           <Typography className="text-lg pt-3 font-semibold">
-            {currency(pool.totalBalance, {})}
+            {currency(pool.totalBalance)}
           </Typography>
           <div className="flex flex-row justify-between items-center pb-4">
             <div className="flex flex-row justify-start items-center ">
@@ -59,8 +59,7 @@ function PoolCard(props) {
               <Typography className="text-md  pt-5 pl-3">
                 {pool.userShare &&
                   `${parseInt(pool.userShare)}% (${currency(
-                    pool.userBalance,
-                    {}
+                    pool.userBalance
                   )})`}
               </Typography>
             </div>

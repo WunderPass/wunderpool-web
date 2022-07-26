@@ -68,8 +68,7 @@ export default function CapTable(props) {
                   <Typography className="">
                     {currency(
                       member.tokens.toString() *
-                        polyValueToUsd(wunderPool.governanceToken.price, {}),
-                      {}
+                        polyValueToUsd(wunderPool.governanceToken.price)
                     )}
                   </Typography>
                 </td>

@@ -12,6 +12,7 @@ import Trend from 'react-trend';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import InfoIcon from '@mui/icons-material/Info';
+import { formatTokenBalance } from '../../services/formatter';
 
 function TokenInfo({ token, data }) {
   const [infoDialog, setInfoDialog] = useState(false);
@@ -56,13 +57,13 @@ function TokenInfo({ token, data }) {
             className="text-xl sm:text-2xl flex-grow text-right"
             width="fit-content"
           >
-            {verified && currency(usdValue, {})}
+            {verified && currency(usdValue)}
           </Typography>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <Typography className="w-full sm:w-auto">
             {verified ? (
-              `1 ${symbol} = ${currency(dollarPrice, {})}`
+              `1 ${symbol} = ${currency(dollarPrice)}`
             ) : (
               <>
                 Unverified Token
@@ -91,10 +92,7 @@ function TokenInfo({ token, data }) {
             )}
           </Typography>
           <Typography className="w-full sm:w-auto">
-            {formattedBalance > 1
-              ? parseFloat(formattedBalance).toFixed(3)
-              : parseFloat(formattedBalance).toFixed(8)}{' '}
-            {symbol}
+            {formatTokenBalance(formattedBalance)} {symbol}
           </Typography>
         </div>
       </div>
