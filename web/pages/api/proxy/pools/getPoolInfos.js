@@ -2,15 +2,15 @@ import axios from 'axios';
 
 export default async function handler(req, res) {
   try {
-    const wunderId = req.query.wunderId;
+    const poolAddress = req.query.poolAddress;
 
     const resp = await axios({
-      method: 'get',
+      method: 'GET',
       url: encodeURI(
-        `https://identity-service.wunderpass.org/v3/nft/cashback/isAuthorized/${wunderId}`
+        `https://pools-service.wunderpass.org/web3Proxy/pools/${poolAddress}`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
       },
     });
     res.status(200).json({ resp: resp.data });

@@ -15,7 +15,10 @@ import NewPoolInviteStep from './inviteStep';
 import NewPoolVotingStep from './votingStep';
 import NewPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
+const FormData = require('form-data');
+import axios from 'axios';
 import { currency } from '/services/formatter';
+
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
@@ -108,13 +111,37 @@ export default function NewPoolDialog(props) {
   };
 
   //main functions
-  const uploadToServer = async (event) => {
-    const body = new FormData();
-    body.append('file', image);
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body,
-    });
+  const uploadImageToServer = async (address) => {
+    const formData = new FormData();
+    formData.append('pool_image', image);
+    formData.append('poolAddress', address);
+    axios({
+      method: 'post',
+      url: '/api/proxy/pools/setImage',
+      data: formData,
+    })
+      .then(() => {})
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const uploadDescription = async (address) => {
+    const headers = {
+      'Content-Type': 'text/plain',
+      Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
+    };
+
+    axios({
+      method: 'post',
+      url: `/api/proxy/pools/setDescription?poolAddress=${address}`,
+      headers: headers,
+      data: poolDescription,
+    })
+      .then(() => {})
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const handleClose = () => {
@@ -154,7 +181,6 @@ export default function NewPoolDialog(props) {
     setStep((val) => val + 1);
     setLoading(true);
     setWaitingForPool(true);
-    uploadToServer();
     createPool(
       user.address,
       poolName,
@@ -179,6 +205,8 @@ export default function NewPoolDialog(props) {
               .then(({ address, name }) => {
                 user.fetchUsdBalance();
                 router.push(`/pools/${address}?name=${name}`);
+                uploadImageToServer(address.toLowerCase());
+                uploadDescription(address.toLowerCase());
               })
               .catch((err) => {
                 console.log(err);
