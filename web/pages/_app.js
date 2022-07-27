@@ -10,8 +10,11 @@ import muiTheme from '/theme/mui';
 import Navbar from '/components/layout/navbar';
 import TopUpAlert from '../components/dialogs/topUpAlert';
 import Head from 'next/head';
+import LogRocket from 'logrocket';
+import { useEffect } from 'react';
 
 function WunderPool({ Component, pageProps }) {
+  LogRocket.init(process.env.LOG_ROCKET_ID);
   const user = useUser();
   const [notification, handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
@@ -49,6 +52,15 @@ function WunderPool({ Component, pageProps }) {
     offset: '30px',
     transition: transitions.SCALE,
   };
+
+  useEffect(() => {
+    if (user.address && user.wunderId) {
+      LogRocket.identify(user.address, {
+        name: user.wunderId,
+        email: 'comingSoon@gmail.com',
+      });
+    }
+  }, [user.wunderId, user.address]);
 
   return (
     <>
