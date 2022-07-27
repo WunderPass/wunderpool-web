@@ -106,7 +106,7 @@ function WunderPool({ Component, pageProps }) {
             <Notification notification={notification} />
             <TopUpAlert
               open={user.topUpRequired}
-              setOpen={() => user.setTopUpRequired(false)}
+              setOpen={user.setTopUpRequired}
               user={user}
             />
           </AlertProvider>
