@@ -26,11 +26,9 @@ import {
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
 import { usdcAddress } from '/services/contract/init';
-import {
-  isLiquidateProposal,
-  proposalExecutable,
-} from '/services/contract/proposals';
+import { proposalExecutable } from '/services/contract/proposals';
 import { addToWhiteListWithSecret } from '../services/contract/pools';
+import { cacheItemDB } from '/services/caching';
 
 export default function usePool(userAddr, poolAddr = null) {
   const [userAddress, setUserAddress] = useState(userAddr);
@@ -136,13 +134,8 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const execute = (id) => {
     return new Promise(async (resolve, reject) => {
-      const isLiquidate = await isLiquidateProposal(
-        poolAddress,
-        id,
-        version.number
-      );
       executeProposal(poolAddress, id, version.number)
-        .then((res) => {
+        .then((isLiquidate) => {
           setClosed(true);
           setLiquidated(isLiquidate);
           resolve(isLiquidate);
@@ -158,7 +151,10 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const determineVersion = async () => {
-    const vers = await poolVersion(poolAddress);
+    const vers = await cacheItemDB(
+      `version_${poolAddress}`,
+      await poolVersion(poolAddress)
+    );
     setVersion(vers);
     return vers;
   };
@@ -227,17 +223,22 @@ export default function usePool(userAddr, poolAddr = null) {
     setPoolGovernanceToken(tkn);
   };
 
-  const determinePoolProposals = async () => {
+  const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
-    setPoolProposals(await fetchPoolProposals(poolAddress, version.number));
+    setPoolProposals(
+      await fetchPoolProposals(poolAddress, (vers || version).number)
+    );
   };
 
   const getTransactionData = async (id, transactionCount) => {
-    return await fetchTransactionData(
-      poolAddress,
-      id,
-      transactionCount,
-      version.number
+    return await cacheItemDB(
+      `tx_data_${poolAddress}_${id}`,
+      await fetchTransactionData(
+        poolAddress,
+        id,
+        transactionCount,
+        version.number
+      )
     );
   };
 
@@ -298,7 +299,7 @@ export default function usePool(userAddr, poolAddr = null) {
       await determinePoolGovernanceToken(vers);
       if (userIsMember === true) {
         await determinePoolNfts();
-        await determinePoolProposals();
+        await determinePoolProposals(vers);
       }
     }
   };
@@ -366,6 +367,7 @@ export default function usePool(userAddr, poolAddr = null) {
     determineTokens: determinePoolTokens,
     determineNfts: determinePoolNfts,
     determineProposals: determinePoolProposals,
+    determineGovernanceToken: determinePoolGovernanceToken,
     determineBalance: determineUsdcBalance,
     determineShareholderAgreement,
   };

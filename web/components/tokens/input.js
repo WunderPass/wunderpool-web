@@ -120,7 +120,7 @@ export default function TokenInput(props) {
                 >
                   <div className="hidden sm:block">{option.address}</div>
                   <div className="block sm:hidden">
-                    {currency(option.dollar_price, {})}
+                    {currency(option.dollar_price)}
                   </div>
                 </Typography>
               </Stack>
@@ -130,7 +130,7 @@ export default function TokenInput(props) {
                 textAlign="end"
                 whiteSpace="nowrap"
               >
-                {currency(option.dollar_price, {})}
+                {currency(option.dollar_price)}
               </Typography>
             </Stack>
           </li>

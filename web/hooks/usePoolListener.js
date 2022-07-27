@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { cacheItemDB } from '../services/caching';
 import { toEthString, currency, polyValueToUsd } from '../services/formatter';
 import { initPoolSocket } from '/services/contract/init';
 
@@ -8,12 +9,14 @@ export default function usePoolListener(handleInfo) {
   const [userAddress, setUserAddress] = useState(null);
   const [votedEvent, setVotedEvent] = useState(null);
   const [newProposalEvent, setNewProposalEvent] = useState(null);
+  const [newMemberEvent, setNewMemberEvent] = useState(null);
   const [tokenAddedEvent, setTokenAddedEvent] = useState(null);
   const [proposalExecutedEvent, setProposalExecutedEvent] = useState(null);
 
   const reset = () => {
     setVotedEvent(null);
     setNewProposalEvent(null);
+    setNewMemberEvent(null);
     setTokenAddedEvent(null);
     setProposalExecutedEvent(null);
   };
@@ -24,15 +27,22 @@ export default function usePoolListener(handleInfo) {
   };
 
   const resolveUser = (address) => {
-    return new Promise((resolve, reject) => {
-      axios({ url: '/api/proxy/users/find', params: { address: address } })
-        .then((res) => {
-          resolve(res.data.wunderId || null);
-        })
-        .catch((err) => {
-          console.log(err);
-          resolve(null);
-        });
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await cacheItemDB(
+          address,
+          (
+            await axios({
+              url: '/api/proxy/users/find',
+              params: { address: address },
+            })
+          ).data,
+          600
+        );
+        resolve(user?.wunderId || null);
+      } catch (error) {
+        resolve(null);
+      }
     });
   };
 
@@ -62,10 +72,10 @@ export default function usePoolListener(handleInfo) {
       const wunderId = await resolveUser(address);
       handleInfo(
         `${wunderId || address} joined the Pool with ${currency(
-          polyValueToUsd(stake),
-          {}
+          polyValueToUsd(stake)
         )}`
       );
+      setNewMemberEvent({ address, stake });
     });
 
     wunderPool.on('Voted', async (proposalId, voter, mode) => {
@@ -124,6 +134,7 @@ export default function usePoolListener(handleInfo) {
     setupPoolListener,
     votedEvent,
     newProposalEvent,
+    newMemberEvent,
     tokenAddedEvent,
     proposalExecutedEvent,
     reset,

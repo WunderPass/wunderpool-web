@@ -21,6 +21,7 @@ import {
 import axios from 'axios';
 import { httpProvider } from './provider';
 import { approve, usdcBalanceOf } from './token';
+import { cacheItemDB } from '../caching';
 
 export function poolVersion(poolAddress) {
   return new Promise(async (resolve, reject) => {
@@ -106,15 +107,20 @@ export function getPoolAddressFromTx(txHash, version = null) {
 }
 
 async function formatAsset(asset) {
-  const token = (
-    await axios({
-      url: `/api/tokens/show`,
-      params: { address: asset.asset_infos.currency_contract_address },
-    })
-  ).data;
+  const address = asset.asset_infos.currency_contract_address;
+  const token = await cacheItemDB(
+    address,
+    (
+      await axios({
+        url: `/api/tokens/show`,
+        params: { address: address },
+      })
+    ).data,
+    600
+  );
   return {
     name: asset.asset_name,
-    address: asset.asset_infos.currency_contract_address,
+    address,
     decimals: asset.asset_infos.decimals,
     symbol: asset.asset_infos.currency_symbol,
     balance: asset.pool_balance,
@@ -123,20 +129,24 @@ async function formatAsset(asset) {
 }
 
 async function formatMember(member, totalSupply) {
-  let wunderId;
+  let user;
   try {
-    wunderId = (
-      await axios({
-        url: `/api/proxy/users/find`,
-        params: { address: member.members_address },
-      })
-    ).data.wunderId;
+    user = await cacheItemDB(
+      member.members_address,
+      (
+        await axios({
+          url: '/api/proxy/users/find',
+          params: { address: member.members_address },
+        })
+      ).data,
+      600
+    );
   } catch (e) {}
   return {
     address: member.members_address,
     shares: member.pool_shares_balance,
     share: (member.pool_shares_balance * 100) / totalSupply,
-    wunderId,
+    wunderId: user?.wunderId,
   };
 }
 

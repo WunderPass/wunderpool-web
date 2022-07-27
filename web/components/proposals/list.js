@@ -1,4 +1,5 @@
 import { Stack, Typography, Skeleton } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import ProposalCard from './proposalCard';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
@@ -7,6 +8,12 @@ export default function ProposalList(props) {
   const { wunderPool } = props;
   const [open, setOpen] = useState(false);
   const [openProposal, setOpenProposal] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (router.query.proposal) setOpenProposal(Number(router.query.proposal));
+  }, [router.isReady]);
 
   return !wunderPool.isReady2 ? (
     <Skeleton

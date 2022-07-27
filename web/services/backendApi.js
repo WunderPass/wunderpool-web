@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { waitForTransaction } from './contract/provider';
+import { decodeError, waitForTransaction } from './contract/provider';
 
 export function postAndWaitForTransaction(config) {
   const { method = 'POST', url, body } = config;
@@ -9,7 +9,13 @@ export function postAndWaitForTransaction(config) {
         waitForTransaction(res.data)
           .then((tx) => {
             if (tx.status === 0) {
-              reject('Blockchain Transaction Failed');
+              decodeError(tx.transactionHash)
+                .then((msg) => {
+                  reject(msg);
+                })
+                .catch((err) => {
+                  reject('Unknown Blockchain Error');
+                });
             } else {
               resolve(tx);
             }

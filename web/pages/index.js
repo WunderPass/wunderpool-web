@@ -35,7 +35,6 @@ export default function Home(props) {
       <div className="flex flex-col h-screen lg:pt-7 ">
         <Head>
           <title>Casama</title>
-          <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center ">
           <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen lg:mb-7 ">

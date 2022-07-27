@@ -42,7 +42,7 @@ const navigation = (props) => {
             className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
           >
             <div className="flex flex-row pr-1 text-center items-center text-sm ">
-              <p className="mx-2">{currency(user?.usdBalance, {})}</p>
+              <p className="mx-2">{currency(user?.usdBalance)}</p>
               <BsFillPlusCircleFill className="text-xl mr-1" />
             </div>
           </div>
@@ -65,7 +65,7 @@ const navigation = (props) => {
       </ul>
       {open && (
         <div>
-          <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-kaico-blue right-0 border-t-2 border-t-white pl-8 shadow-xl text-right">
+          <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-kaico-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
             <motion.li
               className="px-2 py-1 pt-2"
               initial={animateFrom}
