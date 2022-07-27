@@ -29,10 +29,16 @@ import { usdcAddress } from '/services/contract/init';
 import { proposalExecutable } from '/services/contract/proposals';
 import { addToWhiteListWithSecret } from '../services/contract/pools';
 import { cacheItemDB } from '/services/caching';
+import axios from 'axios';
 
 export default function usePool(userAddr, poolAddr = null) {
   const [userAddress, setUserAddress] = useState(userAddr);
   const [poolAddress, setPoolAddress] = useState(poolAddr);
+  const [hasImage, setHasImage] = useState(false);
+  const [hasBanner, setHasBanner] = useState(false);
+  const [image, setImage] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [description, setDescription] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [isReady2, setIsReady2] = useState(false);
   const [poolName, setPoolName] = useState(null);
@@ -49,7 +55,6 @@ export default function usePool(userAddr, poolAddr = null) {
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
   const [poolProposals, setPoolProposals] = useState([]);
-
   const [minInvest, setMinInvest] = useState('');
   const [maxInvest, setMaxInvest] = useState('');
   const [maxMembers, setMaxMembers] = useState('');
@@ -61,6 +66,64 @@ export default function usePool(userAddr, poolAddr = null) {
     if (!version || userIsMember) return;
     return joinPool(poolAddress, userAddress, amount, secret, version.number);
   };
+
+  const checkIfPictureExists = () => {
+    axios({
+      url: `/api/proxy/pools/getImage?poolAddress=${poolAddress.toLowerCase()}`,
+    })
+      .then((res) => {
+        if (res.data === '') {
+          setHasImage(false);
+          return;
+        }
+        setImage(
+          `/api/proxy/pools/getImage?poolAddress=${poolAddress.toLowerCase()}`
+        );
+        setHasImage(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const checkIfBannerExists = () => {
+    axios({
+      url: `/api/proxy/pools/getBanner?poolAddress=${poolAddress.toLowerCase()}`,
+    })
+      .then((res) => {
+        if (res.data === '') {
+          setHasBanner(false);
+          return;
+        }
+        setBanner(
+          `/api/proxy/pools/getBanner?poolAddress=${poolAddress.toLowerCase()}`
+        );
+        setHasBanner(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const getDescription = () => {
+    axios({
+      url: `/api/proxy/pools/getPoolInfos?poolAddress=${poolAddress.toLowerCase()}`,
+    })
+      .then((res) => {
+        setDescription(res.data.resp.pool_description);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  useEffect(() => {
+    if (poolAddress != null) {
+      checkIfPictureExists();
+      checkIfBannerExists();
+      getDescription();
+    }
+  }, [poolAddress]);
 
   const updateUserAddress = (addr) => {
     setUserAddress(addr);
@@ -327,6 +390,15 @@ export default function usePool(userAddr, poolAddr = null) {
     closed,
     liquidated,
     poolName,
+    image,
+    banner,
+    description,
+    hasImage,
+    hasBanner,
+    setHasImage,
+    setHasBanner,
+    setImage,
+    setBanner,
     version,
     poolAddress,
     minInvest,
