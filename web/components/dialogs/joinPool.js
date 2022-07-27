@@ -31,7 +31,7 @@ export default function JoinPoolDialog(props) {
   const [amount, setAmount] = useState(minInvest || 3);
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isWallet, setIsWallet] = useState(false);
+  const [isWallet, setIsWallet] = useState(true);
   const [isPayPal, setIsPayPal] = useState(false);
 
   const handleClose = () => {
