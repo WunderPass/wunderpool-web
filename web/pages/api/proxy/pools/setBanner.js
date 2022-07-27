@@ -22,14 +22,20 @@ export default async (req, res) => {
   console.log('req', req);
 
   form.parse(req, (err, fields, files) => {
-    if (files['pool_image'].filepath) {
+    if (files['pool_banner'].filepath) {
+      console.log(
+        "files['pool_banner'].filepath",
+        files['pool_banner'].filepath
+      );
+      console.log('fields.poolAddress', fields.poolAddress);
+
       data.append(
-        'pool_image',
-        fs.createReadStream(files['pool_image'].filepath)
+        'pool_banner',
+        fs.createReadStream(files['pool_banner'].filepath)
       );
       axios({
         method: 'post',
-        url: `https://pools-service.wunderpass.org/web3Proxy/pools/${fields.poolAddress}/image`,
+        url: `https://pools-service.wunderpass.org/web3Proxy/pools/${fields.poolAddress}/banner`,
         headers: {
           Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
           ...data.getHeaders(),
@@ -38,7 +44,6 @@ export default async (req, res) => {
       })
         .then((response) => {
           res.status(200).json(response.data);
-          console.log(response.data);
         })
         .catch((err) => {
           let errorMessage = null;

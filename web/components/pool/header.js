@@ -14,15 +14,18 @@ import { Typography, Collapse, Divider, Box } from '@mui/material';
 import axios from 'axios';
 const FormData = require('form-data');
 
-
 export default function PoolHeader(props) {
   const { name, address, wunderPool } = props;
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const [image, setImage] = useState(null)
-  const [imageUrl, setImageUrl] = useState(null)
-  const [hasPicture, setHasPicture] = useState(false)
-  const [hideButton, setHideButton] = useState(true)
+  const [image, setImage] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [bannerUrl, setBannerUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [hasPicture, setHasPicture] = useState(false);
+  const [hasBanner, setHasBanner] = useState(false);
+  const [showSaveButton, setShowSaveButton] = useState(false);
+  const [description, setDescription] = useState(null);
 
   const alert = useAlert();
 
@@ -30,115 +33,200 @@ export default function PoolHeader(props) {
     setShowMoreInfo(!showMoreInfo);
   };
 
-  const uploadToClient = (event) => {
+  const uploadImageToClient = (event) => {
     if (event.target.files && event.target.files[0]) {
       const i = event.target.files[0];
       setImage(i);
       setImageUrl(URL.createObjectURL(i));
       setHasPicture(true);
-      setHideButton(false)
+      setShowSaveButton(true);
     }
   };
 
-  const uploadToServer = async () => {
-    const formData = new FormData()
-    formData.append("pool_image", image)
-    formData.append("poolAddress", address)
+  const uploadBannerToClient = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const i = event.target.files[0];
+      setBanner(i);
+      setBannerUrl(URL.createObjectURL(i));
+      setHasBanner(true);
+      setShowSaveButton(true);
+    }
+  };
+
+  const uploadImageToServer = async () => {
+    const formData = new FormData();
+    formData.append('pool_image', image);
+    formData.append('poolAddress', address.toLowerCase());
     axios({
       method: 'post',
       url: '/api/proxy/pools/setImage',
       data: formData,
     })
       .then(() => {
-        setHideButton(true)
+        setShowSaveButton(false);
       })
       .catch((err) => {
         console.error(err);
       });
   };
 
-  const getImage = () => {
-    setImage(`/api/proxy/pools/getImage?poolAddress=${address}`)
+  const uploadBannerToServer = async () => {
+    const formData = new FormData();
+    formData.append('pool_banner', banner);
+    formData.append('poolAddress', address.toLowerCase());
+    axios({
+      method: 'post',
+      url: '/api/proxy/pools/setBanner',
+      data: formData,
+    })
+      .then(() => {
+        setShowSaveButton(false);
+      })
+      .catch((err) => {
+        console.error('Error in Upload server');
+      });
   };
 
   const checkIfPictureExists = () => {
     axios({
-      url: `/api/proxy/pools/getImage?poolAddress=${address}`,
-    }).then((res) => {
-      if (typeof res.data != typeof '') {
-        setHasPicture(false);
-        return;
-      }
-    });
-    setHasPicture(true);
+      url: `/api/proxy/pools/getImage?poolAddress=${address.toLowerCase()}`,
+    })
+      .then((res) => {
+        if (res.data === '') {
+          setHasPicture(false);
+          return;
+        }
+        setImage(
+          `/api/proxy/pools/getImage?poolAddress=${address.toLowerCase()}`
+        );
+        setHasPicture(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const checkIfBannerExists = () => {
+    axios({
+      url: `/api/proxy/pools/getBanner?poolAddress=${address.toLowerCase()}`,
+    })
+      .then((res) => {
+        if (res.data === '') {
+          setHasBanner(false);
+          return;
+        }
+        setBanner(
+          `/api/proxy/pools/getBanner?poolAddress=${address.toLowerCase()}`
+        );
+        setHasBanner(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const getDescription = () => {
+    axios({
+      url: `/api/proxy/pools/getPoolInfos?poolAddress=${address.toLowerCase()}`,
+    })
+      .then((res) => {
+        setDescription(res.data.resp.pool_description);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const save = () => {
+    uploadBannerToServer();
+    uploadImageToServer();
   };
 
   useEffect(() => {
     if (address != null) {
-      getImage();
       checkIfPictureExists();
+      checkIfBannerExists();
+      getDescription();
     }
-  }, [address])
-
-  useEffect(() => {
-    console.log(image)
-  }, [image])
+  }, [address]);
 
   return (
     <>
       <div className="flex flex-col container-white-p-0 max-w-full sm:mt-6 ">
-        <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
-          <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
-            <FaLongArrowAltDown className="text-2xl" />
+        <label htmlFor="bannerUpload" className="cursor-pointer">
+          <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
+            {hasBanner ? (
+              <img
+                className="object-cover min-w-full min-h-full rounded-xl "
+                src={bannerUrl ? bannerUrl : banner}
+                type="file"
+              />
+            ) : (
+              <>
+                <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
+                  <FaLongArrowAltDown className="text-2xl" />
+                </div>
+                <Typography className="opacity-30">
+                  Add Pool banner image
+                </Typography>
+              </>
+            )}
           </div>
-          <Typography className="opacity-30">Add Pool banner image</Typography>
-        </div>
+        </label>
+        <input
+          className="hidden"
+          id="bannerUpload"
+          type="file"
+          name="banner"
+          accept="image/*"
+          onChange={uploadBannerToClient}
+        />
+
         <div className="flex flex-col container-white w-full">
           {hasPicture ? (
-
-            <div className="flex-col w-20 container-image-round -mt-14 rounded-full " type="file">
-              <label htmlFor="fileUpload" className="cursor-pointer">
-
+            <div
+              className="flex-col w-20 h-20 container-image-round -mt-14 rounded-full "
+              type="file"
+            >
+              <label htmlFor="imageUpload" className="cursor-pointer">
                 <img
-                  className="object-cover min-w-full min-h-full rounded-full"
+                  className="object-cover w-20 h-20 rounded-full"
                   src={imageUrl ? imageUrl : image}
                   type="file"
-
                 />
               </label>
 
               <input
                 className="hidden"
-                id="fileUpload"
+                id="imageUpload"
                 type="file"
-                name="myImage"
+                name="image"
                 accept="image/*"
-                onChange={uploadToClient}
+                onChange={uploadImageToClient}
               />
             </div>
           ) : (
-            <div className="flex-col w-20 container-image-round -mt-14 rounded-full items-center justify-center bg-white ">
-              <label htmlFor="fileUpload">
-                <div className="flex items-center justify-center w-full bg-white rounded-full cursor-pointer" type="file"
+            <div className="flex-col w-20 h-20 container-image-round -mt-14 rounded-full items-center justify-center bg-white ">
+              <label htmlFor="imageUpload">
+                <div
+                  className="flex items-center justify-center w-full bg-white rounded-full cursor-pointer"
+                  type="file"
                 >
                   <BsImage className="text-kaico-light-blue text-4xl m-5 bg-white " />
-
                 </div>
               </label>
               <input
                 className="hidden"
-                id="fileUpload"
+                id="imageUpload"
                 type="file"
-                name="myImage"
+                name="image"
                 accept="image/*"
-                onChange={uploadToClient}
+                onChange={uploadImageToClient}
               />
             </div>
           )}
+
           <div className="flex flex-row justify-between">
-            <button onClick={uploadToServer} className={hideButton ? "hidden" : ""}>
-              SAVE
-            </button>
             <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
               {name}
             </Typography>
@@ -152,9 +240,17 @@ export default function PoolHeader(props) {
               </Typography>
             </div>
           </div>
-
+          <button
+            onClick={save}
+            className={
+              showSaveButton
+                ? 'btn-primary p-1 px-4 w-20 mt-3 sm:mt-0'
+                : 'hidden'
+            }
+          >
+            Save
+          </button>
           <Divider className="my-6 mt-8 opacity-70" />
-
           <div className="mb-1">
             <div className="flex flex-row items-center justify-between">
               <button className="mt-2 opacity-60" onClick={toggleAdvanced}>
@@ -228,7 +324,9 @@ export default function PoolHeader(props) {
                 <Typography className="text-lg font-semi py-1">
                   Pool Description
                 </Typography>
-                <Typography className="text-sm opacity-40 py-1 ">-</Typography>
+                <Typography className="text-sm opacity-40 py-1 ">
+                  {description != null ? description : '-'}
+                </Typography>
               </div>
               <div>
                 <Typography className="text-lg py-1 pt-6">

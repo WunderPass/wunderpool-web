@@ -15,7 +15,7 @@ import NewPoolVotingStep from './votingStep';
 import NewPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
 const FormData = require('form-data');
-
+import axios from 'axios';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
@@ -107,19 +107,34 @@ export default function NewPoolDialog(props) {
   };
 
   //main functions
-  const uploadToServer = async (address) => {
-
-    const formData = new FormData()
-    formData.append("pool_image", image)
-    formData.append("poolAddress", address)
-
+  const uploadImageToServer = async (address) => {
+    const formData = new FormData();
+    formData.append('pool_image', image);
+    formData.append('poolAddress', address);
     axios({
       method: 'post',
       url: '/api/proxy/pools/setImage',
       data: formData,
     })
-      .then(() => {
-      })
+      .then(() => {})
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const uploadDescription = async (address) => {
+    const headers = {
+      'Content-Type': 'text/plain',
+      Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
+    };
+
+    axios({
+      method: 'post',
+      url: `/api/proxy/pools/setDescription?poolAddress=${address}`,
+      headers: headers,
+      data: poolDescription,
+    })
+      .then(() => {})
       .catch((err) => {
         console.error(err);
       });
@@ -184,8 +199,8 @@ export default function NewPoolDialog(props) {
               .then(({ address, name }) => {
                 user.fetchUsdBalance();
                 router.push(`/pools/${address}?name=${name}`);
-                uploadToServer(address);
-                //upload image and description
+                uploadImageToServer(address.toLowerCase());
+                uploadDescription(address.toLowerCase());
               })
               .catch((err) => {
                 console.log(err);

@@ -4,7 +4,7 @@ const http = require('https');
 export default function handler(req, res) {
   const options = {
     hostname: 'pools-service.wunderpass.org',
-    path: `/web3Proxy/pools/${req.query.poolAddress}/image`,
+    path: `/web3Proxy/pools/${req.query.poolAddress}/banner`,
     headers: {
       Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
     },

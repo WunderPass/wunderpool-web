@@ -20,56 +20,75 @@ import LoadingCircle from '/components/utils/loadingCircle';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import axios from 'axios';
 
-
 function PoolCard(props) {
   const { pool } = props;
-  const [image, setImage] = useState(null)
-  const [hasPicture, setHasPicture] = useState(null)
-
+  const [image, setImage] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [hasBanner, setHasBanner] = useState(false);
+  const [hasPicture, setHasPicture] = useState(false);
   const members = pool.members;
-
-  const getImage = () => {
-    setImage(`/api/proxy/pools/getImage?poolAddress=${pool.address}`)
-  };
 
   const checkIfPictureExists = () => {
     axios({
       url: `/api/proxy/pools/getImage?poolAddress=${pool.address}`,
     }).then((res) => {
-      if (typeof res.data != typeof '') {
+      console.log(pool.name);
+      console.log(res.data);
+
+      if (res.data === '') {
         setHasPicture(false);
         return;
       }
+      setImage(`/api/proxy/pools/getImage?poolAddress=${pool.address}`);
+      setHasPicture(true);
     });
-    setHasPicture(true);
+  };
+
+  const checkIfBannerExists = () => {
+    axios({
+      url: `/api/proxy/pools/getBanner?poolAddress=${pool.address}`,
+    }).then((res) => {
+      if (res.data === '') {
+        setHasBanner(false);
+        return;
+      }
+      setBanner(`/api/proxy/pools/getBanner?poolAddress=${pool.address}`);
+      setHasBanner(true);
+    });
   };
 
   useEffect(() => {
-    console.log(pool)
     if (pool.address != null) {
-      getImage();
       checkIfPictureExists();
+      checkIfBannerExists();
     }
-  }, [pool.address])
-
+  }, [pool.address]);
 
   return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
       <Paper
-        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6"
+        className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6`}
         elevation={1}
         sx={{ p: 2 }}
       >
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <Typography className="text-md">{pool.name}</Typography>
-            <div className={`bg-white hover:bg-[#ededed] rounded-md border-2 border-kaico-extra-light-blue text-md font-semibold cursor-pointer${!hasPicture && ` p-6`}`}>
-              {hasPicture && <img
-                className="object-scale-down w-12 h-12 rounded-md"
-                src={image && image}
-                type="file"
-
-              />}
+            <div
+              className={
+                hasPicture
+                  ? `bg-white hover:bg-[#ededed] rounded-md  border-kaico-extra-light-blue text-md font-semibold cursor-pointer
+                `
+                  : `p-6 bg-white hover:bg-[#ededed] rounded-md border-2 border-kaico-extra-light-blue text-md font-semibold cursor-pointer`
+              }
+            >
+              {hasPicture && (
+                <img
+                  className="object-cover w-12 h-12 rounded-md"
+                  src={image && image}
+                  type="file"
+                />
+              )}
             </div>
           </div>
           <Typography className="text-lg pt-3 font-semibold">
@@ -112,8 +131,9 @@ function PoolCard(props) {
                       return (
                         <Avatar
                           wunderId={member.wunderId ? member.wunderId : null}
-                          tooltip={`${member.wunderId || 'External User'
-                            }: ${member.share.toFixed(0)}%`}
+                          tooltip={`${
+                            member.wunderId || 'External User'
+                          }: ${member.share.toFixed(0)}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
                           separator="-"
                           color={['green', 'blue', 'red'][i % 3]}
@@ -176,7 +196,7 @@ export default function Pools(props) {
 
   const pageSize = 4;
 
-  useEffect(() => { }, [user]);
+  useEffect(() => {}, [user]);
 
   useEffect(() => {
     setLoadingCircle(!user.isReady);
