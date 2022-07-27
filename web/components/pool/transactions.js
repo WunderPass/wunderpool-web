@@ -29,7 +29,7 @@ export default function Transactions(props) {
     <div>
       {allTransactions.map((trx, i) => {
         return (
-          <div className="container-gray mb-4">
+          <div key={`pool-transaction-${i}`} className="container-gray mb-4">
             <div className="flex flex-col justify-between items-start max-w-screen overflow-x-auto">
               <Typography className="text-lg mb-1">
                 Transaction #{allTransactions.length - i}
