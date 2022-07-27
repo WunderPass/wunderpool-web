@@ -15,7 +15,7 @@ import axios from 'axios';
 const FormData = require('form-data');
 
 export default function PoolHeader(props) {
-  const { name, address, wunderPool } = props;
+  const { name, address, wunderPool, isMobile } = props;
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [image, setImage] = useState(null);
@@ -157,7 +157,7 @@ export default function PoolHeader(props) {
           <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
             {hasBanner ? (
               <img
-                className="object-cover min-w-full min-h-full rounded-xl "
+                className="object-cover min-w-full min-h-full rounded-xl"
                 src={bannerUrl ? bannerUrl : banner}
                 type="file"
               />
@@ -185,12 +185,15 @@ export default function PoolHeader(props) {
         <div className="flex flex-col container-white w-full">
           {hasPicture ? (
             <div
-              className="flex-col w-20 h-20 container-image-round -mt-14 rounded-full "
+              className="flex-col w-20 h-20 -mt-14 rounded-full "
               type="file"
             >
-              <label htmlFor="imageUpload" className="cursor-pointer">
+              <label
+                htmlFor={isMobile ? 'imageUploadMobile' : 'imageUploadDesktop'}
+                className="cursor-pointer"
+              >
                 <img
-                  className="object-cover w-20 h-20 rounded-full"
+                  className="object-cover w-20 h-20 rounded-full border-black border-2"
                   src={imageUrl ? imageUrl : image}
                   type="file"
                 />
@@ -198,7 +201,7 @@ export default function PoolHeader(props) {
 
               <input
                 className="hidden"
-                id="imageUpload"
+                id={isMobile ? 'imageUploadMobile' : 'imageUploadDesktop'}
                 type="file"
                 name="image"
                 accept="image/*"
@@ -225,7 +228,6 @@ export default function PoolHeader(props) {
               />
             </div>
           )}
-
           <div className="flex flex-row justify-between">
             <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
               {name}
@@ -246,6 +248,7 @@ export default function PoolHeader(props) {
           >
             Save
           </button>
+
           <Divider className="my-6 mt-8 opacity-70" />
           <div className="mb-1">
             <div className="flex flex-row items-center justify-between">
