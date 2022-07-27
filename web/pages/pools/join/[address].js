@@ -73,7 +73,7 @@ function TopUpRequired() {
   return (
     <>
       <Typography className="text-sm mt-3">
-        To continue, your Account needs at least $ 3.00
+        To continue, your Account needs at least $3.00
       </Typography>
       <Typography className="text-xl my-3">TopUp your WunderId</Typography>
       {redirectUrl && (

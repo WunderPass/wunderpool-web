@@ -54,11 +54,12 @@ export default function NewPoolConfigStep(props) {
   const uploadToClient = (event) => {
     if (event.target.files && event.target.files[0]) {
       const i = event.target.files[0];
-
       setImage(i);
       setImageUrl(URL.createObjectURL(i));
     }
   };
+
+
 
   const handleValueChange = (val, float) => {
     setValue(val);
@@ -99,8 +100,7 @@ export default function NewPoolConfigStep(props) {
     setPoolNameTouched(true);
     if (!tokenNameTouched)
       setTokenName(
-        `${name.trim()}${
-          name.match(' ') ? ' ' : name.match('-') ? '-' : ''
+        `${name.trim()}${name.match(' ') ? ' ' : name.match('-') ? '-' : ''
         }Token`
       );
     if (!tokenSymbolTouched)
@@ -121,9 +121,8 @@ export default function NewPoolConfigStep(props) {
         </label>
         <label htmlFor="fileUpload">
           <div
-            className={`flex items-center justify-center border-dotted border-2 w-28 h-28 mt-2 mb-2 cursor-pointer  ${
-              imageUrl ? 'border-gray-400' : 'border-gray-300 rounded-xl'
-            }`}
+            className={`flex items-center justify-center border-dotted border-2 w-28 h-28 mt-2 mb-2 cursor-pointer  ${imageUrl ? 'border-gray-400' : 'border-gray-300 rounded-xl'
+              }`}
             type="file"
             name="poolPicture"
           >

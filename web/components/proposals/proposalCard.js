@@ -106,10 +106,10 @@ function OpenProposalDialog(props) {
             sx={{ display: 'flex', justifyContent: 'space-between' }}
           >
             <Typography variant="span" fontStyle="italic">
-              Zustimmungen
+              For
             </Typography>
             {proposal.yesVotes.toString()} / {proposal.totalVotes.toString()}{' '}
-            Stimmen
+            Votes
           </Typography>
           <Divider />
           <Typography
@@ -117,10 +117,10 @@ function OpenProposalDialog(props) {
             sx={{ display: 'flex', justifyContent: 'space-between' }}
           >
             <Typography variant="span" fontStyle="italic">
-              Ablehnungen
+              Against
             </Typography>
             {proposal.noVotes.toString()} / {proposal.totalVotes.toString()}{' '}
-            Stimmen
+            Votes
           </Typography>
           <Divider />
           <Typography

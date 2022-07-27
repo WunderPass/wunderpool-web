@@ -16,22 +16,75 @@ import Avatar from '/components/utils/avatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
 import LoadingCircle from '/components/utils/loadingCircle';
 import InitialsAvatar from '/components/utils/initialsAvatar';
+import axios from 'axios';
 
 function PoolCard(props) {
   const { pool } = props;
+  const [image, setImage] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [hasBanner, setHasBanner] = useState(false);
+  const [hasPicture, setHasPicture] = useState(false);
   const members = pool.members;
+
+  const checkIfPictureExists = () => {
+    axios({
+      url: `/api/proxy/pools/getImage?poolAddress=${pool.address}`,
+    }).then((res) => {
+      if (res.data === '') {
+        setHasPicture(false);
+        return;
+      }
+      setImage(`/api/proxy/pools/getImage?poolAddress=${pool.address}`);
+      setHasPicture(true);
+    });
+  };
+
+  const checkIfBannerExists = () => {
+    axios({
+      url: `/api/proxy/pools/getBanner?poolAddress=${pool.address}`,
+    }).then((res) => {
+      if (res.data === '') {
+        setHasBanner(false);
+        return;
+      }
+      setBanner(`/api/proxy/pools/getBanner?poolAddress=${pool.address}`);
+      setHasBanner(true);
+    });
+  };
+
+  useEffect(() => {
+    if (pool.address != null) {
+      checkIfPictureExists();
+      checkIfBannerExists();
+    }
+  }, [pool.address]);
 
   return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
       <Paper
-        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6"
+        className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6`}
         elevation={1}
         sx={{ p: 2 }}
       >
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <Typography className="text-md">{pool.name}</Typography>
-            <div className="bg-white hover:bg-[#ededed]  rounded-md border-2 border-kaico-extra-light-blue p-5 text-md font-semibold cursor-pointer"></div>
+            <div
+              className={
+                hasPicture
+                  ? `bg-white hover:bg-[#ededed] rounded-md  border-kaico-extra-light-blue text-md font-semibold cursor-pointer
+                `
+                  : `p-6 bg-white hover:bg-[#ededed] rounded-md border-2 border-kaico-extra-light-blue text-md font-semibold cursor-pointer`
+              }
+            >
+              {hasPicture && (
+                <img
+                  className="object-cover w-12 h-12 rounded-md"
+                  src={image && image}
+                  type="file"
+                />
+              )}
+            </div>
           </div>
           <Typography className="text-lg pt-3 font-semibold">
             {currency(pool.totalBalance)}
