@@ -26,11 +26,9 @@ import {
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
 import { usdcAddress } from '/services/contract/init';
-import {
-  isLiquidateProposal,
-  proposalExecutable,
-} from '/services/contract/proposals';
+import { proposalExecutable } from '/services/contract/proposals';
 import { addToWhiteListWithSecret } from '../services/contract/pools';
+import { cacheItemDB } from '/services/caching';
 
 export default function usePool(userAddr, poolAddr = null) {
   const [userAddress, setUserAddress] = useState(userAddr);
@@ -153,7 +151,10 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const determineVersion = async () => {
-    const vers = await poolVersion(poolAddress);
+    const vers = await cacheItemDB(
+      `version_${poolAddress}`,
+      await poolVersion(poolAddress)
+    );
     setVersion(vers);
     return vers;
   };
@@ -230,11 +231,14 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const getTransactionData = async (id, transactionCount) => {
-    return await fetchTransactionData(
-      poolAddress,
-      id,
-      transactionCount,
-      version.number
+    return await cacheItemDB(
+      `tx_data_${poolAddress}_${id}`,
+      await fetchTransactionData(
+        poolAddress,
+        id,
+        transactionCount,
+        version.number
+      )
     );
   };
 

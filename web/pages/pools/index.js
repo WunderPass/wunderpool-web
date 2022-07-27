@@ -1,8 +1,6 @@
 import BalanceBox from '/components/pool/balanceBox';
-import { displayWithDecimalPlaces, currency } from '/services/formatter';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { currency } from '/services/formatter';
 import { useEffect, useState } from 'react';
-import { MdContentCopy } from 'react-icons/md';
 import { PieChart } from 'react-minimal-pie-chart';
 import { MdGroups } from 'react-icons/md';
 import Head from 'next/head';
@@ -73,6 +71,7 @@ function PoolCard(props) {
                     .map((member, i) => {
                       return (
                         <Avatar
+                          key={`avatar-${pool.address}-${i}`}
                           wunderId={member.wunderId ? member.wunderId : null}
                           tooltip={`${
                             member.wunderId || 'External User'
