@@ -99,7 +99,7 @@ export default function ApeForm(props) {
                 {tokenName}
               </Typography>
               <Typography variant="h4" color="GrayText">
-                {tokenPrice && currency(tokenPrice, {})}
+                {tokenPrice && currency(tokenPrice)}
               </Typography>
             </Stack>
             <FormControl fullWidth variant="outlined">

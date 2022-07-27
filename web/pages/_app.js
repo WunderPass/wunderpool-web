@@ -10,8 +10,11 @@ import muiTheme from '/theme/mui';
 import Navbar from '/components/layout/navbar';
 import TopUpAlert from '../components/dialogs/topUpAlert';
 import Head from 'next/head';
+import LogRocket from 'logrocket';
+import { useEffect } from 'react';
 
 function WunderPool({ Component, pageProps }) {
+  LogRocket.init(process.env.LOG_ROCKET_ID);
   const user = useUser();
   const [notification, handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
@@ -19,6 +22,7 @@ function WunderPool({ Component, pageProps }) {
     setupPoolListener,
     votedEvent,
     newProposalEvent,
+    newMemberEvent,
     tokenAddedEvent,
     proposalExecutedEvent,
     resetEvents,
@@ -34,6 +38,7 @@ function WunderPool({ Component, pageProps }) {
       setupPoolListener,
       votedEvent,
       newProposalEvent,
+      newMemberEvent,
       tokenAddedEvent,
       proposalExecutedEvent,
       resetEvents,
@@ -48,15 +53,24 @@ function WunderPool({ Component, pageProps }) {
     transition: transitions.SCALE,
   };
 
+  useEffect(() => {
+    if (user.address && user.wunderId) {
+      LogRocket.identify(user.address, {
+        name: user.wunderId,
+        email: 'comingSoon@gmail.com',
+      });
+    }
+  }, [user.wunderId, user.address]);
+
   return (
     <>
       <Head>
-        <meta name="application-name" content="Casama" />
         <meta
           name="description"
           content="Pool capital with your friends, vote on crypto plays and make bank together!"
         />
-
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#5F45FD" />
         <link rel="apple-touch-icon" href="/images/touch/homescreen512.png" />
         <link
           rel="apple-touch-icon"
@@ -73,28 +87,12 @@ function WunderPool({ Component, pageProps }) {
           sizes="192x192"
           href="/images/touch/homescreen192.png"
         />
-        <link rel="shortcut icon" href="/favicon.ico" />
-
-        <meta name="twitter:card" content="Casama" />
-        <meta name="twitter:url" content="https://app.casama.io" />
-        <meta name="twitter:title" content="Casama" />
-        <meta
-          name="twitter:description"
-          content="Pool capital with your friends, vote on crypto plays and make bank together!"
-        />
         <meta
           name="twitter:image"
           content="https://app.casama.io/images/touch/homescreen192.png"
         />
         <meta name="twitter:creator" content="@casama_io" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Casama" />
-        <meta
-          property="og:description"
-          content="Pool capital with your friends, vote on crypto plays and make bank together!"
-        />
-        <meta property="og:site_name" content="Casama" />
-        <meta property="og:url" content="https://app.casama.io" />
         <meta
           property="og:image"
           content="https://app.casama.io/images/touch/homescreen512.png"
@@ -108,7 +106,7 @@ function WunderPool({ Component, pageProps }) {
             <Notification notification={notification} />
             <TopUpAlert
               open={user.topUpRequired}
-              setOpen={() => user.setTopUpRequired(false)}
+              setOpen={user.setTopUpRequired}
               user={user}
             />
           </AlertProvider>

@@ -43,7 +43,7 @@ export default function makeProposal(props) {
       .apeSuggestion(
         tokenAddress,
         proposalName || `Let's Ape into ${tokenName} (${tokenSymbol})`,
-        `We will ape ${currency(value, {}).toString()} into ${tokenName}`,
+        `We will ape ${currency(value).toString()} into ${tokenName}`,
         value
       )
       .then((res) => {
@@ -100,7 +100,7 @@ export default function makeProposal(props) {
           </Typography>
           <div className="flex flex-row justify-between items-center gap-1 w-full">
             <Typography className="text-md" color="GrayText">
-              {currency(value, {})}
+              {currency(value)}
             </Typography>
             <DoubleArrowIcon />
             <img className="w-9" src={tokenImage || '/favicon.ico'} />
@@ -148,7 +148,7 @@ export default function makeProposal(props) {
                     {tokenName}
                   </Typography>
                   <Typography className="text-md" color="GrayText">
-                    {currency(tokenPrice, {})}
+                    {currency(tokenPrice)}
                   </Typography>
                 </div>
               </Collapse>
@@ -179,8 +179,7 @@ export default function makeProposal(props) {
                   {valueTouched && !hasEnoughBalance && (
                     <div className="text-red-600" style={{ marginTop: 0 }}>
                       {`The pool only has ${currency(
-                        polyValueToUsd(wunderPool.usdcBalance.toString()),
-                        {}
+                        polyValueToUsd(wunderPool.usdcBalance.toString())
                       )} in its Treasury!`}
                     </div>
                   )}

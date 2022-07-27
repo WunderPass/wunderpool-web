@@ -21,3 +21,23 @@ export function waitForTransaction(txHash) {
       });
   });
 }
+
+function decodeMessage(code) {
+  let codeString = `0x${code.substr(138)}`.replace(/0+$/, '');
+
+  if (codeString.length % 2 === 1) {
+    codeString += '0';
+  }
+
+  return ethers.utils.toUtf8String(codeString);
+}
+
+export async function decodeError(txHash) {
+  try {
+    const tx = await httpProvider.getTransaction(txHash);
+    const code = await httpProvider.call(tx);
+    return decodeMessage(code);
+  } catch (error) {
+    return 'Unknown Blockchain Error';
+  }
+}

@@ -35,6 +35,11 @@ export default function useUser() {
     setAddress(addr);
   };
 
+  const updateCheckedTopUp = (checked) => {
+    localStorage.setItem('checkedTopUp', checked);
+    setCheckedTopUp(checked);
+  };
+
   const fetchPools = () => {
     return new Promise((resolve, reject) => {
       if (!address) resolve(null);
@@ -87,6 +92,7 @@ export default function useUser() {
   const logOut = () => {
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
+    localStorage.removeItem('checkedTopUp');
     setWunderId(null);
     setAddress(null);
     setCheckedTopUp(null);
@@ -106,7 +112,7 @@ export default function useUser() {
   useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
-    setCheckedTopUp(localStorage.getItem('checkedTopUp'));
+    setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
   }, []);
 
   return {
@@ -125,6 +131,8 @@ export default function useUser() {
     fetchUsdBalance,
     topUpRequired,
     setTopUpRequired,
+    checkedTopUp,
+    updateCheckedTopUp,
     isReady,
     addToDatabase,
   };

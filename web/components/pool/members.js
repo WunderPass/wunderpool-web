@@ -8,6 +8,7 @@ import Avatar from '/components/utils/avatar';
 import { FaBan } from 'react-icons/fa';
 import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
+import { cacheItemDB } from '../../services/caching';
 
 export default function PoolMembers(props) {
   const { user, wunderPool, loginCallback } = props;
@@ -21,11 +22,17 @@ export default function PoolMembers(props) {
       const resolvedMembers = await Promise.all(
         governanceToken.holders.map(async (mem) => {
           try {
-            const user = await axios({
-              url: '/api/proxy/users/find',
-              params: { address: mem.address },
-            });
-            return { ...mem, wunderId: user.data.wunderId };
+            const user = await cacheItemDB(
+              mem.address,
+              (
+                await axios({
+                  url: '/api/proxy/users/find',
+                  params: { address: mem.address },
+                })
+              ).data,
+              600
+            );
+            return { ...mem, wunderId: user.wunderId };
           } catch {
             return mem;
           }
@@ -33,7 +40,7 @@ export default function PoolMembers(props) {
       );
       setMembers(resolvedMembers);
     }
-  }, [governanceToken]);
+  }, [governanceToken?.holders?.length]);
 
   return isReady ? (
     <div className="md:ml-4 w-full">

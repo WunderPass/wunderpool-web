@@ -25,7 +25,7 @@ function assetDetails(props) {
                   <div className="flex flex-row items-center justify-start ">
                     <GrMoney className="text-xl mr-2" />
                     <Typography className="text-2xl opacity-90 py-1 font-semibold">
-                      {currency(wunderPool.assetBalance, {})}
+                      {currency(wunderPool.assetBalance)}
                     </Typography>
                   </div>
                 </div>

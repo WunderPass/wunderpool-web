@@ -48,12 +48,10 @@ export default function InviteMemberDialog(props) {
       .inviteUser(selectedUser?.address)
       .then((res) => {
         handleSuccess(`Added User ${selectedUser.wunderId} to the WhiteList`);
-        setSelectedUser(null);
+        handleClose();
       })
       .catch((err) => {
         handleError(err);
-      })
-      .then(() => {
         setLoading(false);
       });
   };

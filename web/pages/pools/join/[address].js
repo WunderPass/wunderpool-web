@@ -10,7 +10,7 @@ import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
 import Head from 'next/head';
-import { fetchPoolName } from '../../../services/contract/pools';
+import { fetchPoolName } from '/services/contract/pools';
 
 function InfoBlock({ label, value }) {
   return (
@@ -31,14 +31,14 @@ function PoolStats({
   return (
     <div className="flex flex-wrap flex-row items-center justify-center w-full mt-6">
       {minInvest == maxInvest ? (
-        <InfoBlock label="Required Invest" value={currency(minInvest, {})} />
+        <InfoBlock label="Required Invest" value={currency(minInvest)} />
       ) : (
         <>
-          <InfoBlock label="Minimum Invest" value={currency(minInvest, {})} />
-          <InfoBlock label="Maximum Invest" value={currency(maxInvest, {})} />
+          <InfoBlock label="Minimum Invest" value={currency(minInvest)} />
+          <InfoBlock label="Maximum Invest" value={currency(maxInvest)} />
         </>
       )}
-      <InfoBlock label="Total Assets" value={currency(totalBalance, {})} />
+      <InfoBlock label="Total Assets" value={currency(totalBalance)} />
       <InfoBlock label="Members" value={`${members || '-'} / ${maxMembers}`} />
     </div>
   );
@@ -107,7 +107,7 @@ function InputJoinAmount(props) {
         <Typography>Invest Amount</Typography>
         <CurrencyInput
           value={amount}
-          placeholder={currency(minInvest, {})}
+          placeholder={currency(minInvest)}
           onChange={handleInput}
           error={errorMsg}
         />
@@ -141,6 +141,7 @@ export default function JoinPool(props) {
   const [secret, setSecret] = useState(null);
   const [signing, setSigning] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [invalidLink, setInvalidLink] = useState(false);
   const wunderPool = usePool(user.address, address);
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
@@ -159,11 +160,9 @@ export default function JoinPool(props) {
   const handleInput = (value, float) => {
     setAmount(value);
     if (float && minInvest > float) {
-      setErrorMsg(
-        `Minimum of ${currency(minInvest, {})} required for the Pool`
-      );
+      setErrorMsg(`Minimum of ${currency(minInvest)} required for the Pool`);
     } else if (float && float > maxInvest) {
-      setErrorMsg(`Maximum Invest of ${currency(maxInvest, {})} surpassed`);
+      setErrorMsg(`Maximum Invest of ${currency(maxInvest)} surpassed`);
     } else if (user.usdBalance < float) {
       setErrorMsg(`Not enough balance`);
     } else {
@@ -184,12 +183,15 @@ export default function JoinPool(props) {
         .join(amount, secret)
         .then(() => {
           user.fetchUsdBalance();
-          handleSuccess(`Joined Pool with ${currency(amount, {})}`);
+          handleSuccess(`Joined Pool with ${currency(amount)}`);
           loginCallback();
         })
         .catch((err) => {
-          console.log(err);
-          handleError('Could not join the Pool');
+          setSigning(false);
+          if (err == 'Not On Whitelist') setInvalidLink(true);
+          handleError(
+            `Could not join the Pool${typeof err == 'string' ? `: ${err}` : ''}`
+          );
         });
     }, 10);
   };
@@ -227,13 +229,12 @@ export default function JoinPool(props) {
       wunderPool.setPoolAddress(router.query.address);
       wunderPool.setUserAddress(user.address);
     }
-  }, [router.isReady, router.query.address]);
+  }, [router.isReady, router.query.address, user.address]);
 
   return (
     <>
       <Head>
         <title>Casama - Join {metaTagInfo.name}</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container className="flex justify-center items-center" maxWidth="xl">
         <div className="flex flex-col container-white items-center justify-center mt-6">
@@ -249,8 +250,14 @@ export default function JoinPool(props) {
             totalBalance={wunderPool.totalBalance}
           />
           {wunderPool.closed && (
-            <Alert severity="warning" className="w-full">
+            <Alert severity="warning" className="w-full items-center my-1">
               This Pool is already closed
+            </Alert>
+          )}
+          {invalidLink && (
+            <Alert severity="error" className="w-full items-center my-1">
+              This Link has most likely expired. Please ask the Pool Members for
+              a new Link
             </Alert>
           )}
           {user?.loggedIn ? (
@@ -283,11 +290,19 @@ export default function JoinPool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.address;
-  const name = await fetchPoolName(address);
+  try {
+    const name = await fetchPoolName(address);
 
-  return {
-    props: {
-      metaTagInfo: { name },
-    },
-  };
+    return {
+      props: {
+        metaTagInfo: { name },
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        metaTagInfo: { name: 'Liquidated Pool' },
+      },
+    };
+  }
 }

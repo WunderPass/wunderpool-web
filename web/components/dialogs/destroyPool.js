@@ -13,6 +13,7 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
 import TransactionFrame from '/components/utils/transactionFrame';
+import { formatTokenBalance } from '/services/formatter';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
@@ -87,14 +88,11 @@ export default function DestroyPoolDialog(props) {
                     .div(100)
                     .div(10000)
                     .div(ethers.BigNumber.from(10).pow(tkn.decimals))
-                    .toNumber() / 100,
-                  {}
+                    .toNumber() / 100
                 );
-                var tokenAmount = (tkn.formattedBalance * userShare) / 100;
-                tokenAmount =
-                  tokenAmount > 1
-                    ? parseFloat(tokenAmount).toFixed(3)
-                    : parseFloat(tokenAmount).toFixed(8);
+                const tokenAmount = formatTokenBalance(
+                  (tkn.formattedBalance * userShare) / 100
+                );
 
                 return (
                   <Stack

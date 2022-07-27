@@ -1,8 +1,6 @@
 import BalanceBox from '/components/pool/balanceBox';
-import { displayWithDecimalPlaces, currency } from '/services/formatter';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { currency } from '/services/formatter';
 import { useEffect, useState } from 'react';
-import { MdContentCopy } from 'react-icons/md';
 import { PieChart } from 'react-minimal-pie-chart';
 import { MdGroups } from 'react-icons/md';
 import Head from 'next/head';
@@ -89,7 +87,7 @@ function PoolCard(props) {
             </div>
           </div>
           <Typography className="text-lg pt-3 font-semibold">
-            {currency(pool.totalBalance, {})}
+            {currency(pool.totalBalance)}
           </Typography>
           <div className="flex flex-row justify-between items-center pb-4">
             <div className="flex flex-row justify-start items-center ">
@@ -112,8 +110,7 @@ function PoolCard(props) {
               <Typography className="text-md  pt-5 pl-3">
                 {pool.userShare &&
                   `${parseInt(pool.userShare)}% (${currency(
-                    pool.userBalance,
-                    {}
+                    pool.userBalance
                   )})`}
               </Typography>
             </div>
@@ -127,6 +124,7 @@ function PoolCard(props) {
                     .map((member, i) => {
                       return (
                         <Avatar
+                          key={`avatar-${pool.address}-${i}`}
                           wunderId={member.wunderId ? member.wunderId : null}
                           tooltip={`${
                             member.wunderId || 'External User'

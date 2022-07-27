@@ -54,7 +54,9 @@ const Timer = (props) => {
         <div className="flex flex-row opacity-50">
           {timer >= 86400 ? (
             <>
-              <Typography className="text-xs mr-1">Days</Typography>
+              <Typography className="text-xs mr-1">
+                Days Left to Vote
+              </Typography>
             </>
           ) : (
             <>
