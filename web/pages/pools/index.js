@@ -32,9 +32,6 @@ function PoolCard(props) {
     axios({
       url: `/api/proxy/pools/getImage?poolAddress=${pool.address}`,
     }).then((res) => {
-      console.log(pool.name);
-      console.log(res.data);
-
       if (res.data === '') {
         setHasPicture(false);
         return;

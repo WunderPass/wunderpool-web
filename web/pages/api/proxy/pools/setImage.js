@@ -19,7 +19,6 @@ export default async (req, res) => {
   const data = new FormData();
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  console.log('req', req);
 
   form.parse(req, (err, fields, files) => {
     if (files['pool_image'].filepath) {

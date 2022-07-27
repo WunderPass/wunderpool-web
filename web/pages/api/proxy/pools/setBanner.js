@@ -19,16 +19,9 @@ export default async (req, res) => {
   const data = new FormData();
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  console.log('req', req);
 
   form.parse(req, (err, fields, files) => {
     if (files['pool_banner'].filepath) {
-      console.log(
-        "files['pool_banner'].filepath",
-        files['pool_banner'].filepath
-      );
-      console.log('fields.poolAddress', fields.poolAddress);
-
       data.append(
         'pool_banner',
         fs.createReadStream(files['pool_banner'].filepath)
