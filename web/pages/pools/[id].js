@@ -150,6 +150,7 @@ export default function Pool(props) {
                 name={name}
                 address={address}
                 wunderPool={wunderPool}
+                isMobile={false}
                 {...props}
               />
               <PoolBody
@@ -160,7 +161,7 @@ export default function Pool(props) {
                 newProposalEvent={newProposalEvent}
                 {...props}
               />
-            </div>{' '}
+            </div>
             <div className="flex-col max-w-sm w-screen">
               {!wunderPool.isMember && <></>}
               <PoolDetails
@@ -186,6 +187,8 @@ export default function Pool(props) {
                 name={name}
                 address={address}
                 wunderPool={wunderPool}
+                isMobile={true}
+                {...props}
               />
 
               <PoolDetails
