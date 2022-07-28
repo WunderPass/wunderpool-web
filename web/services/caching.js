@@ -12,13 +12,14 @@ const dbPromise = () => {
 
 export async function cacheItemDB(key, item, validFor = 315360000) {
   if (typeof indexedDB == 'undefined') return item;
-  const cached = await getCachedItemDB(key);
+  const lowKey = key.toLowerCase();
+  const cached = await getCachedItemDB(lowKey);
 
   if (cached) {
     return cached;
   } else {
     (await dbPromise()).put(tableName, {
-      key,
+      key: lowKey,
       item,
       validUntil: Number(new Date() / 1000) + validFor,
     });
@@ -28,13 +29,14 @@ export async function cacheItemDB(key, item, validFor = 315360000) {
 
 export async function getCachedItemDB(key) {
   if (typeof indexedDB == 'undefined') return null;
-  const cached = await (await dbPromise()).get(tableName, key);
+  const lowKey = key.toLowerCase();
+  const cached = await (await dbPromise()).get(tableName, lowKey);
 
   if (cached && cached.item) {
     if (cached.validUntil > Number(new Date() / 1000)) {
       return cached.item;
     } else {
-      (await dbPromise()).delete(tableName, key);
+      (await dbPromise()).delete(tableName, lowKey);
     }
   }
   return null;
@@ -42,18 +44,21 @@ export async function getCachedItemDB(key) {
 
 export async function deleteItemDB(key) {
   if (typeof indexedDB == 'undefined') return null;
-  const cached = await getCachedItemDB(key);
-  (await dbPromise()).delete(tableName, key);
+  const lowKey = key.toLowerCase();
+  const cached = await getCachedItemDB(lowKey);
+  (await dbPromise()).delete(tableName, lowKey);
   return cached;
 }
 
 export async function cacheImage(key, blob, validFor = 86400) {
   if (typeof indexedDB == 'undefined') return blob;
-  const cached = await getCachedImage(key);
+  const lowKey = key.toLowerCase();
+  const cached = await getCachedImage(lowKey);
 
   if (cached) {
     return cached;
   } else {
+    console.log(`POST ${lowKey}`);
     const buffer = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.addEventListener('loadend', (e) => {
@@ -63,7 +68,7 @@ export async function cacheImage(key, blob, validFor = 86400) {
       reader.readAsArrayBuffer(blob);
     });
     (await dbPromise()).put(tableName, {
-      key,
+      key: lowKey,
       item: { buffer, type: blob.type },
       validUntil: Number(new Date() / 1000) + validFor,
     });
@@ -72,18 +77,21 @@ export async function cacheImage(key, blob, validFor = 86400) {
 }
 
 export async function getCachedImage(key) {
-  const image = await getCachedItemDB(key);
+  const lowKey = key.toLowerCase();
+  const image = await getCachedItemDB(lowKey);
+
   if (image) {
     return new Blob([image.buffer], { type: image.type });
   }
   return null;
 }
 
-export async function cacheImageByURL(key, url, validFor = null) {
+export async function cacheImageByURL(key, url, validFor = undefined) {
+  const lowKey = key.toLowerCase();
   try {
     const imageBlob =
-      (await getCachedImage(key)) ||
-      (await cacheImage(key, await (await fetch(url)).blob(), validFor));
+      (await getCachedImage(lowKey)) ||
+      (await cacheImage(lowKey, await (await fetch(url)).blob(), validFor));
 
     return /image/.test(imageBlob.type) && imageBlob.size > 0
       ? URL.createObjectURL(imageBlob)

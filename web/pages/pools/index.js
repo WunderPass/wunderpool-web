@@ -29,7 +29,8 @@ function PoolCard(props) {
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${pool.address}`,
-        `/api/proxy/pools/getImage?address=${pool.address}`
+        `/api/proxy/pools/getImage?address=${pool.address}`,
+        600
       )
     );
   }, [pool.address]);

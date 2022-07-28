@@ -94,13 +94,15 @@ export default function PoolHeader(props) {
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${address}`,
-        `/api/proxy/pools/getImage?address=${address}`
+        `/api/proxy/pools/getImage?address=${address}`,
+        600
       )
     );
     setBannerUrl(
       await cacheImageByURL(
         `pool_banner_${address}`,
-        `/api/proxy/pools/getBanner?address=${address}`
+        `/api/proxy/pools/getBanner?address=${address}`,
+        600
       )
     );
   }, [address]);
