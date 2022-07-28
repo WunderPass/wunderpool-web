@@ -8,7 +8,7 @@ import Avatar from '/components/utils/avatar';
 import { FaBan } from 'react-icons/fa';
 import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
-import { cacheItemDB } from '../../services/caching';
+import { cacheItemDB, getCachedItemDB } from '../../services/caching';
 
 export default function PoolMembers(props) {
   const { user, wunderPool, loginCallback } = props;
@@ -22,16 +22,18 @@ export default function PoolMembers(props) {
       const resolvedMembers = await Promise.all(
         governanceToken.holders.map(async (mem) => {
           try {
-            const user = await cacheItemDB(
-              mem.address,
-              (
-                await axios({
-                  url: '/api/proxy/users/find',
-                  params: { address: mem.address },
-                })
-              ).data,
-              600
-            );
+            const user =
+              (await getCachedItemDB(mem.address)) ||
+              (await cacheItemDB(
+                mem.address,
+                (
+                  await axios({
+                    url: '/api/proxy/users/find',
+                    params: { address: mem.address },
+                  })
+                ).data,
+                600
+              ));
             return { ...mem, wunderId: user.wunderId };
           } catch {
             return mem;

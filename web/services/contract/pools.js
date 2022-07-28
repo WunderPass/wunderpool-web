@@ -21,7 +21,7 @@ import {
 import axios from 'axios';
 import { httpProvider } from './provider';
 import { approve, usdcBalanceOf } from './token';
-import { cacheItemDB } from '../caching';
+import { cacheItemDB, getCachedItemDB } from '../caching';
 
 export function poolVersion(poolAddress) {
   return new Promise(async (resolve, reject) => {
@@ -33,6 +33,7 @@ export function poolVersion(poolAddress) {
 export function createPool(
   creator,
   poolName,
+  poolDescription,
   tokenName,
   tokenSymbol,
   minInvest,
@@ -42,30 +43,45 @@ export function createPool(
   maxMembers,
   votingThreshold,
   votingTime,
-  minYesVoters
+  minYesVoters,
+  image
 ) {
   return new Promise(async (resolve, reject) => {
     const body = {
-      creator,
-      name: poolName,
-      minInvest,
-      maxInvest,
-      tokenName,
-      tokenSymbol,
-      amount,
-      members,
-      maxMembers,
-      votingThreshold,
-      votingTime,
-      minYesVoters,
+      launcher: {
+        launcher_name: 'PoolLauncher',
+        launcher_version: 'Epsilon',
+        launcher_network: 'POLYGON_MAINNET',
+      },
+      pool_name: poolName,
+      pool_description: poolDescription,
+      pool_governance_token: {
+        token_name: tokenName,
+        token_symbol: tokenSymbol,
+      },
+      pool_creator: creator,
+      pool_members: members.map((m) => ({ members_address: m })),
+      shareholder_agreement: {
+        min_invest: minInvest,
+        max_invest: maxInvest,
+        max_members: maxMembers,
+        voting_threshold: votingThreshold,
+        voting_time: votingTime,
+        min_yes_voters: minYesVoters,
+      },
+      initial_invest: amount,
     };
 
+    const formData = new FormData();
+    formData.append('pool_image', image);
+    formData.append('pool', JSON.stringify(body));
     approve(creator, '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E', usdc(amount))
       .then(() => {
         axios({
           method: 'POST',
           url: '/api/proxy/pools/create',
-          data: body,
+          data: formData,
+          headers: { 'Content-Type': 'multipart/form-data' },
         })
           .then((res) => {
             resolve(res.data);
@@ -75,6 +91,7 @@ export function createPool(
           });
       })
       .catch((err) => {
+        console.log(err);
         reject('USD Transaction failed');
       });
   });
@@ -108,16 +125,18 @@ export function getPoolAddressFromTx(txHash, version = null) {
 
 async function formatAsset(asset) {
   const address = asset.asset_infos.currency_contract_address;
-  const token = await cacheItemDB(
-    address,
-    (
-      await axios({
-        url: `/api/tokens/show`,
-        params: { address: address },
-      })
-    ).data,
-    600
-  );
+  const token =
+    (await getCachedItemDB(address)) ||
+    (await cacheItemDB(
+      address,
+      (
+        await axios({
+          url: `/api/tokens/show`,
+          params: { address: address },
+        })
+      ).data,
+      600
+    ));
   return {
     name: asset.asset_name,
     address,
@@ -131,16 +150,18 @@ async function formatAsset(asset) {
 async function formatMember(member, totalSupply) {
   let user;
   try {
-    user = await cacheItemDB(
-      member.members_address,
-      (
-        await axios({
-          url: '/api/proxy/users/find',
-          params: { address: member.members_address },
-        })
-      ).data,
-      600
-    );
+    user =
+      (await getCachedItemDB(member.members_address)) ||
+      (await cacheItemDB(
+        member.members_address,
+        (
+          await axios({
+            url: '/api/proxy/users/find',
+            params: { address: member.members_address },
+          })
+        ).data,
+        600
+      ));
   } catch (e) {}
   return {
     address: member.members_address,
@@ -387,4 +408,23 @@ export function normalTransactions(poolAddress, version = null) {
   });
 }
 
-//FETCH poolTransactions
+export function fetchPoolData(poolAddress) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const poolData =
+        (await getCachedItemDB(`pool_info_${poolAddress}`)) ||
+        (await cacheItemDB(
+          `pool_info_${poolAddress}`,
+          (
+            await axios({
+              url: `/api/proxy/pools/show?address=${poolAddress}`,
+            })
+          ).data,
+          20
+        ));
+      resolve(poolData);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}

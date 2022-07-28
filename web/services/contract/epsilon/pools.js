@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { initLauncherEpsilon, initPoolEpsilon } from './init';
 import { postAndWaitForTransaction } from '../../backendApi';
+import { fetchPoolData } from '../pools';
 
 export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -84,14 +85,8 @@ export function addToWhiteListWithSecretEpsilon(
 
 export function fetchPoolShareholderAgreementEpsilon(poolAddress) {
   return new Promise(async (resolve, reject) => {
-    axios({
-      url: `/api/proxy/pools/show?address=${poolAddress}`,
-    })
-      .then((res) => {
-        resolve(res.data.shareholder_agreement);
-      })
-      .catch((err) => {
-        reject(err);
-      });
+    fetchPoolData(poolAddress)
+      .then((res) => resolve(res.shareholder_agreement))
+      .catch((err) => reject(err));
   });
 }

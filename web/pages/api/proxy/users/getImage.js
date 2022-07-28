@@ -1,13 +1,6 @@
 const http = require('https');
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default function handler(req, res) {
-  console.log(`requested image for: ${req.query.wunderId}`);
   return new Promise((resolve) => {
     const options = {
       hostname: 'identity-service.wunderpass.org',

@@ -19,7 +19,6 @@ const FormData = require('form-data');
 import axios from 'axios';
 import { currency } from '/services/formatter';
 
-
 export default function NewPoolDialog(props) {
   const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
   const [waitingForPool, setWaitingForPool] = useState(false);
@@ -126,24 +125,6 @@ export default function NewPoolDialog(props) {
       });
   };
 
-  const uploadDescription = async (address) => {
-    const headers = {
-      'Content-Type': 'text/plain',
-      Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
-    };
-
-    axios({
-      method: 'post',
-      url: `/api/proxy/pools/setDescription?poolAddress=${address}`,
-      headers: headers,
-      data: poolDescription,
-    })
-      .then(() => {})
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
   const handleClose = () => {
     setWaitingForPool(false);
     setLoading(false);
@@ -184,6 +165,7 @@ export default function NewPoolDialog(props) {
     createPool(
       user.address,
       poolName,
+      poolDescription,
       tokenName,
       tokenSymbol,
       minInvest || value,
@@ -193,7 +175,8 @@ export default function NewPoolDialog(props) {
       maxMembers || 50,
       votingThreshold || 50,
       (Number(votingTime) || 72) * 3600,
-      minYesVoters || 1
+      minYesVoters || 1,
+      image
     )
       .then((res) => {
         handleClose();
@@ -205,8 +188,7 @@ export default function NewPoolDialog(props) {
               .then(({ address, name }) => {
                 user.fetchUsdBalance();
                 router.push(`/pools/${address}?name=${name}`);
-                uploadImageToServer(address.toLowerCase());
-                uploadDescription(address.toLowerCase());
+                // uploadImageToServer(address.toLowerCase());
               })
               .catch((err) => {
                 console.log(err);

@@ -4,7 +4,7 @@ import { toEthString } from '/services/formatter';
 import { fetchPoolMembers } from '/services/contract/pools';
 import { initPoolGamma } from '/services/contract/gamma/init';
 import { nftAbi, tokenAbi } from '/services/contract/init';
-import { cacheItemDB } from '../../caching';
+import { cacheItemDB, getCachedItemDB } from '../../caching';
 
 export function fetchPoolTokensGamma(address) {
   return new Promise(async (resolve, reject) => {
@@ -17,16 +17,18 @@ export function fetchPoolTokensGamma(address) {
         const balance = await token.balanceOf(address);
         const decimals = await token.decimals();
         const formattedBalance = toEthString(balance, decimals);
-        const apiResponse = await cacheItemDB(
-          addr,
-          (
-            await axios({
-              url: `/api/tokens/show`,
-              params: { address: addr },
-            })
-          ).data,
-          600
-        );
+        const apiResponse =
+          (await getCachedItemDB(addr)) ||
+          (await cacheItemDB(
+            addr,
+            (
+              await axios({
+                url: `/api/tokens/show`,
+                params: { address: addr },
+              })
+            ).data,
+            600
+          ));
 
         let {
           name,

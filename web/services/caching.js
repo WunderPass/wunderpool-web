@@ -40,6 +40,13 @@ export async function getCachedItemDB(key) {
   return null;
 }
 
+export async function deleteItemDB(key) {
+  if (typeof indexedDB == 'undefined') return null;
+  const cached = await getCachedItemDB(key);
+  (await dbPromise()).delete(tableName, key);
+  return cached;
+}
+
 export async function cacheImage(key, blob, validFor = 86400) {
   if (typeof indexedDB == 'undefined') return blob;
   const cached = await getCachedImage(key);
@@ -70,4 +77,18 @@ export async function getCachedImage(key) {
     return new Blob([image.buffer], { type: image.type });
   }
   return null;
+}
+
+export async function cacheImageByURL(key, url, validFor = null) {
+  try {
+    const imageBlob =
+      (await getCachedImage(key)) ||
+      (await cacheImage(key, await (await fetch(url)).blob(), validFor));
+
+    return /image/.test(imageBlob.type) && imageBlob.size > 0
+      ? URL.createObjectURL(imageBlob)
+      : null;
+  } catch (error) {
+    return null;
+  }
 }

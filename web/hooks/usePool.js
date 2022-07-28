@@ -27,8 +27,11 @@ import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
 import { latestVersion } from '/services/contract/init';
 import { usdcAddress } from '/services/contract/init';
 import { proposalExecutable } from '/services/contract/proposals';
-import { addToWhiteListWithSecret } from '../services/contract/pools';
-import { cacheItemDB } from '/services/caching';
+import {
+  addToWhiteListWithSecret,
+  fetchPoolData,
+} from '../services/contract/pools';
+import { cacheItemDB, getCachedItemDB } from '/services/caching';
 
 export default function usePool(userAddr, poolAddr = null) {
   const [userAddress, setUserAddress] = useState(userAddr);
@@ -36,6 +39,7 @@ export default function usePool(userAddr, poolAddr = null) {
   const [isReady, setIsReady] = useState(false);
   const [isReady2, setIsReady2] = useState(false);
   const [poolName, setPoolName] = useState(null);
+  const [poolDescription, setPoolDescription] = useState(null);
   const [exists, setExists] = useState(null);
   const [closed, setClosed] = useState(null);
   const [liquidated, setLiquidated] = useState(false);
@@ -151,10 +155,12 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const determineVersion = async () => {
-    const vers = await cacheItemDB(
-      `version_${poolAddress}`,
-      await poolVersion(poolAddress)
-    );
+    const vers =
+      (await getCachedItemDB(`version_${poolAddress}`)) ||
+      (await cacheItemDB(
+        `version_${poolAddress}`,
+        await poolVersion(poolAddress)
+      ));
     setVersion(vers);
     return vers;
   };
@@ -181,6 +187,11 @@ export default function usePool(userAddr, poolAddr = null) {
     setMinYesVoter(shareholderAgreement.min_yes_voters);
     setVotingThreshold(shareholderAgreement.voting_threshold);
     setVotingTime(shareholderAgreement.voting_time);
+  };
+
+  const determinePoolInfo = async () => {
+    const poolData = await fetchPoolData(poolAddress);
+    setPoolDescription(poolData.pool_description);
   };
 
   const determineCustomBalances = (tokens = null) => {
@@ -231,14 +242,17 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const getTransactionData = async (id, transactionCount) => {
-    return await cacheItemDB(
-      `tx_data_${poolAddress}_${id}`,
-      await fetchTransactionData(
-        poolAddress,
-        id,
-        transactionCount,
-        version.number
-      )
+    return (
+      (await getCachedItemDB(`tx_data_${poolAddress}_${id}`)) ||
+      (await cacheItemDB(
+        `tx_data_${poolAddress}_${id}`,
+        await fetchTransactionData(
+          poolAddress,
+          id,
+          transactionCount,
+          version.number
+        )
+      ))
     );
   };
 
@@ -278,6 +292,7 @@ export default function usePool(userAddr, poolAddr = null) {
           await determineClosed(vers);
           await determineUsdcBalance();
           await determineShareholderAgreement(vers);
+          await determinePoolInfo();
           await determinePoolTokens(vers);
 
           if (userAddress) {
@@ -327,6 +342,7 @@ export default function usePool(userAddr, poolAddr = null) {
     closed,
     liquidated,
     poolName,
+    poolDescription,
     version,
     poolAddress,
     minInvest,

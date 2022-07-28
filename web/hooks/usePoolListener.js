@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { cacheItemDB } from '../services/caching';
+import { cacheItemDB, getCachedItemDB } from '../services/caching';
 import { toEthString, currency, polyValueToUsd } from '../services/formatter';
 import { initPoolSocket } from '/services/contract/init';
 
@@ -29,16 +29,18 @@ export default function usePoolListener(handleInfo) {
   const resolveUser = (address) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const user = await cacheItemDB(
-          address,
-          (
-            await axios({
-              url: '/api/proxy/users/find',
-              params: { address: address },
-            })
-          ).data,
-          600
-        );
+        const user =
+          (await getCachedItemDB(address)) ||
+          (await cacheItemDB(
+            address,
+            (
+              await axios({
+                url: '/api/proxy/users/find',
+                params: { address: address },
+              })
+            ).data,
+            600
+          ));
         resolve(user?.wunderId || null);
       } catch (error) {
         resolve(null);
