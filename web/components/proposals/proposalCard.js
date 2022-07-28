@@ -42,12 +42,12 @@ function OpenProposalDialog(props) {
       onClose={handleOpen}
       fullWidth
       maxWidth="md"
-      className="flex justify-center"
+      className="flex justify-center "
       PaperProps={{
         style: { borderRadius: 12, maxWidth: '95vw', width: '500px' },
       }}
     >
-      <DialogContent className="container-gray">
+      <DialogContent className="container-gray ">
         <Stack
           direction="row"
           justifyContent="space-between"

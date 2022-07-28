@@ -42,12 +42,15 @@ export default function makeProposal(props) {
     wunderPool
       .apeSuggestion(
         tokenAddress,
-        proposalName || `Let's Ape into ${tokenName} (${tokenSymbol})`,
-        `We will ape ${currency(value).toString()} into ${tokenName}`,
+        proposalName ||
+          `Let's buy ${tokenName} (${tokenSymbol}) with ${currency(
+            value
+          ).toString()}.`,
+        `We will buy ${tokenName} for${currency(value).toString()}`,
         value
       )
       .then((res) => {
-        handleSuccess(`Created Proposal to Ape into ${tokenSymbol}`);
+        handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
         wunderPool.determineProposals();
         handleClose();
       })

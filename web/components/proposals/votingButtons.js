@@ -56,9 +56,9 @@ export default function VotingButtons(props) {
 
   if (userHasVoted) {
     return userHasVoted == 1 ? (
-      <button className="btn-vote-filled">Yes</button>
+      <button className="btn-vote-filled">You voted Yes</button>
     ) : (
-      <button className="btn-vote-filled">No</button>
+      <button className="btn-vote-filled">You voted No</button>
     );
   }
 

@@ -4,30 +4,7 @@ import TokenList from '/components/tokens/list';
 import NftList from '/components/tokens/nfts';
 import TransactionsList from '/components/pool/transactions';
 import { useState, useEffect } from 'react';
-
-function TabBar({ tabs, tab, setTab }) {
-  return (
-    <div className="flex flex-row justify-start items-center w-full overflow-x-auto">
-      {tabs.map((tb, i) => {
-        const title = tb?.title || tb;
-        const index = tb?.index || i;
-        return (
-          <button
-            key={`tab-item-${title}-${index}`}
-            className={
-              tab == i ? 'py-4 pr-3 sm:pr-6' : 'py-4 pr-3 sm:pr-6 opacity-40'
-            }
-            onClick={() => setTab(index)}
-          >
-            <div className="flex flex-row items-center justify-center">
-              <Typography>{title}</Typography>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+import TabBar from '/components/utils/tabBar';
 
 export default function body(props) {
   const { loading, wunderPool, tokenAddedEvent, newProposalEvent } = props;
@@ -64,7 +41,7 @@ export default function body(props) {
                 tab={tab}
                 setTab={setTab}
               />
-              <Divider className="mb-6 mt-1 opacity-70" />
+              <Divider className="mb-1 mt-1 opacity-70" />
 
               {tab == 0 && <ProposalList wunderPool={wunderPool} {...props} />}
               {tab == 1 && <TokenList tokens={wunderPool.tokens} {...props} />}
