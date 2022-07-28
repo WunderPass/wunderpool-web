@@ -1,11 +1,5 @@
 const http = require('https');
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default function handler(req, res) {
   return new Promise((resolve) => {
     const options = {
