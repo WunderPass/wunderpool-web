@@ -1,37 +1,32 @@
 import ImageAvatar from '/components/utils/imageAvatar';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { cacheImage, getCachedImage } from '../../services/caching';
 
 export default function Avatar(props) {
   const { tooltip, text, separator, wunderId, i } = props;
-  const [hasPicture, setHasPicture] = useState(true);
+  const [imageUrl, setImageUrl] = useState(null);
 
-  const checkIfPictureExists = () => {
-    //if external Userr
-    if (wunderId == null) {
-      setHasPicture(false);
-      return;
+  useEffect(async () => {
+    if (!wunderId) return null;
+    try {
+      const blob =
+        (await getCachedImage(`user_image_${wunderId}`)) ||
+        (await cacheImage(
+          `user_image_${wunderId}`,
+          await (
+            await fetch(`/api/proxy/users/getImage?wunderId=${wunderId}`)
+          ).blob()
+        ));
+
+      setImageUrl(/image/.test(blob.type) ? URL.createObjectURL(blob) : null);
+    } catch (error) {
+      setImageUrl(null);
     }
-    //check if its default picture
-    //sorry for ugly code, but it works right :)
-    axios({
-      url: `/api/proxy/users/getImage?wunderId=${wunderId}`,
-    }).then((res) => {
-      if (typeof res.data != typeof '') {
-        setHasPicture(false);
-        return;
-      }
-    });
-    setHasPicture(true);
-  };
-
-  useEffect(() => {
-    checkIfPictureExists();
   }, [wunderId]);
 
-  return hasPicture ? (
-    <ImageAvatar wunderId={wunderId} tooltip={tooltip} />
+  return imageUrl ? (
+    <ImageAvatar imageUrl={imageUrl} tooltip={tooltip} />
   ) : (
     <InitialsAvatar
       tooltip={tooltip}
