@@ -117,14 +117,6 @@ export default function usePool(userAddr, poolAddr = null) {
       });
   };
 
-  useEffect(() => {
-    if (poolAddress != null) {
-      checkIfPictureExists();
-      checkIfBannerExists();
-      getDescription();
-    }
-  }, [poolAddress]);
-
   const updateUserAddress = (addr) => {
     setUserAddress(addr);
     determineIfMember(addr);
@@ -336,6 +328,10 @@ export default function usePool(userAddr, poolAddr = null) {
         .then(async (name) => {
           setPoolName(name);
           setExists(true);
+          checkIfPictureExists();
+          checkIfBannerExists();
+          getDescription();
+
           const vers = await determineVersion();
 
           await determineClosed(vers);

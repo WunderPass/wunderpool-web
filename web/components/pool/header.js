@@ -34,7 +34,6 @@ export default function PoolHeader(props) {
       setImageUrl(URL.createObjectURL(i));
       wunderPool.setHasImage(true);
       setShowSaveButton(true);
-      console.log('ich habe es mal upgeloaded');
     }
   };
 
