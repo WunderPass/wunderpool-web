@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 function TabBar({ tabs, tab, setTab }) {
   return (
-    <div className="flex flex-row justify-start items-center w-full overflow-scroll">
+    <div className="flex flex-row justify-start items-center w-full overflow-x-auto">
       {tabs.map((tb, i) => {
         const title = tb?.title || tb;
         const index = tb?.index || i;
