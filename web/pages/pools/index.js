@@ -62,11 +62,17 @@ function PoolCard(props) {
   return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
       <Paper
-        className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6`}
+        className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden`}
         elevation={1}
         sx={{ p: 2 }}
       >
-        <div className="flex flex-col">
+        <div
+          className="w-full h-full absolute inset-0 bg-cover opacity-25"
+          style={{
+            backgroundImage: `url(${banner})`,
+          }}
+        ></div>
+        <div className="flex flex-col relative">
           <div className="flex flex-row justify-between items-center">
             <Typography className="text-md">{pool.name}</Typography>
             <div
