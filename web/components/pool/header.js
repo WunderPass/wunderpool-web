@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useAlert } from 'react-alert';
 import { currency, polyValueToUsd, secondsToHours } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
-import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
 import { BsImage } from 'react-icons/bs';
@@ -12,22 +10,18 @@ import { FaLongArrowAltDown } from 'react-icons/fa';
 import Link from 'next/link';
 import { Typography, Collapse, Divider, Box } from '@mui/material';
 import axios from 'axios';
+import { cacheImageByURL, deleteItemDB } from '../../services/caching';
 const FormData = require('form-data');
 
 export default function PoolHeader(props) {
-  const { name, address, wunderPool, isMobile } = props;
+  const { name, address, wunderPool, isMobile, handleSuccess } = props;
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [image, setImage] = useState(null);
   const [banner, setBanner] = useState(null);
   const [bannerUrl, setBannerUrl] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const [hasPicture, setHasPicture] = useState(false);
-  const [hasBanner, setHasBanner] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
-  const [description, setDescription] = useState(null);
-
-  const alert = useAlert();
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
@@ -38,7 +32,6 @@ export default function PoolHeader(props) {
       const i = event.target.files[0];
       setImage(i);
       setImageUrl(URL.createObjectURL(i));
-      setHasPicture(true);
       setShowSaveButton(true);
     }
   };
@@ -48,7 +41,6 @@ export default function PoolHeader(props) {
       const i = event.target.files[0];
       setBanner(i);
       setBannerUrl(URL.createObjectURL(i));
-      setHasBanner(true);
       setShowSaveButton(true);
     }
   };
@@ -63,6 +55,7 @@ export default function PoolHeader(props) {
       data: formData,
     })
       .then(() => {
+        deleteItemDB(`pool_image_${address}`);
         setShowSaveButton(false);
       })
       .catch((err) => {
@@ -80,60 +73,11 @@ export default function PoolHeader(props) {
       data: formData,
     })
       .then(() => {
+        deleteItemDB(`pool_banner_${address}`);
         setShowSaveButton(false);
       })
       .catch((err) => {
         console.error('Error in Upload server');
-      });
-  };
-
-  const checkIfPictureExists = () => {
-    axios({
-      url: `/api/proxy/pools/getImage?poolAddress=${address.toLowerCase()}`,
-    })
-      .then((res) => {
-        if (res.data === '') {
-          setHasPicture(false);
-          return;
-        }
-        setImage(
-          `/api/proxy/pools/getImage?poolAddress=${address.toLowerCase()}`
-        );
-        setHasPicture(true);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const checkIfBannerExists = () => {
-    axios({
-      url: `/api/proxy/pools/getBanner?poolAddress=${address.toLowerCase()}`,
-    })
-      .then((res) => {
-        if (res.data === '') {
-          setHasBanner(false);
-          return;
-        }
-        setBanner(
-          `/api/proxy/pools/getBanner?poolAddress=${address.toLowerCase()}`
-        );
-        setHasBanner(true);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const getDescription = () => {
-    axios({
-      url: `/api/proxy/pools/getPoolInfos?poolAddress=${address.toLowerCase()}`,
-    })
-      .then((res) => {
-        setDescription(res.data.resp.pool_description);
-      })
-      .catch((err) => {
-        console.error(err);
       });
   };
 
@@ -142,12 +86,23 @@ export default function PoolHeader(props) {
     uploadImageToServer();
   };
 
-  useEffect(() => {
-    if (address != null) {
-      checkIfPictureExists();
-      checkIfBannerExists();
-      getDescription();
-    }
+  useEffect(async () => {
+    setShowSaveButton(false);
+    setImageUrl(null);
+    setBannerUrl(null);
+    if (!address) return;
+    setImageUrl(
+      await cacheImageByURL(
+        `pool_image_${address}`,
+        `/api/proxy/pools/getImage?address=${address}`
+      )
+    );
+    setBannerUrl(
+      await cacheImageByURL(
+        `pool_banner_${address}`,
+        `/api/proxy/pools/getBanner?address=${address}`
+      )
+    );
   }, [address]);
 
   return (
@@ -155,10 +110,10 @@ export default function PoolHeader(props) {
       <div className="flex flex-col container-white-p-0 max-w-full sm:mt-6 ">
         <label htmlFor="bannerUpload" className="cursor-pointer">
           <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
-            {hasBanner ? (
+            {bannerUrl ? (
               <img
                 className="object-cover min-w-full min-h-full rounded-xl"
-                src={bannerUrl ? bannerUrl : banner}
+                src={bannerUrl}
                 type="file"
               />
             ) : (
@@ -183,7 +138,7 @@ export default function PoolHeader(props) {
         />
 
         <div className="flex flex-col container-white w-full">
-          {hasPicture ? (
+          {imageUrl ? (
             <div
               className="flex-col w-20 h-20 -mt-14 rounded-full "
               type="file"
@@ -194,7 +149,7 @@ export default function PoolHeader(props) {
               >
                 <img
                   className="object-cover w-20 h-20 rounded-full border-black border-2"
-                  src={imageUrl ? imageUrl : image}
+                  src={imageUrl}
                   type="file"
                 />
               </label>
@@ -324,7 +279,7 @@ export default function PoolHeader(props) {
                   Pool Description
                 </Typography>
                 <Typography className="text-sm opacity-40 py-1 ">
-                  {description != null ? description : '-'}
+                  {wunderPool.poolDescription || '-'}
                 </Typography>
               </div>
               <div>
@@ -334,7 +289,7 @@ export default function PoolHeader(props) {
                 <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-200 p-3 mt-2">
                   <CopyToClipboard
                     text={address}
-                    onCopy={() => alert.show('address copied!')}
+                    onCopy={() => handleSuccess('Address Copied!')}
                   >
                     <span className=" cursor-pointer text-md">
                       <div className="flex flex-row items-center justify-between">

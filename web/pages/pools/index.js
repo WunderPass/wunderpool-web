@@ -16,47 +16,30 @@ import Avatar from '/components/utils/avatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
 import LoadingCircle from '/components/utils/loadingCircle';
 import InitialsAvatar from '/components/utils/initialsAvatar';
-import axios from 'axios';
+import { cacheImageByURL } from '../../services/caching';
 
 function PoolCard(props) {
   const { pool } = props;
-  const [image, setImage] = useState(null);
-  const [banner, setBanner] = useState(null);
-  const [hasBanner, setHasBanner] = useState(false);
-  const [hasPicture, setHasPicture] = useState(false);
+  const [bannerUrl, setBannerUrl] = useState(false);
+  const [imageUrl, setImageUrl] = useState(false);
   const members = pool.members;
 
-  const checkIfPictureExists = () => {
-    axios({
-      url: `/api/proxy/pools/getImage?poolAddress=${pool.address}`,
-    }).then((res) => {
-      if (res.data === '') {
-        setHasPicture(false);
-        return;
-      }
-      setImage(`/api/proxy/pools/getImage?poolAddress=${pool.address}`);
-      setHasPicture(true);
-    });
-  };
-
-  const checkIfBannerExists = () => {
-    axios({
-      url: `/api/proxy/pools/getBanner?poolAddress=${pool.address}`,
-    }).then((res) => {
-      if (res.data === '') {
-        setHasBanner(false);
-        return;
-      }
-      setBanner(`/api/proxy/pools/getBanner?poolAddress=${pool.address}`);
-      setHasBanner(true);
-    });
-  };
-
-  useEffect(() => {
-    if (pool.address != null) {
-      checkIfPictureExists();
-      checkIfBannerExists();
-    }
+  useEffect(async () => {
+    setImageUrl(null);
+    setBannerUrl(null);
+    if (!pool.address) return;
+    setImageUrl(
+      await cacheImageByURL(
+        `pool_image_${pool.address}`,
+        `/api/proxy/pools/getImage?address=${pool.address}`
+      )
+    );
+    setBannerUrl(
+      await cacheImageByURL(
+        `pool_banner_${pool.address}`,
+        `/api/proxy/pools/getBanner?address=${pool.address}`
+      )
+    );
   }, [pool.address]);
 
   return (
@@ -69,24 +52,21 @@ function PoolCard(props) {
         <div
           className="w-full h-full absolute inset-0 bg-cover opacity-25"
           style={{
-            backgroundImage: `url(${banner})`,
+            backgroundImage: `url(${bannerUrl})`,
           }}
         ></div>
         <div className="flex flex-col relative">
           <div className="flex flex-row justify-between items-center">
             <Typography className="text-md">{pool.name}</Typography>
             <div
-              className={
-                hasPicture
-                  ? `bg-white hover:bg-[#ededed] rounded-md  border-kaico-extra-light-blue text-md font-semibold cursor-pointer
-                `
-                  : `p-6 bg-white hover:bg-[#ededed] rounded-md border-2 border-kaico-extra-light-blue text-md font-semibold cursor-pointer`
-              }
+              className={`bg-white hover:bg-[#ededed] rounded-md border-kaico-extra-light-blue text-md font-semibold cursor-pointer ${
+                imageUrl ? '' : 'p-6 border-2'
+              }`}
             >
-              {hasPicture && (
+              {imageUrl && (
                 <img
                   className="object-cover w-12 h-12 rounded-md"
-                  src={image && image}
+                  src={imageUrl}
                   type="file"
                 />
               )}
