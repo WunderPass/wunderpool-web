@@ -1,7 +1,7 @@
 import { Tooltip } from '@mui/material';
 
 export default function ImageAvatar(props) {
-  const { wunderId, tooltip } = props;
+  const { imageUrl, tooltip } = props;
   return (
     <>
       {tooltip ? (
@@ -9,16 +9,13 @@ export default function ImageAvatar(props) {
           <div className="avatar" type="file" name="profilePicture">
             <img
               className="object-cover min-w-full min-h-full"
-              src={`/api/proxy/users/getImage?wunderId=${wunderId}`}
+              src={imageUrl}
             />
           </div>
         </Tooltip>
       ) : (
         <div className="avatar" type="file" name="profilePicture">
-          <img
-            className="object-cover min-w-full min-h-full"
-            src={`/api/proxy/users/getImage?wunderId=${wunderId}`}
-          />
+          <img className="object-cover min-w-full min-h-full" src={imageUrl} />
         </div>
       )}
     </>

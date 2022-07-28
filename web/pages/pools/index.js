@@ -209,7 +209,7 @@ export default function Pools(props) {
         </Head>
 
         {loadingCircle && <LoadingCircle />}
-        <Container className={loadingCircle && 'blur'}>
+        <Container className={loadingCircle ? 'blur' : ''}>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <Typography className=" text-2xl mt-5 sm:text-4xl">

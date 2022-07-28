@@ -40,29 +40,34 @@ export async function getCachedItemDB(key) {
   return null;
 }
 
-export function cacheItem(key, item, validFor = 60) {
-  const cached = getCachedItem(key);
+export async function cacheImage(key, blob, validFor = 86400) {
+  if (typeof indexedDB == 'undefined') return blob;
+  const cached = await getCachedImage(key);
 
   if (cached) {
     return cached;
   } else {
-    localStorage.setItem(
-      `CASAMA_CACHE_${key}`,
-      JSON.stringify({ item, validUntil: Number(new Date() / 1000) + validFor })
-    );
-    return item;
+    const buffer = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('loadend', (e) => {
+        resolve(reader.result);
+      });
+      reader.addEventListener('error', reject);
+      reader.readAsArrayBuffer(blob);
+    });
+    (await dbPromise()).put(tableName, {
+      key,
+      item: { buffer, type: blob.type },
+      validUntil: Number(new Date() / 1000) + validFor,
+    });
+    return blob;
   }
 }
 
-export function getCachedItem(key) {
-  const cached = JSON.parse(localStorage.getItem(`CASAMA_CACHE_${key}`));
-
-  if (cached && cached.item) {
-    if (cached.validUntil > Number(new Date() / 1000)) {
-      return cached.item;
-    } else {
-      localStorage.removeItem(`CASAMA_CACHE_${key}`);
-    }
+export async function getCachedImage(key) {
+  const image = await getCachedItemDB(key);
+  if (image) {
+    return new Blob([image.buffer], { type: image.type });
   }
   return null;
 }
