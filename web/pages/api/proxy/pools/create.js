@@ -1,68 +1,74 @@
 import axios from 'axios';
+const FormData = require('form-data');
+import formidable from 'formidable';
+const fs = require('fs');
 
-export default async function handler(req, res) {
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default async (req, res) => {
+  const data = new FormData();
+  const form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+
   try {
-    const {
-      version,
-      network,
-      creator,
-      name,
-      tokenName,
-      tokenSymbol,
-      amount,
-      members,
-      minInvest,
-      maxInvest,
-      maxMembers,
-      votingThreshold,
-      votingTime,
-      minYesVoters,
-    } = req.body;
+    form.parse(req, (err, fields, files) => {
+      console.log(files);
+      data.append('pool', fields['pool'], { contentType: 'application/json' });
+      files['pool_image']?.filepath &&
+        data.append(
+          'pool_image',
+          fs.createReadStream(files['pool_image'].filepath),
+          {
+            filename: files['pool_image'].newFilename,
+            contentType: files['pool_image'].mimetype,
+            // knownLength: 19806,
+          }
+        );
+      files['pool_banner']?.filepath &&
+        data.append(
+          'pool_banner',
+          fs.createReadStream(files['pool_banner'].filepath),
+          {
+            filename: files['pool_banner'].newFilename,
+            contentType: files['pool_banner'].mimetype,
+            // knownLength: 19806,
+          }
+        );
 
-    const headers = {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
-    };
-
-    const body = {
-      launcher: {
-        launcher_name: 'PoolLauncher',
-        launcher_version: version || 'Epsilon',
-        launcher_network: network || 'POLYGON_MAINNET',
-      },
-      pool_name: name,
-      pool_governance_token: {
-        token_name: tokenName,
-        token_symbol: tokenSymbol,
-      },
-      pool_creator: creator,
-      pool_members: members.map((m) => ({ members_address: m })),
-      shareholder_agreement: {
-        min_invest: minInvest,
-        max_invest: maxInvest,
-        max_members: maxMembers,
-        voting_threshold: votingThreshold,
-        voting_time: votingTime,
-        min_yes_voters: minYesVoters
-      },
-      initial_invest: amount
-    };
-
-    const resp = await axios({
-      method: 'POST',
-      url: 'https://pools-service.wunderpass.org/web3Proxy/pools',
-      headers: headers,
-      data: body,
+      axios({
+        method: 'post',
+        url: 'https://pools-service.wunderpass.org/v2/web3Proxy/pools',
+        headers: {
+          Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
+          ...data.getHeaders(),
+        },
+        data: data,
+      })
+        .then((response) => {
+          const { pool_name, pool_creator, initial_invest } = JSON.parse(
+            fields['pool']
+          );
+          console.log(`[${new Date().toJSON()}] Pool created`, {
+            pool_name,
+            pool_creator,
+            initial_invest,
+          });
+          res.status(200).json(response.data);
+          return;
+        })
+        .catch((error) => {
+          console.log(error);
+          res.status(500).json(error);
+          return;
+        });
     });
-    console.log(`[${new Date().toJSON()}] Pool created`, {
-      creator,
-      name,
-      amount,
-      minInvest,
-      maxInvest,
-    });
-    res.status(200).json(resp.data);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
+    return;
   }
-}
+};
