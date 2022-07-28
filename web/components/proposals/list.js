@@ -44,7 +44,6 @@ export default function ProposalList(props) {
           {...props}
         />
       )}
-
       {tab == 1 && (
         <ExecutableList
           wunderPool={wunderPool}
@@ -53,7 +52,6 @@ export default function ProposalList(props) {
           {...props}
         />
       )}
-
       {tab == 2 && (
         <HistoryList
           wunderPool={wunderPool}
