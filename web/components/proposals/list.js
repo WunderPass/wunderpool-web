@@ -1,14 +1,19 @@
-import { Stack, Typography, Skeleton } from '@mui/material';
+import { Stack, Typography, Skeleton, Divider } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import ProposalCard from './proposalCard';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
+import TabBar from '/components/utils/tabBar';
+import CurrentVotingsList from '/components/proposals/currentVotingsList';
+import HistoryList from '/components/proposals/historyList';
+import ExecutableList from '/components/proposals/executableList';
 
 export default function ProposalList(props) {
   const { wunderPool } = props;
   const [open, setOpen] = useState(false);
   const [openProposal, setOpenProposal] = useState(null);
   const router = useRouter();
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -23,43 +28,40 @@ export default function ProposalList(props) {
     />
   ) : wunderPool.proposals.length > 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
-      <div>
-        <Typography className="text-xl mb-4">Open Proposals</Typography>
-        {wunderPool.proposals
-          .filter((p) => !(p.executed || p.declined))
-          .sort((one, two) => two.createdAt.sub(one.createdAt))
-          .map((proposal) => {
-            return (
-              <ProposalCard
-                key={`proposal-${proposal.id}`}
-                proposal={proposal}
-                openProposal={openProposal}
-                setOpenProposal={setOpenProposal}
-                {...props}
-              />
-            );
-          })}
+      <div className="flex flex-col w-full">
+        <TabBar
+          tabs={['Current Votings', 'Executable', 'History']}
+          tab={tab}
+          setTab={setTab}
+        />
+        <Divider className="mb-6 mt-1 opacity-70" />
       </div>
+      {tab == 0 && (
+        <CurrentVotingsList
+          wunderPool={wunderPool}
+          openProposal={openProposal}
+          setOpenProposal={setOpenProposal}
+          {...props}
+        />
+      )}
 
-      <div className="">
-        <Typography className="text-xl my-4">Closed Proposals</Typography>
-        <div className="lg:grid lg:grid-cols-2 lg:gap-6">
-          {wunderPool.proposals
-            .filter((p) => p.executed || p.declined)
-            .sort((one, two) => two.createdAt.sub(one.createdAt))
-            .map((proposal) => {
-              return (
-                <ProposalCard
-                  key={`proposal-${proposal.id}`}
-                  proposal={proposal}
-                  openProposal={openProposal}
-                  setOpenProposal={setOpenProposal}
-                  {...props}
-                />
-              );
-            })}
-        </div>
-      </div>
+      {tab == 1 && (
+        <ExecutableList
+          wunderPool={wunderPool}
+          openProposal={openProposal}
+          setOpenProposal={setOpenProposal}
+          {...props}
+        />
+      )}
+
+      {tab == 2 && (
+        <HistoryList
+          wunderPool={wunderPool}
+          openProposal={openProposal}
+          setOpenProposal={setOpenProposal}
+          {...props}
+        />
+      )}
     </Stack>
   ) : (
     <div className="container-gray border-2">
