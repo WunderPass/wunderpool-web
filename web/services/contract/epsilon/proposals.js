@@ -12,6 +12,7 @@ import {
   wunderSwapperAddress,
   connectContract,
 } from '/services/contract/init';
+import { hasVotedEpsilon } from './vote';
 
 function determineDeclined(
   noVotes,
@@ -46,7 +47,7 @@ function determineDeclined(
   });
 }
 
-export function fetchPoolProposalsEpsilon(address) {
+export function fetchPoolProposalsEpsilon(address, userAddress = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolEpsilon(address);
     const [wunderProposal] = initProposalEpsilon();
@@ -87,6 +88,9 @@ export function fetchPoolProposalsEpsilon(address) {
                 address,
                 id
               );
+        const hasVoted = userAddress
+          ? await hasVotedEpsilon(address, id, userAddress)
+          : null;
 
         return {
           id: id.toNumber(),
@@ -102,6 +106,7 @@ export function fetchPoolProposalsEpsilon(address) {
           executable,
           declined,
           creator,
+          hasVoted,
         };
       })
     );

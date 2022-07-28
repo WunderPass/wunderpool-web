@@ -8,6 +8,7 @@ import {
   wunderSwapperAddress,
   connectContract,
 } from '/services/contract/init';
+import { hasVotedDelta } from './vote';
 
 function determineExecutable(
   executed,
@@ -23,7 +24,7 @@ function determineExecutable(
   );
 }
 
-export function fetchPoolProposalsDelta(address) {
+export function fetchPoolProposalsDelta(address, userAddress = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolDelta(address);
     const [wunderProposal] = initProposalDelta();
@@ -50,6 +51,9 @@ export function fetchPoolProposalsDelta(address) {
           deadline
         );
         const declined = noVotes.mul(2).gte(totalVotes);
+        const hasVoted = userAddress
+          ? await hasVotedDelta(address, id, userAddress)
+          : null;
 
         return {
           id: id.toNumber(),
@@ -64,6 +68,7 @@ export function fetchPoolProposalsDelta(address) {
           executed,
           executable,
           declined,
+          hasVoted,
         };
       })
     );
