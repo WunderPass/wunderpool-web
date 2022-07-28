@@ -10,6 +10,8 @@ const nextConfig = {
             'NODE_ENV',
             '__NEXT_PROCESSED_ENV',
             'NODE_EXE',
+            '__CF_USER_TEXT_ENCODING',
+            '__CFBundleIdentifier',
           ].includes(key)
       )
     ),
