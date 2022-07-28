@@ -20,24 +20,16 @@ import { cacheImageByURL } from '../../services/caching';
 
 function PoolCard(props) {
   const { pool } = props;
-  const [bannerUrl, setBannerUrl] = useState(false);
   const [imageUrl, setImageUrl] = useState(false);
   const members = pool.members;
 
   useEffect(async () => {
     setImageUrl(null);
-    setBannerUrl(null);
     if (!pool.address) return;
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${pool.address}`,
         `/api/proxy/pools/getImage?address=${pool.address}`
-      )
-    );
-    setBannerUrl(
-      await cacheImageByURL(
-        `pool_banner_${pool.address}`,
-        `/api/proxy/pools/getBanner?address=${pool.address}`
       )
     );
   }, [pool.address]);
@@ -49,12 +41,6 @@ function PoolCard(props) {
         elevation={1}
         sx={{ p: 2 }}
       >
-        <div
-          className="w-full h-full absolute inset-0 bg-cover opacity-25"
-          style={{
-            backgroundImage: `url(${bannerUrl})`,
-          }}
-        ></div>
         <div className="flex flex-col relative">
           <div className="flex flex-row justify-between items-center">
             <Typography className="text-md">{pool.name}</Typography>
