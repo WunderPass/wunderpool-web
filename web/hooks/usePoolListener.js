@@ -36,7 +36,7 @@ export default function usePoolListener(handleInfo) {
             (
               await axios({
                 url: '/api/proxy/users/find',
-                params: { address: address },
+                params: { address },
               })
             ).data,
             600
@@ -44,6 +44,28 @@ export default function usePoolListener(handleInfo) {
         resolve(user?.wunderId || null);
       } catch (error) {
         resolve(null);
+      }
+    });
+  };
+
+  const resolveToken = (address) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const token =
+          (await getCachedItemDB(address)) ||
+          (await cacheItemDB(
+            address,
+            (
+              await axios({
+                url: `/api/tokens/show`,
+                params: { address },
+              })
+            ).data,
+            600
+          ));
+        resolve(token || {});
+      } catch (error) {
+        resolve({});
       }
     });
   };
@@ -106,8 +128,11 @@ export default function usePoolListener(handleInfo) {
 
     wunderPool.on('TokenAdded', async (tokenAddress, isERC721, tokenId) => {
       console.log('TokenAdded:', tokenAddress, isERC721, tokenId);
+      const { name } = await resolveToken(tokenAddress);
       handleInfo(
-        `New ${isERC721 ? 'NFT' : 'Token'} Added to the Pool: ${tokenAddress}`
+        `New ${isERC721 ? 'NFT' : 'Token'} Added to the Pool: ${
+          name || tokenAddress
+        }`
       );
       setTokenAddedEvent({ tokenAddress, nft: isERC721 });
     });
@@ -121,7 +146,27 @@ export default function usePoolListener(handleInfo) {
       'TokensWithdrawed',
       async (tokenAddress, receiver, amount) => {
         console.log('TokensWithdrawed:', tokenAddress, receiver, amount);
-        handleInfo(`Token ${tokenAddress} sent to ${receiver}`);
+        const wunderId = await resolveUser(receiver);
+        const {
+          name,
+          price = 0,
+          decimals = 0,
+        } = await resolveToken(tokenAddress);
+        const usdValue = amount
+          .mul(price)
+          .div(10 ** (decimals + 6))
+          .toNumber();
+        if (usdValue > 0) {
+          handleInfo(
+            `${currency(usdValue)} of ${name || tokenAddress} sent to ${
+              wunderId || receiver
+            }`
+          );
+        } else {
+          handleInfo(
+            `Token ${name || tokenAddress} sent to ${wunderId || receiver}`
+          );
+        }
       }
     );
   };
