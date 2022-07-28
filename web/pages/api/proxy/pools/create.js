@@ -16,7 +16,6 @@ export default async (req, res) => {
 
   try {
     form.parse(req, (err, fields, files) => {
-      console.log(files);
       data.append('pool', fields['pool'], { contentType: 'application/json' });
       files['pool_image']?.filepath &&
         data.append(
@@ -25,7 +24,6 @@ export default async (req, res) => {
           {
             filename: files['pool_image'].newFilename,
             contentType: files['pool_image'].mimetype,
-            // knownLength: 19806,
           }
         );
       files['pool_banner']?.filepath &&
@@ -35,7 +33,6 @@ export default async (req, res) => {
           {
             filename: files['pool_banner'].newFilename,
             contentType: files['pool_banner'].mimetype,
-            // knownLength: 19806,
           }
         );
 
