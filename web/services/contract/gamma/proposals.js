@@ -9,6 +9,7 @@ import {
 } from '/services/contract/init';
 import { tokenAbi } from '../init';
 import { isLiquidateProposal } from '../proposals';
+import { hasVotedGamma } from './vote';
 
 function determineExecutable(
   executed,
@@ -24,7 +25,7 @@ function determineExecutable(
   );
 }
 
-export function fetchPoolProposalsGamma(address) {
+export function fetchPoolProposalsGamma(address, userAddress = null) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolGamma(address);
     const proposalIds = await wunderPool.getAllProposalIds();
@@ -52,6 +53,10 @@ export function fetchPoolProposalsGamma(address) {
         );
         const declined = noVotes.mul(2).gte(totalVotes);
 
+        const hasVoted = userAddress
+          ? await hasVotedGamma(address, id, userAddress)
+          : null;
+
         return {
           id: id.toNumber(),
           title,
@@ -66,6 +71,7 @@ export function fetchPoolProposalsGamma(address) {
           executed,
           executable,
           declined,
+          hasVoted,
         };
       })
     );

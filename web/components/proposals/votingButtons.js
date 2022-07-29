@@ -31,12 +31,8 @@ export default function VotingButtons(props) {
   };
 
   useEffect(() => {
-    if (user.address) {
-      wunderPool.userHasVoted(proposal.id).then((res) => {
-        setUserHasVoted(res);
-      });
-    }
-  }, [user.address]);
+    setUserHasVoted(proposal.hasVoted);
+  }, [proposal.hasVoted]);
 
   if (proposal.executed) {
     return (

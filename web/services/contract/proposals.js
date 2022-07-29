@@ -40,13 +40,13 @@ import {
   proposalExecutableGamma,
 } from './gamma/proposals';
 
-export function fetchPoolProposals(address, version) {
+export function fetchPoolProposals(address, userAddress, version) {
   if (version > 4) {
-    return fetchPoolProposalsEpsilon(address);
+    return fetchPoolProposalsEpsilon(address, userAddress);
   } else if (version > 3) {
-    return fetchPoolProposalsDelta(address);
+    return fetchPoolProposalsDelta(address, userAddress);
   } else {
-    return fetchPoolProposalsGamma(address);
+    return fetchPoolProposalsGamma(address, userAddress);
   }
 }
 

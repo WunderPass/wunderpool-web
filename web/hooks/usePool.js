@@ -237,7 +237,11 @@ export default function usePool(userAddr, poolAddr = null) {
   const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
     setPoolProposals(
-      await fetchPoolProposals(poolAddress, (vers || version).number)
+      await fetchPoolProposals(
+        poolAddress,
+        userAddress,
+        (vers || version).number
+      )
     );
   };
 

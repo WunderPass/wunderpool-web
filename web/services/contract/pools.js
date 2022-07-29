@@ -137,13 +137,14 @@ async function formatAsset(asset) {
       ).data,
       600
     ));
+
   return {
     name: asset.asset_name,
     address,
     decimals: asset.asset_infos.decimals,
     symbol: asset.asset_infos.currency_symbol,
     balance: asset.pool_balance,
-    usdValue: token.dollar_price,
+    usdValue: token?.dollar_price || 0,
   };
 }
 
@@ -257,12 +258,12 @@ export function fetchUserPools(userAddress) {
     axios({ url: `/api/proxy/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
         const pools = await Promise.all(
-          res.data
-            .filter((pool) => pool.active)
-            .map(
-              async (pool) => await formatPool(pool, userAddress.toLowerCase())
-            )
+          // .filter((pool) => pool.active) => As of 29.07.2022 All Pools are {active: false} :(
+          res.data.map(
+            async (pool) => await formatPool(pool, userAddress.toLowerCase())
+          )
         );
+        console.log(pools);
         resolve(pools.filter((p) => p));
       })
       .catch((err) => reject(err));
