@@ -47,7 +47,7 @@ export default function Pool(props) {
           setLoading(false);
         }
       } else if (wunderPool.exists === false) {
-        handleInfo('Pool was liquidated');
+        handleInfo('Pool was closed');
         router.push('/pools');
       }
     }
@@ -55,7 +55,7 @@ export default function Pool(props) {
 
   useEffect(() => {
     if (wunderPool.liquidated) {
-      handleInfo('Pool was liquidated');
+      handleInfo('Pool was closed.');
       router.push('/pools');
     }
   }, [wunderPool.liquidated]);
@@ -111,7 +111,7 @@ export default function Pool(props) {
         fetchPoolName(address)
           .then(() => wunderPool.determineProposals())
           .catch(() => {
-            handleInfo('Pool was liquidated');
+            handleInfo('Pool was closed.');
             user.fetchUsdBalance();
             router.push('/pools');
           });
@@ -239,7 +239,7 @@ export async function getServerSideProps(context) {
   } catch (error) {
     return {
       props: {
-        metaTagInfo: { name: 'Liquidated Pool', balance: '0' },
+        metaTagInfo: { name: 'Closed Pool', balance: '0' },
       },
     };
   }

@@ -241,7 +241,7 @@ export default function PoolHeader(props) {
                 className="btn-danger p-3 px-4"
                 onClick={() => setDestroyDialog(true)}
               >
-                Liquidate Pool
+                Close Pool
               </button>
             </div>
             <Collapse in={showMoreInfo}>
