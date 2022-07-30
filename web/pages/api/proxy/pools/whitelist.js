@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     });
     res.status(200).json(response.data);
   } catch (error) {
-    console.log(error);
+    console.log(error?.toJSON() || error);
     res.status(500).json(error);
   }
 }
