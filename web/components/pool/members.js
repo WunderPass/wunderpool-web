@@ -11,7 +11,7 @@ import InviteLinkButton from './inviteLinkButton';
 import { cacheItemDB, getCachedItemDB } from '../../services/caching';
 
 export default function PoolMembers(props) {
-  const { user, wunderPool, loginCallback } = props;
+  const { wunderPool, loginCallback } = props;
   const { isReady, isMember, closed, governanceToken, version } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
@@ -42,7 +42,7 @@ export default function PoolMembers(props) {
       );
       setMembers(resolvedMembers);
     }
-  }, [governanceToken?.holders?.length]);
+  }, [governanceToken?.holders]);
 
   return isReady ? (
     <div className="md:ml-4 w-full">
