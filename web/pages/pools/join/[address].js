@@ -217,7 +217,7 @@ export default function JoinPool(props) {
 
   useEffect(() => {
     if (wunderPool.liquidated) {
-      handleInfo('This Pool was already liquidated');
+      handleInfo('This Pool was already closed');
       router.push('/pools');
     }
   }, [wunderPool.liquidated]);
@@ -301,7 +301,7 @@ export async function getServerSideProps(context) {
   } catch (error) {
     return {
       props: {
-        metaTagInfo: { name: 'Liquidated Pool' },
+        metaTagInfo: { name: 'Close Pool' },
       },
     };
   }

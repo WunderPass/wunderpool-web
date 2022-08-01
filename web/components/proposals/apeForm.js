@@ -45,12 +45,12 @@ export default function ApeForm(props) {
     wunderPool
       .apeSuggestion(
         tokenAddress,
-        `Let's Ape into ${tokenName} (${tokenSymbol})`,
-        `We will ape ${value} USD into ${tokenName}`,
+        `Let's buy ${tokenName} (${tokenSymbol})`,
+        `We will invest $${value} into ${tokenName}`,
         value
       )
       .then((res) => {
-        handleSuccess(`Created Proposal to Ape into ${tokenSymbol}`);
+        handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
         wunderPool.determineProposals();
         handleClose();
       })
@@ -74,7 +74,7 @@ export default function ApeForm(props) {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Typography variant="h5">APE</Typography>
+          <Typography variant="h5">Buy</Typography>
           <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>

@@ -28,9 +28,12 @@ export default function DestroyPoolDialog(props) {
   const handleSubmit = async () => {
     setLoading(true);
     wunderPool
-      .liquidateSuggestion("Let's Liquidate the Pool", 'I want my money back')
+      .liquidateSuggestion(
+        "Let's close this Pool",
+        'This proposal will close the pool and split the remaining tokens and funds amongst all members.'
+      )
       .then((res) => {
-        handleSuccess(`Created new Proposal to Liquidate the Pool ${name}`);
+        handleSuccess(`Created new Proposal to close the pPool ${name}`);
         wunderPool.determineProposals();
       })
       .catch((err) => {
@@ -56,19 +59,21 @@ export default function DestroyPoolDialog(props) {
         style: { borderRadius: 12 },
       }}
     >
-      <DialogTitle>Liquidate Pool</DialogTitle>
+      <DialogTitle>Close Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          This will transfer all Funds from the Pool equally to all of its
-          Members.
+          <Typography>
+            This will transfer all Tokens and Funds from the Pool equally to all
+            of its Members.
+          </Typography>
         </DialogContentText>
         <Alert className="mb-1" severity="warning">
-          This will create a Proposal to Liquidate the Pool
+          This will create a Proposal to close the Pool
         </Alert>
         {wunderPool.tokens.filter((t) => t.balance > 0).length > 1 && (
           <Alert severity="error">
             Currently all tokens will be split amongst the members! If you only
-            want to get USD please sell all tokens before liquidating the pool!
+            want to get USD please sell all tokens before closing the pool!
           </Alert>
         )}
 
