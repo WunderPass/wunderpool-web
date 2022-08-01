@@ -1,7 +1,7 @@
 import ProposalCard from './proposalCard';
 
 export default function HistoryList(props) {
-  const { wunderPool, openProposal, setOpenProposal } = props;
+  const { wunderPool, openProposal, setOpenProposal, tab } = props;
 
   return (
     <div>
@@ -15,6 +15,7 @@ export default function HistoryList(props) {
               proposal={proposal}
               openProposal={openProposal}
               setOpenProposal={setOpenProposal}
+              tab={tab}
               {...props}
             />
           );

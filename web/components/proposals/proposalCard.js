@@ -292,6 +292,7 @@ export default function ProposalCard(props) {
     setOpenProposal,
     handleSuccess,
     handleError,
+    tab,
   } = props;
   const [loading, setLoading] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
@@ -308,7 +309,7 @@ export default function ProposalCard(props) {
       setOpenProposal(null);
       removeQueryParam('proposal');
     } else {
-      addQueryParam({ proposal: `${proposal.id}` });
+      addQueryParam({ proposal: `${proposal.id}`, tab: `${tab}` });
       setOpenProposal(proposal.id);
       setLoading(true);
       wunderPool

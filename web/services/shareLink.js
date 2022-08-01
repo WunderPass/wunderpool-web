@@ -1,5 +1,6 @@
 export async function handleShare(url, text, handleSuccess) {
   const shareDetails = { url, text };
+  console.log('url', url);
   if (navigator.share) {
     try {
       await navigator.share(shareDetails);
