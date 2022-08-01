@@ -13,7 +13,11 @@ export default function ProposalList(props) {
   const [open, setOpen] = useState(false);
   const [openProposal, setOpenProposal] = useState(null);
   const router = useRouter();
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(router.query.tab || 0);
+
+  useEffect(() => {
+    if (router.query.tab) setTab(router.query.tab);
+  }, [router]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -41,6 +45,7 @@ export default function ProposalList(props) {
           wunderPool={wunderPool}
           openProposal={openProposal}
           setOpenProposal={setOpenProposal}
+          tab={tab}
           {...props}
         />
       )}
@@ -49,6 +54,7 @@ export default function ProposalList(props) {
           wunderPool={wunderPool}
           openProposal={openProposal}
           setOpenProposal={setOpenProposal}
+          tab={tab}
           {...props}
         />
       )}
@@ -57,6 +63,7 @@ export default function ProposalList(props) {
           wunderPool={wunderPool}
           openProposal={openProposal}
           setOpenProposal={setOpenProposal}
+          tab={tab}
           {...props}
         />
       )}

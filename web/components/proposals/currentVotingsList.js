@@ -2,7 +2,7 @@ import ProposalCard from './proposalCard';
 import { useState, useEffect } from 'react';
 
 export default function CurrentVotingsList(props) {
-  const { wunderPool, openProposal, setOpenProposal } = props;
+  const { wunderPool, openProposal, setOpenProposal, tab } = props;
 
   return (
     <div>
@@ -18,6 +18,7 @@ export default function CurrentVotingsList(props) {
               proposal={proposal}
               openProposal={openProposal}
               setOpenProposal={setOpenProposal}
+              tab={tab}
               {...props}
             />
           );
@@ -34,6 +35,7 @@ export default function CurrentVotingsList(props) {
               proposal={proposal}
               openProposal={openProposal}
               setOpenProposal={setOpenProposal}
+              tab={tab}
               {...props}
             />
           );
