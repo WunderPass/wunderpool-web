@@ -329,7 +329,7 @@ export default function ProposalCard(props) {
           console.log('LiqProp', res);
           handleClose(false);
           if (res) {
-            handleSuccess('Pool liquidated');
+            handleSuccess('Pool closed');
             user.fetchUsdBalance();
             user.fetchPools();
           } else {
