@@ -33,3 +33,19 @@ export function postAndWaitForTransaction(config) {
 export function logToServer(any) {
   axios({ url: '/api/logToServer', params: { log: JSON.stringify(any) } });
 }
+
+export function errorToJson(err) {
+  if (err?.isAxiosError) {
+    if (err?.toJSON) {
+      const jsonError = err.toJSON();
+      const { message, description, status } = jsonError;
+      return { message, description, status };
+    }
+    const message = err?.response?.data?.error;
+    const description = err?.response?.data?.errorClass;
+    const status = err?.response?.data?.status || err?.response?.status || 500;
+    return { message, description, status };
+  }
+  // TODO: Erweitern um alle möglichen Error Cases
+  return null;
+}

@@ -8,6 +8,7 @@ export default function Avatar(props) {
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(async () => {
+    setImageUrl(null);
     if (!wunderId) return null;
     try {
       const blob =

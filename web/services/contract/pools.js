@@ -263,7 +263,6 @@ export function fetchUserPools(userAddress) {
             async (pool) => await formatPool(pool, userAddress.toLowerCase())
           )
         );
-        console.log(pools);
         resolve(pools.filter((p) => p));
       })
       .catch((err) => reject(err));

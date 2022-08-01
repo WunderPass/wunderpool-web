@@ -4,12 +4,10 @@ import { Dialog, LinearProgress, Stack } from '@mui/material';
 export default function LoginWithWunderPass(props) {
   const { dev, name, image, intent = [], onSuccess, disablePopup } = props;
   const [popup, setPopup] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleClick = (e) => {
     setOpen(true);
-    setLoading(true);
     e.preventDefault();
 
     setTimeout(() => {
@@ -19,7 +17,8 @@ export default function LoginWithWunderPass(props) {
           encodeURI(
             `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
           ),
-          'wunderPassAuth'
+          'wunderPassAuth',
+          'popup'
         );
       setPopup(authPopup);
 
@@ -28,14 +27,21 @@ export default function LoginWithWunderPass(props) {
           { accountId: 'ABCDE', intent: intent },
           process.env.WUNDERPASS_URL
         );
+        console.log('OAUTH PING');
       }, 1000);
 
       window.addEventListener('message', (event) => {
+        console.log('OAUTH NEW MESSAGE:', event.data);
         if (event.origin == process.env.WUNDERPASS_URL) {
           clearInterval(requestInterval);
 
           if (event.data?.wunderId) {
+            console.log('OAUTH GOT WUNDERID:', event.data.wunderId);
             onSuccess(event.data);
+            console.log(
+              'OAUTH CLOSE WINDOW:',
+              event?.source?.window || event?.source
+            );
             event.source?.window?.close();
             setPopup(null);
           }
@@ -53,7 +59,6 @@ export default function LoginWithWunderPass(props) {
 
   const dialogClose = () => {
     setOpen(false);
-    setLoading(false);
     setPopup(null);
   };
 
@@ -77,7 +82,7 @@ export default function LoginWithWunderPass(props) {
           <p className="pl-2 lg:pl-3 pt-1 text-white">Login with WunderPass</p>
         </div>
       </button>
-      {loading && !disablePopup && (
+      {!disablePopup && (
         <>
           <Dialog
             fullWidth
