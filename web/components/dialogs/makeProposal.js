@@ -18,6 +18,7 @@ export default function makeProposal(props) {
   const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [proposalName, setProposalName] = useState('');
+  const [proposalDescription, setProposalDescription] = useState('');
   const [tokenName, setTokenName] = useState('');
   const [tokenImage, setTokenImage] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState('');
@@ -43,10 +44,10 @@ export default function makeProposal(props) {
       .apeSuggestion(
         tokenAddress,
         proposalName ||
-          `Let's buy ${tokenName} (${tokenSymbol}) with ${currency(
+          `Let's buy ${tokenName} (${tokenSymbol}) for ${currency(
             value
-          ).toString()}.`,
-        `We will buy ${tokenName} for${currency(value).toString()}`,
+          ).toString()}`,
+        proposalDescription || ``,
         value
       )
       .then((res) => {
@@ -65,6 +66,7 @@ export default function makeProposal(props) {
   const handleClose = () => {
     setOpen(false);
     setProposalName('');
+    setProposalDescription('');
     setTokenAddress('');
     setTokenName('');
     setTokenSymbol('');
@@ -113,17 +115,31 @@ export default function makeProposal(props) {
         <>
           <DialogContent sx={{ scrollbarwidth: 'none' }}>
             <Stack spacing={1}>
-              <div className="mt-2">
+              <div className="mt-2 mb-2">
                 <label className="label" htmlFor="proposalName">
-                  Name of the Proposal
+                  Title
                 </label>
                 <input
                   className="textfield py-4 px-3 mt-2 "
                   id="proposalName"
                   type="text"
-                  placeholder="Name of the Proposal"
+                  placeholder="Title (optional) "
                   onChange={(e) => {
                     setProposalName(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="">
+                <label className="label" htmlFor="proposalDescription">
+                  Description
+                </label>
+                <input
+                  className="textfield py-4 px-3 mt-2 "
+                  id="proposalDescription"
+                  type="text"
+                  placeholder="Description (optional) "
+                  onChange={(e) => {
+                    setProposalDescription(e.target.value);
                   }}
                 />
               </div>
@@ -156,7 +172,7 @@ export default function makeProposal(props) {
                 </div>
               </Collapse>
 
-              <div className="pt-4">
+              <div className="pt-2">
                 <label className="label pb-2" htmlFor="value">
                   Amount
                 </label>
