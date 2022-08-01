@@ -44,9 +44,7 @@ export default function makeProposal(props) {
       .apeSuggestion(
         tokenAddress,
         proposalName ||
-          `Let's buy ${tokenName} (${tokenSymbol}) for ${currency(
-            value
-          ).toString()}`,
+          `Let's buy ${tokenName} (${tokenSymbol}) for ${currency(value)}`,
         proposalDescription || ``,
         value
       )
