@@ -1,6 +1,3 @@
-import { Box } from '@mui/material';
-import { FaPercentage } from 'react-icons/fa';
-
 export default function TimerBar(props) {
   const { passed, total } = props;
 
