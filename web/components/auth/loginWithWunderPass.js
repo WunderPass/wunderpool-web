@@ -17,7 +17,8 @@ export default function LoginWithWunderPass(props) {
           encodeURI(
             `${process.env.WUNDERPASS_URL}/oAuth?name=${name}&imageUrl=${image}&redirectUrl=${document.URL}`
           ),
-          'wunderPassAuth'
+          'wunderPassAuth',
+          'popup'
         );
       setPopup(authPopup);
 
