@@ -157,6 +157,13 @@ export default function NewPoolDialog(props) {
     setOpen(false);
   };
 
+  const handleCloseKeepValues = () => {
+    setWaitingForPool(false);
+    setLoading(false);
+    setStep(1);
+    setOpen(false);
+  };
+
   const submit = () => {
     setRetry(false);
     setStep((val) => val + 1);
@@ -241,7 +248,7 @@ export default function NewPoolDialog(props) {
       maxWidth="sm"
       className="flex rounded-2xl w-full justify-center"
       open={open}
-      onClose={handleClose}
+      onClose={handleCloseKeepValues}
       PaperProps={{
         style: { borderRadius: 12 },
       }}
