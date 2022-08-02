@@ -8,14 +8,14 @@ import Avatar from '/components/utils/avatar';
 import { currency, polyValueToUsd } from '/services/formatter';
 
 export default function CapTable(props) {
-  const { user, members, wunderPool } = props;
+  const { members, wunderPool } = props;
   const [showMore, setShowMore] = useState(false);
 
   const visibleMembers = useMemo(() => {
     return members
       .sort((a, b) => b.tokens - a.tokens)
       .slice(0, showMore ? members.length : 3);
-  }, [showMore, members.length, wunderPool.poolAddress]);
+  }, [showMore, members, wunderPool.poolAddress]);
 
   return (
     <>
