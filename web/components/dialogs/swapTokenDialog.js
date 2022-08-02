@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { fetchERC20Data } from '/services/contract/token';
 import TokenInput from '../tokens/input';
 import TransactionFrame from '../utils/transactionFrame';
+import { ethers } from 'ethers';
 
 export default function SwapTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
