@@ -32,10 +32,10 @@ export default function Home(props) {
 
   return (
     <>
+      <Head>
+        <title>Casama</title>
+      </Head>
       <div className="flex flex-col h-screen lg:pt-7 ">
-        <Head>
-          <title>Casama</title>
-        </Head>
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center ">
           <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen lg:mb-7 ">
             <div className="bg-kaico-blue text-white lg:rounded-t-2xl lg:py-52 lg:w-2/5 lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
