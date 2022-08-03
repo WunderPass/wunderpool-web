@@ -11,7 +11,7 @@ import InviteLinkButton from './inviteLinkButton';
 import { cacheItemDB, getCachedItemDB } from '../../services/caching';
 
 export default function PoolMembers(props) {
-  const { wunderPool, loginCallback } = props;
+  const { wunderPool, loginCallback, setMembersLoaded } = props;
   const { isReady, isMember, closed, governanceToken, version } = wunderPool;
   const [joinPool, setJoinPool] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
@@ -36,11 +36,13 @@ export default function PoolMembers(props) {
               ));
             return { ...mem, wunderId: user.wunderId };
           } catch {
+            setMembersLoaded(true);
             return mem;
           }
         })
       );
       setMembers(resolvedMembers);
+      setMembersLoaded(true);
     }
   }, [governanceToken?.holders]);
 

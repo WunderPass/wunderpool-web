@@ -106,7 +106,7 @@ function OpenProposalDialog(props) {
             sx={{ display: 'flex', justifyContent: 'space-between' }}
           >
             <Typography variant="span" fontStyle="italic">
-              For
+              Yes
             </Typography>
             {proposal.yesVotes.toString()} / {proposal.totalVotes.toString()}{' '}
             Votes
@@ -117,7 +117,7 @@ function OpenProposalDialog(props) {
             sx={{ display: 'flex', justifyContent: 'space-between' }}
           >
             <Typography variant="span" fontStyle="italic">
-              Against
+              No
             </Typography>
             {proposal.noVotes.toString()} / {proposal.totalVotes.toString()}{' '}
             Votes
