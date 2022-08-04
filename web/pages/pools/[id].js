@@ -40,6 +40,39 @@ export default function Pool(props) {
     // window.location.reload();
   };
 
+  const reactToEvent = () => {
+    if (!address || !user.address) return;
+    if (
+      votedEvent &&
+      votedEvent?.voter.toLowerCase() == user.address.toLowerCase()
+    )
+      return;
+    if (
+      newProposalEvent &&
+      newProposalEvent?.creator.toLowerCase() == user.address.toLowerCase()
+    )
+      return;
+    if (
+      proposalExecutedEvent &&
+      proposalExecutedEvent?.executor.toLowerCase() ==
+        user.address.toLowerCase()
+    )
+      return;
+    if (votedEvent || newProposalEvent || proposalExecutedEvent) {
+      if (proposalExecutedEvent) {
+        fetchPoolName(address)
+          .then(() => wunderPool.determineProposals())
+          .catch(() => {
+            handleInfo('Pool was closed.');
+            user.fetchUsdBalance();
+            router.push('/pools');
+          });
+      } else {
+        wunderPool.determineProposals();
+      }
+    }
+  };
+
   useEffect(() => {
     if (wunderPool.isReady && wunderPool.poolAddress) {
       if (wunderPool.exists) {
@@ -90,37 +123,8 @@ export default function Pool(props) {
   }, [newMemberEvent]);
 
   useEffect(() => {
-    if (!address || !user.address) return;
-    if (
-      votedEvent &&
-      votedEvent?.voter.toLowerCase() == user.address.toLowerCase()
-    )
-      return;
-    if (
-      newProposalEvent &&
-      newProposalEvent?.creator.toLowerCase() == user.address.toLowerCase()
-    )
-      return;
-    if (
-      proposalExecutedEvent &&
-      proposalExecutedEvent?.executor.toLowerCase() ==
-        user.address.toLowerCase()
-    )
-      return;
-    if (votedEvent || newProposalEvent || proposalExecutedEvent) {
-      if (proposalExecutedEvent) {
-        fetchPoolName(address)
-          .then(() => wunderPool.determineProposals())
-          .catch(() => {
-            handleInfo('Pool was closed.');
-            user.fetchUsdBalance();
-            router.push('/pools');
-          });
-      } else {
-        wunderPool.determineProposals();
-      }
-      resetEvents();
-    }
+    reactToEvent();
+    resetEvents();
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   useEffect(() => {
