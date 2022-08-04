@@ -1,7 +1,7 @@
 import ProposalCard from './proposalCard';
 
 export default function ExecutableList(props) {
-  const { wunderPool, openProposal, setOpenProposal, tab } = props;
+  const { wunderPool, openProposal } = props;
 
   return (
     <div>
@@ -14,8 +14,6 @@ export default function ExecutableList(props) {
               key={`proposal-${proposal.id}`}
               proposal={proposal}
               openProposal={openProposal}
-              setOpenProposal={setOpenProposal}
-              tab={tab}
               {...props}
             />
           );

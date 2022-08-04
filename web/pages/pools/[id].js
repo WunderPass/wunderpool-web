@@ -136,12 +136,7 @@ export default function Pool(props) {
         </title>
       </Head>
       {loadingCircle && <LoadingCircle />}
-      <Container
-        className={`flex justify-center items-center ${
-          loadingCircle && 'blur'
-        }`}
-        maxWidth="xl"
-      >
+      <Container className={`${loadingCircle ? 'blur' : ''}`} maxWidth="xl">
         <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
           <div
             className="hidden md:flex md:flex-row" //Desktop

@@ -185,7 +185,7 @@ export default function NewPoolConfigStep(props) {
         <div>
           <CurrencyInput
             value={value}
-            placeholder="$ 3.00"
+            placeholder="$ 50.00"
             onChange={handleValueChange}
             error={valueErrorMsg}
           />

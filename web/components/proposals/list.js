@@ -1,7 +1,6 @@
 import { Stack, Typography, Skeleton, Divider } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import ProposalCard from './proposalCard';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
 import TabBar from '/components/utils/tabBar';
 import CurrentVotingsList from '/components/proposals/currentVotingsList';
@@ -16,13 +15,11 @@ export default function ProposalList(props) {
   const [tab, setTab] = useState(router.query.tab || 0);
 
   useEffect(() => {
-    if (router.query.tab) setTab(router.query.tab);
-  }, [router]);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (router.query.proposal) setOpenProposal(Number(router.query.proposal));
-  }, [router.isReady]);
+    setTab(Number(router.query?.tab || 0));
+    setOpenProposal(
+      router.query?.proposal ? Number(router.query.proposal) : null
+    );
+  }, [router.query]);
 
   return !wunderPool.isReady2 ? (
     <Skeleton
@@ -44,8 +41,6 @@ export default function ProposalList(props) {
         <CurrentVotingsList
           wunderPool={wunderPool}
           openProposal={openProposal}
-          setOpenProposal={setOpenProposal}
-          tab={tab}
           {...props}
         />
       )}
@@ -53,8 +48,6 @@ export default function ProposalList(props) {
         <ExecutableList
           wunderPool={wunderPool}
           openProposal={openProposal}
-          setOpenProposal={setOpenProposal}
-          tab={tab}
           {...props}
         />
       )}
@@ -62,8 +55,6 @@ export default function ProposalList(props) {
         <HistoryList
           wunderPool={wunderPool}
           openProposal={openProposal}
-          setOpenProposal={setOpenProposal}
-          tab={tab}
           {...props}
         />
       )}
