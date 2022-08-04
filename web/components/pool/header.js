@@ -110,7 +110,10 @@ export default function PoolHeader(props) {
   return (
     <>
       <div className="flex flex-col container-white-p-0 max-w-full sm:mt-6 ">
-        <label htmlFor="bannerUpload" className="cursor-pointer">
+        <label
+          htmlFor={isMobile ? 'bannerUploadMobile' : 'bannerUploadDesktop'}
+          className="cursor-pointer"
+        >
           <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
             {bannerUrl ? (
               <img
@@ -132,7 +135,7 @@ export default function PoolHeader(props) {
         </label>
         <input
           className="hidden"
-          id="bannerUpload"
+          id={isMobile ? 'bannerUploadMobile' : 'bannerUploadDesktop'}
           type="file"
           name="banner"
           accept="image/*"
@@ -167,7 +170,9 @@ export default function PoolHeader(props) {
             </div>
           ) : (
             <div className="flex-col w-20 h-20 container-image-round -mt-14 rounded-full items-center justify-center bg-white ">
-              <label htmlFor="imageUpload">
+              <label
+                htmlFor={isMobile ? 'imageUploadMobile' : 'imageUploadDesktop'}
+              >
                 <div
                   className="flex items-center justify-center w-full bg-white rounded-full cursor-pointer"
                   type="file"
@@ -177,7 +182,7 @@ export default function PoolHeader(props) {
               </label>
               <input
                 className="hidden"
-                id="imageUpload"
+                id={isMobile ? 'imageUploadMobile' : 'imageUploadDesktop'}
                 type="file"
                 name="image"
                 accept="image/*"
