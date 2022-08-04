@@ -12,6 +12,7 @@ import TopUpAlert from '../components/dialogs/topUpAlert';
 import Head from 'next/head';
 import LogRocket from 'logrocket';
 import { useEffect } from 'react';
+import { HistoryManagerProvider, useHistoryManager } from '/hooks/useHistory';
 
 function WunderPool({ Component, pageProps }) {
   LogRocket.init(process.env.LOG_ROCKET_ID);
@@ -27,6 +28,7 @@ function WunderPool({ Component, pageProps }) {
     proposalExecutedEvent,
     resetEvents,
   ] = usePoolListener(handleInfo);
+  const historyManager = useHistoryManager();
 
   const appProps = Object.assign(
     {
@@ -98,20 +100,22 @@ function WunderPool({ Component, pageProps }) {
           content="https://app.casama.io/images/touch/homescreen512.png"
         />
       </Head>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={muiTheme}>
-          <AlertProvider template={AlertTemplate} {...options}>
-            <Navbar {...appProps} />
-            <Component {...appProps} />
-            <Notification notification={notification} />
-            <TopUpAlert
-              open={user.topUpRequired}
-              setOpen={user.setTopUpRequired}
-              user={user}
-            />
-          </AlertProvider>
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <HistoryManagerProvider value={historyManager}>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={muiTheme}>
+            <AlertProvider template={AlertTemplate} {...options}>
+              <Navbar {...appProps} />
+              <Component {...appProps} />
+              <Notification notification={notification} />
+              <TopUpAlert
+                open={user.topUpRequired}
+                setOpen={user.setTopUpRequired}
+                user={user}
+              />
+            </AlertProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </HistoryManagerProvider>
     </>
   );
 }
