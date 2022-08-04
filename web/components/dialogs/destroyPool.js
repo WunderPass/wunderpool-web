@@ -62,10 +62,8 @@ export default function DestroyPoolDialog(props) {
       <DialogTitle>Close Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <Typography>
-            This will transfer all Tokens and Funds from the Pool equally to all
-            of its Members.
-          </Typography>
+          This will transfer all Tokens and Funds from the Pool equally to all
+          of its Members.
         </DialogContentText>
         <Alert className="mb-1" severity="warning">
           This will create a Proposal to close the Pool
