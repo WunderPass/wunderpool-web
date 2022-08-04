@@ -27,11 +27,9 @@ export default function LoginWithWunderPass(props) {
           { accountId: 'ABCDE', intent: intent },
           process.env.WUNDERPASS_URL
         );
-        console.log('OAUTH PING');
       }, 1000);
 
-      window.addEventListener('message', (event) => {
-        console.log('OAUTH NEW MESSAGE:', event.data);
+      const handleMessage = (event) => {
         if (event.origin == process.env.WUNDERPASS_URL) {
           clearInterval(requestInterval);
 
@@ -42,14 +40,18 @@ export default function LoginWithWunderPass(props) {
               'OAUTH CLOSE WINDOW:',
               event?.source?.window || event?.source
             );
+            window.removeEventListener('message', handleMessage);
             event.source?.window?.close();
             setPopup(null);
           }
         }
-      });
+      };
+
+      window.addEventListener('message', handleMessage);
 
       const closedListener = setInterval(() => {
         if (authPopup.closed) {
+          window.removeEventListener('message', handleMessage);
           setPopup(null);
           clearInterval(closedListener);
         }

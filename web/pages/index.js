@@ -3,7 +3,6 @@ import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import CasamaIcon from '/public/casama-wht.svg';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
@@ -11,24 +10,19 @@ import Head from 'next/head';
 export default function Home(props) {
   const { user } = props;
   const router = useRouter();
-  const [popup, setPopup] = useState(null);
-  const [signing, setSigning] = useState(false);
 
   const handleSuccess = (data) => {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
 
-  const handleClick = () => {
-    setSigning(true);
-  };
-
   useEffect(() => {
+    console.log(user.wunderId, user.address);
     if (user.wunderId && user.address) {
       user.addToDatabase();
       router.push('/pools');
     }
-  }, [user]);
+  }, [user.wunderId, user.address]);
 
   return (
     <>
@@ -81,7 +75,6 @@ export default function Home(props) {
                         redirect={'pools'}
                         intent={['wunderId', 'address']}
                         onSuccess={handleSuccess}
-                        onClick={handleClick}
                       />
                     </a>
                   </div>

@@ -58,7 +58,6 @@ export async function cacheImage(key, blob, validFor = 86400) {
   if (cached) {
     return cached;
   } else {
-    console.log(`POST ${lowKey}`);
     const buffer = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.addEventListener('loadend', (e) => {

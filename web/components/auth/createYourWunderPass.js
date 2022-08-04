@@ -24,20 +24,29 @@ export default function CreateYourWunderPass(props) {
       );
     }, 1000);
 
-    window.addEventListener('message', (event) => {
+    const handleMessage = (event) => {
       if (event.origin == process.env.WUNDERPASS_URL) {
         clearInterval(requestInterval);
 
         if (event.data?.wunderId) {
+          console.log('OAUTH GOT WUNDERID:', event.data.wunderId);
           onSuccess(event.data);
-          event.source.window.close();
+          console.log(
+            'OAUTH CLOSE WINDOW:',
+            event?.source?.window || event?.source
+          );
+          window.removeEventListener('message', handleMessage);
+          event.source?.window?.close();
           setPopup(null);
         }
       }
-    });
+    };
+
+    window.addEventListener('message', handleMessage);
 
     const closedListener = setInterval(() => {
       if (authPopup.closed) {
+        window.removeEventListener('message', handleMessage);
         setPopup(null);
         clearInterval(closedListener);
       }
