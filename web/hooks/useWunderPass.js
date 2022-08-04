@@ -45,7 +45,7 @@ export default function useWunderPass(config) {
           );
         }, 1000);
 
-        window.addEventListener('message', (event) => {
+        const handleMessage = (event) => {
           if (event.origin == process.env.WUNDERPASS_URL) {
             clearInterval(requestInterval);
 
@@ -54,7 +54,16 @@ export default function useWunderPass(config) {
               resolve(event.data);
             }
           }
-        });
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        const closedListener = setInterval(() => {
+          if (popupWindow.closed) {
+            window.removeEventListener('message', handleMessage);
+            clearInterval(closedListener);
+          }
+        }, 500);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);
       }
@@ -86,11 +95,12 @@ export default function useWunderPass(config) {
           );
         }, 1000);
 
-        window.addEventListener('message', (event) => {
+        const handleMessage = (event) => {
           if (event.origin == process.env.WUNDERPASS_URL) {
             clearInterval(requestInterval);
 
             if (event.data && typeof event.data == 'object') {
+              window.removeEventListener('message', handleMessage);
               event.source.window.close();
               if (event.data.response) {
                 resolve(event.data.response);
@@ -99,7 +109,16 @@ export default function useWunderPass(config) {
               }
             }
           }
-        });
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        const closedListener = setInterval(() => {
+          if (popupWindow.closed) {
+            window.removeEventListener('message', handleMessage);
+            clearInterval(closedListener);
+          }
+        }, 500);
       } catch (error) {
         reject(error?.error?.error?.error?.message || error);
       }
