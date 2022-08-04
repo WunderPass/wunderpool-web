@@ -50,6 +50,7 @@ export default function useWunderPass(config) {
             clearInterval(requestInterval);
 
             if (event.data && typeof event.data == 'object') {
+              window.removeEventListener('message', handleMessage);
               event.source.window.close();
               resolve(event.data);
             }
