@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     };
 
     const body = {
-      joining_user_address: userAddress,
+      joining_user_address: userAddress.toLowerCase(),
       invest: amount,
     };
 
