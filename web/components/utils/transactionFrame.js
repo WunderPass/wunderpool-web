@@ -12,7 +12,7 @@ export default function TransactionFrame({ open }) {
 
   return (
     <iframe
-      className="w-auto"
+      className="w-full flex-grow"
       id="fr"
       name="transactionFrame"
       height={!isSafari && open ? '500' : '0'}

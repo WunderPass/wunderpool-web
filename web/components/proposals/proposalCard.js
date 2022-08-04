@@ -1,14 +1,10 @@
 import {
-  Box,
   Divider,
   IconButton,
-  Skeleton,
   Stack,
   Tooltip,
   Typography,
   Alert,
-  Dialog,
-  DialogContent,
 } from '@mui/material';
 import { useState } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
@@ -20,8 +16,8 @@ import Timer from '/components/proposals/timer';
 import TransactionDialog from '../utils/transactionDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import ShareIcon from '@mui/icons-material/Share';
-import CloseIcon from '@mui/icons-material/Close';
 import { handleShare } from '../../services/shareLink';
+import ResponsiveDialog from '../utils/responsiveDialog';
 
 function OpenProposalDialog(props) {
   const {
@@ -37,117 +33,100 @@ function OpenProposalDialog(props) {
   } = props;
 
   return (
-    <Dialog
+    <ResponsiveDialog
       open={open}
       onClose={handleOpen}
-      fullWidth
-      maxWidth="md"
-      className="flex justify-center "
-      PaperProps={{
-        style: { borderRadius: 12, maxWidth: '95vw', width: '500px' },
-      }}
-    >
-      <DialogContent className="container-gray ">
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+      contentClass="bg-gray-200 p-5"
+      title={proposal.title}
+      actionButtons={
+        <IconButton
+          onClick={() =>
+            handleShare(
+              location.href,
+              `Look at this Proposal: ${proposal.title} || ${proposal.description}`,
+              handleSuccess
+            )
+          }
         >
-          <Typography className="text-xl ">{proposal.title}</Typography>
-          <Stack direction="row" alignItems="center">
-            <IconButton
-              onClick={() =>
-                handleShare(
-                  location.href,
-                  `Look at this Proposal: ${proposal.title} || ${proposal.description}`,
-                  handleSuccess
-                )
-              }
-            >
-              <ShareIcon className="text-kaico-blue" />
-            </IconButton>
-            <IconButton onClick={handleOpen}>
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-        </Stack>
+          <ShareIcon className="text-kaico-blue" />
+        </IconButton>
+      }
+    >
+      <Typography className="font-light text-sm opacity-50 mt-4 text-ellipsis overflow-hidden">
+        {proposal.description}
+      </Typography>
 
-        <Typography className="font-light text-sm opacity-50 mt-4 text-ellipsis overflow-hidden">
-          {proposal.description}
+      <div className="mt-4 mb-8">
+        {!proposal.executed && !proposal.declined && <Timer {...props} />}
+      </div>
+
+      <VotingResults
+        yes={proposal.yesVotes.toNumber()}
+        no={proposal.noVotes.toNumber()}
+        total={proposal.totalVotes.toNumber()}
+      />
+      <div className="flex flex-row justify-center items-center">
+        <VotingButtons {...props} />
+        <div>
+          <button
+            className={
+              proposal.executable ? 'p-8 btn btn-warning ml-2' : 'hidden'
+            }
+            disabled={signing}
+            onClick={executeProposal}
+          >
+            Execute
+          </button>
+        </div>
+      </div>
+      <Stack spacing={1} mt={2}>
+        <Divider />
+        <Typography
+          variant="subtitle1"
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <Typography variant="span" fontStyle="italic">
+            Yes
+          </Typography>
+          {proposal.yesVotes.toString()} / {proposal.totalVotes.toString()}{' '}
+          Votes
+        </Typography>
+        <Divider />
+        <Typography
+          variant="subtitle1"
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <Typography variant="span" fontStyle="italic">
+            No
+          </Typography>
+          {proposal.noVotes.toString()} / {proposal.totalVotes.toString()} Votes
+        </Typography>
+        <Divider />
+        <Typography
+          variant="subtitle1"
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <Typography variant="span" fontStyle="italic">
+            Deadline
+          </Typography>
+          {new Date(proposal.deadline.mul(1000).toNumber()).toLocaleString(
+            'de'
+          )}
+        </Typography>
+        <Divider />
+        <Typography
+          variant="subtitle1"
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <Typography variant="span" fontStyle="italic">
+            Created At
+          </Typography>
+          {new Date(proposal.createdAt.mul(1000).toNumber()).toLocaleString(
+            'de'
+          )}
         </Typography>
 
-        <div className="mt-4 mb-8">
-          {!proposal.executed && !proposal.declined && <Timer {...props} />}
-        </div>
-
-        <VotingResults
-          yes={proposal.yesVotes.toNumber()}
-          no={proposal.noVotes.toNumber()}
-          total={proposal.totalVotes.toNumber()}
-        />
-        <div className="flex flex-row justify-center items-center">
-          <VotingButtons {...props} />
-          <div>
-            <button
-              className={
-                proposal.executable ? 'p-8 btn btn-warning ml-2' : 'hidden'
-              }
-              disabled={signing}
-              onClick={executeProposal}
-            >
-              Execute
-            </button>
-          </div>
-        </div>
-        <Stack spacing={1} mt={2}>
-          <Divider />
-          <Typography
-            variant="subtitle1"
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography variant="span" fontStyle="italic">
-              Yes
-            </Typography>
-            {proposal.yesVotes.toString()} / {proposal.totalVotes.toString()}{' '}
-            Votes
-          </Typography>
-          <Divider />
-          <Typography
-            variant="subtitle1"
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography variant="span" fontStyle="italic">
-              No
-            </Typography>
-            {proposal.noVotes.toString()} / {proposal.totalVotes.toString()}{' '}
-            Votes
-          </Typography>
-          <Divider />
-          <Typography
-            variant="subtitle1"
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography variant="span" fontStyle="italic">
-              Deadline
-            </Typography>
-            {new Date(proposal.deadline.mul(1000).toNumber()).toLocaleString(
-              'de'
-            )}
-          </Typography>
-          <Divider />
-          <Typography
-            variant="subtitle1"
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography variant="span" fontStyle="italic">
-              Created At
-            </Typography>
-            {new Date(proposal.createdAt.mul(1000).toNumber()).toLocaleString(
-              'de'
-            )}
-          </Typography>
-
-          {/* {loading ? (
+        {/* {loading ? (
             <Skeleton
               variant="rectangular"
               width="100%"
@@ -232,9 +211,8 @@ function OpenProposalDialog(props) {
                 })}
             </>
           )} */}
-        </Stack>
-      </DialogContent>
-    </Dialog>
+      </Stack>
+    </ResponsiveDialog>
   );
 }
 
@@ -289,15 +267,13 @@ export default function ProposalCard(props) {
     wunderPool,
     user,
     openProposal,
-    setOpenProposal,
     handleSuccess,
     handleError,
-    tab,
   } = props;
   const [loading, setLoading] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
   const [signing, setSigning] = useState(false);
-  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
   const handleClose = () => {
     setSigning(false);
@@ -306,18 +282,16 @@ export default function ProposalCard(props) {
 
   const handleOpen = () => {
     if (openProposal === proposal.id) {
-      setOpenProposal(null);
-      removeQueryParam('proposal');
+      goBack(() => removeQueryParam('proposal'));
     } else {
-      addQueryParam({ proposal: `${proposal.id}`, tab: `${tab}` });
-      setOpenProposal(proposal.id);
-      setLoading(true);
-      wunderPool
-        .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
-        .then((res) => {
-          setLoading(false);
-          setTransactionData(res);
-        });
+      addQueryParam({ proposal: proposal.id }, false);
+      // setLoading(true);
+      // wunderPool
+      //   .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
+      //   .then((res) => {
+      //     setLoading(false);
+      //     setTransactionData(res);
+      //   });
     }
   };
 
