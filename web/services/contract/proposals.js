@@ -18,6 +18,8 @@ import {
   createFudSuggestionEpsilon,
   createLiquidateSuggestionEpsilon,
   createMultiActionProposalEpsilon,
+  createNftBuyProposalEpsilon,
+  createNftSellProposalEpsilon,
   createSwapSuggestionEpsilon,
   fetchPoolProposalsEpsilon,
   fetchTransactionDataEpsilon,
@@ -315,7 +317,18 @@ export async function createNftBuyProposal(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createNftBuyProposalEpsilon(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      buyerAddress,
+      title,
+      description,
+      amount,
+      userAddress
+    );
+  } else if (version > 3) {
     return createNftBuyProposalDelta(
       poolAddress,
       nftAddress,
@@ -350,7 +363,18 @@ export async function createNftSellProposal(
   userAddress,
   version
 ) {
-  if (version > 3) {
+  if (version > 4) {
+    return createNftSellProposalEpsilon(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      sellerAddress,
+      title,
+      description,
+      amount,
+      userAddress
+    );
+  } else if (version > 3) {
     return createNftSellProposalDelta(
       poolAddress,
       nftAddress,
