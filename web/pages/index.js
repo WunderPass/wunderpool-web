@@ -6,8 +6,10 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
+import ReactGA from 'react-ga';
+ReactGA.initialize(process.env.GA_TRACKING_CODE);
 
-export default function Home(props) {
+function Home(props) {
   const { user } = props;
   const router = useRouter();
 
@@ -15,6 +17,10 @@ export default function Home(props) {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  });
 
   useEffect(() => {
     console.log(user.wunderId, user.address);
@@ -113,3 +119,5 @@ export default function Home(props) {
     </>
   );
 }
+
+export default Home;

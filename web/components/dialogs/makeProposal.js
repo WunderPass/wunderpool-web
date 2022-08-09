@@ -47,7 +47,6 @@ export default function makeProposal(props) {
   const handleApe = (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log('ez mol loadgin uf true');
     wunderPool
       .apeSuggestion(
         tokenAddress,
