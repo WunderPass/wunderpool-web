@@ -58,7 +58,7 @@ export default function TokenList(props) {
     <Stack spacing={2}>
       {isSmallBalances && (
         <button
-          className="btn-neutral p-1 w-1/3 place-self-end "
+          className="btn-neutral p-1 mt-2 w-1/3 place-self-end "
           onClick={toggleHideSmallBalances}
         >
           <Typography className="text-xs mt-0.5">

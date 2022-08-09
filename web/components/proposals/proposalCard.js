@@ -34,6 +34,7 @@ function OpenProposalDialog(props) {
 
   return (
     <ResponsiveDialog
+      maxWidth="sm"
       open={open}
       onClose={handleOpen}
       contentClass="bg-gray-200 p-5"

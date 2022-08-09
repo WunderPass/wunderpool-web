@@ -91,6 +91,7 @@ export default function JoinPoolDialog(props) {
       <ResponsiveDialog
         open={open}
         onClose={handleClose}
+        maxWidth="sm"
         disablePadding={loading}
       >
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>

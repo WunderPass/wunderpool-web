@@ -50,7 +50,7 @@ export default function DestroyPoolDialog(props) {
   }, [wunderPool.governanceToken]);
 
   return (
-    <ResponsiveDialog open={open} onClose={handleClose}>
+    <ResponsiveDialog open={open} onClose={handleClose} maxWidth="sm">
       <DialogTitle>Close Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>

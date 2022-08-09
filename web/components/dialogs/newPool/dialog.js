@@ -241,6 +241,7 @@ export default function NewPoolDialog(props) {
     <ResponsiveDialog
       open={open}
       onClose={handleCloseKeepValues}
+      maxWidth="sm"
       disablePadding={loading}
       title="Create a pool"
       actions={

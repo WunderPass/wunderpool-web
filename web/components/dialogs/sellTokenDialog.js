@@ -62,7 +62,7 @@ export default function SellTokenDialog(props) {
   };
 
   return (
-    <ResponsiveDialog open={open} onClose={handleClose}>
+    <ResponsiveDialog open={open} onClose={handleClose} maxWidth="sm">
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
         {!tradable && (
