@@ -40,6 +40,7 @@ export default function ProposalList(props) {
           tabs={['Current Votings', 'Executable', 'History']}
           tab={proposalsTab}
           setTab={setProposalsTab}
+          proposals={wunderPool.proposals}
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
@@ -51,11 +52,13 @@ export default function ProposalList(props) {
         />
       )}
       {proposalsTab == 1 && (
-        <ExecutableList
-          wunderPool={wunderPool}
-          openProposal={openProposal}
-          {...props}
-        />
+        <div>
+          <ExecutableList
+            wunderPool={wunderPool}
+            openProposal={openProposal}
+            {...props}
+          />
+        </div>
       )}
       {proposalsTab == 2 && (
         <HistoryList
