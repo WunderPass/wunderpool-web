@@ -1,14 +1,29 @@
 import { Typography } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import React from 'react';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
 import { currency } from '/services/formatter';
 import { GrMoney } from 'react-icons/gr';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 function assetDetails(props) {
   const { wunderPool } = props;
-
   const [open, setOpen] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
+
+  const handleOpenClose = () => {
+    if (open) {
+      goBack(() => removeQueryParam('dialog'));
+    } else {
+      addQueryParam({ dialog: 'makeProposal' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpen(router.query?.dialog ? true : false);
+  }, [router.query]);
 
   return (
     <>
@@ -42,14 +57,18 @@ function assetDetails(props) {
               <button
                 className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
                 onClick={() => {
-                  setOpen(true);
+                  handleOpenClose();
                 }}
               >
                 Make Proposal
               </button>
             </div>
           </div>
-          <MakeProposalDialog open={open} setOpen={setOpen} {...props} />
+          <MakeProposalDialog
+            open={open}
+            handleOpenClose={handleOpenClose}
+            {...props}
+          />
         </div>
       ) : (
         <></>

@@ -1,14 +1,6 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-  Collapse,
-} from '@mui/material';
+import { DialogActions, Stack, Typography, Collapse } from '@mui/material';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import TokenInput from '../tokens/input';
 import TransactionFrame from '../utils/transactionFrame';
@@ -16,7 +8,8 @@ import { currency, round, usdc, polyValueToUsd } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function makeProposal(props) {
-  const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
+  const { open, wunderPool, handleSuccess, handleError, handleOpenClose } =
+    props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [proposalName, setProposalName] = useState('');
   const [proposalDescription, setProposalDescription] = useState('');
@@ -27,6 +20,19 @@ export default function makeProposal(props) {
   const [value, setValue] = useState('');
   const [valueTouched, setValueTouched] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setProposalName('');
+      setProposalDescription('');
+      setTokenAddress('');
+      setTokenName('');
+      setTokenSymbol('');
+      setTokenImage(null);
+      setValue('');
+      setLoading(false);
+    }
+  }, [open]);
 
   const hasEnoughBalance = useMemo(() => {
     if (!value) return true;
@@ -41,6 +47,7 @@ export default function makeProposal(props) {
   const handleApe = (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log('ez mol loadgin uf true');
     wunderPool
       .apeSuggestion(
         tokenAddress,
@@ -52,7 +59,7 @@ export default function makeProposal(props) {
       .then((res) => {
         handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
         wunderPool.determineProposals();
-        handleClose();
+        handleOpenClose();
       })
       .catch((err) => {
         handleError(err);
@@ -60,18 +67,6 @@ export default function makeProposal(props) {
       .then(() => {
         setLoading(false);
       });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setProposalName('');
-    setProposalDescription('');
-    setTokenAddress('');
-    setTokenName('');
-    setTokenSymbol('');
-    setTokenImage(null);
-    setValue('');
-    setLoading(false);
   };
 
   const convertToRawValue = (value) => {
@@ -87,14 +82,17 @@ export default function makeProposal(props) {
     <ResponsiveDialog
       maxWidth="sm"
       open={open}
-      onClose={handleClose}
+      onClose={handleOpenClose}
       title="Make a Proposal"
       disablePadding={loading}
       actions={
         !loading && (
           <DialogActions className="flex items-center justify-center mx-4">
             <div className="flex flex-col items-center justify-center w-full">
-              <button className="btn-neutral w-full py-3" onClick={handleClose}>
+              <button
+                className="btn-neutral w-full py-3"
+                onClick={handleOpenClose}
+              >
                 Cancel
               </button>
               <button
@@ -218,7 +216,7 @@ export default function makeProposal(props) {
           </Stack>
         </>
       )}
-      <TransactionFrame open={loading} />
+      <TransactionFrame open={true} />
     </ResponsiveDialog>
   );
 }

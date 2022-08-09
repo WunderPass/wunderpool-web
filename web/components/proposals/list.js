@@ -6,20 +6,26 @@ import TabBar from '/components/utils/tabBar';
 import CurrentVotingsList from '/components/proposals/currentVotingsList';
 import HistoryList from '/components/proposals/historyList';
 import ExecutableList from '/components/proposals/executableList';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function ProposalList(props) {
   const { wunderPool } = props;
   const [open, setOpen] = useState(false);
   const [openProposal, setOpenProposal] = useState(null);
   const router = useRouter();
-  const [tab, setTab] = useState(router.query.tab || 0);
+  const [proposalsTab, setProposalsTab] = useState(router.query.tab || 0);
+  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
 
   useEffect(() => {
-    setTab(Number(router.query?.tab || 0));
+    setProposalsTab(Number(router.query?.tab || 0));
     setOpenProposal(
       router.query?.proposal ? Number(router.query.proposal) : null
     );
   }, [router.query]);
+
+  useEffect(() => {
+    addQueryParam({ tab: proposalsTab });
+  }, [proposalsTab]);
 
   return !wunderPool.isReady2 ? (
     <Skeleton
@@ -32,26 +38,26 @@ export default function ProposalList(props) {
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Current Votings', 'Executable', 'History']}
-          tab={tab}
-          setTab={setTab}
+          tab={proposalsTab}
+          setTab={setProposalsTab}
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
-      {tab == 0 && (
+      {proposalsTab == 0 && (
         <CurrentVotingsList
           wunderPool={wunderPool}
           openProposal={openProposal}
           {...props}
         />
       )}
-      {tab == 1 && (
+      {proposalsTab == 1 && (
         <ExecutableList
           wunderPool={wunderPool}
           openProposal={openProposal}
           {...props}
         />
       )}
-      {tab == 2 && (
+      {proposalsTab == 2 && (
         <HistoryList
           wunderPool={wunderPool}
           openProposal={openProposal}

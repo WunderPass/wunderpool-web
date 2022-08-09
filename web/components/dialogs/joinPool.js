@@ -13,6 +13,7 @@ import { currency, usdc, polyValueToUsd } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import { BiCheck } from 'react-icons/bi';
 import TransactionFrame from '/components/utils/transactionFrame';
+import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function JoinPoolDialog(props) {
   const {
@@ -88,14 +89,10 @@ export default function JoinPoolDialog(props) {
 
   return (
     <>
-      <Dialog
-        fullWidth
-        maxWidth="sm"
+      <ResponsiveDialog
         open={open}
         onClose={handleClose}
-        PaperProps={{
-          style: { borderRadius: 12 },
-        }}
+        disablePadding={loading}
       >
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>
         <DialogContent
@@ -199,7 +196,7 @@ export default function JoinPoolDialog(props) {
           </DialogActions>
         )}
         <TransactionFrame open={loading} />
-      </Dialog>
+      </ResponsiveDialog>
     </>
   );
 }
