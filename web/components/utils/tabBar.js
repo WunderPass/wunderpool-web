@@ -1,12 +1,10 @@
 import { Typography } from '@mui/material';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function TabBar(props) {
-  const { tabs, tab } = props;
-  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
+  const { tabs, tab, setTab } = props;
 
-  const handleClick = (index) => {
-    addQueryParam({ tab: index });
+  const handleClickNew = (index) => {
+    setTab(index);
   };
 
   return (
@@ -20,7 +18,7 @@ export default function TabBar(props) {
             className={
               tab == i ? 'py-4 pr-3 sm:pr-6' : 'py-4 pr-3 sm:pr-6 opacity-40'
             }
-            onClick={() => handleClick(index)}
+            onClick={() => handleClickNew(index)}
           >
             <div className="flex flex-row items-center justify-center">
               <Typography>{title}</Typography>
