@@ -9,13 +9,29 @@ import { FaBan } from 'react-icons/fa';
 import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
 import { cacheItemDB, getCachedItemDB } from '../../services/caching';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback, setMembersLoaded } = props;
   const { isReady, isMember, closed, governanceToken, version } = wunderPool;
-  const [joinPool, setJoinPool] = useState(false);
+  const [open, setOpen] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
   const [members, setMembers] = useState([]);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
+
+  const handleOpenClose = () => {
+    if (open) {
+      goBack(() => removeQueryParam('dialog'));
+    } else {
+      addQueryParam({ dialog: 'joinPool' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpen(router.query?.dialog ? true : false);
+  }, [router.query]);
 
   useEffect(async () => {
     if (governanceToken && governanceToken.holders) {
@@ -107,7 +123,7 @@ export default function PoolMembers(props) {
                 ) : (
                   <button
                     className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
-                    onClick={() => setJoinPool(true)}
+                    onClick={handleOpenClose}
                     disabled={!Boolean(governanceToken)}
                   >
                     <div className="flex flex-row items-center justify-center">
@@ -129,8 +145,8 @@ export default function PoolMembers(props) {
       />
       {governanceToken && (
         <JoinPoolDialog
-          open={joinPool}
-          setOpen={setJoinPool}
+          open={open}
+          setOpen={handleOpenClose}
           loginCallback={loginCallback}
           wunderPool={wunderPool}
           {...props}
