@@ -42,7 +42,7 @@ function BalanceBox(props) {
 
           {topThree.length > 0 && (
             <div className="flex flex-row items-center">
-              <div className="h-3 w-3 mt-3 bg-red-500 rounded-sm mr-2" />
+              <div className="h-3 w-3 mt-3 bg-brown rounded-sm mr-2" />
               <Typography className="pt-5 py-2 truncate">
                 {currency(topThree[0]?.userBalance)} {topThree[0]?.name}
               </Typography>
@@ -51,7 +51,7 @@ function BalanceBox(props) {
 
           {topThree.length > 1 && (
             <div className="flex flex-row items-center">
-              <div className="h-3 w-3 mt-3 bg-yellow-200 rounded-sm mr-2" />
+              <div className="h-3 w-3 mt-3 bg-purple rounded-sm mr-2" />
               <Typography className="pt-5 py-2 truncate">
                 {currency(topThree[1]?.userBalance)} {topThree[1]?.name}
               </Typography>
@@ -60,7 +60,7 @@ function BalanceBox(props) {
 
           {topThree.length > 2 && (
             <div className="flex flex-row items-center">
-              <div className="h-3 w-3 mt-3 bg-pink-300 rounded-sm mr-2" />
+              <div className="h-3 w-3 mt-3 bg-powder-blue rounded-sm mr-2" />
               <Typography className="pt-5 py-2 truncate">
                 {currency(topThree[2].userBalance)} {topThree[2]?.name}
               </Typography>
@@ -75,7 +75,7 @@ function BalanceBox(props) {
                     width:
                       percentage(topThree[0]?.userBalance, cashInPools) + '%',
                   }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
+                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brown"
                 ></div>
               </Tooltip>
               <Tooltip title={topThree[1]?.name}>
@@ -84,7 +84,7 @@ function BalanceBox(props) {
                     width:
                       percentage(topThree[1]?.userBalance, cashInPools) + '%',
                   }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-200"
+                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple"
                 ></div>
               </Tooltip>
               <Tooltip title={topThree[2]?.name}>
@@ -93,7 +93,7 @@ function BalanceBox(props) {
                     width:
                       percentage(topThree[2]?.userBalance, cashInPools) + '%',
                   }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-300"
+                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-powder-blue"
                 ></div>
               </Tooltip>
             </div>
