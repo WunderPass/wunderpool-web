@@ -1,11 +1,11 @@
 import { Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import React from 'react';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
 import { currency } from '/services/formatter';
 import { GrMoney } from 'react-icons/gr';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 function assetDetails(props) {
   const { wunderPool } = props;

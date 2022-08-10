@@ -12,6 +12,8 @@ import { Typography, Collapse, Divider, Box } from '@mui/material';
 import axios from 'axios';
 import { cacheImageByURL, deleteItemDB } from '../../services/caching';
 const FormData = require('form-data');
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool, isMobile, handleSuccess } = props;
@@ -22,6 +24,21 @@ export default function PoolHeader(props) {
   const [bannerUrl, setBannerUrl] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [showSaveButton, setShowSaveButton] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
+
+  const handleOpenClose = () => {
+    console.log(destroyDialog);
+    if (destroyDialog) {
+      goBack(() => removeQueryParam('liquidate'));
+    } else {
+      addQueryParam({ liquidate: 'closePool' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setDestroyDialog(router.query?.liquidate ? true : false);
+  }, [router.query]);
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
@@ -244,7 +261,7 @@ export default function PoolHeader(props) {
                       : 'scaleY(0)',
                 }}
                 className="btn-danger p-3 px-4"
-                onClick={() => setDestroyDialog(true)}
+                onClick={handleOpenClose}
               >
                 Close Pool
               </button>
@@ -407,7 +424,7 @@ export default function PoolHeader(props) {
       </div>
       <DestroyPoolDialog
         open={destroyDialog}
-        setOpen={setDestroyDialog}
+        setOpen={handleOpenClose}
         address={address}
         name={name}
         wunderPool={wunderPool}
