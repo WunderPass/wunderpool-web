@@ -123,16 +123,10 @@ export default function TokenCard(props) {
       <TokenInfo token={token} data={data} />
       <div className="flex flex-col items-center justify-center">
         <button
-          className="btn-kaico w-full p-2 my-2 mt-4"
+          className="btn-kaico w-full p-2 mb-0 mt-5"
           onClick={() => handleSell(token)}
         >
           Sell
-        </button>
-        <button
-          className="btn-neutral w-full p-2"
-          onClick={() => handleSwap(token)}
-        >
-          Swap
         </button>
       </div>
     </div>

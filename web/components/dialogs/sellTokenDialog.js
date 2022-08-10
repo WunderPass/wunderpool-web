@@ -1,6 +1,5 @@
 import {
   Alert,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -13,6 +12,7 @@ import { useState } from 'react';
 import { ethers } from 'ethers';
 import TransactionFrame from '../utils/transactionFrame';
 import { formatTokenBalance } from '/services/formatter';
+import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function SellTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
@@ -62,15 +62,7 @@ export default function SellTokenDialog(props) {
   };
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      open={open}
-      onClose={handleClose}
-      PaperProps={{
-        style: { borderRadius: 12 },
-      }}
-    >
+    <ResponsiveDialog open={open} onClose={handleClose} maxWidth="sm">
       <DialogTitle>Sell {name}</DialogTitle>
       <DialogContent className="min-h-10">
         {!tradable && (
@@ -130,6 +122,6 @@ export default function SellTokenDialog(props) {
         </DialogActions>
       )}
       <TransactionFrame open={loading} />
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

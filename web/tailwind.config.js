@@ -21,6 +21,9 @@ module.exports = {
         'kaico-dark-blue': '#462cf1',
         'kaico-light-blue': '#7560ff',
         'kaico-extra-light-blue': '#E4DFFF',
+        brown: '#d6a34a',
+        purple: '#551fbd',
+        'powder-blue': '#a0b6f7',
       },
       backgroundImage: {
         'split-blue-white':

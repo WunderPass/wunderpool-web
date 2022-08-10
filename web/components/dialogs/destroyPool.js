@@ -1,6 +1,5 @@
 import {
   Alert,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -14,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
 import TransactionFrame from '/components/utils/transactionFrame';
 import { formatTokenBalance } from '/services/formatter';
+import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function DestroyPoolDialog(props) {
   const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
@@ -50,15 +50,7 @@ export default function DestroyPoolDialog(props) {
   }, [wunderPool.governanceToken]);
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      open={open}
-      onClose={handleClose}
-      PaperProps={{
-        style: { borderRadius: 12 },
-      }}
-    >
+    <ResponsiveDialog open={open} onClose={handleClose} maxWidth="sm">
       <DialogTitle>Close Pool</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -141,6 +133,6 @@ export default function DestroyPoolDialog(props) {
         </DialogActions>
       )}
       <TransactionFrame open={loading} />
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

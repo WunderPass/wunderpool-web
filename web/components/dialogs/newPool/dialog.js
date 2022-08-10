@@ -13,6 +13,7 @@ const FormData = require('form-data');
 import axios from 'axios';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '../../utils/responsiveDialog';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function NewPoolDialog(props) {
   const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
@@ -22,6 +23,7 @@ export default function NewPoolDialog(props) {
   const [disabled, setDisabled] = useState(true);
   const [retry, setRetry] = useState(false);
   const router = useRouter();
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
   const [poolName, setPoolName] = useState('');
   const [poolDescription, setPoolDescription] = useState('');
@@ -150,6 +152,7 @@ export default function NewPoolDialog(props) {
     setShowCustomPerson(false);
     setMembers([]);
     setOpen(false);
+    removeQueryParam('dialog');
   };
 
   const handleCloseKeepValues = () => {
@@ -241,6 +244,7 @@ export default function NewPoolDialog(props) {
     <ResponsiveDialog
       open={open}
       onClose={handleCloseKeepValues}
+      maxWidth="sm"
       disablePadding={loading}
       title="Create a pool"
       actions={

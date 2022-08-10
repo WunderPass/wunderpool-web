@@ -1,6 +1,7 @@
 import BalanceBox from '/components/pool/balanceBox';
 import { currency } from '/services/formatter';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { PieChart } from 'react-minimal-pie-chart';
 import { MdGroups } from 'react-icons/md';
 import Head from 'next/head';
@@ -17,6 +18,7 @@ import NewPoolDialog from '/components/dialogs/newPool/dialog';
 import LoadingCircle from '/components/utils/loadingCircle';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import { cacheImageByURL } from '../../services/caching';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 function PoolCard(props) {
   const { pool } = props;
@@ -161,10 +163,24 @@ export default function Pools(props) {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [loadingCircle, setLoadingCircle] = useState(true);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
 
   const pageSize = 4;
 
   useEffect(() => {}, [user]);
+
+  const handleOpenClose = () => {
+    if (open) {
+      goBack(() => removeQueryParam('dialog'));
+    } else {
+      addQueryParam({ dialog: 'createPool' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpen(router.query?.dialog ? true : false);
+  }, [router.query]);
 
   useEffect(() => {
     setLoadingCircle(!user.isReady);
@@ -190,7 +206,7 @@ export default function Pools(props) {
               </Typography>
               <button
                 className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
-                onClick={() => setOpen(true)}
+                onClick={handleOpenClose}
               >
                 Create pool
               </button>
@@ -245,7 +261,7 @@ export default function Pools(props) {
 
           <NewPoolDialog
             open={open}
-            setOpen={setOpen}
+            setOpen={handleOpenClose}
             fetchPools={user.fetchPools}
             {...props}
           />
