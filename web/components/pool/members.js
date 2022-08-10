@@ -25,6 +25,7 @@ export default function PoolMembers(props) {
     if (open) {
       goBack(() => removeQueryParam('dialog'));
     } else {
+      console.log('something happening here?');
       addQueryParam({ dialog: 'joinPool' }, false);
     }
   };

@@ -101,8 +101,9 @@ function TokenInfo({ token, data }) {
 }
 
 export default function TokenCard(props) {
-  const { token, handleSell, handleSwap } = props;
+  const { token, handleSell } = props;
   const [data, setData] = useState(null);
+  const [open, setOpen] = useState(null);
 
   useEffect(() => {
     if (!token.verified) return;
