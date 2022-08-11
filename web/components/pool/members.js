@@ -23,14 +23,15 @@ export default function PoolMembers(props) {
 
   const handleOpenClose = () => {
     if (open) {
-      goBack(() => removeQueryParam('dialog'));
+      goBack(() => removeQueryParam('joinPool'));
     } else {
-      addQueryParam({ dialog: 'joinPool' }, false);
+      console.log("ich mach was in members")
+      addQueryParam({ joinPool: 'joinPool' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.dialog ? true : false);
+    setOpen(router.query?.joinPool ? true : false);
   }, [router.query]);
 
   useEffect(async () => {
