@@ -47,25 +47,27 @@ export default function makeProposal(props) {
   const handleApe = (e) => {
     e.preventDefault();
     setLoading(true);
-    wunderPool
-      .apeSuggestion(
-        tokenAddress,
-        proposalName ||
-          `Let's buy ${tokenName} (${tokenSymbol}) for ${currency(value)}`,
-        proposalDescription || ``,
-        value
-      )
-      .then((res) => {
-        handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
-        wunderPool.determineProposals();
-        handleOpenClose();
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setLoading(false);
-      });
+    const timer = setTimeout(() => {
+      wunderPool
+        .apeSuggestion(
+          tokenAddress,
+          proposalName ||
+            `Let's buy ${tokenName} (${tokenSymbol}) for ${currency(value)}`,
+          proposalDescription || ``,
+          value
+        )
+        .then((res) => {
+          handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
+          wunderPool.determineProposals();
+          handleOpenClose();
+        })
+        .catch((err) => {
+          handleError(err);
+        })
+        .then(() => {
+          setLoading(false);
+        });
+    }, 50);
   };
 
   const convertToRawValue = (value) => {
@@ -83,7 +85,6 @@ export default function makeProposal(props) {
       open={open}
       onClose={handleOpenClose}
       title="Make a Proposal"
-      disablePadding={loading}
       actions={
         !loading && (
           <DialogActions className="flex items-center justify-center mx-4">
@@ -215,7 +216,7 @@ export default function makeProposal(props) {
           </Stack>
         </>
       )}
-      <TransactionFrame open={true} />
+      {loading && <TransactionFrame open={loading} />}
     </ResponsiveDialog>
   );
 }
