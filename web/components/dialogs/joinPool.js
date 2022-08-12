@@ -96,6 +96,7 @@ export default function JoinPoolDialog(props) {
       >
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>
         <DialogContent
+          className="w-5"
           sx={{
             height: loading ? '0px' : 'unset',
             paddingBottom: loading ? '0px' : 'unset',

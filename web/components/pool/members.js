@@ -25,7 +25,7 @@ export default function PoolMembers(props) {
     if (open) {
       goBack(() => removeQueryParam('joinPool'));
     } else {
-      console.log("ich mach was in members")
+      console.log('ich mach was in members');
       addQueryParam({ joinPool: 'joinPool' }, false);
     }
   };
