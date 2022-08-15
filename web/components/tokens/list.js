@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import SellTokenDialog from '../dialogs/sellTokenDialog';
 import SwapTokenDialog from '/components/dialogs/swapTokenDialog';
 import TokenCard from './card';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function TokenList(props) {
   const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
@@ -12,6 +14,21 @@ export default function TokenList(props) {
   const [token, setToken] = useState('');
   const [hideSmallBalances, setHideSmallBalances] = useState(true);
   const [isSmallBalances, setIsSmallBalances] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
+
+  const handleOpenClose = () => {
+    if (openSell) {
+      goBack(() => removeQueryParam('sellToken'));
+    } else {
+      setToken(token);
+      addQueryParam({ sellToken: 'sellToken' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpenSell(router.query?.sellToken ? true : false);
+  }, [router.query]);
 
   const triggerSmallBalances = () => {
     setIsSmallBalances(true);
@@ -19,11 +36,6 @@ export default function TokenList(props) {
 
   const toggleHideSmallBalances = () => {
     setHideSmallBalances(!hideSmallBalances);
-  };
-
-  const handleSell = (token) => {
-    setOpenSell(true);
-    setToken(token);
   };
 
   const handleSwap = (token) => {
@@ -76,7 +88,7 @@ export default function TokenList(props) {
                   <TokenCard
                     token={token}
                     key={`token-${token.address}`}
-                    handleSell={handleSell}
+                    handleSell={handleOpenClose}
                     handleSwap={handleSwap}
                   />
                 );
@@ -86,7 +98,7 @@ export default function TokenList(props) {
 
       <SellTokenDialog
         open={openSell}
-        setOpen={setOpenSell}
+        setOpen={handleOpenClose}
         token={token}
         {...props}
       />
