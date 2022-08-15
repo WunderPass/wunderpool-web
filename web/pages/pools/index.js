@@ -138,7 +138,7 @@ function PoolCard(props) {
 function PoolList(props) {
   const { pools, setOpen } = props;
 
-  return pools.length > 0 ? (
+  return !pools.length > 0 ? (
     <div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full">
       {pools.map((pool, i) => {
         return <PoolCard key={`pool-card-${i}`} pool={pool} />;
@@ -156,14 +156,15 @@ function PoolList(props) {
             minutes
           </Typography>
           <div className="flex justify-center mt-2 cursor-pointer">
-            <Link
-              target="_blank"
+            <a
               href={`https://www.youtube.com/watch?v=vz6rXuKOyZ4`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <Typography className="text-kaico-blue justify-center">
                 (See Demo)
               </Typography>
-            </Link>
+            </a>
           </div>
         </div>
         <button
