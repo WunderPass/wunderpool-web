@@ -24,8 +24,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { BsChevronDown } from 'react-icons/bs';
 import { BsChevronUp } from 'react-icons/bs';
-import { FaRegAddressCard } from 'react-icons/fa';
-import { FaAddressCard } from 'react-icons/fa';
+import { AiFillUpCircle } from 'react-icons/ai';
+import { AiOutlineDownCircle } from 'react-icons/ai';
 
 function PoolCard(props) {
   const { pool } = props;
@@ -216,8 +216,8 @@ export default function Pools(props) {
               <div className="flex flex-col">
                 <div className="flex flex-row items-center">
                   <Typography className=" text-2xl mt-5 sm:text-4xl mb-2">
-                    Hello {user?.wunderId},
-                  </Typography>{' '}
+                    Hello {user?.wunderId}
+                  </Typography>
                   <Tooltip
                     title={
                       showAddress
@@ -227,11 +227,13 @@ export default function Pools(props) {
                   >
                     <button onClick={() => toggleAddress()}>
                       {showAddress ? (
-                        //<BsChevronUp className="text-lg mt-3 ml-4" />
-                        <FaAddressCard className="text-3xl mt-3 ml-4" />
+                        <div className="flex flex-row items-center">
+                          <AiFillUpCircle className="text-kaico-blue sm:text-2xl font-bold text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                        </div>
                       ) : (
-                        //<BsChevronDown className="text-lg mt-3 ml-4" />
-                        <FaRegAddressCard className="text-3xl mt-3 ml-4" />
+                        <div className="flex flex-row items-center">
+                          <AiOutlineDownCircle className="text-kaico-blue sm:text-2xl text-xl font-bold mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                        </div>
                       )}
                     </button>
                   </Tooltip>
