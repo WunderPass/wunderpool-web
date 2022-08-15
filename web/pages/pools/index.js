@@ -154,10 +154,10 @@ function PoolList(props) {
           No Pools joined yet
         </Typography>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-8 text-md "
+          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-4 text-md "
           onClick={() => setOpen(true)}
         >
-          Create pool
+          Create your first pool
         </button>
       </div>
     </div>
