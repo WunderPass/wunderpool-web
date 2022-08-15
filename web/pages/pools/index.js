@@ -12,6 +12,7 @@ import {
   Paper,
   Skeleton,
   Typography,
+  Tooltip,
 } from '@mui/material';
 import Avatar from '/components/utils/avatar';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
@@ -19,6 +20,12 @@ import LoadingCircle from '/components/utils/loadingCircle';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import { cacheImageByURL } from '../../services/caching';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { MdContentCopy } from 'react-icons/md';
+import { BsChevronDown } from 'react-icons/bs';
+import { BsChevronUp } from 'react-icons/bs';
+import { AiFillUpCircle } from 'react-icons/ai';
+import { AiOutlineDownCircle } from 'react-icons/ai';
 
 function PoolCard(props) {
   const { pool } = props;
@@ -147,10 +154,10 @@ function PoolList(props) {
           No Pools joined yet
         </Typography>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-8 text-md "
+          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-4 text-md "
           onClick={() => setOpen(true)}
         >
-          Create pool
+          Create your first pool
         </button>
       </div>
     </div>
@@ -164,9 +171,14 @@ export default function Pools(props) {
   const [page, setPage] = useState(1);
   const [loadingCircle, setLoadingCircle] = useState(true);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const [showAddress, setShowAddress] = useState(false);
   const router = useRouter();
 
   const pageSize = 4;
+
+  const toggleAddress = () => {
+    setShowAddress(!showAddress);
+  };
 
   useEffect(() => {}, [user]);
 
@@ -201,9 +213,52 @@ export default function Pools(props) {
         <Container className={loadingCircle ? 'blur' : ''}>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
-              <Typography className=" text-2xl mt-5 sm:text-4xl">
-                Hello {user?.wunderId},
-              </Typography>
+              <div className="flex flex-col">
+                <div className="flex flex-row items-center">
+                  <Typography className=" text-2xl mt-5 sm:text-4xl mb-2">
+                    Hello {user?.wunderId}
+                  </Typography>
+                  <Tooltip
+                    title={
+                      showAddress
+                        ? 'Hide your wallet address'
+                        : 'Show your wallet address'
+                    }
+                  >
+                    <button onClick={() => toggleAddress()}>
+                      {showAddress ? (
+                        <div className="flex flex-row items-center">
+                          <AiFillUpCircle className="text-kaico-blue sm:text-2xl font-bold text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                        </div>
+                      ) : (
+                        <div className="flex flex-row items-center">
+                          <AiOutlineDownCircle className="text-kaico-blue sm:text-2xl text-xl font-bold mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                        </div>
+                      )}
+                    </button>
+                  </Tooltip>
+                </div>
+
+                <div
+                  className={
+                    showAddress
+                      ? ' border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 '
+                      : ' border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 hidden'
+                  }
+                >
+                  <CopyToClipboard
+                    text={user?.address}
+                    onCopy={() => handleSuccess('address copied!')}
+                  >
+                    <span className=" cursor-pointer text-md">
+                      <div className="flex flex-row items-center">
+                        <div className="truncate ...">{user?.address}</div>
+                        <MdContentCopy className="text-gray-500 ml-4" />
+                      </div>
+                    </span>
+                  </CopyToClipboard>
+                </div>
+              </div>
               <button
                 className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
                 onClick={handleOpenClose}

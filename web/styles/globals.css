@@ -76,7 +76,7 @@ button:disabled {
 }
 
 .btn-kaico-white {
-  @apply bg-white hover:bg-[#ededed] text-black cursor-pointer rounded-xl border-2 border-kaico-extra-light-blue;
+  @apply bg-white hover:bg-[#ededed] text-kaico-blue cursor-pointer rounded-xl border-2 border-kaico-blue;
 }
 
 .btn-neutral {

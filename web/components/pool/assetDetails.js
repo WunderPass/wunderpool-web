@@ -15,14 +15,17 @@ function assetDetails(props) {
 
   const handleOpenClose = () => {
     if (open) {
-      goBack(() => removeQueryParam('dialog'));
+      goBack(() => removeQueryParam('makeProposal'));
     } else {
-      addQueryParam({ dialog: 'makeProposal' }, false);
+      console.log("ich mach was in assetDetails")
+      addQueryParam({ makeProposal: 'makeProposal' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.dialog ? true : false);
+    console.log("setOpen in assetDetails")
+
+    setOpen(router.query?.makeProposal ? true : false);
   }, [router.query]);
 
   return (
