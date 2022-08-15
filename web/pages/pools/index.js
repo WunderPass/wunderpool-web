@@ -68,7 +68,7 @@ function PoolCard(props) {
               )}
             </div>
           </div>
-          <Typography className="text-lg pt-3 font-semibold">
+          <Typography className="text-lg pt-3 ">
             {currency(pool.totalBalance)}
           </Typography>
           <div className="flex flex-row justify-between items-center pb-4">
