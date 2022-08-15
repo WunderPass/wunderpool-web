@@ -5,7 +5,7 @@
 @layer base {
   @font-face {
     font-family: 'Graphik';
-    src: url('../assets/fonts/Graphik/GraphikMedium.otf');
+    src: url('../assets/fonts/Graphik/GraphikRegular.otf');
   }
 }
 

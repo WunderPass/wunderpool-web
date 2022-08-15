@@ -53,7 +53,7 @@ function PoolCard(props) {
       >
         <div className="flex flex-col relative">
           <div className="flex flex-row justify-between items-center">
-            <Typography className="text-md">{pool.name}</Typography>
+            <Typography className="text-md font-bold">{pool.name}</Typography>
             <div
               className={`bg-white hover:bg-[#ededed] rounded-md border-kaico-extra-light-blue text-md font-semibold cursor-pointer ${
                 imageUrl ? '' : 'p-6 border-2'
@@ -151,10 +151,11 @@ function PoolList(props) {
           <MdGroups className="text-4xl" />
         </div>
         <Typography className="my-2 mb-10" variant="h7">
-          No Pools joined yet
+          Get invited to an investment pool or start one and invite others in
+          minutes
         </Typography>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3 px-3 mb-4 text-md "
+          className="btn-kaico-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
           onClick={() => setOpen(true)}
         >
           Create your first pool
@@ -215,7 +216,7 @@ export default function Pools(props) {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <div className="flex flex-col">
                 <div className="flex flex-row items-center">
-                  <Typography className=" text-2xl mt-5 sm:text-4xl mb-2">
+                  <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-bold">
                     Hello {user?.wunderId}
                   </Typography>
                   <Tooltip
@@ -269,15 +270,15 @@ export default function Pools(props) {
 
             <div className="sm:flex sm:flex-row">
               <div className="flex flex-col sm:w-1/2 sm:pr-8">
-                <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4">
-                  Balance
+                <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4 font-bold">
+                  My Portfolio
                 </Typography>
                 <BalanceBox className="w-10" {...props} />
               </div>
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                 <div className="flex flex-row justify-between pb-4 b">
-                  <Typography className="subheader subheader-sm">
+                  <Typography className="subheader subheader-sm font-bold">
                     My Pools
                   </Typography>
                   {user.pools.length > pageSize && (

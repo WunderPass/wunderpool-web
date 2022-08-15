@@ -1,4 +1,4 @@
-import { Typography, Skeleton, Tooltip } from '@mui/material';
+import { Typography, Skeleton, Tooltip, Link } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 function BalanceBox(props) {
   const { user } = props;
   const [loading, setLoading] = useState(true);
+  const [redirectUrl, setRedirectUrl] = useState(null);
   const [totalBalance, setTotalBalance] = useState(0);
   const [open, setOpen] = useState(false);
   const [remainingPoolsBalance, setRemainingPoolsBalance] = useState(0);
@@ -41,6 +42,10 @@ function BalanceBox(props) {
   };
 
   useEffect(() => {
+    if (open) setRedirectUrl(new URL(document.URL));
+  }, [open]);
+
+  useEffect(() => {
     setOpen(router.query?.dialog ? true : false);
   }, [router.query]);
 
@@ -62,17 +67,13 @@ function BalanceBox(props) {
       <div className="sm:h-full sm:max-h-96 ">
         <div className="flex sm:h-full flex-col justify-between container-white mb-1 m:mr-8 w-full ">
           <div>
-            <Typography className="pb-6">Total Pool Balances</Typography>
+            <Typography className="pb-6 font-bold">
+              Total Value of Pools
+            </Typography>
             <Typography className="text-3xl ">
               {currency(totalBalance)}
             </Typography>
-            {topThree.length == 0 && (
-              <div className="flex flex-row items-center">
-                <Typography className="pt-5 py-1 truncate">
-                  No Pools joined yet{' '}
-                </Typography>
-              </div>
-            )}
+
             {topThree.length > 0 && (
               <div className="flex flex-row items-center">
                 <div className="h-3 w-3 mt-3 bg-brown rounded-sm mr-2" />
@@ -140,7 +141,25 @@ function BalanceBox(props) {
               </div>
             </div>
           ) : (
-            <div className="flex w-full "></div>
+            <div className="flex flex-col w-full ">
+              {user.usdBalance == 0 && (
+                <div>
+                  <div className="flex flex-row items-center">
+                    <Typography className="pt-5 py-1">
+                      No cash yet to create pools, please top up your account{' '}
+                    </Typography>
+                  </div>
+
+                  <Link
+                    href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+                  >
+                    <button className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors">
+                      TopUp Now
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
