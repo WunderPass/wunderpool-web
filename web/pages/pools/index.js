@@ -150,10 +150,22 @@ function PoolList(props) {
         <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mt-6 mb-4">
           <MdGroups className="text-4xl" />
         </div>
-        <Typography className="my-2 mb-10" variant="h7">
-          Get invited to an investment pool or start one and invite others in
-          minutes
-        </Typography>
+        <div className="my-2 mb-10">
+          <Typography variant="h7">
+            Get invited to an investment pool or start one and invite others in
+            minutes
+          </Typography>
+          <div className="flex justify-center mt-2 cursor-pointer">
+            <Link
+              target="_blank"
+              href={`https://www.youtube.com/watch?v=vz6rXuKOyZ4`}
+            >
+              <Typography className="text-kaico-blue justify-center">
+                (See Demo)
+              </Typography>
+            </Link>
+          </div>
+        </div>
         <button
           className="btn-kaico-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
           onClick={() => setOpen(true)}
