@@ -138,7 +138,7 @@ function PoolCard(props) {
 function PoolList(props) {
   const { pools, setOpen } = props;
 
-  return !pools.length > 0 ? (
+  return pools.length > 0 ? (
     <div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full">
       {pools.map((pool, i) => {
         return <PoolCard key={`pool-card-${i}`} pool={pool} />;
