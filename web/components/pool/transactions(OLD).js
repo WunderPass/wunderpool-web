@@ -25,10 +25,6 @@ export default function Transactions(props) {
     setAllTransactions(resolved.result);
   }, [wunderPool.poolAddress]);
 
-  useEffect(() => {
-    console.log(allTransactions);
-  }, [allTransactions]);
-
   return allTransactions ? (
     <div>
       {allTransactions.map((trx, i) => {

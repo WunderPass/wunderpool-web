@@ -41,7 +41,7 @@ const navigation = (props) => {
             onClick={() => user.setTopUpRequired(true)}
             className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer"
           >
-            <div className="flex flex-row pr-1 text-center items-center text-sm ">
+            <div className="flex flex-row pr-1 text-center items-center text-sm  ">
               <p className="mx-2">{currency(user?.usdBalance)}</p>
               <BsFillPlusCircleFill className="text-xl mr-1" />
             </div>
