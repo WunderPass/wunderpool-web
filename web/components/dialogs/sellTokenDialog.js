@@ -15,8 +15,14 @@ import { formatTokenBalance } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function SellTokenDialog(props) {
-  const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
-    props;
+  const {
+    open,
+    handleOpenClose,
+    token,
+    wunderPool,
+    handleError,
+    handleSuccess,
+  } = props;
   const {
     address,
     decimals,
@@ -32,7 +38,7 @@ export default function SellTokenDialog(props) {
   const handleClose = () => {
     setAmount('');
     setLoading(false);
-    setOpen(false);
+    handleOpenClose();
   };
 
   const handleSubmit = () => {

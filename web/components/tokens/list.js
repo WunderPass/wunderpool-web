@@ -17,14 +17,25 @@ export default function TokenList(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  const handleOpenClose = () => {
+  const handleOpenCloseSell = () => {
     if (openSell) {
       goBack(() => removeQueryParam('sellToken'));
     } else {
-      setToken(token);
       addQueryParam({ sellToken: 'sellToken' }, false);
     }
   };
+
+  const handleOpenCloseSwap = () => {
+    if (openSwap) {
+      goBack(() => removeQueryParam('swapToken'));
+    } else {
+      addQueryParam({ swapToken: 'swapToken' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpenSwap(router.query?.swapToken ? true : false);
+  }, [router.query]);
 
   useEffect(() => {
     setOpenSell(router.query?.sellToken ? true : false);
@@ -39,8 +50,13 @@ export default function TokenList(props) {
   };
 
   const handleSwap = (token) => {
-    setOpenSwap(true);
     setToken(token);
+    handleOpenCloseSwap();
+  };
+
+  const handleSell = (token) => {
+    setToken(token);
+    handleOpenCloseSell();
   };
 
   useEffect(() => {
@@ -88,7 +104,7 @@ export default function TokenList(props) {
                   <TokenCard
                     token={token}
                     key={`token-${token.address}`}
-                    handleSell={handleOpenClose}
+                    handleSell={handleSell}
                     handleSwap={handleSwap}
                   />
                 );
@@ -98,13 +114,13 @@ export default function TokenList(props) {
 
       <SellTokenDialog
         open={openSell}
-        setOpen={handleOpenClose}
+        handleOpenClose={handleOpenCloseSell}
         token={token}
         {...props}
       />
       <SwapTokenDialog
         open={openSwap}
-        setOpen={setOpenSwap}
+        setOpen={handleOpenCloseSwap}
         token={token}
         {...props}
       />
