@@ -15,7 +15,7 @@ import { useEffect } from 'react';
 import { HistoryManagerProvider, useHistoryManager } from '/hooks/useHistory';
 
 function WunderPool({ Component, pageProps }) {
-  LogRocket.init(process.env.LOG_ROCKET_ID);
+  //LogRocket.init(process.env.LOG_ROCKET_ID);
   const user = useUser();
   const [notification, handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
@@ -55,14 +55,14 @@ function WunderPool({ Component, pageProps }) {
     transition: transitions.SCALE,
   };
 
-  useEffect(() => {
-    if (user.address && user.wunderId) {
-      LogRocket.identify(user.address, {
-        name: user.wunderId,
-        email: 'comingSoon@gmail.com',
-      });
-    }
-  }, [user.wunderId, user.address]);
+  //useEffect(() => {
+  //  if (user.address && user.wunderId) {
+  //    LogRocket.identify(user.address, {
+  //      name: user.wunderId,
+  //      email: 'comingSoon@gmail.com',
+  //    });
+  //  }
+  //}, [user.wunderId, user.address]);
 
   return (
     <>
