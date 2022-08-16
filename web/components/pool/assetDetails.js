@@ -17,14 +17,11 @@ function assetDetails(props) {
     if (open) {
       goBack(() => removeQueryParam('makeProposal'));
     } else {
-      console.log('ich mach was in assetDetails');
       addQueryParam({ makeProposal: 'makeProposal' }, false);
     }
   };
 
   useEffect(() => {
-    console.log('setOpen in assetDetails');
-
     setOpen(router.query?.makeProposal ? true : false);
   }, [router.query]);
 
