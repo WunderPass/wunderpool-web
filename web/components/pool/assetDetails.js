@@ -48,7 +48,7 @@ function assetDetails(props) {
                   </div>
                 </div>
                 <div className="w-full lg:text-right">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 ">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 font-bold">
                     Amount of assets
                   </Typography>
                   <Typography className="text-2xl opacity-90 py-1 font-semibold">
