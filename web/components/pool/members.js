@@ -23,18 +23,13 @@ export default function PoolMembers(props) {
 
   const handleOpenClose = () => {
     if (open) {
-      console.log('im ist open bei members');
-
       goBack(() => removeQueryParam('joinPool'));
     } else {
-      console.log('im ist nicht open bei members');
-
       addQueryParam({ joinPool: 'joinPool' }, false);
     }
   };
 
   useEffect(() => {
-    console.log('im effect bei members');
     setOpen(router.query?.joinPool ? true : false);
   }, [router.query]);
 
