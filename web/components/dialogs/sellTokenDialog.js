@@ -60,6 +60,7 @@ export default function SellTokenDialog(props) {
       })
       .then(() => {
         setLoading(false);
+        handleClose();
       });
   };
 

@@ -51,17 +51,19 @@ export default function JoinPoolDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    wunderPool
-      .join(amount)
-      .then((res) => {
-        user.fetchUsdBalance();
-        handleSuccess(`Joined Pool with ${currency(amount)}`);
-        window.location.reload();
-      })
-      .catch((err) => {
-        handleError(err);
-        setLoading(false);
-      });
+    const timer = setTimeout(() => {
+      wunderPool
+        .join(amount)
+        .then((res) => {
+          user.fetchUsdBalance();
+          handleSuccess(`Joined Pool with ${currency(amount)}`);
+          window.location.reload();
+        })
+        .catch((err) => {
+          handleError(err);
+          setLoading(false);
+        });
+    }, 100);
   };
 
   const receivedTokens =
@@ -92,7 +94,7 @@ export default function JoinPoolDialog(props) {
         open={open}
         onClose={handleClose}
         maxWidth="sm"
-        disablePadding={loading}
+        //disablePadding={loading}
       >
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>
         <DialogContent
@@ -183,7 +185,10 @@ export default function JoinPoolDialog(props) {
           ></button>
         </DialogContent>
         {loading ? (
-          <></>
+          <>
+            {' '}
+            <TransactionFrame open={loading} />
+          </>
         ) : (
           <DialogActions>
             <button
@@ -195,7 +200,6 @@ export default function JoinPoolDialog(props) {
             </button>
           </DialogActions>
         )}
-        <TransactionFrame open={loading} />
       </ResponsiveDialog>
     </>
   );
