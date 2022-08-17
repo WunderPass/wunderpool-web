@@ -22,7 +22,9 @@ export default async function handler(req, res) {
 
       response = await axios({
         method: 'POST',
-        url: `https://pools-service.wunderpass.org/web3Proxy/pools/${poolAddress?.toLowerCase()}/whitelist/address`,
+        url: `${
+          process.env.POOLS_SERVICE
+        }/web3Proxy/pools/${poolAddress?.toLowerCase()}/whitelist/address`,
         headers: headers,
         data: body,
       });
@@ -32,7 +34,9 @@ export default async function handler(req, res) {
 
       response = await axios({
         method: 'POST',
-        url: `https://pools-service.wunderpass.org/web3Proxy/pools/${poolAddress?.toLowerCase()}/whitelist/secret`,
+        url: `${
+          process.env.POOLS_SERVICE
+        }/web3Proxy/pools/${poolAddress?.toLowerCase()}/whitelist/secret`,
         headers: headers,
         data: body,
       });

@@ -28,7 +28,7 @@ export default async (req, res) => {
       );
       axios({
         method: 'post',
-        url: `https://pools-service.wunderpass.org/web3Proxy/pools/${fields.poolAddress}/image`,
+        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools/${fields.poolAddress}/image`,
         headers: {
           Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
           ...data.getHeaders(),
