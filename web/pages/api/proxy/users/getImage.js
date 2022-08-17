@@ -3,7 +3,7 @@ const http = require('https');
 export default function handler(req, res) {
   return new Promise((resolve) => {
     const options = {
-      hostname: 'identity-service.wunderpass.org',
+      hostname: `${process.env.IDENTITY_SERVICE}`,
       path: `/v4/wunderPasses/${req.query.wunderId}/image`,
       headers: {
         authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,

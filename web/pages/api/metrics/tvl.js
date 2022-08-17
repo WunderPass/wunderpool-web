@@ -15,7 +15,7 @@ async function getToken(address) {
   if (!tokenMap[address]) {
     const token = (
       await axios({
-        url: `https://token-api.wunderpass.org/polygon/tokens/${address}`,
+        url: `${process.env.TOKEN_API}/polygon/tokens/${address}`,
       })
     ).data;
     const tokenContract = new ethers.Contract(address, tokenAbi, httpProvider);
@@ -107,7 +107,7 @@ export default async function handler(req, res) {
     const poolResult = (
       await axios({
         method: 'get',
-        url: 'https://pools-service.wunderpass.org/web3Proxy/pools/web2/all',
+        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools/web2/all`,
         headers: headers,
       })
     ).data;
