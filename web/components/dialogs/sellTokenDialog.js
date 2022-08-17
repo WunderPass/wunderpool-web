@@ -43,25 +43,28 @@ export default function SellTokenDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    wunderPool
-      .fudSuggestion(
-        address,
-        `Let's Sell ${name} (${symbol})`,
-        `We will sell ${amount} ${symbol}`,
-        ethers.utils.parseUnits(amount, decimals)
-      )
-      .then((res) => {
-        handleSuccess(`Created Proposal to sell ${name}`);
-        wunderPool.determineProposals();
-        handleClose();
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setLoading(false);
-        handleClose();
-      });
+
+    setTimeout(() => {
+      wunderPool
+        .fudSuggestion(
+          address,
+          `Let's Sell ${name} (${symbol})`,
+          `We will sell ${amount} ${symbol}`,
+          ethers.utils.parseUnits(amount, decimals)
+        )
+        .then((res) => {
+          handleSuccess(`Created Proposal to sell ${name}`);
+          wunderPool.determineProposals();
+          handleClose();
+        })
+        .catch((err) => {
+          handleError(err);
+        })
+        .then(() => {
+          setLoading(false);
+          handleClose();
+        });
+    }, 40);
   };
 
   const handleInput = (e) => {

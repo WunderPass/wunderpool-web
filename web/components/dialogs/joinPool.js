@@ -51,19 +51,20 @@ export default function JoinPoolDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       wunderPool
         .join(amount)
         .then((res) => {
           user.fetchUsdBalance();
           handleSuccess(`Joined Pool with ${currency(amount)}`);
+          handleClose();
           window.location.reload();
         })
         .catch((err) => {
           handleError(err);
           setLoading(false);
         });
-    }, 100);
+    }, 50);
   };
 
   const receivedTokens =

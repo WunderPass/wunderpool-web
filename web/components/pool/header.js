@@ -424,7 +424,7 @@ export default function PoolHeader(props) {
       </div>
       <DestroyPoolDialog
         open={destroyDialog}
-        setOpen={handleOpenClose}
+        handleOpenClose={handleOpenClose}
         address={address}
         name={name}
         wunderPool={wunderPool}

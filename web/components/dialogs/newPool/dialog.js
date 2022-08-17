@@ -167,49 +167,51 @@ export default function NewPoolDialog(props) {
     setStep((val) => val + 1);
     setLoading(true);
     setWaitingForPool(true);
-    createPool(
-      user.address,
-      poolName,
-      poolDescription,
-      tokenName,
-      tokenSymbol,
-      minInvest || value,
-      maxInvest || value,
-      value,
-      members.map((m) => m.address),
-      maxMembers || 50,
-      votingThreshold || 50,
-      (Number(votingTime) || 72) * 3600,
-      minYesVoters || 1,
-      image
-    )
-      .then((res) => {
-        handleClose();
-        handleInfo('Waiting for Blockchain Transaction');
-        waitForTransaction(res)
-          .then((tx) => {
-            handleSuccess(`Created Pool "${poolName}"`);
-            getPoolAddressFromTx(res)
-              .then(({ address, name }) => {
-                user.fetchUsdBalance();
-                router.push(`/pools/${address}?name=${name}`);
-                // uploadImageToServer(address.toLowerCase());
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-            handleError('Pool Creation failed');
-          });
-      })
-      .catch((err) => {
-        setLoading(false);
-        setRetry(true);
-        handleError(err);
-        setWaitingForPool(false);
-      });
+    setTimeout(() => {
+      createPool(
+        user.address,
+        poolName,
+        poolDescription,
+        tokenName,
+        tokenSymbol,
+        minInvest || value,
+        maxInvest || value,
+        value,
+        members.map((m) => m.address),
+        maxMembers || 50,
+        votingThreshold || 50,
+        (Number(votingTime) || 72) * 3600,
+        minYesVoters || 1,
+        image
+      )
+        .then((res) => {
+          handleClose();
+          handleInfo('Waiting for Blockchain Transaction');
+          waitForTransaction(res)
+            .then((tx) => {
+              handleSuccess(`Created Pool "${poolName}"`);
+              getPoolAddressFromTx(res)
+                .then(({ address, name }) => {
+                  user.fetchUsdBalance();
+                  router.push(`/pools/${address}?name=${name}`);
+                  // uploadImageToServer(address.toLowerCase());
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              handleError('Pool Creation failed');
+            });
+        })
+        .catch((err) => {
+          setLoading(false);
+          setRetry(true);
+          handleError(err);
+          setWaitingForPool(false);
+        });
+    }, 50);
   };
 
   useEffect(() => {

@@ -17,32 +17,43 @@ import ResponsiveDialog from '../utils/responsiveDialog';
 import LoadingCircle from '/components/utils/loadingCircle';
 
 export default function DestroyPoolDialog(props) {
-  const { open, setOpen, name, wunderPool, handleSuccess, handleError } = props;
+  const {
+    open,
+    handleOpenClose,
+    name,
+    wunderPool,
+    handleSuccess,
+    handleError,
+  } = props;
   const [loading, setLoading] = useState(false);
   const [userShare, setUserShare] = useState(null);
 
   const handleClose = () => {
-    setOpen(false);
     setLoading(false);
+    handleOpenClose();
   };
 
   const handleSubmit = async () => {
     setLoading(true);
-    wunderPool
-      .liquidateSuggestion(
-        "Let's close this Pool",
-        'This proposal will close the pool and split the remaining tokens and funds amongst all members.'
-      )
-      .then((res) => {
-        handleSuccess(`Created new Proposal to close the pPool ${name}`);
-        wunderPool.determineProposals();
-      })
-      .catch((err) => {
-        setLoading(false);
-      })
-      .then(() => {
-        handleClose();
-      });
+    setTimeout(() => {
+      console.log('lets start liquidtaing suggestion');
+      wunderPool
+        .liquidateSuggestion(
+          "Let's close this Pool",
+          'This proposal will close the pool and split the remaining tokens and funds amongst all members.'
+        )
+        .then((res) => {
+          handleSuccess(`Created new Proposal to close the Pool ${name}`);
+          wunderPool.determineProposals();
+          handleClose();
+        })
+        .catch((err) => {
+          setLoading(false);
+        })
+        .then(() => {
+          handleClose();
+        });
+    }, 50);
   };
 
   useEffect(() => {
@@ -120,9 +131,12 @@ export default function DestroyPoolDialog(props) {
         )}
       </DialogContent>
       {loading ? (
-        <Stack spacing={2} sx={{ textAlign: 'center' }}>
-          <Typography variant="subtitle1">Submitting Proposal</Typography>
-        </Stack>
+        <>
+          <Stack spacing={2} sx={{ textAlign: 'center' }}>
+            <Typography variant="subtitle1">Submitting Proposal</Typography>
+          </Stack>
+          <TransactionFrame open={true} />
+        </>
       ) : (
         <DialogActions>
           <button className="btn btn-default" onClick={handleClose}>
@@ -133,7 +147,6 @@ export default function DestroyPoolDialog(props) {
           </button>
         </DialogActions>
       )}
-      <TransactionFrame open={loading} />
     </ResponsiveDialog>
   );
 }
