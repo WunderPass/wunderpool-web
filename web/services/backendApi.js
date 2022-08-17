@@ -14,6 +14,7 @@ export function postAndWaitForTransaction(config) {
                   reject(msg);
                 })
                 .catch((err) => {
+                  console.log('err in backendApi', err);
                   reject('Unknown Blockchain Error');
                 });
             } else {

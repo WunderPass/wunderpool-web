@@ -13,17 +13,12 @@ import CurrencyInput from '/components/utils/currencyInput';
 import { BiCheck } from 'react-icons/bi';
 import TransactionFrame from '/components/utils/transactionFrame';
 import ResponsiveDialog from '../utils/responsiveDialog';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function JoinPoolDialog(props) {
-  const {
-    open,
-    setOpen,
-    loginCallback,
-    handleSuccess,
-    handleError,
-    wunderPool,
-    user,
-  } = props;
+  const { open, loginCallback, handleSuccess, handleError, wunderPool, user } =
+    props;
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
@@ -33,10 +28,16 @@ export default function JoinPoolDialog(props) {
   const [loading, setLoading] = useState(false);
   const [isWallet, setIsWallet] = useState(true);
   const [isPayPal, setIsPayPal] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
 
-  const handleClose = () => {
-    setOpen(false);
-    setLoading(false);
+  const handleOpenClose = () => {
+    if (open) {
+      setLoading(false);
+      goBack(() => removeQueryParam('joinPool'));
+    } else {
+      addQueryParam({ joinPool: 'joinPool' }, false);
+    }
   };
 
   const chooseWallet = () => {
@@ -57,8 +58,10 @@ export default function JoinPoolDialog(props) {
         .then((res) => {
           user.fetchUsdBalance();
           handleSuccess(`Joined Pool with ${currency(amount)}`);
-          handleClose();
-          window.location.reload();
+          handleOpenClose();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2500);
         })
         .catch((err) => {
           handleError(err);
@@ -93,7 +96,7 @@ export default function JoinPoolDialog(props) {
     <>
       <ResponsiveDialog
         open={open}
-        onClose={handleClose}
+        onClose={handleOpenClose}
         maxWidth="sm"
         //disablePadding={loading}
       >
