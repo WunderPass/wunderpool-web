@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const resp = await axios({
       method: 'get',
       url: encodeURI(
-        `https://identity-service.wunderpass.org/v3/nft/cashback/isAuthorized/${wunderId}`
+        `${process.env.IDENTITY_SERVICE}/v3/nft/cashback/isAuthorized/${wunderId}`
       ),
       headers: {
         Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,

@@ -72,10 +72,10 @@ export default function ProposalList(props) {
     <div className="container-gray border-2">
       <Stack sx={{ textAlign: 'center' }}>
         <Typography className="mt-3" variant="h5">
-          There are no Proposals
+          No Open Proposals
         </Typography>
         <Typography className="mb-2 mt-3" variant="subtitle1">
-          Create one now!
+          Decide which tokens to invest in first by making a buy proposal below!
         </Typography>
         <button
           className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"

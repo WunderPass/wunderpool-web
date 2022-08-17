@@ -15,7 +15,9 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'POST',
-      url: `https://pools-service.wunderpass.org/web3Proxy/pools/${poolAddress.toLowerCase()}/members?secret=${secret}`,
+      url: `${
+        process.env.POOLS_SERVICE
+      }/web3Proxy/pools/${poolAddress.toLowerCase()}/members?secret=${secret}`,
       // query: { secret: secret },
       headers: headers,
       data: body,

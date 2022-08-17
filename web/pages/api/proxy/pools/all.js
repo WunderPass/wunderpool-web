@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'get',
-      url: 'https://pools-service.wunderpass.org/web3Proxy/pools/web2/all',
+      url: `${process.env.POOLS_SERVICE}/web3Proxy/pools/web2/all`,
       headers: headers,
     });
     res.status(200).json(resp.data);

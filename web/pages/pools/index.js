@@ -127,7 +127,7 @@ function PoolCard(props) {
                 <div className="flex flex-row">
                   <InitialsAvatar
                     text={`+${members.length - 3}`}
-                    color={'casama'}
+                    color={'powder'}
                   />
                 </div>
               )}

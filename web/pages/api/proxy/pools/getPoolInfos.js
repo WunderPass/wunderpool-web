@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const resp = await axios({
       method: 'GET',
       url: encodeURI(
-        `https://pools-service.wunderpass.org/web3Proxy/pools/${poolAddress}`
+        `${process.env.POOLS_SERVICE}/web3Proxy/pools/${poolAddress}`
       ),
       headers: {
         Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
