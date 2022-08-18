@@ -50,11 +50,12 @@ function Home(props) {
               <div className="px-6 lg:px-12">
                 <div className="text-center w-full pb-4"></div>
                 <h6 className="text-2xl font-bold mb-6">
-                Invest in the best trades. Earn fees for joint trade orders.
+                  Invest in the best trades. Earn fees for joint trade orders.
                 </h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
                 <p className="text-md lg:pb-12 lg:mb-0 pb-6 mt-6 ">
-                Casama lets you place joint trade orders to swap tokens as a group 
+                  Casama lets you place joint trade orders to swap tokens as a
+                  group.
                 </p>
               </div>
             </div>
@@ -66,7 +67,8 @@ function Home(props) {
                 </h2>
                 <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>
                 <p className="text-gray-400 text-md my-3 mb-10 lg:mb-20">
-                  Don't pay for transaction fees by using WunderPass to connect to the Polygon network.
+                  Don't pay for transaction fees by using WunderPass to connect
+                  to the Polygon network.
                 </p>
 
                 <div className="flex flex-col items-center justify-between mb-12 lg:mb-4">
