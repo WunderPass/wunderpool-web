@@ -22,8 +22,6 @@ import { cacheImageByURL } from '../../services/caching';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
-import { BsChevronDown } from 'react-icons/bs';
-import { BsChevronUp } from 'react-icons/bs';
 import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
 
@@ -140,9 +138,24 @@ function PoolCard(props) {
 }
 
 function PoolList(props) {
-  const { pools, setOpen } = props;
+  const { pools } = props;
+  const [open, setOpen] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
 
-  return pools.length > 0 ? (
+  const handleOpenClose = () => {
+    if (open) {
+      goBack(() => removeQueryParam('createPool1'));
+    } else {
+      addQueryParam({ createPool1: 'createPool1' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpen(router.query?.createPool1 ? true : false);
+  }, [router.query]);
+
+  return !pools.length > 0 ? (
     <div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full">
       {pools.map((pool, i) => {
         return <PoolCard key={`pool-card-${i}`} pool={pool} />;
@@ -173,11 +186,12 @@ function PoolList(props) {
         </div>
         <button
           className="btn-kaico-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
-          onClick={() => setOpen(true)}
+          onClick={handleOpenClose}
         >
           Create your first pool
         </button>
       </div>
+      <NewPoolDialog open={open} setOpen={handleOpenClose} {...props} />
     </div>
   );
 }
@@ -202,14 +216,14 @@ export default function Pools(props) {
 
   const handleOpenClose = () => {
     if (open) {
-      goBack(() => removeQueryParam('dialog'));
+      goBack(() => removeQueryParam('createPool'));
     } else {
-      addQueryParam({ dialog: 'createPool' }, false);
+      addQueryParam({ createPool: 'createPool' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.dialog ? true : false);
+    setOpen(router.query?.createPool ? true : false);
   }, [router.query]);
 
   useEffect(() => {
@@ -319,7 +333,7 @@ export default function Pools(props) {
                         (page - 1) * pageSize,
                         (page - 1) * pageSize + pageSize
                       )}
-                    setOpen={setOpen}
+                    {...props}
                   />
                 ) : (
                   <Skeleton
