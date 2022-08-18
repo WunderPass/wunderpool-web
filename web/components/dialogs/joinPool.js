@@ -13,17 +13,12 @@ import CurrencyInput from '/components/utils/currencyInput';
 import { BiCheck } from 'react-icons/bi';
 import TransactionFrame from '/components/utils/transactionFrame';
 import ResponsiveDialog from '../utils/responsiveDialog';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function JoinPoolDialog(props) {
-  const {
-    open,
-    setOpen,
-    loginCallback,
-    handleSuccess,
-    handleError,
-    wunderPool,
-    user,
-  } = props;
+  const { open, loginCallback, handleSuccess, handleError, wunderPool, user } =
+    props;
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
@@ -33,10 +28,16 @@ export default function JoinPoolDialog(props) {
   const [loading, setLoading] = useState(false);
   const [isWallet, setIsWallet] = useState(true);
   const [isPayPal, setIsPayPal] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
 
-  const handleClose = () => {
-    setOpen(false);
-    setLoading(false);
+  const handleOpenClose = () => {
+    if (open) {
+      setLoading(false);
+      goBack(() => removeQueryParam('joinPool'));
+    } else {
+      addQueryParam({ joinPool: 'joinPool' }, false);
+    }
   };
 
   const chooseWallet = () => {
@@ -51,17 +52,22 @@ export default function JoinPoolDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    wunderPool
-      .join(amount)
-      .then((res) => {
-        user.fetchUsdBalance();
-        handleSuccess(`Joined Pool with ${currency(amount)}`);
-        window.location.reload();
-      })
-      .catch((err) => {
-        handleError(err);
-        setLoading(false);
-      });
+    setTimeout(() => {
+      wunderPool
+        .join(amount)
+        .then((res) => {
+          user.fetchUsdBalance();
+          handleSuccess(`Joined Pool with ${currency(amount)}`);
+          handleOpenClose();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2500);
+        })
+        .catch((err) => {
+          handleError(err);
+          setLoading(false);
+        });
+    }, 50);
   };
 
   const receivedTokens =
@@ -90,9 +96,9 @@ export default function JoinPoolDialog(props) {
     <>
       <ResponsiveDialog
         open={open}
-        onClose={handleClose}
+        onClose={handleOpenClose}
         maxWidth="sm"
-        disablePadding={loading}
+        //disablePadding={loading}
       >
         <DialogTitle>Join - {wunderPool.poolName}</DialogTitle>
         <DialogContent
@@ -183,7 +189,10 @@ export default function JoinPoolDialog(props) {
           ></button>
         </DialogContent>
         {loading ? (
-          <></>
+          <>
+            {' '}
+            <TransactionFrame open={loading} />
+          </>
         ) : (
           <DialogActions>
             <button
@@ -195,7 +204,6 @@ export default function JoinPoolDialog(props) {
             </button>
           </DialogActions>
         )}
-        <TransactionFrame open={loading} />
       </ResponsiveDialog>
     </>
   );

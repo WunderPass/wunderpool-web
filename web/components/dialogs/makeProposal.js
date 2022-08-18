@@ -51,9 +51,10 @@ export default function makeProposal(props) {
       wunderPool
         .apeSuggestion(
           tokenAddress,
-          proposalName ||
-            `Let's buy ${tokenName} (${tokenSymbol}) for ${currency(value)}`,
-          proposalDescription || ``,
+          proposalName || `Buy ${tokenName}`,
+          `Suggestion to buy ${tokenName} (${tokenSymbol}) for ${currency(
+            value
+          )}`,
           value
         )
         .then((res) => {
@@ -138,7 +139,7 @@ export default function makeProposal(props) {
                 }}
               />
             </div>
-            <div className="">
+            <div /*className="">
               <label className="label" htmlFor="proposalDescription">
                 Description
               </label>
@@ -151,9 +152,10 @@ export default function makeProposal(props) {
                   setProposalDescription(e.target.value);
                 }}
               />
-            </div>
+            </div */
+            />
 
-            <div className="pt-4">
+            <div className="pt-2">
               <label className="label pb-2" htmlFor="poolDescription">
                 Buy Token
               </label>

@@ -25,7 +25,7 @@ export default function PoolMembers(props) {
     if (open) {
       goBack(() => removeQueryParam('joinPool'));
     } else {
-      addQueryParam({ dialog: 'joinPool' }, false);
+      addQueryParam({ joinPool: 'joinPool' }, false);
     }
   };
 
@@ -146,7 +146,6 @@ export default function PoolMembers(props) {
       {governanceToken && (
         <JoinPoolDialog
           open={open}
-          setOpen={handleOpenClose}
           loginCallback={loginCallback}
           wunderPool={wunderPool}
           {...props}

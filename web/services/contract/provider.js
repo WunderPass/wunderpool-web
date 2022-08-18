@@ -38,6 +38,7 @@ export async function decodeError(txHash) {
     const code = await httpProvider.call(tx);
     return decodeMessage(code);
   } catch (error) {
+    console.log('err in provider', err);
     return 'Unknown Blockchain Error';
   }
 }

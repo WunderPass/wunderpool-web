@@ -119,7 +119,7 @@ export default function InviteLinkButton(props) {
   return wunderPool.version.number > 4 ? (
     <>
       <button
-        className=" btn-neutral items-center w-full py-3 px-3"
+        className=" btn-kaico-white items-center w-full py-3 px-3"
         onClick={() => setOpen(true)}
       >
         <span className="cursor-pointer">

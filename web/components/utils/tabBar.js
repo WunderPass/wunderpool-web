@@ -28,7 +28,7 @@ export default function TabBar(props) {
             >
               {title == 'Executable' ? (
                 <Badge
-                  className="text-white opacity-100"
+                  className="pr-2 text-white opacity-100"
                   color="red"
                   badgeContent={executableProposals}
                   max={99}

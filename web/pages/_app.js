@@ -11,11 +11,15 @@ import Navbar from '/components/layout/navbar';
 import TopUpAlert from '../components/dialogs/topUpAlert';
 import Head from 'next/head';
 import LogRocket from 'logrocket';
-import { useEffect } from 'react';
 import { HistoryManagerProvider, useHistoryManager } from '/hooks/useHistory';
+import Script from 'next/script';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import * as ga from '../lib/google-analytics';
 
 function WunderPool({ Component, pageProps }) {
-  LogRocket.init(process.env.LOG_ROCKET_ID);
+  //LogRocket.init(process.env.LOG_ROCKET_ID);
+  const router = useRouter();
   const user = useUser();
   const [notification, handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
@@ -56,16 +60,38 @@ function WunderPool({ Component, pageProps }) {
   };
 
   useEffect(() => {
-    if (user.address && user.wunderId) {
-      LogRocket.identify(user.address, {
-        name: user.wunderId,
-        email: 'comingSoon@gmail.com',
-      });
-    }
-  }, [user.wunderId, user.address]);
+    const handleRouteChange = (url) => {
+      ga.pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
+  //useEffect(() => {
+  //  if (user.address && user.wunderId) {
+  //    LogRocket.identify(user.address, {
+  //      name: user.wunderId,
+  //      email: 'comingSoon@gmail.com',
+  //    });
+  //  }
+  //}, [user.wunderId, user.address]);
 
   return (
     <>
+      <Script
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA_TRACKING_CODE}`}
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', '${process.env.GA_TRACKING_CODE}');`}
+      </Script>
+
       <Head>
         <meta
           name="description"

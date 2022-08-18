@@ -17,14 +17,11 @@ function assetDetails(props) {
     if (open) {
       goBack(() => removeQueryParam('makeProposal'));
     } else {
-      console.log("ich mach was in assetDetails")
       addQueryParam({ makeProposal: 'makeProposal' }, false);
     }
   };
 
   useEffect(() => {
-    console.log("setOpen in assetDetails")
-
     setOpen(router.query?.makeProposal ? true : false);
   }, [router.query]);
 
@@ -37,7 +34,7 @@ function assetDetails(props) {
               <Typography className="text-xl w-full">Asset details</Typography>
               <div className="flex lg:flex-row flex-col lg:justify-between w-full">
                 <div className="w-full">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 ">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 font-bold">
                     Total value of assets
                   </Typography>
                   <div className="flex flex-row items-center justify-start ">
@@ -48,7 +45,7 @@ function assetDetails(props) {
                   </div>
                 </div>
                 <div className="w-full lg:text-right">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 ">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 font-bold">
                     Amount of assets
                   </Typography>
                   <Typography className="text-2xl opacity-90 py-1 font-semibold">

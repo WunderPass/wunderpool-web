@@ -15,8 +15,14 @@ import { formatTokenBalance } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function SellTokenDialog(props) {
-  const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
-    props;
+  const {
+    open,
+    handleOpenClose,
+    token,
+    wunderPool,
+    handleError,
+    handleSuccess,
+  } = props;
   const {
     address,
     decimals,
@@ -32,29 +38,33 @@ export default function SellTokenDialog(props) {
   const handleClose = () => {
     setAmount('');
     setLoading(false);
-    setOpen(false);
+    handleOpenClose();
   };
 
   const handleSubmit = () => {
     setLoading(true);
-    wunderPool
-      .fudSuggestion(
-        address,
-        `Let's Sell ${name} (${symbol})`,
-        `We will sell ${amount} ${symbol}`,
-        ethers.utils.parseUnits(amount, decimals)
-      )
-      .then((res) => {
-        handleSuccess(`Created Proposal to sell ${name}`);
-        wunderPool.determineProposals();
-        handleClose();
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setLoading(false);
-      });
+
+    setTimeout(() => {
+      wunderPool
+        .fudSuggestion(
+          address,
+          `Let's Sell ${name} (${symbol})`,
+          `We will sell ${amount} ${symbol}`,
+          ethers.utils.parseUnits(amount, decimals)
+        )
+        .then((res) => {
+          handleSuccess(`Created Proposal to sell ${name}`);
+          wunderPool.determineProposals();
+          handleClose();
+        })
+        .catch((err) => {
+          handleError(err);
+        })
+        .then(() => {
+          setLoading(false);
+          handleClose();
+        });
+    }, 40);
   };
 
   const handleInput = (e) => {

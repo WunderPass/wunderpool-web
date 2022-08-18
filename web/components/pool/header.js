@@ -30,14 +30,14 @@ export default function PoolHeader(props) {
   const handleOpenClose = () => {
     console.log(destroyDialog);
     if (destroyDialog) {
-      goBack(() => removeQueryParam('liquidate'));
+      goBack(() => removeQueryParam('closePool'));
     } else {
-      addQueryParam({ liquidate: 'closePool' }, false);
+      addQueryParam({ closePool: 'closePool' }, false);
     }
   };
 
   useEffect(() => {
-    setDestroyDialog(router.query?.liquidate ? true : false);
+    setDestroyDialog(router.query?.closePool ? true : false);
   }, [router.query]);
 
   const toggleAdvanced = () => {
@@ -424,7 +424,7 @@ export default function PoolHeader(props) {
       </div>
       <DestroyPoolDialog
         open={destroyDialog}
-        setOpen={handleOpenClose}
+        handleOpenClose={handleOpenClose}
         address={address}
         name={name}
         wunderPool={wunderPool}

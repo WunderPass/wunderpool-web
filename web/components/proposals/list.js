@@ -11,10 +11,10 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 export default function ProposalList(props) {
   const { wunderPool } = props;
   const [open, setOpen] = useState(false);
-  const [openProposal, setOpenProposal] = useState(null);
   const router = useRouter();
+  const [openProposal, setOpenProposal] = useState(null);
   const [proposalsTab, setProposalsTab] = useState(router.query.tab || 0);
-  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
   useEffect(() => {
     setProposalsTab(Number(router.query?.tab || 0));
@@ -26,6 +26,18 @@ export default function ProposalList(props) {
   useEffect(() => {
     addQueryParam({ tab: proposalsTab });
   }, [proposalsTab]);
+
+  const handleOpenClose = () => {
+    if (open) {
+      goBack(() => removeQueryParam('makeProposal1'));
+    } else {
+      addQueryParam({ makeProposal1: 'makeProposal1' }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpen(router.query?.makeProposal1 ? true : false);
+  }, [router.query]);
 
   return !wunderPool.isReady2 ? (
     <Skeleton
@@ -79,13 +91,15 @@ export default function ProposalList(props) {
         </Typography>
         <button
           className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-          onClick={() => {
-            setOpen(true);
-          }}
+          onClick={handleOpenClose}
         >
           Make Proposal
         </button>
-        <MakeProposalDialog open={open} setOpen={setOpen} {...props} />
+        <MakeProposalDialog
+          open={open}
+          handleOpenClose={handleOpenClose}
+          {...props}
+        />
       </Stack>
     </div>
   );
