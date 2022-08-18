@@ -105,7 +105,7 @@ function Home(props) {
                     <FaTwitter className="text-sm "></FaTwitter>
                   </a>
                   <a
-                    href="https://discord.gg/8dvbpJBS"
+                    href="https://discord.gg/DEZTc7t4th"
                     className="p-2 mx-1 rounded-full border-2 border-gray-200 lg:p-3 "
                   >
                     <FaDiscord className="text-sm "></FaDiscord>
