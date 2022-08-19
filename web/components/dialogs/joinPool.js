@@ -17,8 +17,7 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 
 export default function JoinPoolDialog(props) {
-  const { open, loginCallback, handleSuccess, handleError, wunderPool, user } =
-    props;
+  const { open, handleSuccess, handleError, wunderPool, user } = props;
   const { minInvest, maxInvest } = wunderPool;
   const price = wunderPool.governanceToken?.price || 0;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
@@ -29,7 +28,6 @@ export default function JoinPoolDialog(props) {
   const [isWallet, setIsWallet] = useState(true);
   const [isPayPal, setIsPayPal] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  const router = useRouter();
 
   const handleOpenClose = () => {
     if (open) {

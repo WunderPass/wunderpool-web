@@ -23,7 +23,7 @@ export default function NewPoolDialog(props) {
   const [disabled, setDisabled] = useState(true);
   const [retry, setRetry] = useState(false);
   const router = useRouter();
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const { removeQueryParam } = UseAdvancedRouter();
 
   const [poolName, setPoolName] = useState('');
   const [poolDescription, setPoolDescription] = useState('');

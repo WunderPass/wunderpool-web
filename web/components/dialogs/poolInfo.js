@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { forwardRef, Fragment, useState } from 'react';
+import { forwardRef, Fragment } from 'react';
 import { toEthString } from '../../services/formatter';
 
 const Transition = forwardRef(function Transition(props, ref) {

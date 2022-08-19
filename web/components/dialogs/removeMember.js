@@ -6,7 +6,6 @@ import {
   DialogTitle,
   Divider,
   IconButton,
-  LinearProgress,
   List,
   ListItem,
   ListItemText,

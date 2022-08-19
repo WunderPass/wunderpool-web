@@ -14,7 +14,6 @@ import { currency } from '/services/formatter';
 import TransactionFrame from '/components/utils/transactionFrame';
 import { formatTokenBalance } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
-import LoadingCircle from '/components/utils/loadingCircle';
 
 export default function DestroyPoolDialog(props) {
   const {

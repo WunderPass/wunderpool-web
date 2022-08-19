@@ -1,4 +1,4 @@
-import { Skeleton, Typography, Divider } from '@mui/material';
+import { Skeleton, Divider } from '@mui/material';
 import ProposalList from '/components/proposals/list';
 import TokenList from '/components/tokens/list';
 import NftList from '/components/tokens/nfts';
