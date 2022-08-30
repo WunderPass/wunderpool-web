@@ -31,6 +31,7 @@ export default function ResponsiveDialog(props) {
 
   return (
     <Dialog
+      fullWidth={Boolean(maxWidth)}
       fullScreen={fullScreen}
       maxWidth={maxWidth || 'sm'}
       className={dialogClass || 'w-full'}
