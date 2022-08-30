@@ -82,7 +82,7 @@ export default function makeProposal(props) {
 
   return (
     <ResponsiveDialog
-      maxWidth="sm"
+      maxWidth="md"
       open={open}
       onClose={handleOpenClose}
       title="Make a Proposal"
