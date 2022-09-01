@@ -323,7 +323,6 @@ export async function createNftBuyProposalDelta(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
   amount,
@@ -341,11 +340,11 @@ export async function createNftBuyProposalDelta(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [buyerAddress, poolAddress, amount]
+        [userAddress, poolAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, buyerAddress, tokenId]
+        [poolAddress, userAddress, tokenId]
       ),
     ],
     [0, 0],
@@ -358,7 +357,6 @@ export async function createNftSellProposalDelta(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
   amount,
@@ -376,11 +374,11 @@ export async function createNftSellProposalDelta(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, sellerAddress, amount]
+        [poolAddress, userAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [sellerAddress, poolAddress, tokenId]
+        [userAddress, poolAddress, tokenId]
       ),
     ],
     [0, 0],

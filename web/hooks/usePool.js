@@ -11,6 +11,7 @@ import {
   poolVersion,
   joinPool,
   addToWhiteList,
+  fetchPoolData,
   fetchPoolBalance,
   fetchPoolShareholderAgreement,
 } from '/services/contract/pools';
@@ -22,15 +23,13 @@ import {
   createLiquidateSuggestion,
   createSwapSuggestion,
   executeProposal,
+  addToWhiteListWithSecret,
+  proposalExecutable,
+  createNftSellProposal,
+  createNftBuyProposal,
 } from '/services/contract/proposals';
 import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
-import { latestVersion } from '/services/contract/init';
-import { usdcAddress } from '/services/contract/init';
-import { proposalExecutable } from '/services/contract/proposals';
-import {
-  addToWhiteListWithSecret,
-  fetchPoolData,
-} from '../services/contract/pools';
+import { latestVersion, usdcAddress } from '/services/contract/init';
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
 
 export default function usePool(userAddr, poolAddr = null) {
@@ -114,6 +113,32 @@ export default function usePool(userAddr, poolAddr = null) {
       poolAddress,
       tokenIn,
       tokenOut,
+      title,
+      description,
+      amount,
+      userAddress,
+      version.number
+    );
+  };
+
+  const nftSellProposal = (nftAddress, tokenId, title, description, amount) => {
+    return createNftSellProposal(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      title,
+      description,
+      amount,
+      userAddress,
+      version.number
+    );
+  };
+
+  const nftBuyProposal = (nftAddress, tokenId, title, description, amount) => {
+    return createNftBuyProposal(
+      poolAddress,
+      nftAddress,
+      tokenId,
       title,
       description,
       amount,
@@ -376,6 +401,8 @@ export default function usePool(userAddr, poolAddr = null) {
     apeSuggestion,
     fudSuggestion,
     swapSuggestion,
+    nftSellProposal,
+    nftBuyProposal,
     liquidateSuggestion,
     vote: voteWithMode,
     voteForProposal,

@@ -310,7 +310,6 @@ export async function createNftBuyProposal(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
   amount,
@@ -322,32 +321,33 @@ export async function createNftBuyProposal(
       poolAddress,
       nftAddress,
       tokenId,
-      buyerAddress,
       title,
       description,
       amount,
-      userAddress
+      userAddress,
+      version
     );
   } else if (version > 3) {
     return createNftBuyProposalDelta(
       poolAddress,
       nftAddress,
       tokenId,
-      buyerAddress,
       title,
       description,
       amount,
-      userAddress
+      userAddress,
+      version
     );
   } else {
     return createNftBuyProposalGamma(
       poolAddress,
       nftAddress,
       tokenId,
-      buyerAddress,
       title,
       description,
-      amount
+      amount,
+      userAddress,
+      version
     );
   }
 }
@@ -356,7 +356,6 @@ export async function createNftSellProposal(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
   amount,
@@ -368,7 +367,6 @@ export async function createNftSellProposal(
       poolAddress,
       nftAddress,
       tokenId,
-      sellerAddress,
       title,
       description,
       amount,
@@ -379,7 +377,6 @@ export async function createNftSellProposal(
       poolAddress,
       nftAddress,
       tokenId,
-      sellerAddress,
       title,
       description,
       amount,
@@ -390,10 +387,10 @@ export async function createNftSellProposal(
       poolAddress,
       nftAddress,
       tokenId,
-      sellerAddress,
       title,
       description,
-      amount
+      amount,
+      userAddress
     );
   }
 }

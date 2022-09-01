@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import SellNftDialog from '../dialogs/sellNftDialog';
 import Nft from './nft';

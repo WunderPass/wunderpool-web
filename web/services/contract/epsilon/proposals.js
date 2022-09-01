@@ -352,7 +352,6 @@ export async function createNftBuyProposalEpsilon(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
   amount,
@@ -370,11 +369,11 @@ export async function createNftBuyProposalEpsilon(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [buyerAddress, poolAddress, amount]
+        [userAddress, poolAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, buyerAddress, tokenId]
+        [poolAddress, userAddress, tokenId]
       ),
     ],
     [0, 0],
@@ -386,7 +385,6 @@ export async function createNftSellProposalEpsilon(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
   amount,
@@ -404,11 +402,11 @@ export async function createNftSellProposalEpsilon(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, sellerAddress, amount]
+        [poolAddress, userAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [sellerAddress, poolAddress, tokenId]
+        [userAddress, poolAddress, tokenId]
       ),
     ],
     [0, 0],

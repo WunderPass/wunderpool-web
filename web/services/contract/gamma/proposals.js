@@ -370,10 +370,10 @@ export async function createNftBuyProposalGamma(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
-  amount
+  amount,
+  userAddress
 ) {
   return createMultiActionProposalGamma(
     poolAddress,
@@ -387,11 +387,11 @@ export async function createNftBuyProposalGamma(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [buyerAddress, poolAddress, amount]
+        [userAddress, poolAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, buyerAddress, tokenId]
+        [poolAddress, userAddress, tokenId]
       ),
     ],
     [0, 0],
@@ -403,10 +403,10 @@ export async function createNftSellProposalGamma(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
-  amount
+  amount,
+  userAddress
 ) {
   return createMultiActionProposalGamma(
     poolAddress,
@@ -420,11 +420,11 @@ export async function createNftSellProposalGamma(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, sellerAddress, amount]
+        [poolAddress, userAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [sellerAddress, poolAddress, tokenId]
+        [userAddress, poolAddress, tokenId]
       ),
     ],
     [0, 0],
