@@ -38,20 +38,18 @@ export default function TopUpAlert(props) {
       onClose={handleClose}
       TransitionComponent={Transition}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>
-        {user.usdBalance > 1 ? 'TopUp your Account' : 'TopUp Required'}
-      </DialogTitle>
+      <DialogTitle sx={{ textAlign: 'center' }}>Deposit Funds</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
           <Alert severity={user.usdBalance > 1 ? 'info' : 'warning'}>
-            {user.usdBalance > 1
-              ? 'Click here to top up your account'
-              : 'In order to use Casama, please use WunderPass to top up your account with USD'}
+            You will receive the digital currency USD Coin (USDC) in your wallet
+            at current market rates in exchange for depositing fiat (USD or
+            EUR).
           </Alert>
           <Link
             href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
           >
-            <button className="btn btn-info">TopUp Now</button>
+            <button className="btn btn-info">Select a Payment Method</button>
           </Link>
           {user.usdBalance < 1 && !user.checkedTopUp && (
             <div className="flex flex-row justify-start items-center mt-2">

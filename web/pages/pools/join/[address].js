@@ -75,12 +75,14 @@ function TopUpRequired() {
       <Typography className="text-sm mt-3">
         To continue, your Account needs at least $3.00
       </Typography>
-      <Typography className="text-xl my-3">TopUp your WunderId</Typography>
+      <Typography className="text-xl my-3">
+        Deposit funds to your WunderId
+      </Typography>
       {redirectUrl && (
         <Link
           href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
         >
-          <button className="btn btn-info w-full">TopUp Now</button>
+          <button className="btn btn-info w-full">Deposit now</button>
         </Link>
       )}
     </>

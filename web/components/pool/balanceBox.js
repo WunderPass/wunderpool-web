@@ -154,7 +154,7 @@ function BalanceBox(props) {
                     href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
                   >
                     <button className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors">
-                      TopUp Now
+                      Deposit Funds
                     </button>
                   </Link>
                 </div>
