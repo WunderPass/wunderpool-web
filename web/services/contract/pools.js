@@ -269,6 +269,19 @@ export function fetchUserPools(userAddress) {
   });
 }
 
+//export function testGetAllPoolInfoApi(poolAddress) {
+//  return new Promise(async (resolve, reject) => {
+//    axios({ url: `/api/proxy/pools/getAllPoolInfo?address=${poolAddress}` })
+//      .then(async (res) => {
+//        // .filter((pool) => pool.active) => As of 29.07.2022 All Pools are {active: false} :(
+//        //console.log(res.data.map());
+//        //console.log('res.data', res.data);
+//        //console.log('resolve:', resolve(res.data));
+//      })
+//      .catch((err) => reject(err));
+//  });
+//}
+
 export function fetchWhitelistedUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
     const deltaPools = await fetchWhitelistedUserPoolsDelta(userAddress);
