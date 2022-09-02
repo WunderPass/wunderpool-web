@@ -1,9 +1,7 @@
 import {
   createApeSuggestionDelta,
-  createCustomProposalDelta,
   createFudSuggestionDelta,
   createLiquidateSuggestionDelta,
-  createMultiActionProposalDelta,
   createNftBuyProposalDelta,
   createNftSellProposalDelta,
   createSwapSuggestionDelta,
@@ -14,10 +12,8 @@ import {
 } from './delta/proposals';
 import {
   createApeSuggestionEpsilon,
-  createCustomProposalEpsilon,
   createFudSuggestionEpsilon,
   createLiquidateSuggestionEpsilon,
-  createMultiActionProposalEpsilon,
   createNftBuyProposalEpsilon,
   createNftSellProposalEpsilon,
   createSwapSuggestionEpsilon,
@@ -28,10 +24,8 @@ import {
 } from './epsilon/proposals';
 import {
   createApeSuggestionGamma,
-  createCustomProposalGamma,
   createFudSuggestionGamma,
   createLiquidateSuggestionGamma,
-  createMultiActionProposalGamma,
   createNftBuyProposalGamma,
   createNftSellProposalGamma,
   createSwapSuggestionGamma,
@@ -59,106 +53,6 @@ export function fetchTransactionData(address, id, transactionCount, version) {
     return fetchTransactionDataDelta(address, id, transactionCount);
   } else {
     return fetchTransactionDataGamma(address, id, transactionCount);
-  }
-}
-
-export function createMultiActionProposal(
-  poolAddress,
-  title,
-  description,
-  contractAddresses,
-  actions,
-  params,
-  transactionValues,
-  deadline,
-  userAddress,
-  version
-) {
-  if (version > 4) {
-    return createMultiActionProposalEpsilon(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      params,
-      transactionValues,
-      deadline,
-      userAddress
-    );
-  } else if (version > 3) {
-    return createMultiActionProposalDelta(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      params,
-      transactionValues,
-      deadline,
-      userAddress
-    );
-  } else {
-    return createMultiActionProposalGamma(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      params,
-      transactionValues,
-      deadline
-    );
-  }
-}
-
-export function createCustomProposal(
-  poolAddress,
-  title,
-  description,
-  contractAddresses,
-  actions,
-  params,
-  transactionValues,
-  deadline,
-  userAddress,
-  version
-) {
-  if (version > 4) {
-    return createCustomProposalEpsilon(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      params,
-      transactionValues,
-      deadline,
-      userAddress
-    );
-  } else if (version > 3) {
-    return createCustomProposalDelta(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      params,
-      transactionValues,
-      deadline,
-      userAddress
-    );
-  } else {
-    return createCustomProposalGamma(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      params,
-      transactionValues,
-      deadline
-    );
   }
 }
 

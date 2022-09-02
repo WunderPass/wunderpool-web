@@ -24,10 +24,6 @@ export default function PoolCard(props) {
     );
   }, [pool.address]);
 
-  useEffect(() => {
-    console.log(pool);
-  }, [pool]);
-
   return (
     <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
       <Paper
