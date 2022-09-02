@@ -204,7 +204,9 @@ async function formatShareholderAgreement(shareholderAgreement) {
 async function formatPool(pool, user = null) {
   try {
     const tokens = await Promise.all(
-      pool.pool_assets.map(async (asset) => await formatAsset(asset))
+      pool.pool_assets
+        ? pool.pool_assets.map(async (asset) => await formatAsset(asset))
+        : []
     );
     const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
     const version = versionLookup[pool.launcher.launcher_version];
