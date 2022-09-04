@@ -29,14 +29,6 @@ export function voteGamma(poolAddress, proposalId, mode) {
   });
 }
 
-export function voteForGamma(address, proposalId) {
-  return voteGamma(address, proposalId, 1);
-}
-
-export function voteAgainstGamma(address, proposalId) {
-  return voteGamma(address, proposalId, 2);
-}
-
 export function hasVotedGamma(poolAddress, proposalId, address) {
   return new Promise(async (resolve, reject) => {
     const [wunderPool] = initPoolGamma(poolAddress);

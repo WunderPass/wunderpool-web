@@ -1,16 +1,6 @@
-import {
-  hasVotedDelta,
-  voteAgainstDelta,
-  voteDelta,
-  voteForDelta,
-} from './delta/vote';
+import { hasVotedDelta, voteDelta } from './delta/vote';
 import { hasVotedEpsilon } from './epsilon/vote';
-import {
-  hasVotedGamma,
-  voteAgainstGamma,
-  voteForGamma,
-  voteGamma,
-} from './gamma/vote';
+import { hasVotedGamma, voteGamma } from './gamma/vote';
 
 export function vote(poolAddress, proposalId, mode, userAddress, version) {
   if (version > 3) {
@@ -21,19 +11,11 @@ export function vote(poolAddress, proposalId, mode, userAddress, version) {
 }
 
 export function voteFor(address, proposalId, userAddress, version) {
-  if (version > 3) {
-    return voteForDelta(address, proposalId, userAddress);
-  } else {
-    return voteForGamma(address, proposalId);
-  }
+  return vote(address, proposalId, 1, userAddress, version);
 }
 
 export function voteAgainst(address, proposalId, userAddress, version) {
-  if (version > 3) {
-    return voteAgainstDelta(address, proposalId, userAddress);
-  } else {
-    return voteAgainstGamma(address, proposalId);
-  }
+  return vote(address, proposalId, 2, userAddress, version);
 }
 
 export function hasVoted(poolAddress, proposalId, address, version) {

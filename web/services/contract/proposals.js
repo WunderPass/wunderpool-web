@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { ethers } from 'ethers';
+import useWunderPass from '/hooks/useWunderPass';
 import {
   createApeSuggestionDelta,
   createFudSuggestionDelta,
@@ -11,12 +14,8 @@ import {
   proposalExecutableDelta,
 } from './delta/proposals';
 import {
-  createApeSuggestionEpsilon,
-  createFudSuggestionEpsilon,
-  createLiquidateSuggestionEpsilon,
   createNftBuyProposalEpsilon,
   createNftSellProposalEpsilon,
-  createSwapSuggestionEpsilon,
   fetchPoolProposalsEpsilon,
   fetchTransactionDataEpsilon,
   isLiquidateProposalEpsilon,
@@ -35,6 +34,8 @@ import {
   isLiquidateProposalGamma,
   proposalExecutableGamma,
 } from './gamma/proposals';
+import { usdcAddress } from './init';
+import { waitForTransaction } from './provider';
 
 export function fetchPoolProposals(address, userAddress, version) {
   if (version > 4) {
@@ -56,6 +57,94 @@ export function fetchTransactionData(address, id, transactionCount, version) {
   }
 }
 
+function createBackendProposal(userAddress, options) {
+  return new Promise(async (resolve, reject) => {
+    const { openPopup, sendSignatureRequest } = useWunderPass({
+      name: 'Casama',
+      accountId: 'ABCDEF',
+      userAddress,
+    });
+    const popup = openPopup('sign');
+    const proposal = await axios({
+      url: '/api/proxy/pools/proposals/request',
+      params: options,
+    });
+
+    const {
+      title,
+      description,
+      proposal_action,
+      pool_address,
+      user_address,
+      proposal_id,
+      contract_addresses,
+      actions,
+      params,
+      transaction_values,
+    } = proposal.data;
+    const types = [
+      'address',
+      'address',
+      'string',
+      'string',
+      'address[]',
+      'string[]',
+      'bytes[]',
+      'uint[]',
+      'uint',
+    ];
+    const values = [
+      user_address,
+      pool_address,
+      title,
+      description,
+      contract_addresses,
+      actions,
+      params,
+      transaction_values,
+      proposal_id,
+    ];
+    sendSignatureRequest(types, values, false, popup)
+      .then((sig) => {
+        axios({
+          method: 'post',
+          url: '/api/proxy/pools/proposals/create',
+          params: { address: pool_address },
+          data: {
+            title,
+            description,
+            signature: sig.signature,
+            proposal_action,
+            pool_address,
+            user_address,
+            proposal_id,
+            contract_addresses,
+            actions,
+            params,
+            transaction_values,
+          },
+        })
+          .then((res) => {
+            waitForTransaction(res.data)
+              .then((tx) => {
+                console.log(tx);
+                resolve(tx);
+              })
+              .catch((err) => {
+                console.log(err);
+                reject(err);
+              });
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
 export function createApeSuggestion(
   poolAddress,
   tokenAddress,
@@ -66,13 +155,16 @@ export function createApeSuggestion(
   version
 ) {
   if (version > 4) {
-    return createApeSuggestionEpsilon(
+    return createSwapSuggestion(
       poolAddress,
+      usdcAddress,
+      6,
       tokenAddress,
       title,
       description,
       value,
-      userAddress
+      userAddress,
+      version
     );
   } else if (version > 3) {
     return createApeSuggestionDelta(
@@ -97,6 +189,7 @@ export function createApeSuggestion(
 export function createFudSuggestion(
   poolAddress,
   tokenAddress,
+  tokenDecimals,
   title,
   description,
   value,
@@ -104,13 +197,16 @@ export function createFudSuggestion(
   version
 ) {
   if (version > 4) {
-    return createFudSuggestionEpsilon(
+    return createSwapSuggestion(
       poolAddress,
       tokenAddress,
+      tokenDecimals,
+      usdcAddress,
       title,
       description,
       value,
-      userAddress
+      userAddress,
+      version
     );
   } else if (version > 3) {
     return createFudSuggestionDelta(
@@ -118,7 +214,7 @@ export function createFudSuggestion(
       tokenAddress,
       title,
       description,
-      value,
+      ethers.utils.parseUnits(value, tokenDecimals),
       userAddress
     );
   } else {
@@ -127,7 +223,7 @@ export function createFudSuggestion(
       tokenAddress,
       title,
       description,
-      value
+      ethers.utils.parseUnits(value, tokenDecimals)
     );
   }
 }
@@ -140,12 +236,13 @@ export function createLiquidateSuggestion(
   version
 ) {
   if (version > 4) {
-    return createLiquidateSuggestionEpsilon(
-      poolAddress,
+    return createBackendProposal(userAddress, {
+      address: poolAddress,
+      action: 'LIQUIDATE_POOL',
       title,
       description,
-      userAddress
-    );
+      userAddress,
+    });
   } else if (version > 3) {
     return createLiquidateSuggestionDelta(
       poolAddress,
@@ -161,6 +258,7 @@ export function createLiquidateSuggestion(
 export async function createSwapSuggestion(
   poolAddress,
   tokenIn,
+  tokenInDecimals,
   tokenOut,
   title,
   description,
@@ -169,15 +267,17 @@ export async function createSwapSuggestion(
   version
 ) {
   if (version > 4) {
-    return createSwapSuggestionEpsilon(
-      poolAddress,
-      tokenIn,
-      tokenOut,
+    return createBackendProposal(userAddress, {
+      address: poolAddress,
+      action: 'SWAP_TOKEN',
       title,
       description,
-      amount,
-      userAddress
-    );
+      userAddress,
+      balance: amount,
+      tokenIn,
+      tokenInDecimals,
+      tokenOut,
+    });
   } else if (version > 3) {
     return createSwapSuggestionDelta(
       poolAddress,

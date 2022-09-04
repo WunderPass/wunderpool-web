@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { initPoolDelta, initProposalDelta } from './init';

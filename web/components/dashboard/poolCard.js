@@ -18,14 +18,17 @@ export default function PoolCard(props) {
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${pool.address}`,
-        `/api/proxy/pools/getImage?address=${pool.address}`,
+        `/api/proxy/pools/metadata/getImage?address=${pool.address}`,
         600
       )
     );
   }, [pool.address]);
 
   return (
-    <Link href={`/pools/${pool.address}?name=${pool.name}`} passHref>
+    <Link
+      href={`/pools/${pool.address}?name=${pool.name.replaceAll('&', '%26')}`}
+      passHref
+    >
       <Paper
         className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden`}
         elevation={1}

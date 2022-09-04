@@ -14,9 +14,6 @@ export function fetchPoolTokensGamma(address) {
     const tokens = await Promise.all(
       tokenAddresses.map(async (addr) => {
         const token = new ethers.Contract(addr, tokenAbi, provider);
-        const balance = await token.balanceOf(address);
-        const decimals = await token.decimals();
-        const formattedBalance = toEthString(balance, decimals);
         const apiResponse =
           (await getCachedItemDB(addr)) ||
           (await cacheItemDB(
@@ -29,10 +26,10 @@ export function fetchPoolTokensGamma(address) {
             ).data,
             600
           ));
-
         let {
           name,
           symbol,
+          decimals,
           price = 0,
           image_url,
           dollar_price = 0,
@@ -41,6 +38,10 @@ export function fetchPoolTokensGamma(address) {
 
         name = name || (await token.name());
         symbol = symbol || (await token.symbol());
+        decimals = decimals || (await token.decimals()).toNumber();
+
+        const balance = await token.balanceOf(address);
+        const formattedBalance = toEthString(balance, decimals);
 
         const usdValue = balance
           .mul(price)

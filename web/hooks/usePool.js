@@ -96,10 +96,17 @@ export default function usePool(userAddr, poolAddr = null) {
     );
   };
 
-  const fudSuggestion = (tokenAddress, title, description, value) => {
+  const fudSuggestion = (
+    tokenAddress,
+    tokenDecimals,
+    title,
+    description,
+    value
+  ) => {
     return createFudSuggestion(
       poolAddress,
       tokenAddress,
+      tokenDecimals,
       title,
       description,
       value,
@@ -108,11 +115,21 @@ export default function usePool(userAddr, poolAddr = null) {
     );
   };
 
-  const swapSuggestion = (tokenIn, tokenOut, title, description, amount) => {
+  const swapSuggestion = (
+    tokenIn,
+    tokenInDecimals,
+    tokenOut,
+    tokenOutDecimals,
+    title,
+    description,
+    amount
+  ) => {
     return createSwapSuggestion(
       poolAddress,
       tokenIn,
+      tokenInDecimals,
       tokenOut,
+      tokenOutDecimals,
       title,
       description,
       amount,

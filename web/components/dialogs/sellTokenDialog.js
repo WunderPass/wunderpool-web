@@ -48,9 +48,10 @@ export default function SellTokenDialog(props) {
       wunderPool
         .fudSuggestion(
           address,
+          decimals,
           `Let's Sell ${name} (${symbol})`,
           `We will sell ${amount} ${symbol}`,
-          ethers.utils.parseUnits(amount, decimals)
+          amount
         )
         .then((res) => {
           handleSuccess(`Created Proposal to sell ${name}`);
