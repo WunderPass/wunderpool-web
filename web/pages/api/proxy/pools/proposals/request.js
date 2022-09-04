@@ -17,7 +17,6 @@ export default async function handler(req, res) {
       tokenIn,
       tokenInDecimals,
       tokenOut,
-      tokenOutDecimals,
     } = req.query;
 
     const resp = await axios({
@@ -44,7 +43,6 @@ export default async function handler(req, res) {
         },
         token_out: {
           currency_contract_address: tokenOut?.toLowerCase(),
-          decimals: tokenOutDecimals,
         },
       },
     });
