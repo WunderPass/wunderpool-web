@@ -13,7 +13,6 @@ import {
   addToWhiteList,
   fetchPoolBalance,
   fetchPoolShareholderAgreement,
-  testGetAllPoolInfoApi,
 } from '/services/contract/pools';
 import {
   createApeSuggestion,
@@ -299,7 +298,6 @@ export default function usePool(userAddr, poolAddr = null) {
           await determineShareholderAgreement(vers);
           await determinePoolInfo();
           await determinePoolTokens(vers);
-          await testGetAllPoolInfoApi(poolAddress);
 
           if (userAddress) {
             await determineIfMember();

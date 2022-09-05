@@ -333,7 +333,6 @@ export function fetchPoolMembersAndShares(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     axios({ url: `/api/proxy/pools/getAllPoolInfo?poolAddress=${poolAddress}` })
       .then(async (res) => {
-        console.log('res.data.pool_members', res.data.pool_members);
         resolve(res.data.pool_members);
       })
       .catch((err) => reject(err));
@@ -342,8 +341,15 @@ export function fetchPoolMembersAndShares(poolAddress, version = null) {
 
 export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.isMember(userAddress));
+    axios({ url: `/api/proxy/pools/getAllPoolInfo?poolAddress=${poolAddress}` })
+      .then(async (res) => {
+        var isMember = false;
+        res.data.pool_members.forEach((element) => {
+          if (element.members_address == userAddress) isMember = true;
+        });
+        resolve(isMember);
+      })
+      .catch((err) => reject(err));
   });
 }
 
