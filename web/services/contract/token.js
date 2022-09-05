@@ -90,7 +90,6 @@ export function approve(user, spender, amount) {
           provider
             .waitForTransaction(transaction.hash)
             .then(() => {
-              console.log('Approved', transaction);
               resolve(transaction.hash);
             })
             .catch((error) => {

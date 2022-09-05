@@ -82,7 +82,6 @@ export default function usePoolListener(handleInfo) {
     wunderPool.removeAllListeners();
 
     wunderPool.on('NewProposal', async (id, creator, title) => {
-      console.log('NewProposal:', id, creator, title);
       const wunderId = await resolveUser(creator);
       notifyIfRelevant(
         `New Proposal: ${title}${wunderId ? ' from User ' + wunderId : ''}`,
@@ -92,7 +91,6 @@ export default function usePoolListener(handleInfo) {
     });
 
     wunderPool.on('NewMember', async (address, stake) => {
-      console.log('NewMember:', address, stake);
       const wunderId = await resolveUser(address);
       handleInfo(
         `${wunderId || address} joined the Pool with ${currency(
@@ -115,7 +113,6 @@ export default function usePoolListener(handleInfo) {
     });
 
     wunderPool.on('ProposalExecuted', async (proposalId, executor, result) => {
-      console.log('ProposalExecuted:', proposalId, executor, result);
       const wunderId = await resolveUser(executor);
       notifyIfRelevant(
         `Proposal #${proposalId.toNumber()} was executed by ${
@@ -127,7 +124,6 @@ export default function usePoolListener(handleInfo) {
     });
 
     wunderPool.on('TokenAdded', async (tokenAddress, isERC721, tokenId) => {
-      console.log('TokenAdded:', tokenAddress, isERC721, tokenId);
       const { name } = await resolveToken(tokenAddress);
       handleInfo(
         `New ${isERC721 ? 'NFT' : 'Token'} Added to the Pool: ${
@@ -138,14 +134,12 @@ export default function usePoolListener(handleInfo) {
     });
 
     wunderPool.on('MaticWithdrawed', async (receiver, amount) => {
-      console.log('MaticWithdrawed:', receiver, amount);
       handleInfo(`${toEthString(amount, 18)} MATIC sent to ${receiver}`);
     });
 
     wunderPool.on(
       'TokensWithdrawed',
       async (tokenAddress, receiver, amount) => {
-        console.log('TokensWithdrawed:', tokenAddress, receiver, amount);
         const wunderId = await resolveUser(receiver);
         const {
           name,
