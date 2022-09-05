@@ -28,7 +28,6 @@ export default function PoolHeader(props) {
   const router = useRouter();
 
   const handleOpenClose = () => {
-    console.log(destroyDialog);
     if (destroyDialog) {
       goBack(() => removeQueryParam('closePool'));
     } else {

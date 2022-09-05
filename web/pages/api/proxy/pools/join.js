@@ -22,11 +22,7 @@ export default async function handler(req, res) {
       headers: headers,
       data: body,
     });
-    console.log(`[${new Date().toJSON()}] Pool joined`, {
-      poolAddress,
-      userAddress,
-      amount,
-    });
+
     res.status(200).json(resp.data);
   } catch (error) {
     console.log(error);

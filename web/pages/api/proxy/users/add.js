@@ -18,10 +18,6 @@ export default async function handler(req, res) {
       } else {
         users.push({ wunderId: wunderId, address: address, relevance: 0 });
         fs.writeFileSync('./data/userMapping.json', JSON.stringify(users));
-        console.log(`[${new Date().toJSON()}] New User`, {
-          address,
-          wunderId,
-        });
         res.status(200).json(user);
         return;
       }

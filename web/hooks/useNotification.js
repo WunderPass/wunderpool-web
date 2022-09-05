@@ -25,12 +25,7 @@ export default function useNotification() {
       ) {
         return msg?.error?.message;
       }
-      console.log(msg);
-      console.log(Object.keys(msg));
     }
-    console.log('Uncaught Error');
-    console.log('Type:', typeof msg);
-    console.log('ERR:', msg);
     return 'Somenthing went wrong';
   };
 

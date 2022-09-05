@@ -49,11 +49,7 @@ export default async (req, res) => {
           const { pool_name, pool_creator, initial_invest } = JSON.parse(
             fields['pool']
           );
-          console.log(`[${new Date().toJSON()}] Pool created`, {
-            pool_name,
-            pool_creator,
-            initial_invest,
-          });
+
           res.status(200).json(response.data);
           return;
         })

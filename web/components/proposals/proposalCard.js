@@ -302,7 +302,6 @@ export default function ProposalCard(props) {
       wunderPool
         .execute(proposal.id)
         .then((res) => {
-          console.log('LiqProp', res);
           handleClose(false);
           if (res) {
             handleSuccess('Pool closed');
