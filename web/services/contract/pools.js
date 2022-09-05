@@ -331,17 +331,27 @@ export function fetchPoolIsClosed(poolAddress, version) {
   }
 }
 
-export function fetchPoolMembers(poolAddress, version = null) {
+export function fetchPoolMembersAndShares(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.poolMembers());
+    axios({ url: `/api/proxy/pools/getAllPoolInfo?poolAddress=${poolAddress}` })
+      .then(async (res) => {
+        resolve(res.data.pool_members);
+      })
+      .catch((err) => reject(err));
   });
 }
 
 export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.isMember(userAddress));
+    axios({ url: `/api/proxy/pools/getAllPoolInfo?poolAddress=${poolAddress}` })
+      .then(async (res) => {
+        var isMember = false;
+        res.data.pool_members.forEach((element) => {
+          if (element.members_address == userAddress) isMember = true;
+        });
+        resolve(isMember);
+      })
+      .catch((err) => reject(err));
   });
 }
 

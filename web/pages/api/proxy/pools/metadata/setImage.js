@@ -37,7 +37,6 @@ export default async (req, res) => {
       })
         .then((response) => {
           res.status(200).json(response.data);
-          console.log(response.data);
         })
         .catch((err) => {
           let errorMessage = null;

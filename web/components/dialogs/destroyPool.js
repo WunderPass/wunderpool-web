@@ -36,7 +36,6 @@ export default function DestroyPoolDialog(props) {
   const handleSubmit = async () => {
     setLoading(true);
     setTimeout(() => {
-      console.log('lets start liquidtaing suggestion');
       wunderPool
         .liquidateSuggestion(
           "Let's close this Pool",

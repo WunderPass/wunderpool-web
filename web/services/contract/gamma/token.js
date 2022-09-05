@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { toEthString } from '/services/formatter';
-import { fetchPoolMembers } from '/services/contract/pools';
+import { fetchPoolMembersAndShares } from '/services/contract/pools';
 import { initPoolGamma } from '/services/contract/gamma/init';
 import { nftAbi, tokenAbi } from '/services/contract/init';
 import { cacheItemDB, getCachedItemDB } from '../../caching';
@@ -101,30 +101,28 @@ export function fetchPoolGovernanceTokenGamma(address) {
     const govTokenAddress = await wunderPool.governanceToken();
     const govToken = new ethers.Contract(govTokenAddress, tokenAbi, provider);
     const totalSupply = await govToken.totalSupply();
-    fetchPoolMembers(address).then(async (memberAddresses) => {
-      const holders = await Promise.all(
-        memberAddresses.map(async (addr) => {
-          try {
-            const tokens = await govToken.balanceOf(addr);
-            return {
-              address: addr,
-              tokens: tokens,
-              share: tokens.mul(100).div(totalSupply),
-            };
-          } catch (err) {
-            return null;
-          }
-        })
-      );
-      resolve({
-        address: govTokenAddress,
-        name: await govToken.name(),
-        symbol: await govToken.symbol(),
-        price: await govToken.price(),
-        minInvest: await wunderPool.entryBarrier(),
-        totalSupply: totalSupply,
-        holders: holders,
-      });
+
+    const holdersAndShares = await fetchPoolMembersAndShares(address);
+    const holders = [];
+    holdersAndShares.forEach(async (element) => {
+      var object = {
+        address: element.members_address,
+        tokens: BigNumber.from(element.pool_shares_balance),
+        share: BigNumber.from(element.pool_shares_balance)
+          .mul(100)
+          .div(totalSupply),
+      };
+      holders.push(object);
+    });
+
+    resolve({
+      address: govTokenAddress,
+      name: await govToken.name(),
+      symbol: await govToken.symbol(),
+      price: await govToken.price(),
+      minInvest: await wunderPool.entryBarrier(),
+      totalSupply: totalSupply,
+      holders: holders,
     });
   });
 }

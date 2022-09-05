@@ -59,7 +59,6 @@ function BalanceBox(props) {
     if (user.isReady) {
       setLoading(false);
     }
-    console.log(topThree);
   }, [user.isReady]);
 
   return !loading ? (
