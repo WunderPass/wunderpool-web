@@ -13,6 +13,7 @@ const nextConfig = {
             'NODE_EXE',
             '__CF_USER_TEXT_ENCODING',
             '__CFBundleIdentifier',
+            '__VERCEL_BUILD_RUNNING',
           ].includes(key)
       )
     ),
