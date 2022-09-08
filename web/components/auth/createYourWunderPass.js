@@ -30,7 +30,6 @@ export default function CreateYourWunderPass(props) {
 
         if (event.data?.wunderId) {
           onSuccess(event.data);
-
           window.removeEventListener('message', handleMessage);
           event.source?.window?.close();
           setPopup(null);

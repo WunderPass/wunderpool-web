@@ -22,7 +22,6 @@ export function encodeParams(types, values) {
       vals.push(`${values[i]}`);
     }
   });
-  console.log(types, vals);
   return abiCoder.encode(types, vals);
 }
 
