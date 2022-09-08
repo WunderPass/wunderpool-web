@@ -41,3 +41,9 @@ export async function decodeError(txHash) {
     return 'Unknown Blockchain Error';
   }
 }
+
+export function decodeInputParams(method, input) {
+  const iface = new ethers.utils.Interface([`function ${method}`]);
+
+  return iface.decodeFunctionData(method, input);
+}

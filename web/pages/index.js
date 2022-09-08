@@ -48,7 +48,7 @@ function Home(props) {
               </div>
               <div className="px-6 lg:px-12">
                 <div className="text-center w-full pb-4"></div>
-                <h6 className="text-2xl font-bold mb-6">
+                <h6 className="text-2xl font-medium mb-6">
                   Invest in the best trades. Earn fees for joint trade orders.
                 </h6>
                 <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
@@ -61,7 +61,7 @@ function Home(props) {
 
             <div className="p-5  bg-white rounded-bl-2xl lg:rounded-bl-none rounded-br-2xl lg:rounded-tr-2xl lg:w-3/5">
               <div className="py-5 lg:py-10 mb-14">
-                <h2 className="text-3xl font-bold text-kaico-blue mb-6">
+                <h2 className="text-3xl font-medium text-kaico-blue mb-6">
                   Sign in with WunderPass
                 </h2>
                 <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>

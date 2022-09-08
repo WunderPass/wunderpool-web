@@ -1,25 +1,66 @@
 import { ethers } from 'ethers';
 import useWunderPass from '/hooks/useWunderPass';
-import {
-  fetchPoolGovernanceTokenDelta,
-  fetchPoolNftsDelta,
-} from './delta/token';
-import {
-  fetchPoolGovernanceTokenGamma,
-  fetchPoolNftsGamma,
-  fetchPoolTokensGamma,
-} from './gamma/token';
+import { fetchPoolNftsDelta } from './delta/token';
+import { fetchPoolNftsGamma, fetchPoolTokensGamma } from './gamma/token';
 import { tokenAbi, usdcAddress } from './init';
 import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
-import { fetchPoolGovernanceTokenEpsilon } from './epsilon/token';
+import axios from 'axios';
+import { cacheItemDB, getCachedItemDB } from '../caching';
 
-export function fetchERC20Data(address) {
-  return new Promise(async (resolve, reject) => {
-    const provider = httpProvider;
-    const token = new ethers.Contract(address, tokenAbi, provider);
-    resolve({ name: await token.name(), symbol: await token.symbol() });
-  });
+export async function fetchErc20TokenData(address, ownerAddress = null) {
+  const token = new ethers.Contract(address, tokenAbi, httpProvider);
+  const apiResponse =
+    (await getCachedItemDB(address)) ||
+    (await cacheItemDB(
+      address,
+      (
+        await axios({
+          url: `/api/tokens/show`,
+          params: { address },
+        })
+      ).data,
+      600
+    ));
+  let {
+    name,
+    symbol,
+    decimals,
+    price = 0,
+    image_url,
+    dollar_price = 0,
+    tradable = false,
+  } = apiResponse;
+
+  name = name || (await token.name());
+  symbol = symbol || (await token.symbol());
+  decimals = decimals || (await token.decimals()).toNumber();
+
+  if (ownerAddress) {
+    const balance = await token.balanceOf(ownerAddress);
+    const formattedBalance = toEthString(balance, decimals);
+
+    const usdValue = balance
+      .mul(price)
+      .div(10000)
+      .div(ethers.BigNumber.from(10).pow(decimals))
+      .toNumber();
+
+    return {
+      name,
+      symbol,
+      decimals,
+      price,
+      image_url,
+      dollar_price,
+      tradable,
+      balance,
+      formattedBalance,
+      usdValue,
+    };
+  } else {
+    return { name, symbol, decimals, price, image_url, dollar_price, tradable };
+  }
 }
 
 export function fetchPoolTokens(address, version) {
@@ -31,16 +72,6 @@ export function fetchPoolNfts(address, version) {
     return fetchPoolNftsDelta(address);
   } else {
     return fetchPoolNftsGamma(address);
-  }
-}
-
-export function fetchPoolGovernanceToken(address, version) {
-  if (version > 4) {
-    return fetchPoolGovernanceTokenEpsilon(address);
-  } else if (version > 3) {
-    return fetchPoolGovernanceTokenDelta(address);
-  } else {
-    return fetchPoolGovernanceTokenGamma(address);
   }
 }
 

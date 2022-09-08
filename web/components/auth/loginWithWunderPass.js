@@ -67,7 +67,7 @@ export default function LoginWithWunderPass(props) {
   return (
     <>
       <button onClick={handleClick}>
-        <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-bold text-md">
+        <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-medium text-md">
           <svg
             className="fill-white"
             xmlns="http://www.w3.org/2000/svg"

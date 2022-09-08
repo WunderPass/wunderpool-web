@@ -4,8 +4,8 @@ import TimerBar from '/components/proposals/timerBar';
 
 const Timer = (props) => {
   const { proposal } = props;
-  const finalTime = proposal.deadline.toNumber();
-  const start = proposal.createdAt.toNumber();
+  const finalTime = new Date(proposal.deadline).getTime();
+  const start = new Date(proposal.createdAt).getTime();
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {

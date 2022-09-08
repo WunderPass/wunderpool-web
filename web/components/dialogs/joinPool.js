@@ -20,7 +20,7 @@ export default function JoinPoolDialog(props) {
   const { open, loginCallback, handleSuccess, handleError, wunderPool, user } =
     props;
   const { minInvest, maxInvest } = wunderPool;
-  const price = wunderPool.governanceToken?.price || 0;
+  const tokensForDollar = wunderPool.governanceToken?.tokensForDollar;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
 
   const [amount, setAmount] = useState(minInvest || 3);
@@ -70,14 +70,11 @@ export default function JoinPoolDialog(props) {
     }, 50);
   };
 
-  const receivedTokens =
-    price > 0
-      ? ethers.BigNumber.from(usdc(amount)).div(price)
-      : ethers.BigNumber.from(100);
+  const receivedTokens = tokensForDollar ? amount * tokensForDollar : 100;
   const shareOfPool =
     totalSupply > 0
-      ? receivedTokens.mul(100).div(totalSupply.add(receivedTokens))
-      : ethers.BigNumber.from(100);
+      ? (receivedTokens * 100) / (totalSupply + receivedTokens)
+      : 100;
 
   const handleInput = (value, float) => {
     setAmount(value);
@@ -123,12 +120,9 @@ export default function JoinPoolDialog(props) {
           <DialogContentText className="text-sm pt-2">
             <div className="flex flex-row justify-between items-center">
               <Typography>
-                1 {wunderPool.governanceToken.symbol} ={' '}
-                {currency(polyValueToUsd(price))}
+                $ 1.00 = {tokensForDollar} {wunderPool.governanceToken.symbol}
               </Typography>
-              <Typography>
-                {wunderPool.governanceToken && currency(minInvest)} min
-              </Typography>
+              <Typography>{currency(minInvest)} min</Typography>
             </div>
           </DialogContentText>
           <DialogContentText className="text-sm">

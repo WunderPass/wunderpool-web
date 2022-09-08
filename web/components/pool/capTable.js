@@ -43,9 +43,9 @@ export default function CapTable(props) {
                   <div className="flex flex-row items-center md:ml-2">
                     <Avatar
                       wunderId={member.wunderId ? member.wunderId : null}
-                      tooltip={`${
-                        member.wunderId || 'External User'
-                      }: ${member.share.toString()}%`}
+                      tooltip={`${member.wunderId || 'External User'}: ${
+                        member.share
+                      }%`}
                       text={member.wunderId ? member.wunderId : '0-X'}
                       separator="-"
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
@@ -53,22 +53,22 @@ export default function CapTable(props) {
                     />
                     <Typography className="ml-1 md:hidden">
                       {member.wunderId ? member.wunderId : 'External User'}
-                    </Typography>{' '}
+                    </Typography>
                   </div>
                 </td>
                 <td className="pb-2">
                   <div className="flex flex-row items-center lg:ml-16">
-                    <Typography>{member.tokens.toString()}</Typography>
-                    <Typography className="opacity-50 ml-1 ">
-                      ({member.share.toString()}%)
+                    <Typography>{member.tokens}</Typography>
+                    <Typography className="opacity-50 ml-1">
+                      ({member.share.toFixed(0)}%)
                     </Typography>
-                  </div>{' '}
+                  </div>
                 </td>
                 <td className="text-right pb-2">
                   <Typography className="">
                     {currency(
-                      member.tokens.toString() *
-                        polyValueToUsd(wunderPool.governanceToken.price)
+                      member.tokens /
+                        wunderPool.governanceToken?.tokensForDollar
                     )}
                   </Typography>
                 </td>

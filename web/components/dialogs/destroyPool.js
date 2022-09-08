@@ -26,7 +26,6 @@ export default function DestroyPoolDialog(props) {
     handleError,
   } = props;
   const [loading, setLoading] = useState(false);
-  const [userShare, setUserShare] = useState(null);
 
   const handleClose = () => {
     setLoading(false);
@@ -55,11 +54,6 @@ export default function DestroyPoolDialog(props) {
     }, 50);
   };
 
-  useEffect(() => {
-    if (!wunderPool.governanceToken) return;
-    setUserShare(wunderPool.userShare());
-  }, [wunderPool.governanceToken]);
-
   return (
     <ResponsiveDialog open={open} onClose={handleClose} maxWidth="sm">
       <DialogTitle>Close Pool</DialogTitle>
@@ -82,22 +76,23 @@ export default function DestroyPoolDialog(props) {
           You will receive:
         </Typography>
 
-        {userShare ? (
+        {wunderPool.userShare ? (
           <>
             {wunderPool.tokens
               .filter((tkn) => tkn.balance > 0)
               .map((tkn, i) => {
                 const tokenValue = currency(
-                  ethers.BigNumber.from(tkn.balance)
-                    .mul(userShare)
+                  (ethers.BigNumber.from(tkn.balance)
                     .mul(tkn.price)
                     .div(100)
                     .div(10000)
                     .div(ethers.BigNumber.from(10).pow(tkn.decimals))
-                    .toNumber() / 100
+                    .toNumber() *
+                    wunderPool.userShare) /
+                    100
                 );
                 const tokenAmount = formatTokenBalance(
-                  (tkn.formattedBalance * userShare) / 100
+                  (tkn.formattedBalance * wunderPool.userShare) / 100
                 );
 
                 return (

@@ -146,18 +146,14 @@ export default function JoinPool(props) {
   const [invalidLink, setInvalidLink] = useState(false);
   const wunderPool = usePool(user.address, address);
   const { minInvest, maxInvest } = wunderPool;
-  const price = wunderPool.governanceToken?.price || 0;
+  const tokensForDollar = wunderPool.governanceToken?.tokensForDollar;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
 
-  const receivedTokens =
-    price > 0
-      ? ethers.BigNumber.from(usdc(amount)).div(price)
-      : ethers.BigNumber.from(100);
-
+  const receivedTokens = tokensForDollar ? amount * tokensForDollar : 100;
   const shareOfPool =
     totalSupply > 0
-      ? receivedTokens.mul(100).div(totalSupply.add(receivedTokens))
-      : ethers.BigNumber.from(100);
+      ? (receivedTokens * 100) / (totalSupply + receivedTokens)
+      : 100;
 
   const handleInput = (value, float) => {
     setAmount(value);
@@ -247,7 +243,7 @@ export default function JoinPool(props) {
           <PoolStats
             minInvest={minInvest}
             maxInvest={maxInvest}
-            members={wunderPool.governanceToken?.holders?.length}
+            members={wunderPool.members?.length}
             maxMembers={wunderPool.maxMembers}
             totalBalance={wunderPool.totalBalance}
           />

@@ -82,11 +82,3 @@ export function addToWhiteListWithSecretEpsilon(
       });
   });
 }
-
-export function fetchPoolShareholderAgreementEpsilon(poolAddress) {
-  return new Promise(async (resolve, reject) => {
-    fetchPoolData(poolAddress)
-      .then((res) => resolve(res.shareholder_agreement))
-      .catch((err) => reject(err));
-  });
-}

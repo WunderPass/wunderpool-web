@@ -1,9 +1,6 @@
 import { connectContract } from '/services/contract/init';
 import useWunderPass from '/hooks/useWunderPass';
-import {
-  initPoolDelta,
-  initProposalDelta,
-} from '/services/contract/delta/init';
+import { initPoolDelta } from '/services/contract/delta/init';
 import { gasPrice } from '/services/contract/init';
 import axios from 'axios';
 import { waitForTransaction } from '../provider';
@@ -84,12 +81,5 @@ export function voteDeltaFallback(poolAddress, proposalId, mode, userAddress) {
       .catch((err) => {
         reject(err);
       });
-  });
-}
-
-export function hasVotedDelta(poolAddress, proposalId, address) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderProposal] = initProposalDelta();
-    resolve(await wunderProposal.hasVoted(poolAddress, proposalId, address));
   });
 }

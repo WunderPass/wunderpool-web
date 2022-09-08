@@ -74,18 +74,3 @@ export function fundPoolGamma(poolAddress, amount) {
       });
   });
 }
-
-export function fetchPoolShareholderAgreementGamma(poolAddress) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolGamma(poolAddress);
-
-    resolve({
-      min_invest: polyValueToUsd(await wunderPool.entryBarrier()),
-      max_invest: null,
-      max_members: null,
-      min_yes_voters: 1,
-      voting_threshold: 50,
-      voting_time: null,
-    });
-  });
-}

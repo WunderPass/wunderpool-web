@@ -37,13 +37,6 @@ export function fetchWhitelistedUserPoolsDelta(userAddress) {
   });
 }
 
-export function fetchPoolIsClosedDelta(poolAddress) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolDelta(poolAddress);
-    wunderPool.poolClosed().then((res) => resolve(res));
-  });
-}
-
 export function joinPoolDelta(poolAddress, userAddress, value, secret) {
   return new Promise((resolve, reject) => {
     approve(userAddress, poolAddress, usdc(value))

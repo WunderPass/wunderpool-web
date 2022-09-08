@@ -39,7 +39,7 @@ export default function ProposalList(props) {
     setOpen(router.query?.makeProposal1 ? true : false);
   }, [router.query]);
 
-  return !wunderPool.isReady2 ? (
+  return !wunderPool.isReady ? (
     <Skeleton
       variant="rectangular"
       width="100%"
@@ -57,27 +57,15 @@ export default function ProposalList(props) {
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
       {proposalsTab == 0 && (
-        <CurrentVotingsList
-          wunderPool={wunderPool}
-          openProposal={openProposal}
-          {...props}
-        />
+        <CurrentVotingsList openProposal={openProposal} {...props} />
       )}
       {proposalsTab == 1 && (
         <div>
-          <ExecutableList
-            wunderPool={wunderPool}
-            openProposal={openProposal}
-            {...props}
-          />
+          <ExecutableList openProposal={openProposal} {...props} />
         </div>
       )}
       {proposalsTab == 2 && (
-        <HistoryList
-          wunderPool={wunderPool}
-          openProposal={openProposal}
-          {...props}
-        />
+        <HistoryList openProposal={openProposal} {...props} />
       )}
     </Stack>
   ) : (

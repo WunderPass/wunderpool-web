@@ -33,10 +33,6 @@ export function toEthString(num, decimals) {
   return ethers.utils.formatEther(`${weiBalance}`);
 }
 
-export function displayWithDecimalPlaces(num, decimals) {
-  return (Math.round(num * 100) / 100).toFixed(decimals);
-}
-
 export function weiToMatic(wei) {
   return wei / 1000000000000000000;
 }
@@ -72,6 +68,7 @@ export function formatNumber(num, options = {}) {
 
   const sep = seperator || localeOptions[locale]?.separator || ',';
   const decSep = decimalSeperator || localeOptions[locale]?.decimals || '.';
+  if (!num) return `0${decSep}00`;
 
   const str = String(round(num, precision));
   const amount = str.split('.')[0] || '0';

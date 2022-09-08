@@ -33,7 +33,6 @@ export default function Pool(props) {
   const [loading, setLoading] = useState(true);
   const wunderPool = usePool(user.address, address);
   const [loadingCircle, setLoadingCircle] = useState(true);
-  const [membersLoaded, setMembersLoaded] = useState(false);
 
   const loginCallback = () => {
     setupPoolListener(address, user.address);
@@ -117,7 +116,7 @@ export default function Pool(props) {
   useEffect(() => {
     if (!address || !user.address) return;
     if (!newMemberEvent) return;
-    wunderPool.determineGovernanceToken();
+    wunderPool.determinePoolData();
     wunderPool.determineBalance();
     resetEvents();
   }, [newMemberEvent]);
@@ -128,8 +127,8 @@ export default function Pool(props) {
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   useEffect(() => {
-    setLoadingCircle(!(wunderPool.isReady && membersLoaded));
-  }, [wunderPool.isReady, membersLoaded]);
+    setLoadingCircle(!wunderPool.isReady);
+  }, [wunderPool.isReady]);
 
   return (
     <>
@@ -174,7 +173,6 @@ export default function Pool(props) {
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}
-                setMembersLoaded={setMembersLoaded}
                 {...props}
               />
             </div>
@@ -201,7 +199,6 @@ export default function Pool(props) {
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}
-                setMembersLoaded={setMembersLoaded}
                 {...props}
               />
 

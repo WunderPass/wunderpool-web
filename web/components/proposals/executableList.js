@@ -7,7 +7,7 @@ export default function ExecutableList(props) {
     <div>
       {wunderPool.proposals
         .filter((p) => p.executable)
-        .sort((one, two) => two.createdAt.sub(one.createdAt))
+        .sort((one, two) => new Date(two.createdAt) - new Date(one.createdAt))
         .map((proposal) => {
           return (
             <ProposalCard

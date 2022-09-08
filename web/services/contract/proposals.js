@@ -8,7 +8,6 @@ import {
   createNftBuyProposalDelta,
   createNftSellProposalDelta,
   createSwapSuggestionDelta,
-  fetchPoolProposalsDelta,
   fetchTransactionDataDelta,
   isLiquidateProposalDelta,
   proposalExecutableDelta,
@@ -16,7 +15,6 @@ import {
 import {
   createNftBuyProposalEpsilon,
   createNftSellProposalEpsilon,
-  fetchPoolProposalsEpsilon,
   fetchTransactionDataEpsilon,
   isLiquidateProposalEpsilon,
   proposalExecutableEpsilon,
@@ -29,7 +27,6 @@ import {
   createNftSellProposalGamma,
   createSwapSuggestionGamma,
   executeProposalGamma,
-  fetchPoolProposalsGamma,
   fetchTransactionDataGamma,
   isLiquidateProposalGamma,
   proposalExecutableGamma,
@@ -37,14 +34,55 @@ import {
 import { usdcAddress } from './init';
 import { waitForTransaction } from './provider';
 
+function formatProposal(
+  {
+    title,
+    description,
+    proposal_action,
+    user_address,
+    proposal_id,
+    created_at,
+    deadline,
+    state,
+    votings,
+  },
+  userAddress
+) {
+  const userVoting =
+    votings.find(
+      (v) => v.userAddress.toLowerCase() == userAddress.toLowerCase()
+    ) || {};
+  return {
+    id: proposal_id,
+    title,
+    description,
+    action: proposal_action,
+    deadline,
+    votings,
+    createdAt: created_at,
+    executed: state == 'EXECUTED',
+    executable: false,
+    declined: state == 'DECLINED',
+    creator: user_address,
+    hasVoted: userVoting.vote ? (userVoting.vote == 'YES' ? 1 : 2) : 0,
+  };
+}
+
 export function fetchPoolProposals(address, userAddress, version) {
-  if (version > 4) {
-    return fetchPoolProposalsEpsilon(address, userAddress);
-  } else if (version > 3) {
-    return fetchPoolProposalsDelta(address, userAddress);
-  } else {
-    return fetchPoolProposalsGamma(address, userAddress);
-  }
+  // if (version > 4) {
+  //   return fetchPoolProposalsEpsilon(address, userAddress);
+  // } else if (version > 3) {
+  //   return fetchPoolProposalsDelta(address, userAddress);
+  // } else {
+  //   return fetchPoolProposalsGamma(address, userAddress);
+  // }
+  return new Promise(async (resolve, reject) => {
+    axios({ url: `/api/proxy/pools/proposals?address=${address}` })
+      .then(({ data }) => {
+        resolve(data.map((proposal) => formatProposal(proposal, userAddress)));
+      })
+      .catch((err) => reject(err));
+  });
 }
 
 export function fetchTransactionData(address, id, transactionCount, version) {

@@ -27,7 +27,10 @@ const myPools = (props) => {
             return (
               <Link
                 key={`user-pool-${i}`}
-                href={`/pools/${pool.address}?name=${pool.name}`}
+                href={`/pools/${pool.address}?name=${pool.name.replaceAll(
+                  '&',
+                  '%26'
+                )}`}
                 sx={{ textDecoration: 'none', color: 'inherit' }}
                 passHref
               >

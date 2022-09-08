@@ -9,7 +9,7 @@ export default function CurrentVotingsList(props) {
         .filter(
           (p) => !(p.executed || p.declined || p.executable) && !p.hasVoted
         )
-        .sort((one, two) => two.createdAt.sub(one.createdAt))
+        .sort((one, two) => new Date(two.createdAt) - new Date(one.createdAt))
         .map((proposal) => {
           return (
             <ProposalCard
@@ -24,7 +24,7 @@ export default function CurrentVotingsList(props) {
         .filter(
           (p) => !(p.executed || p.declined || p.executable) && p.hasVoted
         )
-        .sort((one, two) => two.createdAt.sub(one.createdAt))
+        .sort((one, two) => new Date(two.createdAt) - new Date(one.createdAt))
         .map((proposal) => {
           return (
             <ProposalCard

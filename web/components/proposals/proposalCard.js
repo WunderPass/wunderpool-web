@@ -6,7 +6,7 @@ import {
   Typography,
   Alert,
 } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import LoupeIcon from '@mui/icons-material/Loupe';
 import { ethers } from 'ethers';
 import { decodeParams } from '/services/formatter';
@@ -26,7 +26,9 @@ function OpenProposalDialog(props) {
     proposal,
     signing,
     executeProposal,
-    wunderPool,
+    yesVotes,
+    noVotes,
+    totalVotes,
     loading,
     transactionData,
     handleSuccess,
@@ -61,11 +63,7 @@ function OpenProposalDialog(props) {
         {!proposal.executed && !proposal.declined && <Timer {...props} />}
       </div>
 
-      <VotingResults
-        yes={proposal.yesVotes.toNumber()}
-        no={proposal.noVotes.toNumber()}
-        total={proposal.totalVotes.toNumber()}
-      />
+      <VotingResults yes={yesVotes} no={noVotes} total={totalVotes} />
       <div className="flex flex-row justify-center items-center">
         <VotingButtons {...props} />
         <div>
@@ -89,8 +87,7 @@ function OpenProposalDialog(props) {
           <Typography variant="span" fontStyle="italic">
             Yes
           </Typography>
-          {proposal.yesVotes.toString()} / {proposal.totalVotes.toString()}{' '}
-          Votes
+          {yesVotes} / {totalVotes} Votes
         </Typography>
         <Divider />
         <Typography
@@ -100,7 +97,7 @@ function OpenProposalDialog(props) {
           <Typography variant="span" fontStyle="italic">
             No
           </Typography>
-          {proposal.noVotes.toString()} / {proposal.totalVotes.toString()} Votes
+          {noVotes} / {totalVotes} Votes
         </Typography>
         <Divider />
         <Typography
@@ -110,9 +107,7 @@ function OpenProposalDialog(props) {
           <Typography variant="span" fontStyle="italic">
             Deadline
           </Typography>
-          {new Date(proposal.deadline.mul(1000).toNumber()).toLocaleString(
-            'de'
-          )}
+          {proposal.deadline}
         </Typography>
         <Divider />
         <Typography
@@ -122,9 +117,7 @@ function OpenProposalDialog(props) {
           <Typography variant="span" fontStyle="italic">
             Created At
           </Typography>
-          {new Date(proposal.createdAt.mul(1000).toNumber()).toLocaleString(
-            'de'
-          )}
+          {proposal.createdAt}
         </Typography>
 
         {/* {loading ? (
@@ -218,7 +211,16 @@ function OpenProposalDialog(props) {
 }
 
 function ClosedProposal(props) {
-  const { proposal, handleOpen, signing, executeProposal } = props;
+  const {
+    proposal,
+    handleOpen,
+    signing,
+    executeProposal,
+    wunderPool,
+    yesVotes,
+    noVotes,
+    totalVotes,
+  } = props;
 
   return (
     <div className="container-gray mb-6">
@@ -239,11 +241,7 @@ function ClosedProposal(props) {
         {!proposal.executed && !proposal.declined && <Timer {...props} />}
       </div>
 
-      <VotingResults
-        yes={proposal.yesVotes.toNumber()}
-        no={proposal.noVotes.toNumber()}
-        total={proposal.totalVotes.toNumber()}
-      />
+      <VotingResults yes={yesVotes} no={noVotes} total={totalVotes} />
       <div className="flex flex-row justify-center items-center">
         <VotingButtons {...props} />
         <div>
@@ -275,6 +273,12 @@ export default function ProposalCard(props) {
   const [transactionData, setTransactionData] = useState(null);
   const [signing, setSigning] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+
+  const { yesVotes, noVotes } = useMemo(() => {
+    if (!proposal.id) return {};
+    return wunderPool.getVotes(proposal.id);
+  }, [proposal.id]);
+  const totalVotes = wunderPool.governanceToken?.totalSupply;
 
   const handleClose = () => {
     setSigning(false);
@@ -329,6 +333,9 @@ export default function ProposalCard(props) {
         handleOpen={handleOpen}
         signing={signing}
         executeProposal={executeProposal}
+        yesVotes={yesVotes}
+        noVotes={noVotes}
+        totalVotes={totalVotes}
         {...props}
       />
       <OpenProposalDialog
@@ -338,6 +345,9 @@ export default function ProposalCard(props) {
         executeProposal={executeProposal}
         loading={loading}
         transactionData={transactionData}
+        yesVotes={yesVotes}
+        noVotes={noVotes}
+        totalVotes={totalVotes}
         {...props}
       />
       <TransactionDialog open={signing} onClose={handleClose}>

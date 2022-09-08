@@ -193,7 +193,7 @@ export default function NewPoolConfigStep(props) {
       </div>
 
       <button
-        className="text-black text-sm font-semibold mt-2"
+        className="text-black text-sm font-medium mt-2"
         onClick={() => setShowMoreOptions((val) => !val)}
       >
         <div className="flex flex-row items-center text-lg">
