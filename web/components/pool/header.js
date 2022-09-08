@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { currency, polyValueToUsd, secondsToHours } from '/services/formatter';
+import { currency, secondsToHours } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
@@ -228,8 +228,8 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <div className="flex flex-row justify-end ">
-              <Typography className="text-2xl mt-4 font-medium sm:-mt-5 sm:mr-2 pl-2 text-right">
-                Cash: {currency(polyValueToUsd(Number(usdcBalance)))}
+              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
+                Cash: {currency(usdcBalance)}
               </Typography>
             </div>
           </div>

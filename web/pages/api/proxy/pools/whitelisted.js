@@ -14,7 +14,6 @@ export default async function handler(req, res) {
       }/web3Proxy/pools/byIsInvitedFor/${req.query.address?.toLowerCase()}`,
       headers: headers,
     });
-    console.log(resp);
     res.status(200).json(resp.data);
   } catch (error) {
     console.log(error);

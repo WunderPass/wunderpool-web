@@ -256,7 +256,7 @@ export function fetchUserPools(userAddress) {
         );
         resolve(pools.filter((p) => p));
       })
-      .catch((err) => reject(err));
+      .catch((err) => console.log(err));
   });
 }
 
@@ -326,9 +326,11 @@ export function isMember(poolAddress, userAddress, version = null) {
 
 export function fetchPoolBalance(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    const provider = httpProvider;
-    const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
-    resolve(await usdcContract.balanceOf(poolAddress));
+    axios({ url: `/api/proxy/pools/getAllPoolInfo?poolAddress=${poolAddress}` })
+      .then(async (res) => {
+        resolve(res.data.pool_treasury.act_balance * 1000000);
+      })
+      .catch((err) => reject(err));
   });
 }
 
