@@ -18,7 +18,7 @@ export default function Transactions(props) {
   };
 
   useEffect(async () => {
-    const resolved = await new Promise(async (resolve) => {
+    const resolved = await new Promise(async (resolve, reject) => {
       const res = await normalTransactions(wunderPool.poolAddress);
       resolve(res);
     });

@@ -230,7 +230,7 @@ export default function Pool(props) {
 export async function getServerSideProps(context) {
   const address = context.query.id;
   try {
-    const name = await fetchPoolName(address);
+    const name = 'await fetchPoolName(address)';
     const balance = (await usdcBalanceOf(address)).toString();
 
     return {
