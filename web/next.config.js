@@ -6,6 +6,7 @@ const nextConfig = {
       Object.entries(process.env).filter(
         ([key]) =>
           ![
+            'NODE_OPTIONS',
             'NODE_VERSION',
             'NODE_ENV',
             '__NEXT_PROCESSED_ENV',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Badge, Divider, MenuItem, ListItemIcon } from '@mui/material';
+import { Menu, Badge, MenuItem, ListItemIcon } from '@mui/material';
 import { IoMdNotifications } from 'react-icons/io';
 import RedeemIcon from '@mui/icons-material/Redeem';
 import { motion } from 'framer-motion';
