@@ -326,9 +326,10 @@ export function isMember(poolAddress, userAddress, version = null) {
 
 export function fetchPoolBalance(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    axios({ url: `/api/proxy/pools/getAllPoolInfo?poolAddress=${poolAddress}` })
+    axios({ url: `/api/proxy/pools/show?address=${poolAddress}` })
       .then(async (res) => {
-        resolve(res.data.pool_treasury.act_balance * 1000000);
+        console.log(res.data.pool_treasury);
+        resolve(res.data.pool_treasury.act_balance);
       })
       .catch((err) => reject(err));
   });

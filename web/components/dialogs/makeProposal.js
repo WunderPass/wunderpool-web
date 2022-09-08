@@ -36,7 +36,7 @@ export default function makeProposal(props) {
 
   const hasEnoughBalance = useMemo(() => {
     if (!value) return true;
-    return wunderPool.usdcBalance.gte(usdc(value));
+    return wunderPool.usdcBalance >= value;
   }, [value]);
 
   const receivedTokens = useMemo(
@@ -209,7 +209,7 @@ export default function makeProposal(props) {
                 {valueTouched && !hasEnoughBalance && (
                   <div className="text-red-600" style={{ marginTop: 0 }}>
                     {`The pool only has ${currency(
-                      polyValueToUsd(wunderPool.usdcBalance.toString())
+                      wunderPool.usdcBalance
                     )} in its Treasury!`}
                   </div>
                 )}

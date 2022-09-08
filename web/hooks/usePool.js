@@ -341,6 +341,7 @@ export default function usePool(userAddr, poolAddr = null) {
       setVotingTime(shareholder_agreement?.voting_time);
 
       setPoolDescription(pool_description);
+      setUsdcBalance(pool_treasury.act_balance);
 
       const isMem =
         pool_members.filter(
@@ -397,7 +398,6 @@ export default function usePool(userAddr, poolAddr = null) {
       await determinePoolData(poolAddress)
         .then(async ({ vers, exists, isMem }) => {
           if (exists) {
-            await determineUsdcBalance();
             await determinePoolTokens(vers);
             if (isMem) {
               await determinePoolNfts();
