@@ -228,7 +228,7 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <div className="flex flex-row justify-end ">
-              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
+              <Typography className="text-2xl mt-4 font-medium sm:-mt-5 sm:mr-2 pl-2 text-right">
                 Cash: {currency(usdcBalance)}
               </Typography>
             </div>
@@ -309,7 +309,7 @@ export default function PoolHeader(props) {
 
               <Divider className="my-8 opacity-70" />
               <div>
-                <Typography className="text-lg font-semi py-1">
+                <Typography className="text-lg font-medium py-1">
                   Pool Description
                 </Typography>
                 <Typography className="text-sm opacity-40 py-1 ">
@@ -338,7 +338,7 @@ export default function PoolHeader(props) {
               {govTokenName && (
                 <>
                   <div>
-                    <Typography className="text-lg font-semi py-1">
+                    <Typography className="text-lg font-medium py-1">
                       Token details
                     </Typography>
                   </div>
@@ -390,7 +390,7 @@ export default function PoolHeader(props) {
                   </div>
                   <Divider className="my-8 opacity-70" />
                   <div>
-                    <Typography className="text-lg font-semi py-1">
+                    <Typography className="text-lg font-medium py-1">
                       Voting rules
                     </Typography>
                   </div>

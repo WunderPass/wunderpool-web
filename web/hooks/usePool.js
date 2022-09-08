@@ -387,7 +387,7 @@ export default function usePool(userAddr, poolAddr = null) {
         totalSupply: totalShares,
       });
 
-      return { vers, exists, isMem };
+      return { vers, exists: active, isMem };
     } catch (error) {
       console.log(error);
     }
