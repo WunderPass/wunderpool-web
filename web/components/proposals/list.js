@@ -53,6 +53,7 @@ export default function ProposalList(props) {
           tab={proposalsTab}
           setTab={setProposalsTab}
           proposals={wunderPool.proposals}
+          parent="list"
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>

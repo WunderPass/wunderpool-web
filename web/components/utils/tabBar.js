@@ -2,7 +2,7 @@ import { Typography, Badge } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export default function TabBar(props) {
-  const { tabs, tab, setTab, proposals } = props;
+  const { tabs, tab, setTab, parent, proposals } = props;
   const [currentVotingsCount, setCurrentVotingsCount] = useState(0);
 
   const handleClick = (index) => {
@@ -25,7 +25,7 @@ export default function TabBar(props) {
         return (
           <>
             <button
-              key={`tab-item-${title}-${index}`}
+              key={`tab-item-${parent}-${title}-${index}`}
               className="py-4 mr-3 sm:mr-6"
               onClick={() => handleClick(index)}
             >

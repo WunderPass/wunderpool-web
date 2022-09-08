@@ -212,7 +212,7 @@ export default function PoolHeader(props) {
             </Typography>
             <div className="flex flex-row justify-end ">
               <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
-                Cash: {currency(polyValueToUsd(Number(wunderPool.usdcBalance)))}
+                Cash: {currency(wunderPool.usdcBalance)}
               </Typography>
             </div>
           </div>
