@@ -1,6 +1,5 @@
 import useUser from '/hooks/useUser';
 import '../styles/globals.css';
-import '../styles/fonts.css';
 import useNotification from '/hooks/useNotification';
 import Notification from '/components/utils/notification';
 import usePoolListener from '/hooks/usePoolListener';

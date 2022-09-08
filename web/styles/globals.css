@@ -1,5 +1,134 @@
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikThin.otf');
+    font-weight: 100;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikThinItalic.otf');
+    font-weight: 100;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikExtralight.otf');
+    font-weight: 200;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikExtralightItalic.otf');
+    font-weight: 200;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikLight.otf');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikLightItalic.otf');
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikRegular.otf');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikRegularItalic.otf');
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikMedium.otf');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikMediumItalic.otf');
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikSemibold.otf');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikSemiboldItalic.otf');
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikBold.otf');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikBoldItalic.otf');
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikBlack.otf');
+    font-weight: 800;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikBlackItalic.otf');
+    font-weight: 800;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikSuper.otf');
+    font-weight: 900;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Graphik';
+    src: url('../assets/fonts/Graphik/GraphikSuperItalic.otf');
+    font-weight: 900;
+    font-style: italic;
+  }
+}
 
 body {
   background-color: #f3f3f3;
