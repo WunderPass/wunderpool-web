@@ -60,7 +60,10 @@ export default function Pool(props) {
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {
       if (proposalExecutedEvent) {
         fetchPoolName(address)
-          .then(() => wunderPool.determineProposals())
+          .then(() => {
+            wunderPool.determineProposals();
+            wunderPool.determinePoolData();
+          })
           .catch(() => {
             handleInfo('Pool was closed.');
             user.fetchUsdBalance();
