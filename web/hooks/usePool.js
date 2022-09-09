@@ -252,36 +252,53 @@ export default function usePool(userAddr, poolAddr = null) {
   };
 
   const getVotes = (proposalId) => {
-    const { votings } =
-      poolProposals.find((prop) => prop.id == proposalId) || {};
-    if (!votings || poolMembers.length < 1) return;
-    const yesVotes = votings
-      .filter((v) => v.vote == 'YES')
-      .reduce(
-        (prev, current) =>
-          prev +
-          (poolMembers.find(
-            (m) => m.address.toLowerCase() == current.user_address.toLowerCase()
-          )?.tokens || 0),
-        0
-      );
-    const noVotes = votings
-      .filter((v) => v.vote == 'NO')
-      .reduce(
-        (prev, current) =>
-          prev +
-          (poolMembers.find(
-            (m) => m.address.toLowerCase() == current.user_address.toLowerCase()
-          )?.tokens || 0),
-        0
-      );
+    if (version.number > 4) {
+      const { votings = [] } =
+        poolProposals.find((prop) => prop.id == proposalId) || {};
+      if (!votings || poolMembers.length < 1) return;
+      const yesVotes = votings
+        .filter((v) => v.vote == 'YES')
+        .reduce(
+          (prev, current) =>
+            prev +
+            (poolMembers.find(
+              (m) =>
+                m.address.toLowerCase() == current.user_address.toLowerCase()
+            )?.tokens || 0),
+          0
+        );
+      const noVotes = votings
+        .filter((v) => v.vote == 'NO')
+        .reduce(
+          (prev, current) =>
+            prev +
+            (poolMembers.find(
+              (m) =>
+                m.address.toLowerCase() == current.user_address.toLowerCase()
+            )?.tokens || 0),
+          0
+        );
 
-    return { yesVotes, noVotes };
+      return { yesVotes, noVotes };
+    } else {
+      const { yesVotes, noVotes } =
+        poolProposals.find((prop) => prop.id == proposalId) || {};
+      return { yesVotes: yesVotes?.toNumber(), noVotes: noVotes?.toNumber() };
+    }
   };
 
-  const determinePoolProposals = async () => {
+  const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
-    setPoolProposals(await fetchPoolProposals(poolAddress, userAddress));
+    try {
+      const proposals = await fetchPoolProposals(
+        poolAddress,
+        userAddress,
+        (vers || version).number
+      );
+      setPoolProposals(proposals);
+    } catch (error) {
+      console.log('ERROR fetching Proposals', error);
+    }
   };
 
   const getTransactionData = async (id, transactionCount) => {
@@ -401,7 +418,7 @@ export default function usePool(userAddr, poolAddr = null) {
             await determinePoolTokens(vers);
             if (isMem) {
               await determinePoolNfts();
-              await determinePoolProposals();
+              await determinePoolProposals(vers);
             }
           }
         })

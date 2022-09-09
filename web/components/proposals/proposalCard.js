@@ -107,7 +107,7 @@ function OpenProposalDialog(props) {
           <Typography variant="span" fontStyle="italic">
             Deadline
           </Typography>
-          {proposal.deadline}
+          {new Date(proposal.deadline).toLocaleString('de')}
         </Typography>
         <Divider />
         <Typography
@@ -117,7 +117,7 @@ function OpenProposalDialog(props) {
           <Typography variant="span" fontStyle="italic">
             Created At
           </Typography>
-          {proposal.createdAt}
+          {new Date(proposal.createdAt).toLocaleString('de')}
         </Typography>
 
         {/* {loading ? (
@@ -274,7 +274,7 @@ export default function ProposalCard(props) {
   const [signing, setSigning] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
-  const { yesVotes, noVotes } = useMemo(() => {
+  const { yesVotes = 0, noVotes = 0 } = useMemo(() => {
     if (!proposal.id) return {};
     return wunderPool.getVotes(proposal.id);
   }, [proposal.id]);

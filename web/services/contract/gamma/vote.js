@@ -28,3 +28,10 @@ export function voteGamma(poolAddress, proposalId, mode) {
       });
   });
 }
+
+export function hasVotedGamma(poolAddress, proposalId, address) {
+  return new Promise(async (resolve, reject) => {
+    const [wunderPool] = initPoolGamma(poolAddress);
+    resolve(await wunderPool.hasVoted(proposalId, address));
+  });
+}

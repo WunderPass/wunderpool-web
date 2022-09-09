@@ -34,7 +34,9 @@ const myPools = (props) => {
                 sx={{ textDecoration: 'none', color: 'inherit' }}
                 passHref
               >
-                <MenuItem>{pool.name}</MenuItem>
+                <MenuItem>
+                  {pool.name} ({pool.version?.name})
+                </MenuItem>
               </Link>
             );
           })}
