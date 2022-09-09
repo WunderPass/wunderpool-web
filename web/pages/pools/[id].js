@@ -26,12 +26,13 @@ export default function Pool(props) {
     proposalExecutedEvent,
     resetEvents,
     handleInfo,
+    handleError,
   } = props;
   const [address, setAddress] = useState(null);
   const [name, setName] = useState('');
   const [fundDialog, setFundDialog] = useState(false);
   const [loading, setLoading] = useState(true);
-  const wunderPool = usePool(user.address, address);
+  const wunderPool = usePool(user.address, address, handleError);
   const [loadingCircle, setLoadingCircle] = useState(true);
 
   const loginCallback = () => {

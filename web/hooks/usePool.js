@@ -29,7 +29,11 @@ import {
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
 import axios from 'axios';
 
-export default function usePool(userAddr, poolAddr = null) {
+export default function usePool(
+  userAddr,
+  poolAddr = null,
+  handleError = () => {}
+) {
   const [userAddress, setUserAddress] = useState(userAddr);
   const [poolAddress, setPoolAddress] = useState(poolAddr);
   const [isReady, setIsReady] = useState(false);
@@ -297,6 +301,7 @@ export default function usePool(userAddr, poolAddr = null) {
       );
       setPoolProposals(proposals);
     } catch (error) {
+      handleError('Proposals could not be loaded');
       console.log('ERROR fetching Proposals', error);
     }
   };

@@ -50,7 +50,7 @@ export default function TransactionCard({ wunderPool, transaction, number }) {
 
   return (
     <div
-      className={`${isError == '1' ? 'container-red' : 'container-gray'} mb-4`}
+      className={`${isError == '1' ? 'container-red' : 'container-gray'} mt-4`}
     >
       <div className="flex justify-between items-start max-w-screen overflow-x-auto">
         <Typography className="text-lg">
