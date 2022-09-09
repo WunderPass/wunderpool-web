@@ -5,7 +5,7 @@ import {
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
 import Avatar from '/components/utils/avatar';
-import { currency, polyValueToUsd } from '/services/formatter';
+import { currency, polyValueToUsd, toFixed } from '/services/formatter';
 
 export default function CapTable(props) {
   const { members, wunderPool } = props;
@@ -58,9 +58,9 @@ export default function CapTable(props) {
                 </td>
                 <td className="pb-2">
                   <div className="flex flex-row items-center lg:ml-16">
-                    <Typography>{member.tokens}</Typography>
+                    <Typography>{toFixed(member.tokens, 2)}</Typography>
                     <Typography className="opacity-50 ml-1">
-                      ({member.share.toFixed(0)}%)
+                      ({toFixed(member.share, 2)}%)
                     </Typography>
                   </div>
                 </td>

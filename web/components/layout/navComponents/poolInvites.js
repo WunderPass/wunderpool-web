@@ -54,10 +54,9 @@ const poolInvites = (props) => {
                 return (
                   <Link
                     key={`pool-${i}`}
-                    href={`/pools/${pool.address}?name=${pool.name.replaceAll(
-                      '&',
-                      '%26'
-                    )}`}
+                    href={`/pools/join/${
+                      pool.address
+                    }?name=${pool.name.replaceAll('&', '%26')}`}
                     sx={{ textDecoration: 'none', color: 'inherit' }}
                     passHref
                   >
