@@ -46,6 +46,7 @@ function formatProposal(
     created_at,
     deadline,
     state,
+    total_shares,
     votings,
   },
   userAddress
@@ -54,6 +55,12 @@ function formatProposal(
     votings.find(
       (v) => v.user_address.toLowerCase() == userAddress.toLowerCase()
     ) || {};
+  const yesVotes = votings
+    .filter((v) => v.vote == 'YES')
+    .reduce((a, b) => a + b.shares, 0);
+  const noVotes = votings
+    .filter((v) => v.vote == 'NO')
+    .reduce((a, b) => a + b.shares, 0);
 
   var deadlineDate = new Date(deadline);
   var deadlineUTC2 = Date.UTC(
@@ -87,6 +94,9 @@ function formatProposal(
     executable: false,
     declined: state == 'DECLINED',
     creator: user_address,
+    yesVotes,
+    noVotes,
+    totalVotes: total_shares,
     hasVoted: userVoting.vote ? (userVoting.vote == 'YES' ? 1 : 2) : 0,
   };
 }

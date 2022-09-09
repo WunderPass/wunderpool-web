@@ -255,42 +255,6 @@ export default function usePool(
     setPoolNfts(await fetchPoolNfts(poolAddress, version.number));
   };
 
-  const getVotes = (proposalId) => {
-    if (version.number > 4) {
-      const { votings = [] } =
-        poolProposals.find((prop) => prop.id == proposalId) || {};
-      if (!votings || poolMembers.length < 1) return;
-      const yesVotes = votings
-        .filter((v) => v.vote == 'YES')
-        .reduce(
-          (prev, current) =>
-            prev +
-            (poolMembers.find(
-              (m) =>
-                m.address.toLowerCase() == current.user_address.toLowerCase()
-            )?.tokens || 0),
-          0
-        );
-      const noVotes = votings
-        .filter((v) => v.vote == 'NO')
-        .reduce(
-          (prev, current) =>
-            prev +
-            (poolMembers.find(
-              (m) =>
-                m.address.toLowerCase() == current.user_address.toLowerCase()
-            )?.tokens || 0),
-          0
-        );
-
-      return { yesVotes, noVotes };
-    } else {
-      const { yesVotes, noVotes } =
-        poolProposals.find((prop) => prop.id == proposalId) || {};
-      return { yesVotes: yesVotes?.toNumber(), noVotes: noVotes?.toNumber() };
-    }
-  };
-
   const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
     try {
@@ -490,7 +454,6 @@ export default function usePool(
     vote: voteWithMode,
     voteForProposal,
     voteAgainstProposal,
-    getVotes,
     executable,
     execute,
     determineTokens: determinePoolTokens,
