@@ -27,16 +27,17 @@ export default function ProposalList(props) {
     addQueryParam({ tab: proposalsTab });
   }, [proposalsTab]);
 
-  const handleOpenClose = () => {
+  const handleOpenClose = (onlyClose = false) => {
+    if (onlyClose && !open) return;
     if (open) {
-      goBack(() => removeQueryParam('makeProposal1'));
+      goBack(() => removeQueryParam('makeProposal'));
     } else {
-      addQueryParam({ makeProposal1: 'makeProposal1' }, false);
+      addQueryParam({ makeProposal: 'buy' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.makeProposal1 ? true : false);
+    setOpen(router.query?.makeProposal ? true : false);
   }, [router.query]);
 
   return !wunderPool.isReady ? (
