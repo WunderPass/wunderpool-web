@@ -30,7 +30,7 @@ const Timer = (props) => {
   };
 
   useEffect(() => {
-    const newTimer = Math.floor(new Date(finalTime) - new Date() / 1000);
+    const newTimer = Math.floor((new Date(finalTime) - new Date()) / 1000);
     let timeout = null;
     if (newTimer > 172800) {
       setTimer(newTimer);
