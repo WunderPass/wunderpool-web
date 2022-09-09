@@ -10,6 +10,9 @@ export function decodeParams(action, params) {
   return bytesToValue(params, types);
 }
 
+export const toFixed = (n, fixed) =>
+  ~~(Math.pow(10, fixed) * n) / Math.pow(10, fixed);
+
 export function encodeParams(types, values) {
   const abiCoder = new ethers.utils.AbiCoder();
   const vals = [];
