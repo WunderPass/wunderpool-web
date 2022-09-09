@@ -261,7 +261,7 @@ export default function usePool(userAddr, poolAddr = null) {
         (prev, current) =>
           prev +
           (poolMembers.find(
-            (m) => m.address.toLowerCase() == current.userAddress.toLowerCase()
+            (m) => m.address.toLowerCase() == current.user_address.toLowerCase()
           )?.tokens || 0),
         0
       );
@@ -271,7 +271,7 @@ export default function usePool(userAddr, poolAddr = null) {
         (prev, current) =>
           prev +
           (poolMembers.find(
-            (m) => m.address.toLowerCase() == current.userAddress.toLowerCase()
+            (m) => m.address.toLowerCase() == current.user_address.toLowerCase()
           )?.tokens || 0),
         0
       );

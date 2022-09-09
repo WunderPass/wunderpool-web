@@ -50,7 +50,7 @@ function formatProposal(
 ) {
   const userVoting =
     votings.find(
-      (v) => v.userAddress.toLowerCase() == userAddress.toLowerCase()
+      (v) => v.user_address.toLowerCase() == userAddress.toLowerCase()
     ) || {};
   return {
     id: proposal_id,
