@@ -144,7 +144,7 @@ export default function JoinPool(props) {
   const [signing, setSigning] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [invalidLink, setInvalidLink] = useState(false);
-  const wunderPool = usePool(user.address, address);
+  const wunderPool = usePool(user.address, address, handleError);
   const { minInvest, maxInvest } = wunderPool;
   const tokensForDollar = wunderPool.governanceToken?.tokensForDollar;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
