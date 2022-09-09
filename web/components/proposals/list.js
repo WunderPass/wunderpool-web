@@ -30,14 +30,14 @@ export default function ProposalList(props) {
   const handleOpenClose = (onlyClose = false) => {
     if (onlyClose && !open) return;
     if (open) {
-      goBack(() => removeQueryParam('makeProposal'));
+      goBack(() => removeQueryParam('makeProposal1'));
     } else {
-      addQueryParam({ makeProposal: 'buy' }, false);
+      addQueryParam({ makeProposal1: 'buy' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.makeProposal ? true : false);
+    setOpen(router.query?.makeProposal1 ? true : false);
   }, [router.query]);
 
   return !wunderPool.isReady ? (
@@ -81,7 +81,9 @@ export default function ProposalList(props) {
         </Typography>
         <button
           className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-          onClick={handleOpenClose}
+          onClick={() => {
+            handleOpenClose();
+          }}
         >
           Make Proposal
         </button>

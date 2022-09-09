@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import PoolInvites from './navComponents/poolInvites';
 import MyPools from './navComponents/myPools';
 import News from './navComponents/news';
-import Link from 'next/link';
 
 const mobileNavigation = (props) => {
   const { user } = props;

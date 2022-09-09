@@ -1,7 +1,6 @@
 import { AppBar, Stack, Toolbar } from '@mui/material';
 import Image from 'next/image';
 import CasamaIcon from '/public/casama-wht.svg';
-import UserIcon from '/public/user.png';
 import { useRouter } from 'next/router';
 import MobileNavigation from './mobileNavigation';
 import Navigation from './navigation';
