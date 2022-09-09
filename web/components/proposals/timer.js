@@ -69,7 +69,7 @@ const Timer = (props) => {
       </div>
       <div className="mt-5">
         <TimerBar
-          passed={Math.round(Number(new Date()) / 1000) - start}
+          passed={Math.round(Number(new Date())) - start}
           total={finalTime - start}
         />
       </div>

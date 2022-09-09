@@ -8,6 +8,7 @@ import {
   createNftBuyProposalDelta,
   createNftSellProposalDelta,
   createSwapSuggestionDelta,
+  fetchPoolProposalsDelta,
   fetchTransactionDataDelta,
   isLiquidateProposalDelta,
   proposalExecutableDelta,
@@ -27,6 +28,7 @@ import {
   createNftSellProposalGamma,
   createSwapSuggestionGamma,
   executeProposalGamma,
+  fetchPoolProposalsGamma,
   fetchTransactionDataGamma,
   isLiquidateProposalGamma,
   proposalExecutableGamma,
@@ -50,7 +52,7 @@ function formatProposal(
 ) {
   const userVoting =
     votings.find(
-      (v) => v.userAddress.toLowerCase() == userAddress.toLowerCase()
+      (v) => v.user_address.toLowerCase() == userAddress.toLowerCase()
     ) || {};
   return {
     id: proposal_id,
@@ -69,20 +71,21 @@ function formatProposal(
 }
 
 export function fetchPoolProposals(address, userAddress, version) {
-  // if (version > 4) {
-  //   return fetchPoolProposalsEpsilon(address, userAddress);
-  // } else if (version > 3) {
-  //   return fetchPoolProposalsDelta(address, userAddress);
-  // } else {
-  //   return fetchPoolProposalsGamma(address, userAddress);
-  // }
-  return new Promise(async (resolve, reject) => {
-    axios({ url: `/api/proxy/pools/proposals?address=${address}` })
-      .then(({ data }) => {
-        resolve(data.map((proposal) => formatProposal(proposal, userAddress)));
-      })
-      .catch((err) => reject(err));
-  });
+  if (version > 4) {
+    return new Promise(async (resolve, reject) => {
+      axios({ url: `/api/proxy/pools/proposals?address=${address}` })
+        .then(({ data }) => {
+          resolve(
+            data.map((proposal) => formatProposal(proposal, userAddress))
+          );
+        })
+        .catch((err) => reject(err));
+    });
+  } else if (version > 3) {
+    return fetchPoolProposalsDelta(address, userAddress);
+  } else {
+    return fetchPoolProposalsGamma(address, userAddress);
+  }
 }
 
 export function fetchTransactionData(address, id, transactionCount, version) {
