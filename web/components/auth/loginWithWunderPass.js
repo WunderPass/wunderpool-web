@@ -62,7 +62,23 @@ export default function LoginWithWunderPass(props) {
   return (
     <>
       <button onClick={handleClick}>
+<<<<<<< HEAD
         <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-medium text-md">
+=======
+        
+        {/* Casama Native Login */}
+
+        <p
+          className="text-xs text-kaico-dark-blue hover:text-kaico-light-blue pt-0.5 underline cursor-pointer lg:mb-10"
+          onClick={handleClick}
+        >
+          Log in here
+        </p>
+
+        {/* WP Login */}
+        
+        {/* <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-bold text-md">
+>>>>>>> master
           <svg
             className="fill-white"
             xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +93,7 @@ export default function LoginWithWunderPass(props) {
             ></path>
           </svg>
           <p className="pl-2 lg:pl-3 pt-1 text-white">Login with WunderPass</p>
-        </div>
+        </div> */}
       </button>
       {!disablePopup && (
         <>
