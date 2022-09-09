@@ -13,11 +13,12 @@ function assetDetails(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  const handleOpenClose = () => {
+  const handleOpenClose = (onlyClose = false) => {
+    if (onlyClose && !open) return;
     if (open) {
       goBack(() => removeQueryParam('makeProposal'));
     } else {
-      addQueryParam({ makeProposal: 'makeProposal' }, false);
+      addQueryParam({ makeProposal: 'buy' }, false);
     }
   };
 
