@@ -5,7 +5,7 @@ import { currency } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import usePool from '/hooks/usePool';
 import { ethers } from 'ethers';
-import { usdc } from '/services/formatter';
+import { usdc, toFixed } from '/services/formatter';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
@@ -114,7 +114,7 @@ function InputJoinAmount(props) {
           error={errorMsg}
         />
         <Typography className="text-sm float-right mt-2">
-          Estimated shares: {shareOfPool.toString()}%
+          Estimated shares: {toFixed(shareOfPool, 2)}%
         </Typography>
       </div>
       <button
