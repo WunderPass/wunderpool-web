@@ -328,7 +328,6 @@ export function fetchPoolBalance(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
     axios({ url: `/api/proxy/pools/show?address=${poolAddress}` })
       .then(async (res) => {
-        console.log(res.data.pool_treasury);
         resolve(res.data.pool_treasury.act_balance);
       })
       .catch((err) => reject(err));

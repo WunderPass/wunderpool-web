@@ -263,8 +263,6 @@ function SwapTransaction({ transaction }) {
 function NormalTransaction({ transaction, wunderPool }) {
   const { gasUsed, gasPrice, functionName, input } = transaction;
   const params = decodeInputParams(functionName, input);
-  console.log(transaction);
-
   const [expand, setExpand] = useState(false);
 
   const transactionDescription = () => {

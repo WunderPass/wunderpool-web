@@ -274,11 +274,7 @@ export default function ProposalCard(props) {
   const [signing, setSigning] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
-  const { yesVotes = 0, noVotes = 0 } = useMemo(() => {
-    if (!proposal.id) return {};
-    return wunderPool.getVotes(proposal.id);
-  }, [proposal.id]);
-  const totalVotes = wunderPool.governanceToken?.totalSupply;
+  const { yesVotes = 0, noVotes = 0, totalVotes } = proposal;
 
   const handleClose = () => {
     setSigning(false);
