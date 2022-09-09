@@ -1,9 +1,9 @@
-version: "3.8"
+version: '3.8'
 services:
   web:
     build:
       context: ./web
-    command: bash -c "npm install && npm run build && npm run start"
+    command: bash -c "npm install --production && npm run build && npm run start"
     volumes:
       - './web:/web'
     ports:
@@ -20,8 +20,8 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     depends_on:
       - web
   certbot:
@@ -29,4 +29,3 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    
