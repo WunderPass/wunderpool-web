@@ -6,7 +6,7 @@ import TransactionDialog from '../utils/transactionDialog';
 
 export default function VotingButtons(props) {
   const { proposal, user, wunderPool, handleSuccess, handleError } = props;
-  const [userHasVoted, setUserHasVoted] = useState(null);
+  const [userHasVoted, setUserHasVoted] = useState(proposal.hasVoted);
   const [signing, setSigning] = useState(false);
 
   const handleVote = (mode) => {
@@ -58,7 +58,7 @@ export default function VotingButtons(props) {
     );
   }
 
-  if (proposal.deadline.lte(Math.floor(Number(new Date()) / 1000))) {
+  if (new Date(proposal.deadline) <= new Date()) {
     return <Typography>Voting Period has ended</Typography>;
   }
 

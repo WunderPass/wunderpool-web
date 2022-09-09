@@ -27,11 +27,12 @@ export default function ProposalList(props) {
     addQueryParam({ tab: proposalsTab });
   }, [proposalsTab]);
 
-  const handleOpenClose = () => {
+  const handleOpenClose = (onlyClose = false) => {
+    if (onlyClose && !open) return;
     if (open) {
       goBack(() => removeQueryParam('makeProposal1'));
     } else {
-      addQueryParam({ makeProposal1: 'makeProposal1' }, false);
+      addQueryParam({ makeProposal1: 'buy' }, false);
     }
   };
 
@@ -39,7 +40,7 @@ export default function ProposalList(props) {
     setOpen(router.query?.makeProposal1 ? true : false);
   }, [router.query]);
 
-  return !wunderPool.isReady2 ? (
+  return !wunderPool.isReady ? (
     <Skeleton
       variant="rectangular"
       width="100%"
@@ -53,31 +54,20 @@ export default function ProposalList(props) {
           tab={proposalsTab}
           setTab={setProposalsTab}
           proposals={wunderPool.proposals}
+          parent="list"
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
       {proposalsTab == 0 && (
-        <CurrentVotingsList
-          wunderPool={wunderPool}
-          openProposal={openProposal}
-          {...props}
-        />
+        <CurrentVotingsList openProposal={openProposal} {...props} />
       )}
       {proposalsTab == 1 && (
         <div>
-          <ExecutableList
-            wunderPool={wunderPool}
-            openProposal={openProposal}
-            {...props}
-          />
+          <ExecutableList openProposal={openProposal} {...props} />
         </div>
       )}
       {proposalsTab == 2 && (
-        <HistoryList
-          wunderPool={wunderPool}
-          openProposal={openProposal}
-          {...props}
-        />
+        <HistoryList openProposal={openProposal} {...props} />
       )}
     </Stack>
   ) : (
@@ -91,7 +81,9 @@ export default function ProposalList(props) {
         </Typography>
         <button
           className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-          onClick={handleOpenClose}
+          onClick={() => {
+            handleOpenClose();
+          }}
         >
           Make Proposal
         </button>

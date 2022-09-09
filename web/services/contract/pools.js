@@ -3,32 +3,19 @@ import { initPool, usdcAddress, tokenAbi, versionLookup } from './init';
 import { usdc } from '/services/formatter';
 import {
   addToWhiteListDelta,
-  fetchPoolIsClosedDelta,
   fetchWhitelistedUserPoolsDelta,
   fundPoolDelta,
   joinPoolDelta,
 } from './delta/pools';
-import {
-  fetchPoolShareholderAgreementGamma,
-  fundPoolGamma,
-  joinPoolGamma,
-} from './gamma/pools';
+import { fundPoolGamma, joinPoolGamma } from './gamma/pools';
 import {
   addToWhiteListWithSecretEpsilon,
-  fetchPoolShareholderAgreementEpsilon,
   fetchWhitelistedUserPoolsEpsilon,
 } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
 import { approve, usdcBalanceOf } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
-
-export function poolVersion(poolAddress) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(versionLookup[await wunderPool.launcherAddress()]);
-  });
-}
 
 export function createPool(
   creator,
@@ -172,15 +159,15 @@ async function formatMember(member, totalSupply) {
   };
 }
 
-async function formatGovernanceToken(token) {
+function formatGovernanceToken(token) {
   const address = token.governanc_token.currency_contract_address;
-  const govToken = new ethers.Contract(address, tokenAbi, httpProvider);
+  // const govToken = new ethers.Contract(address, tokenAbi, httpProvider);
   return {
     name: token.governanc_token.currency_name,
     address,
     symbol: token.governanc_token.currency_symbol,
     price: 1 / token.tokens_for_dollar,
-    totalSupply: (await govToken.totalSupply()).toNumber(), // token.emmited_shares,
+    totalSupply: token.emmited_shares, // (await govToken.totalSupply()).toNumber()
   };
 }
 async function formatShareholderAgreement(shareholderAgreement) {
@@ -204,7 +191,9 @@ async function formatShareholderAgreement(shareholderAgreement) {
 async function formatPool(pool, user = null) {
   try {
     const tokens = await Promise.all(
-      pool.pool_assets.map(async (asset) => await formatAsset(asset))
+      pool.pool_assets
+        ? pool.pool_assets.map(async (asset) => await formatAsset(asset))
+        : []
     );
     const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
     const version = versionLookup[pool.launcher.launcher_version];
@@ -213,7 +202,7 @@ async function formatPool(pool, user = null) {
       .reduce((a, b) => a + b, 0);
     const totalBalance = cashInTokens + usdBalance;
 
-    const governanceToken = await formatGovernanceToken(pool.pool_shares);
+    const governanceToken = formatGovernanceToken(pool.pool_shares);
 
     const members = await Promise.all(
       pool.pool_members.map(
@@ -236,7 +225,7 @@ async function formatPool(pool, user = null) {
       closed: pool.closed,
       address: pool.pool_address,
       name: pool.pool_name,
-      version: versionLookup[pool.launcher.launcher_version],
+      version,
       minInvest: pool.min_stake,
       usdBalance,
       cashInTokens,
@@ -259,13 +248,15 @@ export function fetchUserPools(userAddress) {
       .then(async (res) => {
         const pools = await Promise.all(
           // .filter((pool) => pool.active) => As of 29.07.2022 All Pools are {active: false} :(
-          res.data.map(
-            async (pool) => await formatPool(pool, userAddress.toLowerCase())
-          )
+          res.data
+            .filter((pool) => pool.active)
+            .map(
+              async (pool) => await formatPool(pool, userAddress.toLowerCase())
+            )
         );
         resolve(pools.filter((p) => p));
       })
-      .catch((err) => reject(err));
+      .catch((err) => console.log(err));
   });
 }
 
@@ -319,43 +310,28 @@ export function fetchPoolName(poolAddress, version = null) {
   });
 }
 
-export function fetchPoolIsClosed(poolAddress, version) {
-  if (version > 3) {
-    return fetchPoolIsClosedDelta(poolAddress);
-  } else {
-    return new Promise((resolve, reject) => {
-      resolve(false);
-    });
-  }
-}
-
-export function fetchPoolMembers(poolAddress, version = null) {
-  return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.poolMembers());
-  });
-}
-
 export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPool(poolAddress);
-    resolve(await wunderPool.isMember(userAddress));
+    axios({ url: `/api/proxy/pools/show?address=${poolAddress}` })
+      .then(async (res) => {
+        var isMember = false;
+        res.data.pool_members.forEach((element) => {
+          if (element.members_address == userAddress) isMember = true;
+        });
+        resolve(isMember);
+      })
+      .catch((err) => reject(err));
   });
-}
-
-export function fetchPoolShareholderAgreement(poolAddress, version = null) {
-  if (version > 4) {
-    return fetchPoolShareholderAgreementEpsilon(poolAddress);
-  } else {
-    return fetchPoolShareholderAgreementGamma(poolAddress);
-  }
 }
 
 export function fetchPoolBalance(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    const provider = httpProvider;
-    const usdcContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
-    resolve(await usdcContract.balanceOf(poolAddress));
+    axios({ url: `/api/proxy/pools/show?address=${poolAddress}` })
+      .then(async (res) => {
+        console.log(res.data.pool_treasury);
+        resolve(res.data.pool_treasury.act_balance);
+      })
+      .catch((err) => reject(err));
   });
 }
 
@@ -394,35 +370,13 @@ export function fundPool(poolAddress, amount, version) {
   }
 }
 
-export function normalTransactions(poolAddress, version = null) {
-  return new Promise(async (resolve, reject) => {
-    axios({
-      url: `https://api.polygonscan.com/api?module=account&action=txlist&address=${poolAddress}&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`,
-    })
-      .then((res) => {
-        resolve(res.data);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
 export function fetchPoolData(poolAddress) {
   return new Promise(async (resolve, reject) => {
     try {
-      const poolData =
-        (await getCachedItemDB(`pool_info_${poolAddress}`)) ||
-        (await cacheItemDB(
-          `pool_info_${poolAddress}`,
-          (
-            await axios({
-              url: `/api/proxy/pools/show?address=${poolAddress}`,
-            })
-          ).data,
-          20
-        ));
-      resolve(poolData);
+      resolve(
+        (await axios({ url: `/api/proxy/pools/show?address=${poolAddress}` }))
+          .data
+      );
     } catch (error) {
       reject(error);
     }

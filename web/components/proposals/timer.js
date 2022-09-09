@@ -4,8 +4,8 @@ import TimerBar from '/components/proposals/timerBar';
 
 const Timer = (props) => {
   const { proposal } = props;
-  const finalTime = proposal.deadline.toNumber();
-  const start = proposal.createdAt.toNumber();
+  const finalTime = proposal.deadline;
+  const start = proposal.createdAt;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {
@@ -30,7 +30,7 @@ const Timer = (props) => {
   };
 
   useEffect(() => {
-    const newTimer = Math.floor(new Date(finalTime) - new Date() / 1000);
+    const newTimer = Math.floor((new Date(finalTime) - new Date()) / 1000);
     let timeout = null;
     if (newTimer > 172800) {
       setTimer(newTimer);
@@ -69,7 +69,7 @@ const Timer = (props) => {
       </div>
       <div className="mt-5">
         <TimerBar
-          passed={Math.round(Number(new Date()) / 1000) - start}
+          passed={Math.round(Number(new Date())) - start}
           total={finalTime - start}
         />
       </div>

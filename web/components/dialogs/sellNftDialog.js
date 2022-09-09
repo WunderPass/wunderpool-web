@@ -8,18 +8,9 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { usdc } from '../../services/formatter';
-import { createNftSellProposal } from '/services/contract/proposals';
 
 export default function SellNftDialog(props) {
-  const {
-    open,
-    setOpen,
-    poolAddress,
-    user,
-    fetchProposals,
-    handleSuccess,
-    handleError,
-  } = props;
+  const { open, setOpen, wunderPool, user, handleSuccess, handleError } = props;
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
   const [tokenId, setTokenId] = useState('');
@@ -32,18 +23,17 @@ export default function SellNftDialog(props) {
 
   const handleSubmit = () => {
     setLoading(true);
-    createNftSellProposal(
-      poolAddress,
-      address,
-      tokenId,
-      user.address,
-      `We will buy an NFT from ${user.wunderId} for ${amount} USD`,
-      `NFT Contract Address: ${address} // TokenID: ${tokenId}`,
-      usdc(amount)
-    )
+    wunderPool
+      .nftSellProposal(
+        address,
+        tokenId,
+        `We will buy an NFT from ${user.wunderId} for ${amount} USD`,
+        `NFT Contract Address: ${address} // TokenID: ${tokenId}`,
+        usdc(amount)
+      )
       .then((res) => {
         handleSuccess(`Created Proposal to Sell NFT`);
-        fetchProposals();
+        wunderPool.determineProposals();
         handleClose();
       })
       .catch((err) => {

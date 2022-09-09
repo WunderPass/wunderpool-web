@@ -36,7 +36,7 @@ export default function makeProposal(props) {
 
   const hasEnoughBalance = useMemo(() => {
     if (!value) return true;
-    return wunderPool.usdcBalance.gte(usdc(value));
+    return wunderPool.usdcBalance >= value;
   }, [value]);
 
   const receivedTokens = useMemo(
@@ -60,7 +60,7 @@ export default function makeProposal(props) {
         .then((res) => {
           handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
           wunderPool.determineProposals();
-          handleOpenClose();
+          handleOpenClose(true);
         })
         .catch((err) => {
           handleError(err);
@@ -84,7 +84,7 @@ export default function makeProposal(props) {
     <ResponsiveDialog
       maxWidth="md"
       open={open}
-      onClose={handleOpenClose}
+      onClose={() => handleOpenClose(true)}
       title="Make a Proposal"
       actions={
         !loading && (
@@ -92,7 +92,7 @@ export default function makeProposal(props) {
             <div className="flex flex-col items-center justify-center w-full">
               <button
                 className="btn-neutral w-full py-3"
-                onClick={handleOpenClose}
+                onClick={() => handleOpenClose(true)}
               >
                 Cancel
               </button>
@@ -209,7 +209,7 @@ export default function makeProposal(props) {
                 {valueTouched && !hasEnoughBalance && (
                   <div className="text-red-600" style={{ marginTop: 0 }}>
                     {`The pool only has ${currency(
-                      polyValueToUsd(wunderPool.usdcBalance.toString())
+                      wunderPool.usdcBalance
                     )} in its Treasury!`}
                   </div>
                 )}

@@ -13,11 +13,12 @@ function assetDetails(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  const handleOpenClose = () => {
+  const handleOpenClose = (onlyClose = false) => {
+    if (onlyClose && !open) return;
     if (open) {
       goBack(() => removeQueryParam('makeProposal'));
     } else {
-      addQueryParam({ makeProposal: 'makeProposal' }, false);
+      addQueryParam({ makeProposal: 'buy' }, false);
     }
   };
 
@@ -34,21 +35,21 @@ function assetDetails(props) {
               <Typography className="text-xl w-full">Asset details</Typography>
               <div className="flex lg:flex-row flex-col lg:justify-between w-full">
                 <div className="w-full">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 font-bold">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
                     Total value of assets
                   </Typography>
                   <div className="flex flex-row items-center justify-start ">
                     <GrMoney className="text-xl mr-2" />
-                    <Typography className="text-2xl opacity-90 py-1 font-semibold">
+                    <Typography className="text-2xl opacity-90 py-1 font-medium">
                       {currency(wunderPool.assetBalance)}
                     </Typography>
                   </div>
                 </div>
                 <div className="w-full lg:text-right">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 font-bold">
+                  <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
                     Amount of assets
                   </Typography>
-                  <Typography className="text-2xl opacity-90 py-1 font-semibold">
+                  <Typography className="text-2xl opacity-90 py-1 font-medium">
                     {wunderPool.assetCount}
                   </Typography>
                 </div>

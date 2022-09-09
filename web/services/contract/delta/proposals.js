@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { initPoolDelta, initProposalDelta } from './init';
@@ -60,11 +59,11 @@ export function fetchPoolProposalsDelta(address, userAddress = null) {
           title,
           description,
           transactionCount,
-          deadline,
+          deadline: deadline.mul(1000).toNumber(),
           yesVotes,
           noVotes,
           totalVotes,
-          createdAt,
+          createdAt: createdAt.mul(1000).toNumber(),
           executed,
           executable,
           declined,
@@ -157,45 +156,6 @@ export function createMultiActionProposalDelta(
         reject(err);
       });
   });
-}
-
-export function createCustomProposalDelta(
-  poolAddress,
-  title,
-  description,
-  contractAddresses,
-  actions,
-  params,
-  transactionValues,
-  deadline,
-  userAddress
-) {
-  const formattedValues = transactionValues.map((val) =>
-    ethers.utils.parseEther(String(val))
-  );
-  const encodedParams = params.map((param) =>
-    encodeParams(
-      param[0],
-      param[1].map((par) => {
-        try {
-          return JSON.parse(par);
-        } catch {
-          return par;
-        }
-      })
-    )
-  );
-  return createMultiActionProposalDelta(
-    poolAddress,
-    title,
-    description,
-    contractAddresses,
-    actions,
-    encodedParams,
-    formattedValues,
-    deadline,
-    userAddress
-  );
 }
 
 export function createApeSuggestionDelta(
@@ -323,7 +283,6 @@ export async function createNftBuyProposalDelta(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
   amount,
@@ -341,11 +300,11 @@ export async function createNftBuyProposalDelta(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [buyerAddress, poolAddress, amount]
+        [userAddress, poolAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, buyerAddress, tokenId]
+        [poolAddress, userAddress, tokenId]
       ),
     ],
     [0, 0],
@@ -358,7 +317,6 @@ export async function createNftSellProposalDelta(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
   amount,
@@ -376,11 +334,11 @@ export async function createNftSellProposalDelta(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, sellerAddress, amount]
+        [poolAddress, userAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [sellerAddress, poolAddress, tokenId]
+        [userAddress, poolAddress, tokenId]
       ),
     ],
     [0, 0],

@@ -113,7 +113,7 @@ export default function NewPoolDialog(props) {
     formData.append('poolAddress', address);
     axios({
       method: 'post',
-      url: '/api/proxy/pools/setImage',
+      url: '/api/proxy/pools/metadata/setImage',
       data: formData,
     })
       .then(() => {})
@@ -123,6 +123,7 @@ export default function NewPoolDialog(props) {
   };
 
   const handleClose = () => {
+    removeQueryParam('createPool');
     setWaitingForPool(false);
     setLoading(false);
     setStep(1);
@@ -152,7 +153,6 @@ export default function NewPoolDialog(props) {
     setShowCustomPerson(false);
     setMembers([]);
     setOpen(false);
-    removeQueryParam('dialog');
   };
 
   const handleCloseKeepValues = () => {
@@ -211,7 +211,7 @@ export default function NewPoolDialog(props) {
           handleError(err);
           setWaitingForPool(false);
         });
-    }, 50);
+    }, 10);
   };
 
   useEffect(() => {

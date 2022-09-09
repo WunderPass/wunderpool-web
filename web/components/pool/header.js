@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DestroyPoolDialog from '/components/dialogs/destroyPool';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { currency, polyValueToUsd, secondsToHours } from '/services/formatter';
+import { currency, secondsToHours } from '/services/formatter';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 import { BsLink45Deg } from 'react-icons/bs';
@@ -17,6 +17,23 @@ import { useRouter } from 'next/router';
 
 export default function PoolHeader(props) {
   const { name, address, wunderPool, isMobile, handleSuccess } = props;
+  const {
+    usdcBalance,
+    isMember,
+    minInvest,
+    maxInvest,
+    poolDescription,
+    votingTime,
+    votingThreshold,
+    minYesVoters,
+  } = wunderPool || {};
+  const {
+    name: govTokenName,
+    symbol: govTokenSymbol,
+    tokensForDollar,
+    totalSupply,
+    address: govTokenAddress,
+  } = wunderPool?.governanceToken || {};
   const [destroyDialog, setDestroyDialog] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [image, setImage] = useState(null);
@@ -28,7 +45,6 @@ export default function PoolHeader(props) {
   const router = useRouter();
 
   const handleOpenClose = () => {
-    console.log(destroyDialog);
     if (destroyDialog) {
       goBack(() => removeQueryParam('closePool'));
     } else {
@@ -68,7 +84,7 @@ export default function PoolHeader(props) {
     formData.append('poolAddress', address.toLowerCase());
     axios({
       method: 'post',
-      url: '/api/proxy/pools/setImage',
+      url: '/api/proxy/pools/metadata/setImage',
       data: formData,
     })
       .then(() => {
@@ -86,7 +102,7 @@ export default function PoolHeader(props) {
     formData.append('poolAddress', address.toLowerCase());
     axios({
       method: 'post',
-      url: '/api/proxy/pools/setBanner',
+      url: '/api/proxy/pools/metadata/setBanner',
       data: formData,
     })
       .then(() => {
@@ -111,14 +127,14 @@ export default function PoolHeader(props) {
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${address}`,
-        `/api/proxy/pools/getImage?address=${address}`,
+        `/api/proxy/pools/metadata/getImage?address=${address}`,
         600
       )
     );
     setBannerUrl(
       await cacheImageByURL(
         `pool_banner_${address}`,
-        `/api/proxy/pools/getBanner?address=${address}`,
+        `/api/proxy/pools/metadata/getBanner?address=${address}`,
         600
       )
     );
@@ -212,8 +228,8 @@ export default function PoolHeader(props) {
               {name}
             </Typography>
             <div className="flex flex-row justify-end ">
-              <Typography className="text-2xl mt-4 font-bold sm:-mt-5 sm:mr-2 pl-2 text-right">
-                Cash: {currency(polyValueToUsd(Number(wunderPool.usdcBalance)))}
+              <Typography className="text-2xl mt-4 font-medium sm:-mt-5 sm:mr-2 pl-2 text-right">
+                Cash: {currency(usdcBalance)}
               </Typography>
             </div>
           </div>
@@ -256,9 +272,7 @@ export default function PoolHeader(props) {
                 style={{
                   transition: 'transform 200ms ease',
                   transform:
-                    wunderPool.isMember && showMoreInfo
-                      ? 'scaleY(1)'
-                      : 'scaleY(0)',
+                    isMember && showMoreInfo ? 'scaleY(1)' : 'scaleY(0)',
                 }}
                 className="btn-danger p-3 px-4"
                 onClick={handleOpenClose}
@@ -280,9 +294,7 @@ export default function PoolHeader(props) {
                     Min
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.minInvest
-                      ? currency(wunderPool.minInvest)
-                      : '-'}
+                    {minInvest ? currency(minInvest) : '-'}
                   </Typography>
                 </div>
                 <div>
@@ -290,20 +302,18 @@ export default function PoolHeader(props) {
                     Max
                   </Typography>
                   <Typography className="text-sm opacity-90 py-1">
-                    {wunderPool.maxInvest
-                      ? currency(wunderPool.maxInvest)
-                      : '-'}
+                    {maxInvest ? currency(maxInvest) : '-'}
                   </Typography>
                 </div>
               </div>
 
               <Divider className="my-8 opacity-70" />
               <div>
-                <Typography className="text-lg font-semi py-1">
+                <Typography className="text-lg font-medium py-1">
                   Pool Description
                 </Typography>
                 <Typography className="text-sm opacity-40 py-1 ">
-                  {wunderPool.poolDescription || '-'}
+                  {poolDescription || '-'}
                 </Typography>
               </div>
               <div>
@@ -325,10 +335,10 @@ export default function PoolHeader(props) {
                 </div>
               </div>
               <Divider className="my-8 opacity-70" />
-              {wunderPool.governanceToken && (
+              {govTokenName && (
                 <>
                   <div>
-                    <Typography className="text-lg font-semi py-1">
+                    <Typography className="text-lg font-medium py-1">
                       Token details
                     </Typography>
                   </div>
@@ -338,16 +348,15 @@ export default function PoolHeader(props) {
                         Pool Token Name
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.governanceToken.name} (
-                        {wunderPool.governanceToken.symbol})
+                        {govTokenName} ({govTokenSymbol})
                       </Typography>
                     </div>
                     <div>
                       <Typography className="text-sm opacity-40 py-1 pt-6">
-                        Price per Token
+                        Tokens Per Dollar
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {currency(wunderPool.governanceToken.price / 1000000)}
+                        {tokensForDollar.toFixed(1)} ({govTokenSymbol})
                       </Typography>
                     </div>
                     <div>
@@ -355,7 +364,7 @@ export default function PoolHeader(props) {
                         Total Supply
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.governanceToken.totalSupply.toString()}
+                        {totalSupply}
                       </Typography>
                     </div>
                   </div>
@@ -367,21 +376,21 @@ export default function PoolHeader(props) {
                     <Link
                       className="cursor-pointer"
                       target="_blank"
-                      href={`https://polygonscan.com/token/${wunderPool.governanceToken.address}`}
+                      href={`https://polygonscan.com/token/${govTokenAddress}`}
                     >
                       <div className="flex flex-row items-center">
                         <Typography>
                           <BsLink45Deg className="text-lg opacity-60 mr-1" />
                         </Typography>
                         <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
-                          {wunderPool.governanceToken.address}
+                          {govTokenAddress}
                         </Typography>
                       </div>
                     </Link>
                   </div>
                   <Divider className="my-8 opacity-70" />
                   <div>
-                    <Typography className="text-lg font-semi py-1">
+                    <Typography className="text-lg font-medium py-1">
                       Voting rules
                     </Typography>
                   </div>
@@ -391,9 +400,7 @@ export default function PoolHeader(props) {
                         Duration of Voting
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.votingTime
-                          ? `${secondsToHours(wunderPool.votingTime)}h`
-                          : '-'}
+                        {votingTime ? `${secondsToHours(votingTime)}h` : '-'}
                       </Typography>
                     </div>
                     <div>
@@ -402,9 +409,7 @@ export default function PoolHeader(props) {
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
                         {'> '}
-                        {wunderPool.votingThreshold &&
-                          wunderPool.votingThreshold}
-                        %
+                        {votingThreshold && votingThreshold}%
                       </Typography>
                     </div>
                     <div>
@@ -412,7 +417,7 @@ export default function PoolHeader(props) {
                         Min voters needed
                       </Typography>
                       <Typography className="text-sm opacity-90 py-1">
-                        {wunderPool.minYesVoters && wunderPool.minYesVoters}
+                        {minYesVoters && minYesVoters}
                       </Typography>
                     </div>
                   </div>

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Skeleton, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
@@ -8,16 +7,15 @@ import Avatar from '/components/utils/avatar';
 import { FaBan } from 'react-icons/fa';
 import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
-import { cacheItemDB, getCachedItemDB } from '../../services/caching';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 
 export default function PoolMembers(props) {
-  const { wunderPool, loginCallback, setMembersLoaded } = props;
-  const { isReady, isMember, closed, governanceToken, version } = wunderPool;
+  const { wunderPool, loginCallback } = props;
+  const { isReady, isMember, closed, governanceToken, members, version } =
+    wunderPool;
   const [open, setOpen] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
-  const [members, setMembers] = useState([]);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
@@ -32,35 +30,6 @@ export default function PoolMembers(props) {
   useEffect(() => {
     setOpen(router.query?.joinPool ? true : false);
   }, [router.query]);
-
-  useEffect(async () => {
-    if (governanceToken && governanceToken.holders) {
-      const resolvedMembers = await Promise.all(
-        governanceToken.holders.map(async (mem) => {
-          try {
-            const user =
-              (await getCachedItemDB(mem.address)) ||
-              (await cacheItemDB(
-                mem.address,
-                (
-                  await axios({
-                    url: '/api/proxy/users/find',
-                    params: { address: mem.address },
-                  })
-                ).data,
-                600
-              ));
-            return { ...mem, wunderId: user.wunderId };
-          } catch {
-            setMembersLoaded(true);
-            return mem;
-          }
-        })
-      );
-      setMembers(resolvedMembers);
-      setMembersLoaded(true);
-    }
-  }, [governanceToken?.holders]);
 
   return isReady ? (
     <div className="md:ml-4 w-full">

@@ -34,12 +34,7 @@ export default function LoginWithWunderPass(props) {
           clearInterval(requestInterval);
 
           if (event.data?.wunderId) {
-            console.log('OAUTH GOT WUNDERID:', event.data.wunderId);
             onSuccess(event.data);
-            console.log(
-              'OAUTH CLOSE WINDOW:',
-              event?.source?.window || event?.source
-            );
             window.removeEventListener('message', handleMessage);
             event.source?.window?.close();
             setPopup(null);
@@ -67,6 +62,9 @@ export default function LoginWithWunderPass(props) {
   return (
     <>
       <button onClick={handleClick}>
+<<<<<<< HEAD
+        <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-medium text-md">
+=======
         
         {/* Casama Native Login */}
 
@@ -80,6 +78,7 @@ export default function LoginWithWunderPass(props) {
         {/* WP Login */}
         
         {/* <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-bold text-md">
+>>>>>>> master
           <svg
             className="fill-white"
             xmlns="http://www.w3.org/2000/svg"

@@ -68,7 +68,7 @@ export default function Pools(props) {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <div className="flex flex-col">
                 <div className="flex flex-row items-center">
-                  <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-bold">
+                  <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-medium">
                     Hello {user?.wunderId}
                   </Typography>
                   <Tooltip
@@ -81,11 +81,11 @@ export default function Pools(props) {
                     <button onClick={() => toggleAddress()}>
                       {showAddress ? (
                         <div className="flex flex-row items-center">
-                          <AiFillUpCircle className="text-kaico-blue sm:text-2xl font-bold text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                          <AiFillUpCircle className="text-kaico-blue sm:text-2xl font-medium text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
                         </div>
                       ) : (
                         <div className="flex flex-row items-center">
-                          <AiOutlineDownCircle className="text-kaico-blue sm:text-2xl text-xl font-bold mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                          <AiOutlineDownCircle className="text-kaico-blue sm:text-2xl text-xl font-medium mt-3 sm:mt-4 ml-2 sm:ml-4" />
                         </div>
                       )}
                     </button>
@@ -122,7 +122,7 @@ export default function Pools(props) {
 
             <div className="sm:flex sm:flex-row">
               <div className="flex flex-col sm:w-1/2 sm:pr-8">
-                <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4 font-bold">
+                <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4 font-medium">
                   My Portfolio
                 </Typography>
                 <BalanceBox className="w-10" {...props} />
@@ -130,7 +130,7 @@ export default function Pools(props) {
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                 <div className="flex flex-row justify-between pb-4 b">
-                  <Typography className="subheader subheader-sm font-bold">
+                  <Typography className="subheader subheader-sm font-medium">
                     My Pools
                   </Typography>
                   {user.pools.length > pageSize && (

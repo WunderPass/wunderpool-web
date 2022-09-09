@@ -40,6 +40,7 @@ export default function body(props) {
                 tabs={['Proposals', 'Assets', "NFT's", 'Transactions']}
                 tab={tab}
                 setTab={setTab}
+                parent="body"
               />
               <Divider className="mb-1 mt-1 opacity-70" />
 

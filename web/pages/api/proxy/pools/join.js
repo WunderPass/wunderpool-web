@@ -17,16 +17,12 @@ export default async function handler(req, res) {
       method: 'POST',
       url: `${
         process.env.POOLS_SERVICE
-      }/web3Proxy/pools/${poolAddress.toLowerCase()}/members?secret=${secret}`,
-      // query: { secret: secret },
+      }/web3Proxy/pools/${poolAddress.toLowerCase()}/members`,
+      params: { secret: secret },
       headers: headers,
       data: body,
     });
-    console.log(`[${new Date().toJSON()}] Pool joined`, {
-      poolAddress,
-      userAddress,
-      amount,
-    });
+
     res.status(200).json(resp.data);
   } catch (error) {
     console.log(error);

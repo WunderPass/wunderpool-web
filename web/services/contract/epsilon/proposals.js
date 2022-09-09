@@ -193,43 +193,6 @@ export function createMultiActionProposalEpsilon(
   });
 }
 
-export function createCustomProposalEpsilon(
-  poolAddress,
-  title,
-  description,
-  contractAddresses,
-  actions,
-  params,
-  transactionValues,
-  userAddress
-) {
-  const formattedValues = transactionValues.map((val) =>
-    ethers.utils.parseEther(String(val))
-  );
-  const encodedParams = params.map((param) =>
-    encodeParams(
-      param[0],
-      param[1].map((par) => {
-        try {
-          return JSON.parse(par);
-        } catch {
-          return par;
-        }
-      })
-    )
-  );
-  return createMultiActionProposalEpsilon(
-    poolAddress,
-    title,
-    description,
-    contractAddresses,
-    actions,
-    encodedParams,
-    formattedValues,
-    userAddress
-  );
-}
-
 export function createApeSuggestionEpsilon(
   poolAddress,
   tokenAddress,
@@ -352,7 +315,6 @@ export async function createNftBuyProposalEpsilon(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
   amount,
@@ -370,11 +332,11 @@ export async function createNftBuyProposalEpsilon(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [buyerAddress, poolAddress, amount]
+        [userAddress, poolAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, buyerAddress, tokenId]
+        [poolAddress, userAddress, tokenId]
       ),
     ],
     [0, 0],
@@ -386,7 +348,6 @@ export async function createNftSellProposalEpsilon(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
   amount,
@@ -404,11 +365,11 @@ export async function createNftSellProposalEpsilon(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, sellerAddress, amount]
+        [poolAddress, userAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [sellerAddress, poolAddress, tokenId]
+        [userAddress, poolAddress, tokenId]
       ),
     ],
     [0, 0],

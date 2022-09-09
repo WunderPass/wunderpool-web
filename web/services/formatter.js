@@ -10,6 +10,9 @@ export function decodeParams(action, params) {
   return bytesToValue(params, types);
 }
 
+export const toFixed = (n, fixed) =>
+  ~~(Math.pow(10, fixed) * n) / Math.pow(10, fixed);
+
 export function encodeParams(types, values) {
   const abiCoder = new ethers.utils.AbiCoder();
   const vals = [];
@@ -22,7 +25,6 @@ export function encodeParams(types, values) {
       vals.push(`${values[i]}`);
     }
   });
-  console.log(types, vals);
   return abiCoder.encode(types, vals);
 }
 
@@ -31,10 +33,6 @@ export function toEthString(num, decimals) {
     ethers.BigNumber.from('10').pow(ethers.BigNumber.from(`${18 - decimals}`))
   );
   return ethers.utils.formatEther(`${weiBalance}`);
-}
-
-export function displayWithDecimalPlaces(num, decimals) {
-  return (Math.round(num * 100) / 100).toFixed(decimals);
 }
 
 export function weiToMatic(wei) {
@@ -72,6 +70,7 @@ export function formatNumber(num, options = {}) {
 
   const sep = seperator || localeOptions[locale]?.separator || ',';
   const decSep = decimalSeperator || localeOptions[locale]?.decimals || '.';
+  if (!num) return `0${decSep}00`;
 
   const str = String(round(num, precision));
   const amount = str.split('.')[0] || '0';

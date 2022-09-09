@@ -26,14 +26,14 @@ export default function Pool(props) {
     proposalExecutedEvent,
     resetEvents,
     handleInfo,
+    handleError,
   } = props;
   const [address, setAddress] = useState(null);
   const [name, setName] = useState('');
   const [fundDialog, setFundDialog] = useState(false);
   const [loading, setLoading] = useState(true);
-  const wunderPool = usePool(user.address, address);
+  const wunderPool = usePool(user.address, address, handleError);
   const [loadingCircle, setLoadingCircle] = useState(true);
-  const [membersLoaded, setMembersLoaded] = useState(false);
 
   const loginCallback = () => {
     setupPoolListener(address, user.address);
@@ -61,7 +61,10 @@ export default function Pool(props) {
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {
       if (proposalExecutedEvent) {
         fetchPoolName(address)
-          .then(() => wunderPool.determineProposals())
+          .then(() => {
+            wunderPool.determineProposals();
+            wunderPool.determinePoolData();
+          })
           .catch(() => {
             handleInfo('Pool was closed.');
             user.fetchUsdBalance();
@@ -117,7 +120,7 @@ export default function Pool(props) {
   useEffect(() => {
     if (!address || !user.address) return;
     if (!newMemberEvent) return;
-    wunderPool.determineGovernanceToken();
+    wunderPool.determinePoolData();
     wunderPool.determineBalance();
     resetEvents();
   }, [newMemberEvent]);
@@ -128,8 +131,8 @@ export default function Pool(props) {
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   useEffect(() => {
-    setLoadingCircle(!(wunderPool.isReady && membersLoaded));
-  }, [wunderPool.isReady, membersLoaded]);
+    setLoadingCircle(!wunderPool.isReady);
+  }, [wunderPool.isReady]);
 
   return (
     <>
@@ -174,7 +177,6 @@ export default function Pool(props) {
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}
-                setMembersLoaded={setMembersLoaded}
                 {...props}
               />
             </div>
@@ -201,7 +203,6 @@ export default function Pool(props) {
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}
-                setMembersLoaded={setMembersLoaded}
                 {...props}
               />
 

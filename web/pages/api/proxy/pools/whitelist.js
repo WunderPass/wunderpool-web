@@ -46,16 +46,8 @@ export default async function handler(req, res) {
         .json({ error: 'Invalid Invite - newMember or secret required' });
     }
 
-    console.log(`[${new Date().toJSON()}] Invited User`, {
-      poolAddress,
-      userAddress,
-      newMember,
-      secret,
-      validFor,
-    });
     res.status(200).json(response.data);
   } catch (error) {
-    console.log(error?.toJSON() || error);
     res.status(500).json(error);
   }
 }

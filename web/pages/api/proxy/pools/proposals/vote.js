@@ -7,10 +7,23 @@ export default async function handler(req, res) {
       authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
     };
 
+    const { address, id, userAddress, vote, signature } = req.body;
+
+    const body = {
+      pool_address: address,
+      proposal_id: id,
+      user_address: userAddress,
+      vote, // YES || NO
+      signature,
+    };
+
     const resp = await axios({
-      method: 'get',
-      url: `${process.env.POOLS_SERVICE}/web3Proxy/pools`,
+      method: 'post',
+      url: `${
+        process.env.POOLS_SERVICE
+      }/web3Proxy/pools/${address?.toLowerCase()}/proposals/${id}/votings`,
       headers: headers,
+      data: body,
     });
     res.status(200).json(resp.data);
   } catch (error) {

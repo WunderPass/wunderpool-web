@@ -5,7 +5,7 @@ import { currency } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import usePool from '/hooks/usePool';
 import { ethers } from 'ethers';
-import { usdc } from '/services/formatter';
+import { usdc, toFixed } from '/services/formatter';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
@@ -75,12 +75,14 @@ function TopUpRequired() {
       <Typography className="text-sm mt-3">
         To continue, your Account needs at least $3.00
       </Typography>
-      <Typography className="text-xl my-3">TopUp your WunderId</Typography>
+      <Typography className="text-xl my-3">
+        Deposit funds to your WunderId
+      </Typography>
       {redirectUrl && (
         <Link
           href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
         >
-          <button className="btn btn-info w-full">TopUp Now</button>
+          <button className="btn btn-info w-full">Deposit now</button>
         </Link>
       )}
     </>
@@ -112,7 +114,7 @@ function InputJoinAmount(props) {
           error={errorMsg}
         />
         <Typography className="text-sm float-right mt-2">
-          Estimated shares: {shareOfPool.toString()}%
+          Estimated shares: {toFixed(shareOfPool, 2)}%
         </Typography>
       </div>
       <button
@@ -142,20 +144,16 @@ export default function JoinPool(props) {
   const [signing, setSigning] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [invalidLink, setInvalidLink] = useState(false);
-  const wunderPool = usePool(user.address, address);
+  const wunderPool = usePool(user.address, address, handleError);
   const { minInvest, maxInvest } = wunderPool;
-  const price = wunderPool.governanceToken?.price || 0;
+  const tokensForDollar = wunderPool.governanceToken?.tokensForDollar;
   const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
 
-  const receivedTokens =
-    price > 0
-      ? ethers.BigNumber.from(usdc(amount)).div(price)
-      : ethers.BigNumber.from(100);
-
+  const receivedTokens = tokensForDollar ? amount * tokensForDollar : 100;
   const shareOfPool =
     totalSupply > 0
-      ? receivedTokens.mul(100).div(totalSupply.add(receivedTokens))
-      : ethers.BigNumber.from(100);
+      ? (receivedTokens * 100) / (totalSupply + receivedTokens)
+      : 100;
 
   const handleInput = (value, float) => {
     setAmount(value);
@@ -245,7 +243,7 @@ export default function JoinPool(props) {
           <PoolStats
             minInvest={minInvest}
             maxInvest={maxInvest}
-            members={wunderPool.governanceToken?.holders?.length}
+            members={wunderPool.members?.length}
             maxMembers={wunderPool.maxMembers}
             totalBalance={wunderPool.totalBalance}
           />

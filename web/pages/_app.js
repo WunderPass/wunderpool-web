@@ -10,7 +10,6 @@ import muiTheme from '/theme/mui';
 import Navbar from '/components/layout/navbar';
 import TopUpAlert from '../components/dialogs/topUpAlert';
 import Head from 'next/head';
-import LogRocket from 'logrocket';
 import { HistoryManagerProvider, useHistoryManager } from '/hooks/useHistory';
 import Script from 'next/script';
 import { useEffect } from 'react';

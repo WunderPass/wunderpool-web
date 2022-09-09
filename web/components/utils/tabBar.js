@@ -2,8 +2,8 @@ import { Typography, Badge } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export default function TabBar(props) {
-  const { tabs, tab, setTab, proposals } = props;
-  const [executableProposals, setExecutableProposals] = useState(0);
+  const { tabs, tab, setTab, parent, proposals } = props;
+  const [currentVotingsCount, setCurrentVotingsCount] = useState(0);
 
   const handleClick = (index) => {
     setTab(index);
@@ -11,7 +11,10 @@ export default function TabBar(props) {
 
   useEffect(() => {
     proposals &&
-      setExecutableProposals(proposals.filter((p) => p.executable).length);
+      setCurrentVotingsCount(
+        proposals.filter((p) => !(p.executed || p.declined || p.executable))
+          .length
+      );
   }, [proposals]);
 
   return (
@@ -22,15 +25,15 @@ export default function TabBar(props) {
         return (
           <>
             <button
-              key={`tab-item-${title}-${index}`}
+              key={`tab-item-${parent}-${title}-${index}`}
               className="py-4 mr-3 sm:mr-6"
               onClick={() => handleClick(index)}
             >
-              {title == 'Executable' ? (
+              {title == 'Current Votings' ? (
                 <Badge
                   className="pr-2 text-white opacity-100"
                   color="red"
-                  badgeContent={executableProposals}
+                  badgeContent={currentVotingsCount}
                   max={99}
                 >
                   <div

@@ -1,18 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { fetchPoolNfts, fetchPoolTokens } from '/services/contract/token';
 import {
-  fetchPoolGovernanceToken,
-  fetchPoolNfts,
-  fetchPoolTokens,
-} from '/services/contract/token';
-import {
-  fetchPoolName,
   isMember,
-  fetchPoolIsClosed,
-  poolVersion,
   joinPool,
   addToWhiteList,
+  fetchPoolData,
   fetchPoolBalance,
-  fetchPoolShareholderAgreement,
 } from '/services/contract/pools';
 import {
   createApeSuggestion,
@@ -22,28 +15,35 @@ import {
   createLiquidateSuggestion,
   createSwapSuggestion,
   executeProposal,
-} from '/services/contract/proposals';
-import { hasVoted, vote, voteAgainst, voteFor } from '/services/contract/vote';
-import { latestVersion } from '/services/contract/init';
-import { usdcAddress } from '/services/contract/init';
-import { proposalExecutable } from '/services/contract/proposals';
-import {
   addToWhiteListWithSecret,
-  fetchPoolData,
-} from '../services/contract/pools';
+  proposalExecutable,
+  createNftSellProposal,
+  createNftBuyProposal,
+} from '/services/contract/proposals';
+import { vote, voteAgainst, voteFor } from '/services/contract/vote';
+import {
+  latestVersion,
+  usdcAddress,
+  versionLookup,
+} from '/services/contract/init';
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
+import axios from 'axios';
 
-export default function usePool(userAddr, poolAddr = null) {
+export default function usePool(
+  userAddr,
+  poolAddr = null,
+  handleError = () => {}
+) {
   const [userAddress, setUserAddress] = useState(userAddr);
   const [poolAddress, setPoolAddress] = useState(poolAddr);
   const [isReady, setIsReady] = useState(false);
-  const [isReady2, setIsReady2] = useState(false);
   const [poolName, setPoolName] = useState(null);
   const [poolDescription, setPoolDescription] = useState(null);
   const [exists, setExists] = useState(null);
   const [closed, setClosed] = useState(null);
   const [liquidated, setLiquidated] = useState(false);
   const [version, setVersion] = useState(null);
+  const [poolMembers, setPoolMembers] = useState([]);
   const [userIsMember, setUserIsMember] = useState(null);
   const [usdcBalance, setUsdcBalance] = useState(0);
   const [assetBalance, setAssetBalance] = useState(0);
@@ -60,6 +60,27 @@ export default function usePool(userAddr, poolAddr = null) {
   const [minYesVoters, setMinYesVoter] = useState('');
   const [votingThreshold, setVotingThreshold] = useState('');
   const [votingTime, setVotingTime] = useState('');
+
+  const userShare = useMemo(() => {
+    if (!poolMembers || poolMembers.length <= 0) return 0;
+    return (
+      poolMembers.find(
+        (m) => m.address.toLowerCase() == userAddress.toLowerCase()
+      )?.share || 0
+    );
+  }, [poolMembers]);
+
+  const resolveMember = (address) => {
+    if (address.toLowerCase() == poolAddress) return poolName;
+    return (
+      poolMembers.find((m) => m.address.toLowerCase() == address?.toLowerCase())
+        ?.wunderId || address
+    );
+  };
+
+  const resolveProposal = (proposalId) => {
+    return poolProposals.find((p) => p.id == proposalId);
+  };
 
   const join = async (amount, secret = '') => {
     if (!version || userIsMember) return;
@@ -97,10 +118,17 @@ export default function usePool(userAddr, poolAddr = null) {
     );
   };
 
-  const fudSuggestion = (tokenAddress, title, description, value) => {
+  const fudSuggestion = (
+    tokenAddress,
+    tokenDecimals,
+    title,
+    description,
+    value
+  ) => {
     return createFudSuggestion(
       poolAddress,
       tokenAddress,
+      tokenDecimals,
       title,
       description,
       value,
@@ -109,11 +137,47 @@ export default function usePool(userAddr, poolAddr = null) {
     );
   };
 
-  const swapSuggestion = (tokenIn, tokenOut, title, description, amount) => {
+  const swapSuggestion = (
+    tokenIn,
+    tokenInDecimals,
+    tokenOut,
+    tokenOutDecimals,
+    title,
+    description,
+    amount
+  ) => {
     return createSwapSuggestion(
       poolAddress,
       tokenIn,
+      tokenInDecimals,
       tokenOut,
+      tokenOutDecimals,
+      title,
+      description,
+      amount,
+      userAddress,
+      version.number
+    );
+  };
+
+  const nftSellProposal = (nftAddress, tokenId, title, description, amount) => {
+    return createNftSellProposal(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      title,
+      description,
+      amount,
+      userAddress,
+      version.number
+    );
+  };
+
+  const nftBuyProposal = (nftAddress, tokenId, title, description, amount) => {
+    return createNftBuyProposal(
+      poolAddress,
+      nftAddress,
+      tokenId,
       title,
       description,
       amount,
@@ -150,21 +214,6 @@ export default function usePool(userAddr, poolAddr = null) {
     });
   };
 
-  const determineClosed = async (vers = null) => {
-    setClosed(await fetchPoolIsClosed(poolAddress, (vers || version).number));
-  };
-
-  const determineVersion = async () => {
-    const vers =
-      (await getCachedItemDB(`version_${poolAddress}`)) ||
-      (await cacheItemDB(
-        `version_${poolAddress}`,
-        await poolVersion(poolAddress)
-      ));
-    setVersion(vers);
-    return vers;
-  };
-
   const determineIfMember = async (addr = null) => {
     const userAddr = userAddress || addr;
     if (!userAddr) return false;
@@ -173,25 +222,6 @@ export default function usePool(userAddr, poolAddr = null) {
 
   const determineUsdcBalance = async () => {
     setUsdcBalance(await fetchPoolBalance(poolAddress));
-  };
-
-  const determineShareholderAgreement = async (vers = null) => {
-    const shareholderAgreement = await fetchPoolShareholderAgreement(
-      poolAddress,
-      (vers || version).number
-    );
-
-    setMinInvest(shareholderAgreement.min_invest);
-    setMaxInvest(shareholderAgreement.max_invest);
-    setMaxMembers(shareholderAgreement.max_members);
-    setMinYesVoter(shareholderAgreement.min_yes_voters);
-    setVotingThreshold(shareholderAgreement.voting_threshold);
-    setVotingTime(shareholderAgreement.voting_time);
-  };
-
-  const determinePoolInfo = async () => {
-    const poolData = await fetchPoolData(poolAddress);
-    setPoolDescription(poolData.pool_description);
   };
 
   const determineCustomBalances = (tokens = null) => {
@@ -225,24 +255,55 @@ export default function usePool(userAddr, poolAddr = null) {
     setPoolNfts(await fetchPoolNfts(poolAddress, version.number));
   };
 
-  const determinePoolGovernanceToken = async (vers = null) => {
-    if (liquidated) return;
-    const tkn = await fetchPoolGovernanceToken(
-      poolAddress,
-      (vers || version).number
-    );
-    setPoolGovernanceToken(tkn);
+  const getVotes = (proposalId) => {
+    if (version.number > 4) {
+      const { votings = [] } =
+        poolProposals.find((prop) => prop.id == proposalId) || {};
+      if (!votings || poolMembers.length < 1) return;
+      const yesVotes = votings
+        .filter((v) => v.vote == 'YES')
+        .reduce(
+          (prev, current) =>
+            prev +
+            (poolMembers.find(
+              (m) =>
+                m.address.toLowerCase() == current.user_address.toLowerCase()
+            )?.tokens || 0),
+          0
+        );
+      const noVotes = votings
+        .filter((v) => v.vote == 'NO')
+        .reduce(
+          (prev, current) =>
+            prev +
+            (poolMembers.find(
+              (m) =>
+                m.address.toLowerCase() == current.user_address.toLowerCase()
+            )?.tokens || 0),
+          0
+        );
+
+      return { yesVotes, noVotes };
+    } else {
+      const { yesVotes, noVotes } =
+        poolProposals.find((prop) => prop.id == proposalId) || {};
+      return { yesVotes: yesVotes?.toNumber(), noVotes: noVotes?.toNumber() };
+    }
   };
 
   const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
-    setPoolProposals(
-      await fetchPoolProposals(
+    try {
+      const proposals = await fetchPoolProposals(
         poolAddress,
         userAddress,
         (vers || version).number
-      )
-    );
+      );
+      setPoolProposals(proposals);
+    } catch (error) {
+      handleError('Proposals could not be loaded');
+      console.log('ERROR fetching Proposals', error);
+    }
   };
 
   const getTransactionData = async (id, transactionCount) => {
@@ -272,35 +333,98 @@ export default function usePool(userAddr, poolAddr = null) {
     return voteAgainst(poolAddress, proposalId, userAddress, version.number);
   };
 
-  const userHasVoted = (proposalId) => {
-    return hasVoted(poolAddress, proposalId, userAddress, version.number);
-  };
+  const determinePoolData = async () => {
+    try {
+      const {
+        launcher,
+        pool_name,
+        pool_description,
+        pool_creator,
+        pool_members,
+        shareholder_agreement,
+        active,
+        closed,
+        pool_treasury,
+        pool_shares,
+        pool_assets,
+      } = await fetchPoolData(poolAddress);
 
-  const userShare = () => {
-    if (!poolGovernanceToken || !poolGovernanceToken.holders) return 0;
-    return poolGovernanceToken.holders
-      ?.find(
-        (holder) => holder?.address?.toLowerCase() == userAddress.toLowerCase()
-      )
-      ?.share?.toNumber();
+      setPoolName(pool_name);
+      setExists(active);
+      const vers = versionLookup[launcher.launcher_version];
+      setVersion(vers);
+      setClosed(closed);
+
+      setMinInvest(shareholder_agreement?.min_invest);
+      setMaxInvest(shareholder_agreement?.max_invest);
+      setMaxMembers(shareholder_agreement?.max_members);
+      setMinYesVoter(shareholder_agreement?.min_yes_voters);
+      setVotingThreshold(shareholder_agreement?.voting_threshold);
+      setVotingTime(shareholder_agreement?.voting_time);
+
+      setPoolDescription(pool_description);
+      setUsdcBalance(pool_treasury.act_balance);
+
+      const isMem =
+        pool_members.filter(
+          (m) => m.members_address.toLowerCase() == userAddress?.toLowerCase()
+        ).length > 0;
+
+      setUserIsMember(isMem);
+
+      const totalShares = pool_shares.emmited_shares;
+      setPoolMembers(
+        await Promise.all(
+          pool_members.map(async (mem) => {
+            const member = {
+              address: mem.members_address,
+              tokens: mem.pool_shares_balance,
+              share: (mem.pool_shares_balance * 100) / totalShares,
+            };
+            try {
+              const user =
+                (await getCachedItemDB(member.address)) ||
+                (await cacheItemDB(
+                  member.address,
+                  (
+                    await axios({
+                      url: '/api/proxy/users/find',
+                      params: { address: member.address },
+                    })
+                  ).data,
+                  600
+                ));
+              member.wunderId = user.wunderId;
+            } catch {}
+            return member;
+          })
+        )
+      );
+
+      setPoolGovernanceToken({
+        address: pool_shares?.governanc_token?.currency_contract_address,
+        name: pool_shares?.governanc_token?.currency_name,
+        symbol: pool_shares?.governanc_token?.currency_symbol,
+        tokensForDollar: pool_shares?.tokens_for_dollar,
+        totalSupply: totalShares,
+      });
+
+      return { vers, exists: active, isMem };
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const initialize = async () => {
     if (poolAddress) {
-      await fetchPoolName(poolAddress)
-        .then(async (name) => {
-          setPoolName(name);
-          setExists(true);
-          const vers = await determineVersion();
-
-          await determineClosed(vers);
-          await determineUsdcBalance();
-          await determineShareholderAgreement(vers);
-          await determinePoolInfo();
-          await determinePoolTokens(vers);
-
-          if (userAddress) {
-            await determineIfMember();
+      await determinePoolData(poolAddress)
+        .then(async ({ vers, exists, isMem }) => {
+          if (exists) {
+            await determinePoolTokens(vers);
+            if (isMem) {
+              await determinePoolNfts();
+              await determinePoolProposals(vers);
+            }
           }
         })
         .catch((err) => {
@@ -312,25 +436,6 @@ export default function usePool(userAddr, poolAddr = null) {
     }
   };
 
-  const initialize2 = async () => {
-    if (poolAddress && exists) {
-      const vers = await determineVersion();
-      await determinePoolGovernanceToken(vers);
-      if (userIsMember === true) {
-        await determinePoolNfts();
-        await determinePoolProposals(vers);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (!version) return;
-    setIsReady2(false);
-    initialize2().then(() => {
-      setIsReady2(true);
-    });
-  }, [poolAddress, userIsMember]);
-
   useEffect(() => {
     setVersion(null);
     setIsReady(false);
@@ -341,7 +446,6 @@ export default function usePool(userAddr, poolAddr = null) {
 
   return {
     isReady,
-    isReady2,
     exists,
     closed,
     liquidated,
@@ -360,6 +464,9 @@ export default function usePool(userAddr, poolAddr = null) {
     setUserAddress,
     updateUserAddress,
     userShare,
+    resolveMember,
+    resolveProposal,
+    members: poolMembers,
     isMember: userIsMember,
     join,
     inviteUser,
@@ -373,22 +480,22 @@ export default function usePool(userAddr, poolAddr = null) {
     governanceToken: poolGovernanceToken,
     proposals: poolProposals,
     getTransactionData,
+    determinePoolData,
     apeSuggestion,
     fudSuggestion,
     swapSuggestion,
+    nftSellProposal,
+    nftBuyProposal,
     liquidateSuggestion,
     vote: voteWithMode,
     voteForProposal,
     voteAgainstProposal,
-    userHasVoted,
+    getVotes,
     executable,
     execute,
-    determineIfMember,
     determineTokens: determinePoolTokens,
     determineNfts: determinePoolNfts,
     determineProposals: determinePoolProposals,
-    determineGovernanceToken: determinePoolGovernanceToken,
     determineBalance: determineUsdcBalance,
-    determineShareholderAgreement,
   };
 }

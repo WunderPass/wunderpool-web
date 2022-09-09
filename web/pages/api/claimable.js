@@ -3,6 +3,10 @@ import axios from 'axios';
 export default async function handler(req, res) {
   try {
     const wunderId = req.query.wunderId;
+    console.log(
+      'URL: ',
+      `${process.env.IDENTITY_SERVICE}/v3/nft/cashback/isAuthorized/${wunderId}`
+    );
 
     const resp = await axios({
       method: 'get',

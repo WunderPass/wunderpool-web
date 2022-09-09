@@ -62,12 +62,12 @@ export function fetchPoolProposalsGamma(address, userAddress = null) {
           title,
           description,
           transactionCount,
-          deadline,
+          deadline: deadline.mul(1000).toNumber(),
           yesVotes,
           noVotes,
           abstainVotes,
           totalVotes,
-          createdAt,
+          createdAt: createdAt.mul(1000).toNumber(),
           executed,
           executable,
           declined,
@@ -178,81 +178,6 @@ export function createMultiActionProposalGamma(
         reject(err);
       });
   });
-}
-
-export function createCustomProposalGamma(
-  poolAddress,
-  title,
-  description,
-  contractAddresses,
-  actions,
-  params,
-  transactionValues,
-  deadline
-) {
-  if (
-    contractAddresses?.length > 1 &&
-    actions?.length > 1 &&
-    params?.length > 1 &&
-    transactionValues?.length > 1
-  ) {
-    const formattedValues = transactionValues.map((val) =>
-      ethers.utils.parseEther(String(val))
-    );
-    const encodedParams = params.map((param) =>
-      encodeParams(
-        param[0],
-        param[1].map((par) => {
-          try {
-            return JSON.parse(par);
-          } catch {
-            return par;
-          }
-        })
-      )
-    );
-    return createMultiActionProposalGamma(
-      poolAddress,
-      title,
-      description,
-      contractAddresses,
-      actions,
-      encodedParams,
-      formattedValues,
-      deadline
-    );
-  } else if (
-    contractAddresses?.length == 1 &&
-    actions?.length == 1 &&
-    params?.length == 1 &&
-    transactionValues?.length == 1
-  ) {
-    const formattedValue = ethers.utils.parseEther(
-      String(transactionValues[0] || 0)
-    );
-    const encodedParams = encodeParams(
-      params[0][0],
-      params[0][1].map((par) => {
-        try {
-          return JSON.parse(par);
-        } catch {
-          return par;
-        }
-      })
-    );
-    return createSingleActionProposalGamma(
-      poolAddress,
-      title,
-      description,
-      contractAddresses[0],
-      actions[0],
-      encodedParams,
-      formattedValue,
-      deadline
-    );
-  } else {
-    return new Promise((resolve, reject) => reject('INVALID PROPOSAL'));
-  }
 }
 
 export function createApeSuggestionGamma(
@@ -370,10 +295,10 @@ export async function createNftBuyProposalGamma(
   poolAddress,
   nftAddress,
   tokenId,
-  buyerAddress,
   title,
   description,
-  amount
+  amount,
+  userAddress
 ) {
   return createMultiActionProposalGamma(
     poolAddress,
@@ -387,11 +312,11 @@ export async function createNftBuyProposalGamma(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [buyerAddress, poolAddress, amount]
+        [userAddress, poolAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, buyerAddress, tokenId]
+        [poolAddress, userAddress, tokenId]
       ),
     ],
     [0, 0],
@@ -403,10 +328,10 @@ export async function createNftSellProposalGamma(
   poolAddress,
   nftAddress,
   tokenId,
-  sellerAddress,
   title,
   description,
-  amount
+  amount,
+  userAddress
 ) {
   return createMultiActionProposalGamma(
     poolAddress,
@@ -420,11 +345,11 @@ export async function createNftSellProposalGamma(
     [
       encodeParams(
         ['address', 'address', 'uint256'],
-        [poolAddress, sellerAddress, amount]
+        [poolAddress, userAddress, amount]
       ),
       encodeParams(
         ['address', 'address', 'uint256'],
-        [sellerAddress, poolAddress, tokenId]
+        [userAddress, poolAddress, tokenId]
       ),
     ],
     [0, 0],
