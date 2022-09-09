@@ -373,18 +373,10 @@ export function fundPool(poolAddress, amount, version) {
 export function fetchPoolData(poolAddress) {
   return new Promise(async (resolve, reject) => {
     try {
-      const poolData =
-        (await getCachedItemDB(`pool_info_${poolAddress}`)) ||
-        (await cacheItemDB(
-          `pool_info_${poolAddress}`,
-          (
-            await axios({
-              url: `/api/proxy/pools/show?address=${poolAddress}`,
-            })
-          ).data,
-          20
-        ));
-      resolve(poolData);
+      resolve(
+        (await axios({ url: `/api/proxy/pools/show?address=${poolAddress}` }))
+          .data
+      );
     } catch (error) {
       reject(error);
     }
