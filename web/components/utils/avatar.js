@@ -1,11 +1,7 @@
 import ImageAvatar from '/components/utils/imageAvatar';
 import InitialsAvatar from '/components/utils/initialsAvatar';
 import { useState, useEffect } from 'react';
-import {
-  cacheImage,
-  cacheImageByURL,
-  getCachedImage,
-} from '../../services/caching';
+import { cacheImageByURL } from '../../services/caching';
 
 export default function Avatar(props) {
   const { tooltip, text, separator, wunderId, i } = props;
