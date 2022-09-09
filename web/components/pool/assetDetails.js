@@ -16,7 +16,7 @@ function assetDetails(props) {
   const handleOpenClose = (onlyClose = false) => {
     if (onlyClose && !open) return;
     if (open) {
-      goBack(() => removeQueryParam('makeProposal'));
+      goBack(() => removeQueryParam('makeProposale'));
     } else {
       addQueryParam({ makeProposal: 'buy' }, false);
     }
