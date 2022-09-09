@@ -7,7 +7,7 @@ export default function HistoryList(props) {
     <div>
       {wunderPool.proposals
         .filter((p) => p.executed || p.declined)
-        .sort((one, two) => new Date(two.createdAt) - new Date(one.createdAt))
+        .sort((one, two) => two.createdAt - one.createdAt)
         .map((proposal) => {
           return (
             <ProposalCard

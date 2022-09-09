@@ -4,8 +4,8 @@ import TimerBar from '/components/proposals/timerBar';
 
 const Timer = (props) => {
   const { proposal } = props;
-  const finalTime = new Date(proposal.deadline).getTime();
-  const start = new Date(proposal.createdAt).getTime();
+  const finalTime = proposal.deadline;
+  const start = proposal.createdAt;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {
@@ -69,7 +69,7 @@ const Timer = (props) => {
       </div>
       <div className="mt-5">
         <TimerBar
-          passed={Math.round(Number(new Date()) / 1000) - start}
+          passed={Math.round(Number(new Date())) - start}
           total={finalTime - start}
         />
       </div>
