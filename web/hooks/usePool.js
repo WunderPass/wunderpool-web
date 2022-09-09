@@ -6,6 +6,7 @@ import {
   addToWhiteList,
   fetchPoolData,
   fetchPoolBalance,
+  addToWhiteListWithSecret,
 } from '/services/contract/pools';
 import {
   createApeSuggestion,
@@ -15,7 +16,6 @@ import {
   createLiquidateSuggestion,
   createSwapSuggestion,
   executeProposal,
-  addToWhiteListWithSecret,
   proposalExecutable,
   createNftSellProposal,
   createNftBuyProposal,
