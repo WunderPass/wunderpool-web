@@ -54,14 +54,35 @@ function formatProposal(
     votings.find(
       (v) => v.user_address.toLowerCase() == userAddress.toLowerCase()
     ) || {};
+
+  var deadlineDate = new Date(deadline);
+  var deadlineUTC2 = Date.UTC(
+    deadlineDate.getUTCFullYear(),
+    deadlineDate.getUTCMonth(),
+    deadlineDate.getUTCDate(),
+    deadlineDate.getUTCHours() + 2, //hardcoded for UTC+2
+    deadlineDate.getUTCMinutes(),
+    deadlineDate.getUTCSeconds()
+  );
+
+  var created_at_date = new Date(created_at);
+  var created_at_UTC2 = Date.UTC(
+    created_at_date.getUTCFullYear(),
+    created_at_date.getUTCMonth(),
+    created_at_date.getUTCDate(),
+    created_at_date.getUTCHours() + 2, //hardcoded for UTC+2
+    created_at_date.getUTCMinutes(),
+    created_at_date.getUTCSeconds()
+  );
+
   return {
     id: proposal_id,
     title,
     description,
     action: proposal_action,
-    deadline: new Date(deadline).getTime(),
+    deadline: new Date(deadlineUTC2).getTime(),
     votings,
-    createdAt: new Date(created_at).getTime(),
+    createdAt: new Date(created_at_UTC2).getTime(),
     executed: state == 'EXECUTED',
     executable: false,
     declined: state == 'DECLINED',
