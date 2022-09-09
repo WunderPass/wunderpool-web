@@ -147,7 +147,7 @@ export default function PoolHeader(props) {
           htmlFor={isMobile ? 'bannerUploadMobile' : 'bannerUploadDesktop'}
           className="cursor-pointer"
         >
-          <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 w-full items-center justify-center cursor-pointer">
+          <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 sm:h-52 w-full items-center justify-center cursor-pointer">
             {bannerUrl ? (
               <img
                 className="object-cover min-w-full min-h-full rounded-xl"
