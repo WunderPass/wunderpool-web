@@ -11,3 +11,12 @@ services:
     stdin_open: true
     env_file:
       - ./.env
+  cypress:
+    image: "cypress/included:3.2.0"
+    depends_on:
+      - web
+    environment:
+      - CYPRESS_baseUrl=http://web:3001
+    working_dir: /e2e
+    volumes:
+      - ./:/e2e
