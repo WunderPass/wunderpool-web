@@ -29,7 +29,7 @@ export default function TabBar(props) {
               className="py-4 mr-3 sm:mr-6"
               onClick={() => handleClick(index)}
             >
-              {title == 'Current Votings' ? (
+              {title == 'Votings' ? (
                 <Badge
                   className="pr-2 text-white opacity-100"
                   color="red"
