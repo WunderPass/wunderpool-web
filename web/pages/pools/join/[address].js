@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import usePool from '/hooks/usePool';
-import { ethers } from 'ethers';
-import { usdc, toFixed } from '/services/formatter';
+import { toFixed } from '/services/formatter';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
-import Head from 'next/head';
-import { fetchPoolName } from '/services/contract/pools';
+import CustomHeader from '../../../components/utils/customHeader';
+import { fetchPoolData } from '/services/contract/pools';
 
 function InfoBlock({ label, value }) {
   return (
@@ -231,9 +230,11 @@ export default function JoinPool(props) {
 
   return (
     <>
-      <Head>
-        <title>Casama - Join {metaTagInfo.name}</title>
-      </Head>
+      <CustomHeader
+        title={metaTagInfo.title}
+        description={metaTagInfo.description}
+        imageUrl={metaTagInfo.imageUrl}
+      />
       <Container className="flex justify-center items-center" maxWidth="xl">
         <div className="flex flex-col container-white items-center justify-center mt-6">
           <Typography className="text-md">Join Pool</Typography>
@@ -288,18 +289,34 @@ export default function JoinPool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.address;
+  const imageUrl = `/api/proxy/pools/metadata/getImage?address=${address}`;
+
   try {
-    const name = await fetchPoolName(address);
+    const { pool_name, pool_description, pool_treasury } = await (
+      await fetch(
+        `https://app.casama.io/api/proxy/pools/show?address=${address}`
+      )
+    ).json();
 
     return {
       props: {
-        metaTagInfo: { name },
+        metaTagInfo: {
+          title: `Casama - Join ${pool_name} - ${currency(
+            pool_treasury.act_balance
+          )}`,
+          description: pool_description,
+          imageUrl,
+        },
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       props: {
-        metaTagInfo: { name: 'Close Pool' },
+        metaTagInfo: {
+          title: 'Casama',
+          imageUrl,
+        },
       },
     };
   }

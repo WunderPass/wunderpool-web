@@ -84,7 +84,7 @@ export default function usePool(
 
   const join = async (amount, secret = '') => {
     if (!version || userIsMember) return;
-    return joinPool(poolAddress, userAddress, amount, secret, version.number);
+    return joinPool(poolAddress, userAddress, amount, secret, version?.number);
   };
 
   const updateUserAddress = (addr) => {
@@ -93,7 +93,7 @@ export default function usePool(
   };
 
   const inviteUser = (newMember) => {
-    return addToWhiteList(poolAddress, userAddress, newMember, version.number);
+    return addToWhiteList(poolAddress, userAddress, newMember, version?.number);
   };
 
   const createInviteLink = (secret, validFor) => {
@@ -102,7 +102,7 @@ export default function usePool(
       userAddress,
       secret,
       validFor,
-      version.number
+      version?.number
     );
   };
 
@@ -114,7 +114,7 @@ export default function usePool(
       description,
       value,
       userAddress,
-      version.number
+      version?.number
     );
   };
 
@@ -133,7 +133,7 @@ export default function usePool(
       description,
       value,
       userAddress,
-      version.number
+      version?.number
     );
   };
 
@@ -156,7 +156,7 @@ export default function usePool(
       description,
       amount,
       userAddress,
-      version.number
+      version?.number
     );
   };
 
@@ -169,7 +169,7 @@ export default function usePool(
       description,
       amount,
       userAddress,
-      version.number
+      version?.number
     );
   };
 
@@ -182,7 +182,7 @@ export default function usePool(
       description,
       amount,
       userAddress,
-      version.number
+      version?.number
     );
   };
 
@@ -192,17 +192,17 @@ export default function usePool(
       title,
       description,
       userAddress,
-      version.number
+      version?.number
     );
   };
 
   const executable = (id) => {
-    return proposalExecutable(poolAddress, id, version.number);
+    return proposalExecutable(poolAddress, id, version?.number);
   };
 
   const execute = (id) => {
     return new Promise(async (resolve, reject) => {
-      executeProposal(poolAddress, id, version.number)
+      executeProposal(poolAddress, id, version?.number)
         .then((isLiquidate) => {
           setClosed(true);
           setLiquidated(isLiquidate);
@@ -244,7 +244,10 @@ export default function usePool(
 
   const determinePoolTokens = async (vers = null) => {
     if (liquidated) return;
-    const tokens = await fetchPoolTokens(poolAddress, (vers || version).number);
+    const tokens = await fetchPoolTokens(
+      poolAddress,
+      (vers || version)?.number
+    );
     setPoolTokens(tokens);
     determineCustomBalances(tokens);
     return tokens;
@@ -252,7 +255,7 @@ export default function usePool(
 
   const determinePoolNfts = async () => {
     if (liquidated) return;
-    setPoolNfts(await fetchPoolNfts(poolAddress, version.number));
+    setPoolNfts(await fetchPoolNfts(poolAddress, version?.number));
   };
 
   const determinePoolProposals = async (vers = null) => {
@@ -261,7 +264,7 @@ export default function usePool(
       const proposals = await fetchPoolProposals(
         poolAddress,
         userAddress,
-        (vers || version).number
+        (vers || version)?.number
       );
       setPoolProposals(proposals);
     } catch (error) {
@@ -279,22 +282,22 @@ export default function usePool(
           poolAddress,
           id,
           transactionCount,
-          version.number
+          version?.number
         )
       ))
     );
   };
 
   const voteWithMode = (proposalId, mode) => {
-    return vote(poolAddress, proposalId, mode, userAddress, version.number);
+    return vote(poolAddress, proposalId, mode, userAddress, version?.number);
   };
 
   const voteForProposal = (proposalId) => {
-    return voteFor(poolAddress, proposalId, userAddress, version.number);
+    return voteFor(poolAddress, proposalId, userAddress, version?.number);
   };
 
   const voteAgainstProposal = (proposalId) => {
-    return voteAgainst(poolAddress, proposalId, userAddress, version.number);
+    return voteAgainst(poolAddress, proposalId, userAddress, version?.number);
   };
 
   const determinePoolData = async () => {
