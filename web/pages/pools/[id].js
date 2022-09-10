@@ -8,10 +8,9 @@ import usePool from '/hooks/usePool';
 import PoolDetails from '/components/pool/assetDetails';
 import PoolMembers from '/components/pool/members';
 import LoadingCircle from '/components/utils/loadingCircle';
-import Head from 'next/head';
 import { currency } from '/services/formatter';
 import { fetchPoolName } from '/services/contract/pools';
-import { usdcBalanceOf } from '/services/contract/token';
+import CustomHeader from '../../components/utils/customHeader';
 
 export default function Pool(props) {
   const router = useRouter();
@@ -136,12 +135,11 @@ export default function Pool(props) {
 
   return (
     <>
-      <Head>
-        <title>
-          Casama - {metaTagInfo.name} -{' '}
-          {currency(wunderPool.totalBalance || metaTagInfo.balance)}
-        </title>
-      </Head>
+      <CustomHeader
+        title={metaTagInfo.title}
+        description={metaTagInfo.description}
+        imageUrl={metaTagInfo.imageUrl}
+      />
       {loadingCircle && <LoadingCircle />}
       <Container className={`${loadingCircle ? 'blur' : ''}`} maxWidth="xl">
         <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
@@ -230,19 +228,34 @@ export default function Pool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.id;
+  const imageUrl = `/api/proxy/pools/metadata/getImage?address=${address}`;
+
   try {
-    const name = await fetchPoolName(address);
-    const balance = (await usdcBalanceOf(address)).toString();
+    const { pool_name, pool_description, pool_treasury } = await (
+      await fetch(
+        `https://app.casama.io/api/proxy/pools/show?address=${address}`
+      )
+    ).json();
 
     return {
       props: {
-        metaTagInfo: { name, balance },
+        metaTagInfo: {
+          title: `Casama - ${pool_name} - ${currency(
+            pool_treasury.act_balance
+          )}`,
+          description: pool_description,
+          imageUrl,
+        },
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       props: {
-        metaTagInfo: { name: 'Closed Pool', balance: '0' },
+        metaTagInfo: {
+          title: 'Casama',
+          imageUrl,
+        },
       },
     };
   }

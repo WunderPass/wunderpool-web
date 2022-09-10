@@ -1,7 +1,6 @@
 import BalanceBox from '/components/pool/balanceBox';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import {
   Container,
   Pagination,
@@ -17,6 +16,7 @@ import { MdContentCopy } from 'react-icons/md';
 import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
 import PoolList from '/components/dashboard/poolList';
+import CustomHeader from '../../components/utils/customHeader';
 
 export default function Pools(props) {
   const { user, handleSuccess } = props;
@@ -53,15 +53,8 @@ export default function Pools(props) {
 
   return (
     <>
+      <CustomHeader />
       <div className="font-graphik">
-        <Head>
-          <title>Casama</title>
-          <meta
-            name="viewport"
-            content="initial-scale=1.0, width=device-width"
-          />
-        </Head>
-
         {loadingCircle && <LoadingCircle />}
         <Container className={loadingCircle ? 'blur' : ''}>
           <div className="flex flex-col w-full justify-start">

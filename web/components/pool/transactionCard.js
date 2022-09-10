@@ -3,7 +3,10 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { BsArrowDownLeft, BsArrowRight, BsArrowUpRight } from 'react-icons/bs';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { decodeInputParams } from '../../services/contract/provider';
+import {
+  decodeError,
+  decodeInputParams,
+} from '../../services/contract/provider';
 import { fetchErc20TokenData } from '../../services/contract/token';
 import {
   currency,
@@ -14,6 +17,13 @@ import {
 const unixTimeToDate = (unixTime) => {
   const date = new Date(unixTime * 1000);
   return date.toLocaleDateString('de-DE');
+};
+
+const unixTimeToDateTime = (unixTime) => {
+  const date = new Date(unixTime * 1000);
+  return `${date.toLocaleDateString('de-DE')} ${date.toLocaleTimeString(
+    'de-DE'
+  )}`;
 };
 
 const calculateTrxFee = (gasUsed, gasPrice) => {
@@ -34,19 +44,25 @@ function PolygonscanLink({ text, suffix = null }) {
 }
 
 export default function TransactionCard({ wunderPool, transaction, number }) {
+  const [errorMsg, setErrorMsg] = useState('');
+
   const renderContent = () => {
     if (transaction.type == 'TOKEN') {
-      return TokenTransaction({ transaction, wunderPool });
+      return TokenTransaction({ transaction, wunderPool, errorMsg });
     } else if (transaction.type == 'SWAP') {
-      return SwapTransaction({ transaction });
+      return SwapTransaction({ transaction, errorMsg });
     } else if (transaction.type == 'NORMAL') {
-      return NormalTransaction({ transaction, wunderPool });
+      return NormalTransaction({ transaction, wunderPool, errorMsg });
     } else {
-      return UnknownTransaction({ transaction });
+      return UnknownTransaction({ transaction, errorMsg });
     }
   };
 
-  const { isError } = transaction;
+  const { isError, hash } = transaction;
+
+  useEffect(() => {
+    if (hash && isError) decodeError(hash).then(setErrorMsg);
+  }, [hash, isError]);
 
   return (
     <div
@@ -61,14 +77,22 @@ export default function TransactionCard({ wunderPool, transaction, number }) {
           {unixTimeToDate(transaction.timeStamp)}
         </Typography>
       </div>
-      {renderContent()}
+      <div className="max-w-screen overflow-x-auto">{renderContent()}</div>
     </div>
   );
 }
 
-function TokenTransaction({ transaction, wunderPool }) {
-  const { from, to, value, tokenDecimal, contractAddress, gasUsed, gasPrice } =
-    transaction;
+function TokenTransaction({ transaction, wunderPool, errorMsg }) {
+  const {
+    from,
+    to,
+    value,
+    tokenDecimal,
+    contractAddress,
+    gasUsed,
+    gasPrice,
+    timeStamp,
+  } = transaction;
   const sentToken = from.toLowerCase() == wunderPool.poolAddress.toLowerCase();
   const formattedAmount = value / 10 ** tokenDecimal;
   const [expand, setExpand] = useState(false);
@@ -99,10 +123,12 @@ function TokenTransaction({ transaction, wunderPool }) {
     <>
       <div className="flex flex-col md:flex-row items-center gap-2">
         <div className="flex-grow w-full">
-          <div className="flex items-center justify-between">
-            <img className="w-8 sm:w-12" src={tokenData?.image_url} alt="" />
+          <div className="flex items-center justify-evenly">
+            <img className="w-12" src={tokenData?.image_url} alt="" />
             <Typography className="flex items-center gap-1">
-              {sentToken ? 'Sent' : 'Received'}
+              <span className="hidden sm:block">
+                {sentToken ? 'Sent' : 'Received'}
+              </span>
               {sentToken ? (
                 <BsArrowUpRight className="text-lg text-red-400" />
               ) : (
@@ -148,6 +174,8 @@ function TokenTransaction({ transaction, wunderPool }) {
             <Typography>To:</Typography>
             <PolygonscanLink text={receiverName} suffix={`address/${to}`} />
           </div>
+          {errorMsg && <Typography>Error: {errorMsg}</Typography>}
+          <Typography>Date: {unixTimeToDateTime(timeStamp)}</Typography>
           <Typography>
             Fee: {calculateTrxFee(gasUsed, gasPrice).toFixed(6)} MATIC
           </Typography>
@@ -157,8 +185,9 @@ function TokenTransaction({ transaction, wunderPool }) {
   );
 }
 
-function SwapTransaction({ transaction }) {
-  const { sentToken, receivedToken, gasUsed, gasPrice } = transaction;
+function SwapTransaction({ transaction, errorMsg }) {
+  const { sentToken, receivedToken, gasUsed, gasPrice, timeStamp } =
+    transaction;
   const [expand, setExpand] = useState(false);
   const [sentTokenData, setSentTokenData] = useState({});
   const [receivedTokenData, setReceivedTokenData] = useState({});
@@ -196,17 +225,14 @@ function SwapTransaction({ transaction }) {
     <>
       <div className="flex flex-col mt-2 md:mt-1 md:flex-row items-center gap-2">
         <div className="flex-grow w-full">
-          <div className="flex items-center justify-between gap-1">
-            <div className="flex flex-col md:flex-row items-center gap-1">
-              <img
-                className="w-8 sm:w-12"
-                src={sentTokenData?.image_url}
-                alt=""
-              />
+          <div className="flex items-center">
+            <div className="flex flex-col md:flex-row items-center gap-2 w-1/2">
+              <img className="w-12" src={sentTokenData?.image_url} alt="" />
               <div className="text-center md:text-left">
-                <Typography>{`${formatTokenBalance(sentAmount)} ${
-                  sentTokenData?.symbol
-                }`}</Typography>
+                <Typography>
+                  {formatTokenBalance(sentAmount)}
+                  <Typography>{sentTokenData?.symbol}</Typography>
+                </Typography>
                 {sentTokenData?.dollar_price && (
                   <Typography className="font-light">
                     ({currency(sentTokenData?.dollar_price * sentAmount)})
@@ -214,17 +240,14 @@ function SwapTransaction({ transaction }) {
                 )}
               </div>
             </div>
-            <BsArrowRight className="text-lg" />
-            <div className="flex flex-col md:flex-row items-center gap-1">
-              <img
-                className="w-8 sm:w-12"
-                src={receivedTokenData?.image_url}
-                alt=""
-              />
+            <BsArrowRight className="text-lg justify-self-center" />
+            <div className="flex flex-col md:flex-row-reverse items-center gap-2 w-1/2">
+              <img className="w-12" src={receivedTokenData?.image_url} alt="" />
               <div className="text-center md:text-left">
-                <Typography>{`${formatTokenBalance(receivedAmount)} ${
-                  receivedTokenData?.symbol
-                }`}</Typography>
+                <Typography>
+                  {formatTokenBalance(receivedAmount)}
+                  <Typography>{receivedTokenData?.symbol}</Typography>
+                </Typography>
                 {receivedTokenData?.dollar_price && (
                   <Typography className="font-light">
                     (
@@ -251,6 +274,8 @@ function SwapTransaction({ transaction }) {
         </Typography>
         <Divider className="my-3" />
         <div className="flex flex-col gap-3">
+          {errorMsg && <Typography>Error: {errorMsg}</Typography>}
+          <Typography>Date: {unixTimeToDateTime(timeStamp)}</Typography>
           <Typography>
             Fee: {calculateTrxFee(gasUsed, gasPrice).toFixed(6)} MATIC
           </Typography>
@@ -260,8 +285,8 @@ function SwapTransaction({ transaction }) {
   );
 }
 
-function NormalTransaction({ transaction, wunderPool }) {
-  const { gasUsed, gasPrice, functionName, input } = transaction;
+function NormalTransaction({ transaction, wunderPool, errorMsg }) {
+  const { gasUsed, gasPrice, functionName, input, timeStamp } = transaction;
   const params = decodeInputParams(functionName, input);
   const [expand, setExpand] = useState(false);
 
@@ -327,6 +352,12 @@ function NormalTransaction({ transaction, wunderPool }) {
       </div>
       <Collapse in={expand}>
         <Divider className="my-3" />
+        {errorMsg && (
+          <Typography className="my-2">Error: {errorMsg}</Typography>
+        )}
+        <Typography className="my-2">
+          Date: {unixTimeToDateTime(timeStamp)}
+        </Typography>
         <Typography>
           Fee: {calculateTrxFee(gasUsed, gasPrice).toFixed(6)} MATIC
         </Typography>
@@ -335,7 +366,7 @@ function NormalTransaction({ transaction, wunderPool }) {
   );
 }
 
-function UnknownTransaction({ transaction }) {
+function UnknownTransaction({ transaction, errorMsg }) {
   const { hash, blockNumber, timeStamp, from, to, value, gasUsed, gasPrice } =
     transaction;
   return (
