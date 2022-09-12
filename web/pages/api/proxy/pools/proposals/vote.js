@@ -10,9 +10,9 @@ export default async function handler(req, res) {
     const { address, id, userAddress, vote, signature } = req.body;
 
     const body = {
-      pool_address: address,
+      pool_address: address?.toLowerCase(),
       proposal_id: id,
-      user_address: userAddress,
+      user_address: userAddress?.toLowerCase(),
       vote, // YES || NO
       signature,
     };
