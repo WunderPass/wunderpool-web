@@ -15,6 +15,8 @@ export default function TokenInput(props) {
     setTokenSymbol,
     setTokenImage,
     setTokenPrice,
+    setTokenDecimals = () => {},
+    setMarketCap = () => {},
   } = props;
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +59,8 @@ export default function TokenInput(props) {
       setTokenName(value.name);
       setTokenSymbol(value.symbol);
       setTokenImage(value.image_url);
+      setTokenDecimals(value.decimals);
+      setMarketCap(value.market_cap);
       if (setTokenPrice) setTokenPrice(value.dollar_price);
     }
   };

@@ -81,17 +81,10 @@ export default function DestroyPoolDialog(props) {
               .filter((tkn) => tkn.balance > 0)
               .map((tkn, i) => {
                 const tokenValue = currency(
-                  (ethers.BigNumber.from(tkn.balance)
-                    .mul(tkn.price)
-                    .div(100)
-                    .div(10000)
-                    .div(ethers.BigNumber.from(10).pow(tkn.decimals))
-                    .toNumber() *
-                    wunderPool.userShare) /
-                    100
+                  (tkn.usdValue * wunderPool.userShare) / 100
                 );
                 const tokenAmount = formatTokenBalance(
-                  (tkn.formattedBalance * wunderPool.userShare) / 100
+                  (tkn.balance * wunderPool.userShare) / 100
                 );
 
                 return (

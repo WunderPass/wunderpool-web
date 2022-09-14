@@ -28,15 +28,23 @@ import {
 } from '/services/contract/init';
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
 import axios from 'axios';
+import { formatAsset } from '../services/contract/pools';
 
 export default function usePool(
   userAddr,
   poolAddr = null,
   handleError = () => {}
 ) {
+  const [isReady, setIsReady] = useState(false);
+  const [loadingState, setLoadingState] = useState({
+    init: false,
+    members: false,
+    tokens: false,
+    proposals: false,
+  });
+
   const [userAddress, setUserAddress] = useState(userAddr);
   const [poolAddress, setPoolAddress] = useState(poolAddr);
-  const [isReady, setIsReady] = useState(false);
   const [poolName, setPoolName] = useState(null);
   const [poolDescription, setPoolDescription] = useState(null);
   const [exists, setExists] = useState(null);
@@ -65,10 +73,16 @@ export default function usePool(
     if (!poolMembers || poolMembers.length <= 0) return 0;
     return (
       poolMembers.find(
-        (m) => m.address.toLowerCase() == userAddress.toLowerCase()
+        (m) => m.address.toLowerCase() == userAddress?.toLowerCase()
       )?.share || 0
     );
   }, [poolMembers]);
+
+  const updateLoadingState = (key, loaded = true, timeout = 0) => {
+    setTimeout(() => {
+      setLoadingState((state) => ({ ...state, [key]: loaded }));
+    }, timeout);
+  };
 
   const resolveMember = (address) => {
     if (address.toLowerCase() == poolAddress) return poolName;
@@ -244,22 +258,39 @@ export default function usePool(
 
   const determinePoolTokens = async (vers = null) => {
     if (liquidated) return;
-    const tokens = await fetchPoolTokens(
-      poolAddress,
-      (vers || version)?.number
-    );
-    setPoolTokens(tokens);
-    determineCustomBalances(tokens);
-    return tokens;
+    try {
+      const { pool_treasury, pool_assets } = await fetchPoolData(poolAddress);
+
+      setUsdcBalance(pool_treasury.act_balance);
+
+      const tokens = await Promise.all(
+        pool_assets.map(async (asset) => {
+          return await formatAsset(asset);
+        })
+      );
+
+      setPoolTokens(tokens);
+      determineCustomBalances(tokens);
+      updateLoadingState('tokens');
+
+      return tokens;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const determinePoolNfts = async () => {
     if (liquidated) return;
-    setPoolNfts(await fetchPoolNfts(poolAddress, version?.number));
+    try {
+      setPoolNfts(await fetchPoolNfts(poolAddress, version?.number));
+    } catch (error) {
+      handleError('Could not load NFTs');
+    }
   };
 
   const determinePoolProposals = async (vers = null) => {
     if (liquidated) return;
+    updateLoadingState('proposals', false);
     try {
       const proposals = await fetchPoolProposals(
         poolAddress,
@@ -271,6 +302,7 @@ export default function usePool(
       handleError('Proposals could not be loaded');
       console.log('ERROR fetching Proposals', error);
     }
+    updateLoadingState('proposals');
   };
 
   const getTransactionData = async (id, transactionCount) => {
@@ -301,6 +333,13 @@ export default function usePool(
   };
 
   const determinePoolData = async () => {
+    setLoadingState((state) => ({
+      ...state,
+      init: false,
+      members: false,
+      tokens: false,
+    }));
+
     try {
       const {
         launcher,
@@ -340,6 +379,15 @@ export default function usePool(
       setUserIsMember(isMem);
 
       const totalShares = pool_shares.emmited_shares;
+      setPoolGovernanceToken({
+        address: pool_shares?.governanc_token?.currency_contract_address,
+        name: pool_shares?.governanc_token?.currency_name,
+        symbol: pool_shares?.governanc_token?.currency_symbol,
+        tokensForDollar: pool_shares?.tokens_for_dollar,
+        totalSupply: totalShares,
+      });
+      updateLoadingState('init');
+
       setPoolMembers(
         await Promise.all(
           pool_members.map(async (mem) => {
@@ -367,18 +415,21 @@ export default function usePool(
           })
         )
       );
+      updateLoadingState('members');
 
-      setPoolGovernanceToken({
-        address: pool_shares?.governanc_token?.currency_contract_address,
-        name: pool_shares?.governanc_token?.currency_name,
-        symbol: pool_shares?.governanc_token?.currency_symbol,
-        tokensForDollar: pool_shares?.tokens_for_dollar,
-        totalSupply: totalShares,
-      });
+      const tokens = await Promise.all(
+        pool_assets.map(async (asset) => {
+          return await formatAsset(asset);
+        })
+      );
+
+      setPoolTokens(tokens);
+      determineCustomBalances(tokens);
+      updateLoadingState('tokens');
 
       return { vers, exists: active, isMem };
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -386,12 +437,9 @@ export default function usePool(
     if (poolAddress) {
       await determinePoolData(poolAddress)
         .then(async ({ vers, exists, isMem }) => {
-          if (exists) {
-            await determinePoolTokens(vers);
-            if (isMem) {
-              await determinePoolNfts();
-              await determinePoolProposals(vers);
-            }
+          if (exists && isMem) {
+            await determinePoolNfts();
+            await determinePoolProposals(vers);
           }
         })
         .catch((err) => {
@@ -404,6 +452,9 @@ export default function usePool(
   };
 
   useEffect(() => {
+    setLoadingState((state) =>
+      Object.fromEntries(Object.entries(state).map(([k]) => [k, false]))
+    );
     setVersion(null);
     setIsReady(false);
     initialize().then(() => {
@@ -413,6 +464,7 @@ export default function usePool(
 
   return {
     isReady,
+    loadingState,
     exists,
     closed,
     liquidated,

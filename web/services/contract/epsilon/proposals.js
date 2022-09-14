@@ -49,68 +49,72 @@ function determineDeclined(
 
 export function fetchPoolProposalsEpsilon(address, userAddress = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolEpsilon(address);
-    const [wunderProposal] = initProposalEpsilon();
-    const [poolConfig] = initPoolConfigEpsilon();
-    const { votingThreshold, minYesVoters } = await poolConfig.getConfig(
-      address
-    );
-    const members = await wunderPool.poolMembers();
-    const proposalIds = await wunderPool.getAllProposalIds();
-    const proposals = await Promise.all(
-      proposalIds.map(async (id) => {
-        const {
-          title,
-          description,
-          transactionCount,
-          deadline,
-          yesVotes,
-          noVotes,
-          totalVotes,
-          createdAt,
-          executed,
-          creator,
-        } = await wunderProposal.getProposal(address, id);
+    try {
+      const [wunderPool] = initPoolEpsilon(address);
+      const [wunderProposal] = initProposalEpsilon();
+      const [poolConfig] = initPoolConfigEpsilon();
+      const { votingThreshold, minYesVoters } = await poolConfig.getConfig(
+        address
+      );
+      const members = await wunderPool.poolMembers();
+      const proposalIds = await wunderPool.getAllProposalIds();
+      const proposals = await Promise.all(
+        proposalIds.map(async (id) => {
+          const {
+            title,
+            description,
+            transactionCount,
+            deadline,
+            yesVotes,
+            noVotes,
+            totalVotes,
+            createdAt,
+            executed,
+            creator,
+          } = await wunderProposal.getProposal(address, id);
 
-        const { executable } = executed
-          ? { executable: false }
-          : await wunderProposal.proposalExecutable(address, id);
-        const declined =
-          executable || executed
-            ? false
-            : await determineDeclined(
-                noVotes,
-                totalVotes,
-                votingThreshold,
-                minYesVoters,
-                members.length,
-                deadline,
-                address,
-                id
-              );
-        const hasVoted = userAddress
-          ? await hasVotedEpsilon(address, id, userAddress)
-          : null;
+          const { executable } = executed
+            ? { executable: false }
+            : await wunderProposal.proposalExecutable(address, id);
+          const declined =
+            executable || executed
+              ? false
+              : await determineDeclined(
+                  noVotes,
+                  totalVotes,
+                  votingThreshold,
+                  minYesVoters,
+                  members.length,
+                  deadline,
+                  address,
+                  id
+                );
+          const hasVoted = userAddress
+            ? await hasVotedEpsilon(address, id, userAddress)
+            : null;
 
-        return {
-          id: id.toNumber(),
-          title,
-          description,
-          transactionCount,
-          deadline,
-          yesVotes,
-          noVotes,
-          totalVotes,
-          createdAt,
-          executed,
-          executable,
-          declined,
-          creator,
-          hasVoted,
-        };
-      })
-    );
-    resolve(proposals);
+          return {
+            id: id.toNumber(),
+            title,
+            description,
+            transactionCount,
+            deadline,
+            yesVotes,
+            noVotes,
+            totalVotes,
+            createdAt,
+            executed,
+            executable,
+            declined,
+            creator,
+            hasVoted,
+          };
+        })
+      );
+      resolve(proposals);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 

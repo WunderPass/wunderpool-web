@@ -45,26 +45,30 @@ export function fetchPoolTokensGamma(address) {
 
 export function fetchPoolNftsGamma(address) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool, provider] = initPoolGamma(address);
-    const tokenAddresses = await wunderPool.getOwnedNftAddresses();
+    try {
+      const [wunderPool, provider] = initPoolGamma(address);
+      const tokenAddresses = await wunderPool.getOwnedNftAddresses();
 
-    const nfts = await Promise.all(
-      tokenAddresses.map(async (addr) => {
-        const nft = new ethers.Contract(addr, nftAbi, provider);
-        const tokenIds = await wunderPool.getOwnedNftTokenIds(addr);
-        const tokens = await Promise.all(
-          tokenIds.map(async (id) => {
-            return { id, uri: await nft?.tokenURI(id) };
-          })
-        );
-        return {
-          address: addr,
-          name: await nft.name(),
-          symbol: await nft.symbol(),
-          tokens: tokens,
-        };
-      })
-    );
-    resolve(nfts);
+      const nfts = await Promise.all(
+        tokenAddresses.map(async (addr) => {
+          const nft = new ethers.Contract(addr, nftAbi, provider);
+          const tokenIds = await wunderPool.getOwnedNftTokenIds(addr);
+          const tokens = await Promise.all(
+            tokenIds.map(async (id) => {
+              return { id, uri: await nft?.tokenURI(id) };
+            })
+          );
+          return {
+            address: addr,
+            name: await nft.name(),
+            symbol: await nft.symbol(),
+            tokens: tokens,
+          };
+        })
+      );
+      resolve(nfts);
+    } catch (error) {
+      reject(error);
+    }
   });
 }

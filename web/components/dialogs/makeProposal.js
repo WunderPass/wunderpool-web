@@ -1,4 +1,11 @@
-import { DialogActions, Stack, Typography, Collapse } from '@mui/material';
+import {
+  DialogActions,
+  Stack,
+  Typography,
+  Collapse,
+  Alert,
+  AlertTitle,
+} from '@mui/material';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import { useMemo, useState, useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
@@ -6,6 +13,7 @@ import TokenInput from '../tokens/input';
 import TransactionFrame from '../utils/transactionFrame';
 import { currency, round, usdc, polyValueToUsd } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
+import axios from 'axios';
 
 export default function makeProposal(props) {
   const { open, wunderPool, handleSuccess, handleError, handleOpenClose } =
@@ -17,6 +25,7 @@ export default function makeProposal(props) {
   const [tokenImage, setTokenImage] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [tokenPrice, setTokenPrice] = useState(null);
+  const [marketCap, setMarketCap] = useState(null);
   const [value, setValue] = useState('');
   const [valueTouched, setValueTouched] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -168,18 +177,46 @@ export default function makeProposal(props) {
                   setTokenSymbol={setTokenSymbol}
                   setTokenImage={setTokenImage}
                   setTokenPrice={setTokenPrice}
+                  setMarketCap={setMarketCap}
                 />
               </div>
             </div>
             <Collapse in={tokenName && tokenSymbol ? true : false}>
-              <div className="flex flex-row justify-between items-center pr-2 gap-1">
-                <img className="w-9" src={tokenImage || '/favicon.ico'} />
-                <Typography className="text-md flex-grow">
-                  {tokenName}
-                </Typography>
-                <Typography className="text-md" color="GrayText">
-                  {currency(tokenPrice)}
-                </Typography>
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-row justify-between items-center pr-2 gap-1">
+                  <img className="w-9" src={tokenImage || '/favicon.ico'} />
+                  <Typography className="text-md flex-grow">
+                    {tokenName}
+                  </Typography>
+                  <Typography className="text-md" color="GrayText">
+                    {currency(tokenPrice)}
+                  </Typography>
+                </div>
+                {marketCap && (
+                  <Typography className="text-md" color="GrayText">
+                    Available on Exchange: {currency(marketCap)}
+                  </Typography>
+                )}
+                <Collapse
+                  in={marketCap && marketCap < Math.max(100, value * 100)}
+                >
+                  <Alert
+                    severity={marketCap < value * 10 ? 'error' : 'warning'}
+                    className="items-center"
+                  >
+                    <AlertTitle>
+                      This trade will result in impactful losses
+                    </AlertTitle>
+                    <Typography>
+                      You are about to trade{' '}
+                      {Math.round((value * 100) / marketCap)}% of all available
+                      Tokens. Due to the nature of Crypto Exchanges, your trade
+                      will have a substantial Impact on the Price. You can read
+                      more here:{' '}
+                      <a href="https://casama.io/docs">Swapping on a DEX</a>
+                    </Typography>
+                  </Alert>
+                </Collapse>
               </div>
             </Collapse>
 

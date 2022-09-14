@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import TabBar from '/components/utils/tabBar';
 
 export default function body(props) {
-  const { loading, wunderPool, tokenAddedEvent, newProposalEvent } = props;
+  const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
@@ -26,8 +26,8 @@ export default function body(props) {
 
   return (
     <div className="mt-4 mb-8 ">
-      {wunderPool.isMember ? ( //POOL WHEN YOU ARE A MEMBER
-        loading ? (
+      {wunderPool.isMember &&
+        (!wunderPool.loadingState.init ? (
           <Skeleton
             variant="rectangular"
             width="100%"
@@ -52,13 +52,7 @@ export default function body(props) {
               )}
             </div>
           </div>
-        )
-      ) : !wunderPool.isMember ? ( //POOL BEFORE YOU ARE A MEMBER
-        <></>
-      ) : (
-        //DEFAULT
-        <Skeleton width="100%" height={100} />
-      )}
+        ))}
     </div>
   );
 }

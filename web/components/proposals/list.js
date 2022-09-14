@@ -40,7 +40,7 @@ export default function ProposalList(props) {
     setOpen(router.query?.makeProposal1 ? true : false);
   }, [router.query]);
 
-  return !wunderPool.isReady ? (
+  return !wunderPool.loadingState.proposals ? (
     <Skeleton
       variant="rectangular"
       width="100%"

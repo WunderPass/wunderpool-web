@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import SellTokenDialog from '../dialogs/sellTokenDialog';
 import SwapTokenDialog from '/components/dialogs/swapTokenDialog';
 import TokenCard from './card';
@@ -9,66 +9,48 @@ import { useRouter } from 'next/router';
 export default function TokenList(props) {
   const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
   const { tokens } = props;
-  const [openSell, setOpenSell] = useState(false);
-  const [openSwap, setOpenSwap] = useState(false);
   const [token, setToken] = useState('');
   const [hideSmallBalances, setHideSmallBalances] = useState(true);
-  const [isSmallBalances, setIsSmallBalances] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  const handleOpenCloseSell = () => {
+  const openSell = useMemo(
+    () => router.query?.dialog == 'sellToken',
+    [router.query.dialog]
+  );
+  const openSwap = useMemo(
+    () => router.query?.dialog == 'swapToken',
+    [router.query.dialog]
+  );
+  const isSmallBalances = useMemo(
+    () =>
+      tokens.filter((tkn) => tkn.balance > 0 && tkn.usdValue < 0.01).length > 0,
+    [tokens.length]
+  );
+
+  const handleSell = (token) => {
     if (openSell) {
-      goBack(() => removeQueryParam('sellToken'));
+      setToken('');
+      goBack(() => removeQueryParam('dialog'));
     } else {
-      addQueryParam({ sellToken: 'sellToken' }, false);
+      setToken(token);
+      addQueryParam({ dialog: 'sellToken' }, false);
     }
   };
 
-  const handleOpenCloseSwap = () => {
+  const handleSwap = (token) => {
     if (openSwap) {
-      goBack(() => removeQueryParam('swapToken'));
+      setToken('');
+      goBack(() => removeQueryParam('dialog'));
     } else {
-      addQueryParam({ swapToken: 'swapToken' }, false);
+      setToken(token);
+      addQueryParam({ dialog: 'swapToken' }, false);
     }
-  };
-
-  useEffect(() => {
-    setOpenSwap(router.query?.swapToken ? true : false);
-  }, [router.query]);
-
-  useEffect(() => {
-    setOpenSell(router.query?.sellToken ? true : false);
-  }, [router.query]);
-
-  const triggerSmallBalances = () => {
-    setIsSmallBalances(true);
   };
 
   const toggleHideSmallBalances = () => {
     setHideSmallBalances(!hideSmallBalances);
   };
-
-  const handleSwap = (token) => {
-    setToken(token);
-    handleOpenCloseSwap();
-  };
-
-  const handleSell = (token) => {
-    setToken(token);
-    handleOpenCloseSell();
-  };
-
-  useEffect(() => {
-    tokens.length > 0 &&
-      tokens
-        .filter((tkn) => tkn.balance > 0)
-        .map((token) => {
-          if (token.usdValue < 0.01) {
-            triggerSmallBalances();
-          }
-        });
-  }, []);
 
   useEffect(() => {
     const data = window.localStorage.getItem('CASAMA_HIDEBALANCES_STATE');
@@ -104,8 +86,8 @@ export default function TokenList(props) {
                   <TokenCard
                     token={token}
                     key={`token-${token.address}`}
-                    handleSell={handleSell}
-                    handleSwap={handleSwap}
+                    handleSell={() => handleSell(token)}
+                    handleSwap={() => handleSwap(token)}
                   />
                 );
               }
@@ -114,13 +96,13 @@ export default function TokenList(props) {
 
       <SellTokenDialog
         open={openSell}
-        handleOpenClose={handleOpenCloseSell}
+        handleOpenClose={handleSell}
         token={token}
         {...props}
       />
       <SwapTokenDialog
         open={openSwap}
-        setOpen={handleOpenCloseSwap}
+        setOpen={handleSwap}
         token={token}
         {...props}
       />

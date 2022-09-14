@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import {
   MdOutlineKeyboardArrowDown,
@@ -16,6 +16,8 @@ export default function CapTable(props) {
       .sort((a, b) => b.tokens - a.tokens)
       .slice(0, showMore ? members.length : 3);
   }, [showMore, members, wunderPool.poolAddress]);
+
+  if (!wunderPool.loadingState.members) return <SkeletonCapTable />;
 
   return (
     <>
@@ -43,9 +45,9 @@ export default function CapTable(props) {
                   <div className="flex flex-row items-center md:ml-2">
                     <Avatar
                       wunderId={member.wunderId ? member.wunderId : null}
-                      tooltip={`${member.wunderId || 'External User'}: ${
-                        member.share
-                      }%`}
+                      tooltip={`${
+                        member.wunderId || 'External User'
+                      }: ${toFixed(member.share, 2)}%`}
                       text={member.wunderId ? member.wunderId : '0-X'}
                       separator="-"
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
@@ -91,6 +93,77 @@ export default function CapTable(props) {
           </Typography>
         </button>
       )}
+    </>
+  );
+}
+
+function SkeletonCapTable() {
+  return (
+    <>
+      <table className="table-auto">
+        <thead>
+          <tr>
+            <th className="text-left pb-4">
+              <Typography className="opacity-50">Member</Typography>
+            </th>
+            <th className="pb-4">
+              <Typography className="text-left opacity-50 md:text-center">
+                Share
+              </Typography>
+            </th>
+            <th className="text-right pb-4">
+              <Typography className="opacity-50">Invested</Typography>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="pb-2">
+              <div className="flex flex-row items-center md:ml-2">
+                <Skeleton variant="circular" width={40} height={40} />
+              </div>
+            </td>
+            <td className="pb-2">
+              <div className="flex flex-row items-center">
+                <Skeleton className="w-full" />
+              </div>
+            </td>
+            <td className="text-right pb-2">
+              <Skeleton className="w-[70%] inline-block" />
+            </td>
+          </tr>
+          <tr>
+            <td className="pb-2">
+              <div className="flex flex-row items-center md:ml-2">
+                <Skeleton variant="circular" width={40} height={40} />
+              </div>
+            </td>
+            <td className="pb-2">
+              <div className="flex flex-row items-center">
+                <Skeleton className="w-full" />
+              </div>
+            </td>
+            <td className="text-right pb-2">
+              <Skeleton className="w-[70%] inline-block" />
+            </td>
+          </tr>
+          <tr>
+            <td className="pb-2">
+              <div className="flex flex-row items-center md:ml-2">
+                <Skeleton variant="circular" width={40} height={40} />
+              </div>
+            </td>
+            <td className="pb-2">
+              <div className="flex flex-row items-center">
+                <Skeleton className="w-full" />
+              </div>
+            </td>
+            <td className="text-right pb-2">
+              <Skeleton className="w-[70%] inline-block" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </>
   );
 }

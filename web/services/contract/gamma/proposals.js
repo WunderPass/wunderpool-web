@@ -27,55 +27,57 @@ function determineExecutable(
 
 export function fetchPoolProposalsGamma(address, userAddress = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolGamma(address);
-    const proposalIds = await wunderPool.getAllProposalIds();
-    const proposals = await Promise.all(
-      proposalIds.map(async (id) => {
-        const {
-          title,
-          description,
-          transactionCount,
-          deadline,
-          yesVotes,
-          noVotes,
-          abstainVotes,
-          totalVotes,
-          createdAt,
-          executed,
-        } = await wunderPool.getProposal(id);
+    try {
+      const [wunderPool] = initPoolGamma(address);
+      const proposalIds = await wunderPool.getAllProposalIds();
+      const proposals = await Promise.all(
+        proposalIds.map(async (id) => {
+          const {
+            title,
+            description,
+            transactionCount,
+            deadline,
+            yesVotes,
+            noVotes,
+            totalVotes,
+            createdAt,
+            executed,
+          } = await wunderPool.getProposal(id);
 
-        const executable = determineExecutable(
-          executed,
-          yesVotes,
-          noVotes,
-          totalVotes,
-          deadline
-        );
-        const declined = noVotes.mul(2).gte(totalVotes);
+          const executable = determineExecutable(
+            executed,
+            yesVotes,
+            noVotes,
+            totalVotes,
+            deadline
+          );
+          const declined = noVotes.mul(2).gte(totalVotes);
 
-        const hasVoted = userAddress
-          ? await hasVotedGamma(address, id, userAddress)
-          : null;
+          const hasVoted = userAddress
+            ? await hasVotedGamma(address, id, userAddress)
+            : null;
 
-        return {
-          id: id.toNumber(),
-          title,
-          description,
-          transactionCount,
-          deadline: deadline.mul(1000).toNumber(),
-          yesVotes,
-          noVotes,
-          abstainVotes,
-          totalVotes,
-          createdAt: createdAt.mul(1000).toNumber(),
-          executed,
-          executable,
-          declined,
-          hasVoted,
-        };
-      })
-    );
-    resolve(proposals);
+          return {
+            id: id.toNumber(),
+            title,
+            description,
+            transactionCount,
+            deadline: deadline.mul(1000).toNumber(),
+            yesVotes: yesVotes.toNumber(),
+            noVotes: noVotes.toNumber(),
+            totalVotes: totalVotes.toNumber(),
+            createdAt: createdAt.mul(1000).toNumber(),
+            executed,
+            executable,
+            declined,
+            hasVoted,
+          };
+        })
+      );
+      resolve(proposals);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 

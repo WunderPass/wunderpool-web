@@ -16,15 +16,8 @@ import { formatTokenBalance } from '../../services/formatter';
 
 function TokenInfo({ token, data }) {
   const [infoDialog, setInfoDialog] = useState(false);
-  const {
-    address,
-    verified,
-    name,
-    usdValue,
-    symbol,
-    dollarPrice,
-    formattedBalance,
-  } = token;
+  const { address, verified, name, usdValue, symbol, dollarPrice, balance } =
+    token;
 
   return (
     <div className="flex flex-col sm:flex-row items-center w-full">
@@ -92,7 +85,7 @@ function TokenInfo({ token, data }) {
             )}
           </Typography>
           <Typography className="w-full sm:w-auto">
-            {formatTokenBalance(formattedBalance)} {symbol}
+            {formatTokenBalance(balance)} {symbol}
           </Typography>
         </div>
       </div>
@@ -123,10 +116,7 @@ export default function TokenCard(props) {
     <div className="container-gray">
       <TokenInfo token={token} data={data} />
       <div className="flex flex-col items-center justify-center">
-        <button
-          className="btn-kaico w-full p-2 mb-0 mt-5"
-          onClick={() => handleSell(token)}
-        >
+        <button className="btn-kaico w-full p-2 mb-0 mt-5" onClick={handleSell}>
           Sell
         </button>
       </div>

@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import MakeProposalDialog from '/components/dialogs/makeProposal';
@@ -39,19 +39,29 @@ function assetDetails(props) {
                     Total value of assets
                   </Typography>
                   <div className="flex flex-row items-center justify-start ">
-                    <GrMoney className="text-xl mr-2" />
-                    <Typography className="text-2xl opacity-90 py-1 font-medium">
-                      {currency(wunderPool.assetBalance)}
-                    </Typography>
+                    {wunderPool.loadingState.tokens ? (
+                      <>
+                        <GrMoney className="text-xl mr-2" />
+                        <Typography className="text-2xl opacity-90 py-1 font-medium">
+                          {currency(wunderPool.assetBalance)}
+                        </Typography>
+                      </>
+                    ) : (
+                      <Skeleton className="w-full lg:w-1/2 text-2xl opacity-90 py-1 font-medium" />
+                    )}
                   </div>
                 </div>
                 <div className="w-full lg:text-right">
                   <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
                     Amount of assets
                   </Typography>
-                  <Typography className="text-2xl opacity-90 py-1 font-medium">
-                    {wunderPool.assetCount}
-                  </Typography>
+                  {wunderPool.loadingState.tokens ? (
+                    <Typography className="text-2xl opacity-90 py-1 font-medium">
+                      {wunderPool.assetCount}
+                    </Typography>
+                  ) : (
+                    <Skeleton className="w-full inline-block lg:w-1/2 text-2xl opacity-90 py-1 font-medium" />
+                  )}
                 </div>
               </div>
 
