@@ -1,6 +1,6 @@
 FROM node:16.13
 
-RUN addgroup moritz && adduser -S -G moritz moritz
+RUN addgroup moritz && adduser --system --group moritz moritz
 RUN mkdir /web && chown moritz:moritz /web
 USER web
 
