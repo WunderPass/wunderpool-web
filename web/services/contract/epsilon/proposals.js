@@ -123,9 +123,13 @@ export function fetchTransactionDataEpsilon(address, id, transactionCount) {
     const [wunderProposal] = initProposalEpsilon();
     const transactions = await Promise.all(
       [...Array(transactionCount).keys()].map(async (index) => {
-        const { action, param, transactionValue, contractAddress } =
-          await wunderProposal.getProposalTransaction(address, id, index);
-        return { action, params: param, transactionValue, contractAddress };
+        try {
+          const { action, param, transactionValue, contractAddress } =
+            await wunderProposal.getProposalTransaction(address, id, index);
+          return { action, params: param, transactionValue, contractAddress };
+        } catch (error) {
+          return null;
+        }
       })
     );
     resolve(transactions);
