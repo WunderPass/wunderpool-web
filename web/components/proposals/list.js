@@ -50,7 +50,7 @@ export default function ProposalList(props) {
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
-          tabs={['Current Votings', 'Executable', 'History']}
+          tabs={['Votings', 'Executable', 'History']}
           tab={proposalsTab}
           setTab={setProposalsTab}
           proposals={wunderPool.proposals}

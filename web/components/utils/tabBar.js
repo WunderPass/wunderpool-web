@@ -23,18 +23,29 @@ export default function TabBar(props) {
         const title = tb?.title || tb;
         const index = tb?.index || i;
         return (
-          <button
-            key={`tab-item-${parent}-${title}-${index}`}
-            className="py-4 mr-3 sm:mr-6"
-            onClick={() => handleClick(index)}
-          >
-            {title == 'Current Votings' ? (
-              <Badge
-                className="pr-2 text-white opacity-100"
-                color="red"
-                badgeContent={currentVotingsCount}
-                max={99}
-              >
+            <button
+              key={`tab-item-${parent}-${title}-${index}`}
+              className="py-4 mr-3 sm:mr-6"
+              onClick={() => handleClick(index)}
+            >
+              {title == 'Votings' ? (
+                <Badge
+                  className="pr-2 text-white opacity-100"
+                  color="red"
+                  badgeContent={currentVotingsCount}
+                  max={99}
+                >
+                  <div
+                    className={
+                      tab == i
+                        ? 'flex flex-row items-center justify-center'
+                        : 'flex flex-row items-center justify-center opacity-40'
+                    }
+                  >
+                    <Typography className="text-black">{title}</Typography>
+                  </div>
+                </Badge>
+              ) : (
                 <div
                   className={
                     tab == i
