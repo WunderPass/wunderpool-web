@@ -12,7 +12,6 @@ export default function WunderPassAuth(props) {
       handleSuccess(`Logged in as ${wunderId}`);
       user.updateWunderId(wunderId);
       user.updateAddress(address);
-      user.addToDatabase();
       router.push('/pools');
     } else {
       handleError('Log in failed');

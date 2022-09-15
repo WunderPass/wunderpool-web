@@ -25,53 +25,57 @@ function determineExecutable(
 
 export function fetchPoolProposalsDelta(address, userAddress = null) {
   return new Promise(async (resolve, reject) => {
-    const [wunderPool] = initPoolDelta(address);
-    const [wunderProposal] = initProposalDelta();
-    const proposalIds = await wunderPool.getAllProposalIds();
-    const proposals = await Promise.all(
-      proposalIds.map(async (id) => {
-        const {
-          title,
-          description,
-          transactionCount,
-          deadline,
-          yesVotes,
-          noVotes,
-          totalVotes,
-          createdAt,
-          executed,
-        } = await wunderProposal.getProposal(address, id);
+    try {
+      const [wunderPool] = initPoolDelta(address);
+      const [wunderProposal] = initProposalDelta();
+      const proposalIds = await wunderPool.getAllProposalIds();
+      const proposals = await Promise.all(
+        proposalIds.map(async (id) => {
+          const {
+            title,
+            description,
+            transactionCount,
+            deadline,
+            yesVotes,
+            noVotes,
+            totalVotes,
+            createdAt,
+            executed,
+          } = await wunderProposal.getProposal(address, id);
 
-        const executable = determineExecutable(
-          executed,
-          yesVotes,
-          noVotes,
-          totalVotes,
-          deadline
-        );
-        const declined = noVotes.mul(2).gte(totalVotes);
-        const hasVoted = userAddress
-          ? await hasVotedDelta(address, id, userAddress)
-          : null;
+          const executable = determineExecutable(
+            executed,
+            yesVotes,
+            noVotes,
+            totalVotes,
+            deadline
+          );
+          const declined = noVotes.mul(2).gte(totalVotes);
+          const hasVoted = userAddress
+            ? await hasVotedDelta(address, id, userAddress)
+            : null;
 
-        return {
-          id: id.toNumber(),
-          title,
-          description,
-          transactionCount,
-          deadline: deadline.mul(1000).toNumber(),
-          yesVotes,
-          noVotes,
-          totalVotes,
-          createdAt: createdAt.mul(1000).toNumber(),
-          executed,
-          executable,
-          declined,
-          hasVoted,
-        };
-      })
-    );
-    resolve(proposals);
+          return {
+            id: id.toNumber(),
+            title,
+            description,
+            transactionCount,
+            deadline: deadline.mul(1000).toNumber(),
+            yesVotes: yesVotes.toNumber(),
+            noVotes: noVotes.toNumber(),
+            totalVotes: totalVotes.toNumber(),
+            createdAt: createdAt.mul(1000).toNumber(),
+            executed,
+            executable,
+            declined,
+            hasVoted,
+          };
+        })
+      );
+      resolve(proposals);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 

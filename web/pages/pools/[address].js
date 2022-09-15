@@ -7,7 +7,6 @@ import PoolBody from '/components/pool/body';
 import usePool from '/hooks/usePool';
 import PoolDetails from '/components/pool/assetDetails';
 import PoolMembers from '/components/pool/members';
-import LoadingCircle from '/components/utils/loadingCircle';
 import { currency } from '/services/formatter';
 import { fetchPoolName } from '/services/contract/pools';
 import CustomHeader from '../../components/utils/customHeader';
@@ -30,9 +29,7 @@ export default function Pool(props) {
   const [address, setAddress] = useState(null);
   const [name, setName] = useState('');
   const [fundDialog, setFundDialog] = useState(false);
-  const [loading, setLoading] = useState(true);
   const wunderPool = usePool(user.address, address, handleError);
-  const [loadingCircle, setLoadingCircle] = useState(true);
 
   const loginCallback = () => {
     setupPoolListener(address, user.address);
@@ -80,7 +77,6 @@ export default function Pool(props) {
       if (wunderPool.exists) {
         if (wunderPool.isMember) {
           loginCallback();
-          setLoading(false);
         }
       } else if (wunderPool.exists === false) {
         handleInfo('Pool was closed');
@@ -97,13 +93,13 @@ export default function Pool(props) {
   }, [wunderPool.liquidated]);
 
   useEffect(() => {
-    if (router.isReady && router.query.id && user.address) {
-      setAddress(router.query.id);
+    if (router.isReady && router.query.address && user.address) {
+      setAddress(router.query.address);
       setName(router.query.name);
-      wunderPool.setPoolAddress(router.query.id);
+      wunderPool.setPoolAddress(router.query.address);
       wunderPool.setUserAddress(user.address);
     }
-  }, [router.isReady, router.query.id, user.address]);
+  }, [router.isReady, router.query.address, user.address]);
 
   useEffect(() => {
     if (!address || !user.address) return;
@@ -130,8 +126,9 @@ export default function Pool(props) {
   }, [votedEvent, newProposalEvent, proposalExecutedEvent]);
 
   useEffect(() => {
-    setLoadingCircle(!wunderPool.isReady);
-  }, [wunderPool.isReady]);
+    // For Debugging - Access wunderPool in your console
+    if (process.env.NODE_ENV == 'development') window.wunderPool = wunderPool;
+  }, []);
 
   return (
     <>
@@ -140,8 +137,10 @@ export default function Pool(props) {
         description={metaTagInfo.description}
         imageUrl={metaTagInfo.imageUrl}
       />
-      {loadingCircle && <LoadingCircle />}
-      <Container className={`${loadingCircle ? 'blur' : ''}`} maxWidth="xl">
+      <Container
+        className={`${wunderPool.loadingState.init ? '' : 'blur'}`}
+        maxWidth="xl"
+      >
         <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
           <div
             className="hidden md:flex md:flex-row" //Desktop
@@ -156,7 +155,6 @@ export default function Pool(props) {
               />
               <PoolBody
                 address={address}
-                loading={loading}
                 wunderPool={wunderPool}
                 tokenAddedEvent={tokenAddedEvent}
                 newProposalEvent={newProposalEvent}
@@ -164,7 +162,6 @@ export default function Pool(props) {
               />
             </div>
             <div className="flex-col max-w-sm w-screen">
-              {!wunderPool.isMember && <></>}
               <PoolDetails
                 address={address}
                 wunderPool={wunderPool}
@@ -191,7 +188,6 @@ export default function Pool(props) {
                 isMobile={true}
                 {...props}
               />
-
               <PoolDetails
                 address={address}
                 wunderPool={wunderPool}
@@ -203,11 +199,11 @@ export default function Pool(props) {
                 loginCallback={loginCallback}
                 {...props}
               />
-
               <PoolBody
                 address={address}
-                loading={loading}
                 wunderPool={wunderPool}
+                tokenAddedEvent={tokenAddedEvent}
+                newProposalEvent={newProposalEvent}
                 loginCallback={loginCallback}
                 {...props}
               />
@@ -227,8 +223,8 @@ export default function Pool(props) {
 }
 
 export async function getServerSideProps(context) {
-  const address = context.query.id;
-  const imageUrl = `/api/proxy/pools/metadata/getImage?address=${address}`;
+  const address = context.query.address;
+  const baseImageUrl = `/api/proxy/pools/metadata/ogImage?address=${address}&name=`;
 
   try {
     const { pool_name, pool_description, pool_treasury } = await (
@@ -244,7 +240,7 @@ export async function getServerSideProps(context) {
             pool_treasury.act_balance
           )}`,
           description: pool_description,
-          imageUrl,
+          imageUrl: baseImageUrl + pool_name,
         },
       },
     };
@@ -254,7 +250,7 @@ export async function getServerSideProps(context) {
       props: {
         metaTagInfo: {
           title: 'Casama',
-          imageUrl,
+          imageUrl: baseImageUrl + 'Casama',
         },
       },
     };

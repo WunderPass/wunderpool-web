@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback } = props;
-  const { isReady, isMember, closed, governanceToken, members, version } =
+  const { loadingState, isMember, closed, governanceToken, members, version } =
     wunderPool;
   const [open, setOpen] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
@@ -31,7 +31,7 @@ export default function PoolMembers(props) {
     setOpen(router.query?.joinPool ? true : false);
   }, [router.query]);
 
-  return isReady ? (
+  return loadingState.init ? (
     <div className="md:ml-4 w-full">
       <div
         className={`flex container-white overflow-clip justify-start md:justify-center ${

@@ -42,7 +42,7 @@ export default function useUser() {
 
   const fetchPools = () => {
     return new Promise((resolve, reject) => {
-      if (!address) resolve(null);
+      if (!address) return;
       fetchUserPools(address)
         .then((pools) => {
           setPools(pools);
@@ -56,7 +56,7 @@ export default function useUser() {
 
   const fetchWhitelistedPools = () => {
     return new Promise((resolve, reject) => {
-      if (!address) resolve(null);
+      if (!address) return;
       fetchWhitelistedUserPools(address)
         .then((pools) => {
           setWhitelistedPools(pools);
@@ -110,6 +110,17 @@ export default function useUser() {
   }, [address]);
 
   useEffect(() => {
+    if (address && wunderId) addToDatabase();
+  }, [address, wunderId]);
+
+  useEffect(() => {
+    if (router.asPath == '/pools') {
+      fetchPools();
+      fetchWhitelistedPools();
+    }
+  }, [router.asPath]);
+
+  useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
     setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
@@ -134,6 +145,5 @@ export default function useUser() {
     checkedTopUp,
     updateCheckedTopUp,
     isReady,
-    addToDatabase,
   };
 }

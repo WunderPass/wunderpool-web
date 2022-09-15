@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { initPool, usdcAddress, tokenAbi, versionLookup } from './init';
+import { initPool, versionLookup } from './init';
 import { usdc } from '/services/formatter';
 import {
   addToWhiteListDelta,
@@ -110,7 +110,7 @@ export function getPoolAddressFromTx(txHash, version = null) {
   });
 }
 
-async function formatAsset(asset) {
+export async function formatAsset(asset) {
   const address = asset.asset_infos.currency_contract_address;
   const token =
     (await getCachedItemDB(address)) ||
@@ -124,14 +124,32 @@ async function formatAsset(asset) {
       ).data,
       600
     ));
+  let {
+    name,
+    symbol,
+    decimals,
+    price = 0,
+    image_url,
+    dollar_price = 0,
+    tradable = false,
+  } = token;
+
+  name = name || asset.asset_name;
+  symbol = symbol || asset.asset_infos.currency_symbol;
+  decimals = decimals || asset.asset_infos.decimals;
 
   return {
-    name: asset.asset_name,
+    name,
+    symbol,
     address,
-    decimals: asset.asset_infos.decimals,
-    symbol: asset.asset_infos.currency_symbol,
+    decimals,
     balance: asset.pool_balance,
-    usdValue: token?.dollar_price || 0,
+    usdValue: asset.pool_balance * dollar_price,
+    image: image_url,
+    price: price,
+    dollarPrice: dollar_price,
+    verified: Boolean(dollar_price),
+    tradable,
   };
 }
 
@@ -160,14 +178,12 @@ async function formatMember(member, totalSupply) {
 }
 
 function formatGovernanceToken(token) {
-  const address = token.governanc_token.currency_contract_address;
-  // const govToken = new ethers.Contract(address, tokenAbi, httpProvider);
   return {
     name: token.governanc_token.currency_name,
-    address,
+    address: token.governanc_token.currency_contract_address,
     symbol: token.governanc_token.currency_symbol,
     price: 1 / token.tokens_for_dollar,
-    totalSupply: token.emmited_shares, // (await govToken.totalSupply()).toNumber()
+    totalSupply: token.emmited_shares,
   };
 }
 async function formatShareholderAgreement(shareholderAgreement) {
@@ -198,7 +214,7 @@ async function formatPool(pool, user = null) {
     const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
     const version = versionLookup[pool.launcher.launcher_version];
     const cashInTokens = tokens
-      .map((tkn) => tkn.usdValue * tkn.balance)
+      .map((tkn) => tkn.usdValue)
       .reduce((a, b) => a + b, 0);
     const totalBalance = cashInTokens + usdBalance;
 
@@ -238,6 +254,7 @@ async function formatPool(pool, user = null) {
       shareholderAgreement,
     };
   } catch (error) {
+    console.log(error);
     return null;
   }
 }

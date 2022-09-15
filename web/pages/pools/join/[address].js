@@ -228,6 +228,11 @@ export default function JoinPool(props) {
     }
   }, [router.isReady, router.query.address, user.address]);
 
+  useEffect(() => {
+    // For Debugging - Access wunderPool in your console
+    if (process.env.NODE_ENV == 'development') window.wunderPool = wunderPool;
+  }, []);
+
   return (
     <>
       <CustomHeader

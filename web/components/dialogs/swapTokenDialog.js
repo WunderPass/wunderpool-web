@@ -18,7 +18,7 @@ import { ethers } from 'ethers';
 export default function SwapTokenDialog(props) {
   const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
     props;
-  const { address, decimals, formattedBalance, name, symbol, tradable } = token;
+  const { address, decimals, balance, name, symbol, tradable } = token;
   const [amount, setAmount] = useState('');
   const [receiveName, setReceiveName] = useState('');
   const [receiveSymbol, setReceiveSymbol] = useState('');
@@ -94,7 +94,7 @@ export default function SwapTokenDialog(props) {
                 <InputAdornment position="end">
                   <button
                     className="btn btn-default"
-                    onClick={() => setAmount(formattedBalance)}
+                    onClick={() => setAmount(balance)}
                   >
                     MAX
                   </button>
@@ -138,8 +138,7 @@ export default function SwapTokenDialog(props) {
             onClick={handleSubmit}
             color="success"
             disabled={
-              Number(amount) > Number(formattedBalance) ||
-              receiveName.length < 1
+              Number(amount) > Number(balance) || receiveName.length < 1
             }
           >
             Swap

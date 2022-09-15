@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { ethers } from 'ethers';
 import TransactionFrame from '../utils/transactionFrame';
 import { formatTokenBalance } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
@@ -23,18 +22,10 @@ export default function SellTokenDialog(props) {
     handleError,
     handleSuccess,
   } = props;
-  const {
-    address,
-    decimals,
-    formattedBalance,
-    name,
-    symbol,
-    dollarPrice,
-    tradable,
-  } = token;
+  const { address, decimals, balance, name, symbol, dollarPrice, tradable } =
+    token;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
-
   const handleClose = () => {
     setAmount('');
     setLoading(false);
@@ -63,7 +54,6 @@ export default function SellTokenDialog(props) {
         })
         .then(() => {
           setLoading(false);
-          handleClose();
         });
     }, 40);
   };
@@ -86,9 +76,7 @@ export default function SellTokenDialog(props) {
           </Alert>
         )}
         <Typography>Price per token: {dollarPrice} $</Typography>
-        <Typography>
-          Tokens owned: {formatTokenBalance(formattedBalance)}{' '}
-        </Typography>
+        <Typography>Tokens owned: {formatTokenBalance(balance)} </Typography>
         <TextField
           className="mt-4"
           autoFocus
@@ -104,7 +92,7 @@ export default function SellTokenDialog(props) {
               <InputAdornment position="end">
                 <button
                   className="btn btn-default"
-                  onClick={() => setAmount(formattedBalance)}
+                  onClick={() => setAmount(balance)}
                 >
                   MAX
                 </button>
@@ -126,7 +114,7 @@ export default function SellTokenDialog(props) {
             className="btn btn-danger"
             onClick={handleSubmit}
             color="success"
-            disabled={Number(amount) > Number(formattedBalance)}
+            disabled={Number(amount) > Number(balance)}
           >
             Sell
           </button>

@@ -6,7 +6,6 @@ export default function CustomHeader({
   imageUrl,
   favicon = '/favicon.ico',
 }) {
-  console.log(imageUrl);
   return (
     <Head>
       <title>{title}</title>
