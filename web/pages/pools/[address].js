@@ -224,7 +224,7 @@ export default function Pool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.address;
-  const imageUrl = `/api/proxy/pools/metadata/getImage?address=${address}`;
+  const baseImageUrl = `/api/proxy/pools/metadata/ogImage?address=${address}&name=`;
 
   try {
     const { pool_name, pool_description, pool_treasury } = await (
@@ -240,7 +240,7 @@ export async function getServerSideProps(context) {
             pool_treasury.act_balance
           )}`,
           description: pool_description,
-          imageUrl,
+          imageUrl: baseImageUrl + pool_name,
         },
       },
     };
@@ -250,7 +250,7 @@ export async function getServerSideProps(context) {
       props: {
         metaTagInfo: {
           title: 'Casama',
-          imageUrl,
+          imageUrl: baseImageUrl + 'Casama',
         },
       },
     };
