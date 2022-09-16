@@ -27,7 +27,6 @@ export default function MemberInput({
       setLoading(true);
       timer = setTimeout(() => {
         searchMembers(value).then((mems) => {
-          console.log(mems);
           setMembers(mems);
           setLoading(false);
         });
