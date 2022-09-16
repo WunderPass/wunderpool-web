@@ -1,10 +1,4 @@
-import {
-  Autocomplete,
-  createFilterOptions,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Autocomplete, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { searchMembers, getNameFor } from '/services/memberHelpers';
 import Avatar from '/components/members/avatar';
@@ -24,10 +18,7 @@ export default function MemberInput({
     setSelectedMembers(value);
   };
 
-  const filterOptions = createFilterOptions({
-    stringify: (opt) =>
-      `${opt.email} ${opt.handle} ${opt.firstName} ${opt.lastName} ${opt.phoneNumber} ${opt.address} ${opt.wunderId}`,
-  });
+  const filterOptions = (options) => (loading ? [] : options);
 
   const handleInput = (e, value, reason) => {
     clearTimeout(timer);
@@ -81,14 +72,24 @@ export default function MemberInput({
               sx={{ width: '100%' }}
             >
               <Avatar wunderId={option.wunderId} text={option.wunderId} />
-              <Typography
-                variant="subtitle1"
-                whiteSpace="nowrap"
-                textOverflow="ellipsis"
-                overflow="hidden"
-              >
-                {getNameFor(option)}
-              </Typography>
+              <div>
+                <Typography
+                  variant="subtitle1"
+                  whiteSpace="nowrap"
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                >
+                  {getNameFor(option)}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  whiteSpace="nowrap"
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                >
+                  {option.email}
+                </Typography>
+              </div>
             </Stack>
           </li>
         );
