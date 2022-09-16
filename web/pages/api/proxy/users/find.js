@@ -1,24 +1,55 @@
-const fs = require('fs');
+import axios from 'axios';
+const network = 'POLYGON';
+
+async function getUserByWunderId(wunderId) {
+  try {
+    const resp = await axios({
+      method: 'get',
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/${wunderId}`
+      ),
+      headers: {
+        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+      },
+    });
+    return [200, resp.data.find((u) => u.wunder_id == wunderId)];
+  } catch (error) {
+    console.log(error);
+    return [500, error];
+  }
+}
+
+async function getUsersByAddresses(addresses) {
+  try {
+    const resp = await axios({
+      method: 'post',
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/by_network/${network}`
+      ),
+      headers: {
+        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+      },
+      data: addresses.map((a) => a.toLowerCase()),
+    });
+    return [200, resp.data];
+  } catch (error) {
+    console.log(error);
+    return [500, error];
+  }
+}
 
 export default async function handler(req, res) {
-  const users = JSON.parse(fs.readFileSync('./data/userMapping.json', 'utf8'));
+  const { wunderId, address, addresses } = req.query || {};
   let status, data;
-
-  if (req.query.wunderId) {
-    const user = users.filter((u) => u.wunderId == req.query.wunderId)[0];
-    data = user || {
-      error: `No User found for WunderId ${req.query.wunderId}`,
-    };
-    status = user ? 200 : 404;
-  } else if (req.query.address) {
-    const user = users.filter(
-      (u) => u.address.toLowerCase() == req.query.address.toLowerCase()
-    )[0];
-    data = user || { error: `No User found for Address ${req.query.address}` };
-    status = user ? 200 : 404;
+  if (wunderId) {
+    [status, data] = await getUserByWunderId(wunderId);
+  } else if (address) {
+    [status, data] = await getUsersByAddresses([address]);
+    data = status == 200 ? data[0] : data;
+  } else if (addresses) {
+    [status, data] = await getUsersByAddresses(addresses);
   } else {
-    data = { error: 'Address or WunderId missing' };
-    status = 403;
+    [status, data] = [403, { error: 'Address/Addresses or WunderId missing' }];
   }
   res.status(status).json(data);
 }

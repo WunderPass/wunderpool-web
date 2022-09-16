@@ -1,32 +1,8 @@
-import {
-  Autocomplete,
-  createFilterOptions,
-  DialogContentText,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Avatar from '/components/utils/avatar';
+import { DialogContentText, Divider, Stack, Typography } from '@mui/material';
+import MemberInput from '/components/members/input';
 
 export default function NewPoolInviteStep(props) {
   const { members, setMembers } = props;
-  const [wunderIds, setWunderIds] = useState([]);
-
-  const handleChange = (e, value, reason) => {
-    setMembers(value);
-  };
-
-  const filterOptions = createFilterOptions({
-    stringify: (option) => `${option.address} ${option.wunderId}`,
-  });
-
-  useEffect(async () => {
-    const users = await axios({ url: '/api/proxy/users/all' });
-    setWunderIds(users.data);
-  }, []);
 
   return (
     <Stack spacing={1}>
@@ -38,51 +14,10 @@ export default function NewPoolInviteStep(props) {
         <label className="label pr-52" htmlFor="poolName">
           Invite your friends via WunderPass
         </label>
-        <Autocomplete
-          className="w-full text-gray-700 my-4 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
+        <MemberInput
           multiple
-          options={wunderIds}
-          value={members}
-          onChange={handleChange}
-          isOptionEqualToValue={(option, val) => option.address == val.address}
-          getOptionLabel={(option) => {
-            return option.wunderId;
-          }}
-          filterOptions={filterOptions}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              className="w-full text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
-              label="WunderPass Users"
-              placeholder="Members"
-            />
-          )}
-          renderOption={(props, option) => {
-            return (
-              <li {...props}>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={2}
-                  sx={{ width: '100%' }}
-                >
-                  <Avatar
-                    wunderId={option.wunderId ? option.wunderId : null}
-                    text={option.wunderId}
-                    separator="-"
-                  />
-                  <Typography
-                    variant="subtitle1"
-                    whiteSpace="nowrap"
-                    textOverflow="ellipsis"
-                    overflow="hidden"
-                  >
-                    {option.wunderId}
-                  </Typography>
-                </Stack>
-              </li>
-            );
-          }}
+          selectedMembers={members}
+          setSelectedMembers={setMembers}
         />
       </div>
 

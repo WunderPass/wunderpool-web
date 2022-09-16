@@ -80,15 +80,6 @@ export default function useUser() {
     });
   };
 
-  const addToDatabase = () => {
-    if (!address || !wunderId) return;
-    axios({
-      method: 'POST',
-      url: '/api/proxy/users/add',
-      data: { wunderId: wunderId, address: address },
-    });
-  };
-
   const logOut = () => {
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
@@ -108,10 +99,6 @@ export default function useUser() {
       setIsReady(true);
     }
   }, [address]);
-
-  useEffect(() => {
-    if (address && wunderId) addToDatabase();
-  }, [address, wunderId]);
 
   useEffect(() => {
     if (router.asPath == '/pools') {

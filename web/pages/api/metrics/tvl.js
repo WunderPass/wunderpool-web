@@ -4,12 +4,16 @@ import { toEthString } from '/services/formatter';
 import { initPoolGamma } from '/services/contract/gamma/init';
 import { usdcBalanceOf } from '/services/contract/token';
 import { tokenAbi } from '/services/contract/init';
-import { fetchPoolName } from '/services/contract/pools';
 import { httpProvider } from '/services/contract/provider';
 const fs = require('fs');
 
 const tokenMap = {};
 const userMap = {};
+
+const headers = {
+  'Content-Type': 'application/json',
+  authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
+};
 
 async function getToken(address) {
   if (!tokenMap[address]) {
@@ -26,25 +30,33 @@ async function getToken(address) {
   return tokenMap[address];
 }
 
-function formatMember(member) {
+async function formatMember(member) {
   const address = member.members_address;
 
   if (userMap[address]) {
     return {
-      user: address,
+      address,
       shares: member.pool_shares_balance,
       wunderId: userMap[address],
     };
   }
-  const users = JSON.parse(fs.readFileSync('./data/userMapping.json', 'utf8'));
-  const wunderId =
-    users.filter((u) => u.address.toLowerCase() == address.toLowerCase())[0]
-      ?.wunderId || 'Unknown User';
+  const { data } = await axios({
+    method: 'post',
+    url: encodeURI(
+      `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/by_network/POLYGON`
+    ),
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+    },
+    data: [address.toLowerCase()],
+  });
+  const wunderId = data[0].wunder_id;
   userMap[address] = wunderId;
   return {
-    address: address,
+    address,
     shares: member.pool_shares_balance,
-    wunderId: wunderId,
+    wunderId,
   };
 }
 
@@ -99,33 +111,21 @@ export default async function handler(req, res) {
       return;
     }
 
-    const headers = {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
-    };
-
     const poolResult = (
       await axios({
         method: 'get',
-        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools/web2/all`,
-        headers: headers,
+        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools`,
+        headers,
       })
     ).data;
-
-    const liquidatedPools = fs.existsSync('./data/liquidatedPools.json')
-      ? JSON.parse(fs.readFileSync('./data/liquidatedPools.json', 'utf8'))
-      : [];
 
     const pools = await Promise.all(
       poolResult.map(async (pool) => {
         let usdBalance = 0;
         let tokenBalance = 0;
         let totalBalance = 0;
-        // BROKEN As of 30.07.2022 => All Pools are active: false
-        // if (pool.active && pool.pool_members?.length > 0) {
-        if (!liquidatedPools.includes(pool.pool_address)) {
+        if (pool.active && pool.pool_members?.length > 0) {
           try {
-            const exists = await fetchPoolName(pool.pool_address);
             pool.active = true;
             usdBalance = Number(await usdcBalanceOf(pool.pool_address));
             // const poolTokens =
@@ -144,9 +144,7 @@ export default async function handler(req, res) {
             );
             tokenBalance = tokenBalances.reduce((a, b) => a + b, 0);
             totalBalance = Number(usdBalance) + Number(tokenBalance);
-          } catch (error) {
-            liquidatedPools.push(pool.pool_address);
-          }
+          } catch (error) {}
         }
         return {
           ...pool,
@@ -157,24 +155,22 @@ export default async function handler(req, res) {
       })
     );
 
-    fs.writeFileSync(
-      './data/liquidatedPools.json',
-      JSON.stringify(liquidatedPools)
-    );
-
     const activePools = pools.filter((p) => p.active && p.totalBalance > 0);
 
-    const poolData = ['Gamma', 'Delta', 'Epsilon'].map((version) => {
-      const versionPools = pools.filter(
-        (p) => p.launcher.launcher_version == version
-      );
+    const poolData = ['Epsilon'].map((version) => {
+      const versionFilter = (p) => p.launcher.launcher_version == version;
+      const versionPools = pools.filter(versionFilter);
+      const versionPoolsActive = activePools.filter(versionFilter);
+
+      const tvl = versionPools
+        .map((p) => p.totalBalance)
+        .reduce((a, b) => a + b, 0);
       return {
         version: version,
         poolsCreated: versionPools.length,
-        activePools: activePools.filter(
-          (p) => p.launcher.launcher_version == version
-        ).length,
-        tvl: versionPools.map((p) => p.totalBalance).reduce((a, b) => a + b, 0),
+        activePools: versionPoolsActive.length,
+        tvl,
+        averagePoolValue: tvl / (versionPoolsActive.length || 1),
       };
     });
 
@@ -182,17 +178,21 @@ export default async function handler(req, res) {
       .map((d) => d.tvl)
       .reduce((a, b) => a + b, 0);
 
-    const topFive = pools
-      .sort((a, b) => b.totalBalance - a.totalBalance)
-      .slice(0, 5)
-      .map((pool) => ({
-        version: pool.launcher.launcher_version,
-        name: pool.pool_name,
-        members: pool.pool_members.map((member) => formatMember(member)),
-        usdBalance: pool.usdBalance,
-        tokenBalance: pool.tokenBalance,
-        totalBalance: pool.totalBalance,
-      }));
+    const topFive = await Promise.all(
+      pools
+        .sort((a, b) => b.totalBalance - a.totalBalance)
+        .slice(0, 5)
+        .map(async (pool) => ({
+          version: pool.launcher.launcher_version,
+          name: pool.pool_name,
+          members: await Promise.all(
+            pool.pool_members.map(async (member) => await formatMember(member))
+          ),
+          usdBalance: pool.usdBalance,
+          tokenBalance: pool.tokenBalance,
+          totalBalance: pool.totalBalance,
+        }))
+    );
 
     const result = {
       timestamp: new Date().toISOString(),

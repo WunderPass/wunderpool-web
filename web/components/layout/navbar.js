@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import MobileNavigation from './mobileNavigation';
 import Navigation from './navigation';
 import Link from 'next/link';
-import Avatar from '/components/utils/avatar';
+import Avatar from '/components/members/avatar';
 import { useEffect, useState } from 'react';
 
 export default function Navbar(props) {
@@ -40,9 +40,7 @@ export default function Navbar(props) {
                   {!loading && (
                     <Avatar
                       wunderId={user.wunderId}
-                      tooltip={null}
                       text={user.wunderId ? user.wunderId : '0-X'}
-                      separator="-"
                       i={1}
                     />
                   )}

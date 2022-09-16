@@ -4,7 +4,8 @@ import {
   MdOutlineKeyboardArrowDown,
   MdOutlineKeyboardArrowUp,
 } from 'react-icons/md';
-import Avatar from '/components/utils/avatar';
+import { getNameFor } from '../../services/memberHelpers';
+import Avatar from '/components/members/avatar';
 import { currency, polyValueToUsd, toFixed } from '/services/formatter';
 
 export default function CapTable(props) {
@@ -44,12 +45,12 @@ export default function CapTable(props) {
                 <td className="pb-2">
                   <div className="flex flex-row items-center md:ml-2">
                     <Avatar
-                      wunderId={member.wunderId ? member.wunderId : null}
-                      tooltip={`${
-                        member.wunderId || 'External User'
-                      }: ${toFixed(member.share, 2)}%`}
+                      wunderId={member.wunderId}
+                      tooltip={`${getNameFor(member)}: ${toFixed(
+                        member.share,
+                        2
+                      )}%`}
                       text={member.wunderId ? member.wunderId : '0-X'}
-                      separator="-"
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                       i={i}
                     />

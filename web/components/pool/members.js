@@ -3,12 +3,13 @@ import { Skeleton, Typography } from '@mui/material';
 import { AiOutlinePlus } from 'react-icons/ai';
 import InviteMemberDialog from '/components/dialogs/inviteMember';
 import JoinPoolDialog from '/components/dialogs/joinPool';
-import Avatar from '/components/utils/avatar';
+import Avatar from '/components/members/avatar';
 import { FaBan } from 'react-icons/fa';
 import CapTable from './capTable';
 import InviteLinkButton from './inviteLinkButton';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
+import { getNameFor } from '../../services/memberHelpers';
 
 export default function PoolMembers(props) {
   const { wunderPool, loginCallback } = props;
@@ -69,12 +70,11 @@ export default function PoolMembers(props) {
                   {members.map((member, i) => {
                     return (
                       <Avatar
-                        wunderId={member.wunderId ? member.wunderId : null}
-                        tooltip={`${
-                          member.wunderId || 'External User'
-                        }: ${member.share.toString()}%`}
+                        wunderId={member.wunderId}
+                        tooltip={`${getNameFor(
+                          member
+                        )}: ${member.share.toString()}%`}
                         text={member.wunderId ? member.wunderId : '0-X'}
-                        separator="-"
                         color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                         i={i}
                       />

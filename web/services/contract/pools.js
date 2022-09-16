@@ -173,7 +173,9 @@ async function formatMember(member, totalSupply) {
     address: member.members_address,
     shares: member.pool_shares_balance,
     share: (member.pool_shares_balance * 100) / totalSupply,
-    wunderId: user?.wunderId,
+    wunderId: user?.wunder_id,
+    firstName: user?.firstname,
+    lastName: user?.lastname,
   };
 }
 
@@ -204,14 +206,14 @@ async function formatShareholderAgreement(shareholderAgreement) {
   };
 }
 
-async function formatPool(pool, user = null) {
+export async function formatPool(pool, user = null) {
   try {
     const tokens = await Promise.all(
       pool.pool_assets
         ? pool.pool_assets.map(async (asset) => await formatAsset(asset))
         : []
     );
-    const usdBalance = Number(await usdcBalanceOf(pool.pool_address)); // pool.pool_treasury.act_balance;
+    const usdBalance = pool.pool_treasury.act_balance;
     const version = versionLookup[pool.launcher.launcher_version];
     const cashInTokens = tokens
       .map((tkn) => tkn.usdValue)
