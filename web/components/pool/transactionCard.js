@@ -61,7 +61,7 @@ export default function TransactionCard({ wunderPool, transaction, number }) {
   const { isError, hash } = transaction;
 
   useEffect(() => {
-    if (hash && isError) decodeError(hash).then(setErrorMsg);
+    if (hash && isError == '1') decodeError(hash).then(setErrorMsg);
   }, [hash, isError]);
 
   return (
