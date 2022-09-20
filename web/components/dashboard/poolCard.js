@@ -31,7 +31,7 @@ export default function PoolCard(props) {
       passHref
     >
       <Paper
-        className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden`}
+        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden w-full"
         elevation={1}
         sx={{ p: 2 }}
       >

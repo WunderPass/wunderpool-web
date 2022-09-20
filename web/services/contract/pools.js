@@ -14,7 +14,7 @@ import {
 } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
-import { approve, usdcBalanceOf } from './token';
+import { approve } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
 
 export function createPool(

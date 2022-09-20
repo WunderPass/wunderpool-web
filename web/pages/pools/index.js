@@ -17,6 +17,7 @@ import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
 import PoolList from '/components/dashboard/poolList';
 import CustomHeader from '../../components/utils/customHeader';
+import PublicPools from '../../components/dashboard/publicPools';
 
 export default function Pools(props) {
   const { user, handleSuccess } = props;
@@ -32,8 +33,6 @@ export default function Pools(props) {
   const toggleAddress = () => {
     setShowAddress(!showAddress);
   };
-
-  useEffect(() => {}, [user]);
 
   const handleOpenClose = () => {
     if (open) {
@@ -54,9 +53,9 @@ export default function Pools(props) {
   return (
     <>
       <CustomHeader />
-      <div className="font-graphik">
-        {loadingCircle && <LoadingCircle />}
-        <Container className={loadingCircle ? 'blur' : ''}>
+      {loadingCircle && <LoadingCircle />}
+      <div className={`font-graphik ${loadingCircle ? 'blur' : ''}`}>
+        <Container>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
               <div className="flex flex-col">
@@ -167,6 +166,7 @@ export default function Pools(props) {
             {...props}
           />
         </Container>
+        <PublicPools />
       </div>
     </>
   );

@@ -1,0 +1,75 @@
+import { useEffect, useState } from 'react';
+import { fetchAllPools, formatPool } from '/services/contract/pools';
+import PoolCard from '../../components/dashboard/poolCard';
+import { Paper, Typography } from '@mui/material';
+
+export default function PublicPools() {
+  const [visiblePools, setVisiblePools] = useState([]);
+  const [allPools, setAllPools] = useState([]);
+
+  const canShowMore = allPools.length > visiblePools.length;
+
+  const showMore = () => {
+    allPools.slice(visiblePools.length, visiblePools.length + 3).map((pool) => {
+      formatPool(pool).then((p) => {
+        setVisiblePools((prev) => [...prev, p]);
+      });
+    });
+  };
+
+  useEffect(() => {
+    setVisiblePools([]);
+    setAllPools([]);
+    fetchAllPools().then((pools) => {
+      const validPools = pools
+        .filter(
+          ({ pool_name, active, closed, pool_treasury }) =>
+            active &&
+            !closed &&
+            pool_treasury.act_balance > 3 &&
+            !/test/i.test(pool_name)
+        )
+        .sort(
+          (a, b) => b.pool_treasury.act_balance - a.pool_treasury.act_balance
+        );
+      setAllPools(validPools);
+
+      validPools.slice(0, 3).map((pool) => {
+        formatPool(pool).then((p) => {
+          setVisiblePools((prev) => [...prev, p]);
+        });
+      });
+    });
+  }, []);
+
+  return (
+    <>
+      <Typography className="subheader subheader-sm font-medium my-6 px-4 sm:px-6">
+        Public Pools
+      </Typography>
+      <div className="flex flex-col sm:flex-row w-full overflow-scroll gap-4 px-4 sm:px-6 mb-6">
+        {visiblePools
+          .sort((a, b) => b.totalBalance - a.totalBalance)
+          .map((pool, i) => {
+            return (
+              <div className="min-w-full sm:min-w-[30%]">
+                <PoolCard key={`public-pool-card-${i}`} pool={pool} />
+              </div>
+            );
+          })}
+        {canShowMore && (
+          <div className="min-w-full sm:min-w-[25%] mb-4 pb-6 sm:p-0 lg:mb-0 sm:mb-6">
+            <Paper
+              className="container-gray w-full h-full cursor-pointer flex items-center justify-center"
+              elevation={1}
+              sx={{ p: 2 }}
+              onClick={showMore}
+            >
+              <Typography textAlign="center">Show More</Typography>
+            </Paper>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
