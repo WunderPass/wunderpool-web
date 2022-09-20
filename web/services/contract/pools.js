@@ -16,6 +16,10 @@ import axios from 'axios';
 import { httpProvider } from './provider';
 import { approve } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
+import {
+  addToWhiteListWithSecretZeta,
+  fetchWhitelistedUserPoolsZeta,
+} from './zeta/pools';
 
 export function createPool(
   creator,
@@ -37,7 +41,7 @@ export function createPool(
     const body = {
       launcher: {
         launcher_name: 'PoolLauncher',
-        launcher_version: 'Epsilon',
+        launcher_version: 'Zeta',
         launcher_network: 'POLYGON_MAINNET',
       },
       pool_name: poolName,
@@ -62,7 +66,7 @@ export function createPool(
     const formData = new FormData();
     formData.append('pool_image', image);
     formData.append('pool', JSON.stringify(body));
-    approve(creator, '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E', usdc(amount))
+    approve(creator, '0xB5Ae136D3817d8116Fce70Ac47e856fc484dafAe', usdc(amount))
       .then(() => {
         axios({
           method: 'POST',
@@ -281,9 +285,9 @@ export function fetchUserPools(userAddress) {
 
 export function fetchWhitelistedUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
-    const deltaPools = await fetchWhitelistedUserPoolsDelta(userAddress);
     const epsilonPools = await fetchWhitelistedUserPoolsEpsilon(userAddress);
-    resolve([...deltaPools, ...epsilonPools]);
+    const zetaPools = await fetchWhitelistedUserPoolsZeta(userAddress);
+    resolve([...epsilonPools, ...zetaPools]);
   });
   // return new Promise(async (resolve, reject) => {
   //   axios({ url: `/api/proxy/pools/whitelisted?address=${userAddress}` })
@@ -368,7 +372,14 @@ export function addToWhiteListWithSecret(
   validFor,
   version
 ) {
-  if (version > 4) {
+  if (version > 5) {
+    return addToWhiteListWithSecretZeta(
+      poolAddress,
+      userAddress,
+      secret,
+      validFor
+    );
+  } else if (version > 4) {
     return addToWhiteListWithSecretEpsilon(
       poolAddress,
       userAddress,

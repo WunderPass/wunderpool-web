@@ -52,8 +52,11 @@ export default function PublicPools() {
           .sort((a, b) => b.totalBalance - a.totalBalance)
           .map((pool, i) => {
             return (
-              <div className="min-w-full sm:min-w-[30%]">
-                <PoolCard key={`public-pool-card-${i}`} pool={pool} />
+              <div
+                key={`public-pool-card-${i}`}
+                className="min-w-full sm:min-w-[30%]"
+              >
+                <PoolCard pool={pool} />
               </div>
             );
           })}

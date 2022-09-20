@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     [status, data] = await getUsersByAddresses([address]);
     data = status == 200 ? data[0] : data;
   } else if (addresses) {
-    [status, data] = await getUsersByAddresses(addresses);
+    [status, data] = await getUsersByAddresses(JSON.parse(addresses));
   } else {
     [status, data] = [403, { error: 'Address/Addresses or WunderId missing' }];
   }

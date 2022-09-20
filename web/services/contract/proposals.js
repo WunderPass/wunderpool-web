@@ -35,6 +35,13 @@ import {
 } from './gamma/proposals';
 import { usdcAddress } from './init';
 import { waitForTransaction } from './provider';
+import {
+  createNftBuyProposalZeta,
+  createNftSellProposalZeta,
+  fetchTransactionDataZeta,
+  isLiquidateProposalZeta,
+  proposalExecutableZeta,
+} from './zeta/proposals';
 
 function formatProposal(
   {
@@ -120,7 +127,9 @@ export function fetchPoolProposals(address, userAddress, version) {
 }
 
 export function fetchTransactionData(address, id, transactionCount, version) {
-  if (version > 4) {
+  if (version > 5) {
+    return fetchTransactionDataZeta(address, id, transactionCount);
+  } else if (version > 4) {
     return fetchTransactionDataEpsilon(address, id, transactionCount);
   } else if (version > 3) {
     return fetchTransactionDataDelta(address, id, transactionCount);
@@ -382,7 +391,18 @@ export async function createNftBuyProposal(
   userAddress,
   version
 ) {
-  if (version > 4) {
+  if (version > 5) {
+    return createNftBuyProposalZeta(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      title,
+      description,
+      amount,
+      userAddress,
+      version
+    );
+  } else if (version > 4) {
     return createNftBuyProposalEpsilon(
       poolAddress,
       nftAddress,
@@ -428,7 +448,17 @@ export async function createNftSellProposal(
   userAddress,
   version
 ) {
-  if (version > 4) {
+  if (version > 5) {
+    return createNftSellProposalZeta(
+      poolAddress,
+      nftAddress,
+      tokenId,
+      title,
+      description,
+      amount,
+      userAddress
+    );
+  } else if (version > 4) {
     return createNftSellProposalEpsilon(
       poolAddress,
       nftAddress,
@@ -462,7 +492,9 @@ export async function createNftSellProposal(
 }
 
 export function proposalExecutable(poolAddress, id, version) {
-  if (version > 4) {
+  if (version > 5) {
+    return proposalExecutableZeta(poolAddress, id);
+  } else if (version > 4) {
     return proposalExecutableEpsilon(poolAddress, id);
   } else if (version > 3) {
     return proposalExecutableDelta(poolAddress, id);
@@ -476,7 +508,9 @@ export function executeProposal(poolAddress, id, version = null) {
 }
 
 export function isLiquidateProposal(poolAddress, id, version) {
-  if (version > 4) {
+  if (version > 5) {
+    return isLiquidateProposalZeta(poolAddress, id);
+  } else if (version > 4) {
     return isLiquidateProposalEpsilon(poolAddress, id);
   } else if (version > 3) {
     return isLiquidateProposalDelta(poolAddress, id);

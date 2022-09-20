@@ -28,9 +28,14 @@ export const versionLookup = {
     number: 5,
   },
   Epsilon: { name: 'EPSILON', number: 5 },
+  '0xB5Ae136D3817d8116Fce70Ac47e856fc484dafAe': {
+    name: 'ZETA',
+    number: 6,
+  },
+  Zeta: { name: 'ZETA', number: 6 },
 };
 
-export const latestVersion = { name: 'EPSILON', number: 5 };
+export const latestVersion = { name: 'ZETA', number: 6 };
 
 export const tokenAbi = [
   'function name() public view returns(string)',
