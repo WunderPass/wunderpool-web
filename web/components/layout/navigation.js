@@ -6,7 +6,7 @@ import MyPools from './navComponents/myPools';
 import News from './navComponents/news';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Avatar from '/components/utils/avatar';
+import Avatar from '/components/members/avatar';
 import Link from 'next/link';
 
 const navigation = (props) => {
@@ -54,9 +54,7 @@ const navigation = (props) => {
             {!loading && (
               <Avatar
                 wunderId={user.wunderId}
-                tooltip={null}
                 text={user.wunderId ? user.wunderId : '0-X'}
-                separator="-"
                 i={1}
               />
             )}

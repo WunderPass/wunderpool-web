@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import Link from 'next/link';
 import { Paper, Typography } from '@mui/material';
-import Avatar from '/components/utils/avatar';
-import InitialsAvatar from '/components/utils/initialsAvatar';
+import Avatar from '/components/members/avatar';
+import InitialsAvatar from '/components/members/initialsAvatar';
 import { cacheImageByURL } from '../../services/caching';
+import { getNameFor } from '../../services/memberHelpers';
 
 export default function PoolCard(props) {
   const { pool } = props;
@@ -30,7 +31,7 @@ export default function PoolCard(props) {
       passHref
     >
       <Paper
-        className={`container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden`}
+        className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden w-full"
         elevation={1}
         sx={{ p: 2 }}
       >
@@ -90,12 +91,11 @@ export default function PoolCard(props) {
                       return (
                         <Avatar
                           key={`avatar-${pool.address}-${i}`}
-                          wunderId={member.wunderId ? member.wunderId : null}
-                          tooltip={`${
-                            member.wunderId || 'External User'
-                          }: ${member.share.toFixed(0)}%`}
+                          wunderId={member.wunderId}
+                          tooltip={`${getNameFor(
+                            member
+                          )}: ${member.share.toFixed(0)}%`}
                           text={member.wunderId ? member.wunderId : '0-X'}
-                          separator="-"
                           color={['green', 'blue', 'red'][i % 3]}
                           i={i}
                         />

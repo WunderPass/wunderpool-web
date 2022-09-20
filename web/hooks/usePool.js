@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { fetchPoolNfts, fetchPoolTokens } from '/services/contract/token';
+import { fetchPoolNfts } from '/services/contract/token';
 import {
   isMember,
   joinPool,
@@ -409,8 +409,13 @@ export default function usePool(
                   ).data,
                   600
                 ));
-              member.wunderId = user.wunderId;
-            } catch {}
+
+              member.wunderId = user.wunder_id;
+              member.firstName = user.firstname;
+              member.lastName = user.lastName;
+            } catch (err) {
+              console.log(err);
+            }
             return member;
           })
         )

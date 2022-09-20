@@ -1,10 +1,10 @@
-import ImageAvatar from '/components/utils/imageAvatar';
-import InitialsAvatar from '/components/utils/initialsAvatar';
+import ImageAvatar from '/components/members/imageAvatar';
+import InitialsAvatar from '/components/members/initialsAvatar';
 import { useState, useEffect } from 'react';
-import { cacheImageByURL } from '../../services/caching';
+import { cacheImageByURL } from '/services/caching';
 
 export default function Avatar(props) {
-  const { tooltip, text, separator, wunderId, i } = props;
+  const { tooltip, text, separator = '-', wunderId, i } = props;
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(async () => {
