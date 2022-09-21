@@ -11,7 +11,7 @@ import {
 import Image from 'next/image';
 import { forwardRef } from 'react';
 import CreateYourWunderPass from '../auth/createYourWunderPass';
-import MetaMaskLogo from '../utils/metamaskLogo';
+import MetaMaskLogo from '../utils/metaMaskLogo';
 import WalletConnectIcon from '/public/images/walletconnect.png';
 
 const Transition = forwardRef(function Transition(props, ref) {

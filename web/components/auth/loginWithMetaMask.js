@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import MetaMaskLogo from '../utils/metamaskLogo';
+import MetaMaskLogo from '../utils/metaMaskLogo';
 
 async function getAddress() {
   try {
