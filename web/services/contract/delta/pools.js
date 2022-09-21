@@ -4,6 +4,7 @@ import { gasPrice } from '/services/contract/init';
 import { initLauncherDelta, initPoolDelta } from './init';
 import { approve } from '../token';
 import { postAndWaitForTransaction } from '../../backendApi';
+import useWeb3 from '../../../hooks/useWeb3';
 
 export function fetchWhitelistedUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -68,11 +69,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
       reject('You cant invite yourself');
       return;
     }
-    const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
+    const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = openPopup('sign');
     const types = ['address', 'address', 'address'];
     const values = [userAddress, poolAddress, newMember];
@@ -104,11 +101,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
 
 export function fundPoolDelta(poolAddress, amount) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress: user,
-    });
+    const { openPopup, smartContractTransaction } = useWeb3();
     const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolDelta(poolAddress);
     const tx = await wunderPool.populateTransaction.fundPool(usdc(amount), {

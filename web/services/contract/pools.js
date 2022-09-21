@@ -3,7 +3,6 @@ import { initPool, versionLookup } from './init';
 import { usdc } from '/services/formatter';
 import {
   addToWhiteListDelta,
-  fetchWhitelistedUserPoolsDelta,
   fundPoolDelta,
   joinPoolDelta,
 } from './delta/pools';

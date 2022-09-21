@@ -17,10 +17,10 @@ const navigation = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user.wunderId != null) {
+    if (user.address != null) {
       setLoading(false);
     }
-  }, [user.wunderId]);
+  }, [user.address]);
 
   return (
     <div className="hidden sm:block w-full">
@@ -53,8 +53,9 @@ const navigation = (props) => {
           >
             {!loading && (
               <Avatar
+                loginMethod={user.loginMethod}
                 wunderId={user.wunderId}
-                text={user.wunderId ? user.wunderId : '0-X'}
+                text={user.wunderId || '0-X'}
                 i={1}
               />
             )}
@@ -73,20 +74,22 @@ const navigation = (props) => {
               <MyPools {...props} />
             </motion.li>
 
-            <motion.li
-              initial={animateFrom}
-              animate={animateTo}
-              transition={{ delay: 0.1 }}
-            >
-              <div className="px-2 py-1">
-                <a
-                  target="_blank"
-                  href={`${process.env.WUNDERPASS_URL}/profile`}
-                >
-                  Profile
-                </a>
-              </div>
-            </motion.li>
+            {user.loginMethod == 'WunderPass' && (
+              <motion.li
+                initial={animateFrom}
+                animate={animateTo}
+                transition={{ delay: 0.1 }}
+              >
+                <div className="px-2 py-1">
+                  <a
+                    target="_blank"
+                    href={`${process.env.WUNDERPASS_URL}/profile`}
+                  >
+                    Profile
+                  </a>
+                </div>
+              </motion.li>
+            )}
 
             <motion.li
               initial={animateFrom}

@@ -1,9 +1,8 @@
 import useWunderPass from '/hooks/useWunderPass';
-import axios from 'axios';
 import { ethers } from 'ethers';
 import { initLauncherEpsilon, initPoolEpsilon } from './init';
 import { postAndWaitForTransaction } from '../../backendApi';
-import { fetchPoolData } from '../pools';
+import useWeb3 from '../../../hooks/useWeb3';
 
 export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -44,11 +43,7 @@ export function addToWhiteListWithSecretEpsilon(
   validFor
 ) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
+    const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = openPopup('sign');
 
     const hashedSecret = ethers.utils.keccak256(

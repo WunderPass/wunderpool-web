@@ -4,10 +4,14 @@ import { useState, useEffect } from 'react';
 import { cacheImageByURL } from '/services/caching';
 
 export default function Avatar(props) {
-  const { tooltip, text, separator = '-', wunderId, i } = props;
+  const { tooltip, text, separator = '-', wunderId, loginMethod, i } = props;
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(async () => {
+    if (loginMethod == 'MetaMask') {
+      setImageUrl('/images/metamask.png');
+      return;
+    }
     setImageUrl(null);
     if (!wunderId) return null;
     try {

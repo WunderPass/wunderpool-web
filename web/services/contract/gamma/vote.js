@@ -1,13 +1,10 @@
-import useWunderPass from '/hooks/useWunderPass';
+import useWeb3 from '../../../hooks/useWeb3';
 import { initPoolGamma } from '/services/contract/gamma/init';
 import { gasPrice } from '/services/contract/init';
 
 export function voteGamma(poolAddress, proposalId, mode) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-    });
+    const { openPopup, smartContractTransaction } = useWeb3();
     const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.vote(proposalId, mode, {

@@ -57,20 +57,22 @@ const mobileNavigation = (props) => {
                 <MyPools {...props} />
               </motion.li>
 
-              <motion.li
-                initial={animateFrom}
-                animate={animateTo}
-                transition={{ delay: 0.1 }}
-              >
-                <div className="px-2 py-1">
-                  <a
-                    target="_blank"
-                    href={`${process.env.WUNDERPASS_URL}/profile`}
-                  >
-                    Profile
-                  </a>
-                </div>
-              </motion.li>
+              {user.loginMethod == 'WunderPass' && (
+                <motion.li
+                  initial={animateFrom}
+                  animate={animateTo}
+                  transition={{ delay: 0.1 }}
+                >
+                  <div className="px-2 py-1">
+                    <a
+                      target="_blank"
+                      href={`${process.env.WUNDERPASS_URL}/profile`}
+                    >
+                      Profile
+                    </a>
+                  </div>
+                </motion.li>
+              )}
 
               <motion.li
                 initial={animateFrom}

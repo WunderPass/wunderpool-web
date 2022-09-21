@@ -1,5 +1,3 @@
-import { ethers } from 'ethers';
-
 export default function useWunderPass(config) {
   const { name, image, accountId, userAddress } = config;
 
@@ -73,26 +71,6 @@ export default function useWunderPass(config) {
     });
   };
 
-  const sendMetamaskRequest = (types, values, packed = true, popup = null) => {
-    return new Promise(async (resolve, reject) => {
-      const accounts = await ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      let dataToSign;
-      if (packed) {
-        dataToSign = ethers.utils.solidityKeccak256(types, values);
-      } else {
-        dataToSign = ethers.utils.keccak256(
-          ethers.utils.defaultAbiCoder.encode(types, values)
-        );
-      }
-      const bytes = ethers.utils.arrayify(dataToSign);
-      resolve({ signature: await signer.signMessage(bytes) });
-    });
-  };
-
   const smartContractTransaction = (
     tx,
     usdc = {},
@@ -150,7 +128,6 @@ export default function useWunderPass(config) {
 
   return {
     sendSignatureRequest,
-    sendMetamaskRequest,
     smartContractTransaction,
     openPopup,
   };

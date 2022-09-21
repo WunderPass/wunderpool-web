@@ -5,7 +5,6 @@ import {
   fetchUserPools,
   fetchWhitelistedUserPools,
 } from '/services/contract/pools';
-import axios from 'axios';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
@@ -17,6 +16,7 @@ export default function useUser() {
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const [loginMethod, setLoginMethod] = useState(null);
 
   const image = useMemo(
     () => `/api/proxy/users/getImage?wunderId=${wunderId}`,
@@ -26,13 +26,18 @@ export default function useUser() {
   const loggedIn = wunderId || address;
 
   const updateWunderId = (id) => {
-    localStorage.setItem('wunderId', id);
+    id && localStorage.setItem('wunderId', id);
     setWunderId(id);
   };
 
   const updateAddress = (addr) => {
-    localStorage.setItem('address', addr);
+    addr && localStorage.setItem('address', addr);
     setAddress(addr);
+  };
+
+  const updateLoginMethod = (method) => {
+    method && localStorage.setItem('loginMethod', method);
+    setLoginMethod(method);
   };
 
   const updateCheckedTopUp = (checked) => {
@@ -84,12 +89,30 @@ export default function useUser() {
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
     localStorage.removeItem('checkedTopUp');
+    localStorage.removeItem('loginMethod');
     setWunderId(null);
     setAddress(null);
     setCheckedTopUp(null);
+    setLoginMethod(null);
     setPools([]);
     router.push('/');
   };
+
+  useEffect(() => {
+    const metaMask = window.ethereum;
+    if (loginMethod == 'MetaMask') {
+      metaMask.on('accountsChanged', function ([newAddress]) {
+        if (newAddress) {
+          updateAddress(newAddress);
+        } else {
+          logOut();
+        }
+      });
+      metaMask.on('networkChanged', function (networkId) {
+        console.log(networkId);
+      });
+    }
+  }, [loginMethod]);
 
   useEffect(async () => {
     if (address) {
@@ -111,6 +134,7 @@ export default function useUser() {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
     setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
+    setLoginMethod(localStorage.getItem('loginMethod'));
   }, []);
 
   return {
@@ -119,6 +143,8 @@ export default function useUser() {
     updateWunderId,
     address,
     updateAddress,
+    loginMethod,
+    updateLoginMethod,
     loggedIn,
     logOut,
     pools,

@@ -412,7 +412,7 @@ export default function usePool(
 
               member.wunderId = user.wunder_id;
               member.firstName = user.firstname;
-              member.lastName = user.lastName;
+              member.lastName = user.lastname;
             } catch (err) {
               console.log(err);
             }
