@@ -139,6 +139,7 @@ export default function useUser() {
       wcProvider
         .enable()
         .then(([addr]) => {
+          console.log(wcProvider.wc?.peerMeta);
           setUnsupportedChain(wcProvider.chainId != 137);
           wcProvider.on('accountsChanged', ([newAddress]) => {
             updateAddress(newAddress);

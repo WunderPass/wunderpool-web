@@ -49,8 +49,8 @@ export function createPool(
         token_name: tokenName,
         token_symbol: tokenSymbol,
       },
-      pool_creator: creator,
-      pool_members: members.map((m) => ({ members_address: m })),
+      pool_creator: creator.toLowerCase(),
+      pool_members: members.map((m) => ({ members_address: m.toLowerCase() })),
       shareholder_agreement: {
         min_invest: minInvest,
         max_invest: maxInvest,
