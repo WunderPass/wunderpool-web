@@ -6,6 +6,7 @@ import {
   fetchWhitelistedUserPools,
 } from '/services/contract/pools';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import axios from 'axios';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
@@ -161,6 +162,18 @@ export default function useUser() {
       await fetchPools();
       await fetchWhitelistedPools();
       setIsReady(true);
+      if (!wunderId) {
+        axios({
+          url: '/api/proxy/users/find',
+          params: { address },
+        })
+          .then(({ data }) => {
+            setWunderId(data.wunder_id);
+          })
+          .catch((err) => {
+            console.log('No User Found');
+          });
+      }
     }
   }, [address]);
 
