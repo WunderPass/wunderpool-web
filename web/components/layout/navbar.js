@@ -14,8 +14,8 @@ export default function Navbar(props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user.wunderId != null) setLoading(false);
-  }, [user.wunderId]);
+    if (user.address != null) setLoading(false);
+  }, [user.address]);
 
   if (pathname === '/') return null;
 
@@ -39,8 +39,9 @@ export default function Navbar(props) {
                 <div className="sm:hidden">
                   {!loading && (
                     <Avatar
+                      loginMethod={user.loginMethod}
                       wunderId={user.wunderId}
-                      text={user.wunderId ? user.wunderId : '0-X'}
+                      text={user.wunderId || '0-X'}
                       i={1}
                     />
                   )}

@@ -7,6 +7,7 @@ import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
 import axios from 'axios';
 import { cacheItemDB, getCachedItemDB } from '../caching';
+import useWeb3 from '../../hooks/useWeb3';
 
 export async function fetchErc20TokenData(address, ownerAddress = null) {
   const token = new ethers.Contract(address, tokenAbi, httpProvider);
@@ -108,11 +109,7 @@ export function approve(user, spender, amount) {
   return new Promise(async (resolve, reject) => {
     const provider = httpProvider;
 
-    const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress: user,
-    });
+    const { openPopup, smartContractTransaction } = useWeb3();
     const popup = openPopup('smartContract');
 
     smartContractTransaction(null, { amount, spender }, 'polygon', popup)

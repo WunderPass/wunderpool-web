@@ -44,6 +44,7 @@ export const tokenAbi = [
   'function balanceOf(address) public view returns(uint)',
   'function totalSupply() public view returns(uint)',
   'function price() public view returns(uint)',
+  'function allowance(address, address) public view returns(uint)',
   'function approve(address,uint)',
 ];
 export const nftAbi = [
@@ -52,17 +53,6 @@ export const nftAbi = [
   'function balanceOf(address) public view returns(uint)',
   'function tokenURI(uint) public view returns(string)',
 ];
-
-// export function initLauncher() {
-//   const address = '0xAE32217Dc2d87c07C0885D69121B968C96d3E693';
-//   const abi = [
-//     'function createNewPool(string _poolName, uint256 _entryBarrier, string _tokenName, string _tokenSymbol, uint256 _invest)',
-//     'function allPools() view returns (address[])',
-//     'function poolsOfMember(address _member) view returns (address[])',
-//   ];
-//   const provider = httpProvider;
-//   return [new ethers.Contract(address, abi, provider), provider];
-// }
 
 export function initPool(poolAddress) {
   const abi = [

@@ -5,14 +5,11 @@ import { gasPrice } from '/services/contract/init';
 import axios from 'axios';
 import { waitForTransaction } from '../provider';
 import { initProposalDelta } from './init';
+import useWeb3 from '../../../hooks/useWeb3';
 
 export function voteDelta(poolAddress, proposalId, mode, userAddress) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
+    const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = openPopup('sign');
 
     const types = ['address', 'address', 'uint', 'uint'];
@@ -55,11 +52,7 @@ export function voteDelta(poolAddress, proposalId, mode, userAddress) {
 
 export function voteDeltaFallback(poolAddress, proposalId, mode, userAddress) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
+    const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = openPopup('sign');
 
     const types = ['address', 'address', 'uint', 'uint'];

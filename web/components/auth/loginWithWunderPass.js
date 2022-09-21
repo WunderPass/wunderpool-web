@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, LinearProgress, Stack } from '@mui/material';
+import { Dialog, Stack } from '@mui/material';
 
 export default function LoginWithWunderPass(props) {
   const { dev, name, image, intent = [], onSuccess, disablePopup } = props;
@@ -34,7 +34,7 @@ export default function LoginWithWunderPass(props) {
           clearInterval(requestInterval);
 
           if (event.data?.wunderId) {
-            onSuccess(event.data);
+            onSuccess({ loginMethod: 'WunderPass', ...event.data });
             window.removeEventListener('message', handleMessage);
             event.source?.window?.close();
             setPopup(null);

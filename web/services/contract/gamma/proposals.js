@@ -10,6 +10,7 @@ import {
 import { tokenAbi } from '../init';
 import { isLiquidateProposal } from '../proposals';
 import { hasVotedGamma } from './vote';
+import useWeb3 from '../../../hooks/useWeb3';
 
 function determineExecutable(
   executed,
@@ -106,10 +107,7 @@ export function createSingleActionProposalGamma(
   deadline
 ) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-    });
+    const { openPopup, smartContractTransaction } = useWeb3();
     const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.createProposal(
@@ -150,10 +148,7 @@ export function createMultiActionProposalGamma(
   popupWindow = null
 ) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-    });
+    const { openPopup, smartContractTransaction } = useWeb3();
     const popup = popupWindow || openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.createMultiActionProposal(
@@ -241,10 +236,7 @@ export async function createSwapSuggestionGamma(
   description,
   amount
 ) {
-  const { openPopup } = useWunderPass({
-    name: 'Casama',
-    accountId: 'ABCDEF',
-  });
+  const { openPopup } = useWeb3();
   const popup = openPopup('smartContract');
   const [wunderPool] = initPoolGamma(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();
@@ -383,10 +375,7 @@ export function proposalExecutableGamma(poolAddress, id) {
 
 export function executeProposalGamma(poolAddress, id, version) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, smartContractTransaction } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-    });
+    const { openPopup, smartContractTransaction } = useWeb3();
     const popup = openPopup('smartContract');
     const [wunderPool, provider] = initPoolGamma(poolAddress);
     const tx = await wunderPool.populateTransaction.executeProposal(id, {

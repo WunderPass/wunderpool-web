@@ -70,6 +70,7 @@ export default function PoolMembers(props) {
                   {members.map((member, i) => {
                     return (
                       <Avatar
+                        key={`pool-member-${i}`}
                         wunderId={member.wunderId}
                         tooltip={`${getNameFor(
                           member

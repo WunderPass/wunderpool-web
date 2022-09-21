@@ -6,15 +6,17 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import ReactGA from 'react-ga';
+import LoginWithMetaMask from '../components/auth/loginWithMetaMask';
 ReactGA.initialize(process.env.GA_TRACKING_CODE);
 
 function Home(props) {
-  const { user } = props;
+  const { user, handleError } = props;
   const router = useRouter();
 
-  const handleSuccess = (data) => {
-    user.updateWunderId(data.wunderId);
-    user.updateAddress(data.address);
+  const handleSuccess = ({ wunderId, address, loginMethod }) => {
+    user.updateLoginMethod(loginMethod);
+    user.updateWunderId(wunderId);
+    user.updateAddress(address);
   };
 
   useEffect(() => {
@@ -22,10 +24,10 @@ function Home(props) {
   });
 
   useEffect(() => {
-    if (user.wunderId && user.address) {
+    if (user.loggedIn) {
       router.push('/pools');
     }
-  }, [user.wunderId, user.address]);
+  }, [user.loggedIn]);
 
   return (
     <>
@@ -61,7 +63,7 @@ function Home(props) {
                 </h2>
                 <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>
                 <p className="text-gray-400 text-md my-3 mb-10 lg:mb-20">
-                  Includes a wallet with credits for transaction fees – powered
+                  Includes a wallet with credits for transaction fees - powered
                   by WunderPass.
                 </p>
 
@@ -89,10 +91,10 @@ function Home(props) {
                       />
                     </a>
                   </div>
-
-                  <p className="text-xs text-kaico-blue rounded-full border-kaico-blue border-2 p-1 px-2 mt-10">
-                    WalletConnect is coming soon!
-                  </p>
+                  <LoginWithMetaMask
+                    onSuccess={handleSuccess}
+                    handleError={handleError}
+                  />
                 </div>
 
                 <div className="flex flex-row justify-center lg:my-2">

@@ -8,6 +8,7 @@ import {
   connectContract,
 } from '/services/contract/init';
 import { hasVotedDelta } from './vote';
+import useWeb3 from '../../../hooks/useWeb3';
 
 function determineExecutable(
   executed,
@@ -106,11 +107,7 @@ export function createMultiActionProposalDelta(
   popupWindow = null
 ) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
+    const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = popupWindow || openPopup('sign');
     const [wunderPool] = initPoolDelta(poolAddress);
     const proposalId = (await wunderPool.getAllProposalIds()).length;
@@ -228,11 +225,7 @@ export async function createSwapSuggestionDelta(
   amount,
   userAddress
 ) {
-  const { openPopup } = useWunderPass({
-    name: 'Casama',
-    accountId: 'ABCDEF',
-    userAddress,
-  });
+  const { openPopup } = useWeb3();
   const popup = openPopup('sign');
   const [wunderPool] = initPoolDelta(poolAddress);
   const tokenAddresses = await wunderPool.getOwnedTokenAddresses();

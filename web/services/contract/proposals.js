@@ -42,6 +42,7 @@ import {
   isLiquidateProposalZeta,
   proposalExecutableZeta,
 } from './zeta/proposals';
+import useWeb3 from '../../hooks/useWeb3';
 
 function formatProposal(
   {
@@ -138,13 +139,9 @@ export function fetchTransactionData(address, id, transactionCount, version) {
   }
 }
 
-function createBackendProposal(userAddress, options) {
+function createBackendProposal(options) {
   return new Promise(async (resolve, reject) => {
-    const { openPopup, sendSignatureRequest } = useWunderPass({
-      name: 'Casama',
-      accountId: 'ABCDEF',
-      userAddress,
-    });
+    const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = openPopup('sign');
     const proposal = await axios({
       url: '/api/proxy/pools/proposals/request',
@@ -317,7 +314,7 @@ export function createLiquidateSuggestion(
   version
 ) {
   if (version > 4) {
-    return createBackendProposal(userAddress, {
+    return createBackendProposal({
       address: poolAddress,
       action: 'LIQUIDATE_POOL',
       title,
@@ -348,7 +345,7 @@ export async function createSwapSuggestion(
   version
 ) {
   if (version > 4) {
-    return createBackendProposal(userAddress, {
+    return createBackendProposal({
       address: poolAddress,
       action: 'SWAP_TOKEN',
       title,

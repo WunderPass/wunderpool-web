@@ -29,7 +29,7 @@ export default function CreateYourWunderPass(props) {
         clearInterval(requestInterval);
 
         if (event.data?.wunderId) {
-          onSuccess(event.data);
+          onSuccess({ loginMethod: 'WunderPass', ...event.data });
           window.removeEventListener('message', handleMessage);
           event.source?.window?.close();
           setPopup(null);
