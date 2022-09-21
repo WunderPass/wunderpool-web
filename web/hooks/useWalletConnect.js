@@ -3,7 +3,7 @@ import { tokenAbi, usdcAddress } from '../services/contract/init';
 
 async function approveUsdc(spender, amount) {
   const usdcAmount = ethers.BigNumber.from(amount);
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(window.walletConnect);
   const tokenContract = new ethers.Contract(usdcAddress, tokenAbi, provider);
   const signer = provider.getSigner();
   const address = await signer.getAddress();
@@ -25,10 +25,10 @@ async function approveUsdc(spender, amount) {
   }
 }
 
-export default function useMetaMask() {
+export default function useWalletConnect() {
   const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.walletConnect);
       const signer = provider.getSigner();
       let dataToSign;
       if (packed) {
@@ -64,7 +64,7 @@ export default function useMetaMask() {
           });
       }
       if (tx) {
-        window.ethereum
+        window.walletConnect
           .request({
             method: 'eth_sendTransaction',
             params: [tx],

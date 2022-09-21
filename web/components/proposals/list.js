@@ -30,14 +30,14 @@ export default function ProposalList(props) {
   const handleOpenClose = (onlyClose = false) => {
     if (onlyClose && !open) return;
     if (open) {
-      goBack(() => removeQueryParam('makeProposal1'));
+      goBack(() => removeQueryParam('dialog'));
     } else {
-      addQueryParam({ makeProposal1: 'buy' }, false);
+      addQueryParam({ dialog: 'makeFirstProposal' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.makeProposal1 ? true : false);
+    setOpen(router.query?.dialog == 'makeFirstProposal');
   }, [router.query]);
 
   return !wunderPool.loadingState.proposals ? (

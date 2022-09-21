@@ -14,6 +14,7 @@ import Script from 'next/script';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
+import SwitchChainAlert from '../components/dialogs/switchChainAlert';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -91,6 +92,7 @@ function WunderPool({ Component, pageProps }) {
                 setOpen={user.setTopUpRequired}
                 user={user}
               />
+              <SwitchChainAlert user={user} />
             </AlertProvider>
           </ThemeProvider>
         </StyledEngineProvider>
