@@ -5,12 +5,14 @@ import {
   fetchUserPools,
   fetchWhitelistedUserPools,
 } from '/services/contract/pools';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
   const [address, setAddress] = useState(null);
   const [usdBalance, setUsdBalance] = useState(null);
   const [topUpRequired, setTopUpRequired] = useState(null);
+  const [unsupportedChain, setUnsupportedChain] = useState(false);
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
@@ -86,6 +88,7 @@ export default function useUser() {
   };
 
   const logOut = () => {
+    window.walletConnect?.wc?.killSession();
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
     localStorage.removeItem('checkedTopUp');
@@ -94,13 +97,15 @@ export default function useUser() {
     setAddress(null);
     setCheckedTopUp(null);
     setLoginMethod(null);
+    setUnsupportedChain(false);
     setPools([]);
     router.push('/');
   };
 
   useEffect(() => {
-    const metaMask = window.ethereum;
     if (loginMethod == 'MetaMask') {
+      const metaMask = window.ethereum;
+      setUnsupportedChain(metaMask?.chainId != '0x89');
       metaMask.on('accountsChanged', function ([newAddress]) {
         if (newAddress) {
           updateAddress(newAddress);
@@ -109,8 +114,44 @@ export default function useUser() {
         }
       });
       metaMask.on('networkChanged', function (networkId) {
-        console.log(networkId);
+        setUnsupportedChain(networkId != 137);
       });
+    } else if (loginMethod == 'WalletConnect') {
+      const wcProvider = new WalletConnectProvider({
+        rpc: {
+          137: 'https://polygon-rpc.com',
+        },
+        supportedChainIds: [137],
+        chainId: 137,
+        clientMeta: {
+          name: 'Casma',
+          description: 'Pool Crypto with your Friends',
+          url: 'app.casama.io',
+          icons: ['https://app.casama.io/casama_logo.png'],
+        },
+      });
+
+      if (!window.walletConnect) {
+        window.walletConnect = wcProvider;
+      }
+
+      wcProvider
+        .enable()
+        .then(([addr]) => {
+          setUnsupportedChain(wcProvider.chainId != 137);
+          wcProvider.on('accountsChanged', ([newAddress]) => {
+            updateAddress(newAddress);
+          });
+
+          wcProvider.on('chainChanged', (chainId) => {
+            setUnsupportedChain(chainId != 137);
+          });
+
+          wcProvider.on('disconnect', (code, reason) => {
+            logOut();
+          });
+        })
+        .catch(() => logOut());
     }
   }, [loginMethod]);
 
@@ -155,6 +196,7 @@ export default function useUser() {
     fetchUsdBalance,
     topUpRequired,
     setTopUpRequired,
+    unsupportedChain,
     checkedTopUp,
     updateCheckedTopUp,
     isReady,

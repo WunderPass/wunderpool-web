@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
-const ModelViewer = require('@metamask/logo');
+import MetaMaskLogo from '../utils/metamaskLogo';
 
 async function getAddress() {
   try {
@@ -52,7 +50,6 @@ async function switchChain() {
 
 export default function LoginWithMetaMask({ onSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
-  const metamaskLogo = useRef(null);
 
   const loginWithWetaMask = async () => {
     if (window?.ethereum?.isMetaMask) {
@@ -77,28 +74,12 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
     }
   };
 
-  useEffect(() => {
-    const viewer = ModelViewer({
-      pxNotRatio: true,
-      width: 50,
-      height: 40,
-      followMouse: true,
-    });
-    if (
-      metamaskLogo.current?.children &&
-      metamaskLogo.current.children.length == 0
-    ) {
-      metamaskLogo.current.innerHTML = '';
-      metamaskLogo.current.appendChild(viewer.container);
-    }
-  }, []);
-
   return (
     <button
       className="flex items-center text-kaico-blue rounded-xl border-kaico-blue border-2 p-1 px-2"
       onClick={loginWithWetaMask}
     >
-      <div ref={metamaskLogo}></div>{' '}
+      <MetaMaskLogo width={50} height={40} />{' '}
       {loading ? 'Connecting...' : 'Connect with MetaMask'}
     </button>
   );

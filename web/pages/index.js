@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import Image from 'next/image';
 import ReactGA from 'react-ga';
 import LoginWithMetaMask from '../components/auth/loginWithMetaMask';
+import LoginWithWalletConnect from '../components/auth/loginWithWalletConnect';
 ReactGA.initialize(process.env.GA_TRACKING_CODE);
 
 function Home(props) {
@@ -92,6 +93,10 @@ function Home(props) {
                     </a>
                   </div>
                   <LoginWithMetaMask
+                    onSuccess={handleSuccess}
+                    handleError={handleError}
+                  />
+                  <LoginWithWalletConnect
                     onSuccess={handleSuccess}
                     handleError={handleError}
                   />

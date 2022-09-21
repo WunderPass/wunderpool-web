@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export default function CreateYourWunderPass(props) {
-  const { name, image, intent = [], onSuccess } = props;
+  const { name, image, intent = [], onSuccess, text } = props;
   const [popup, setPopup] = useState(null);
 
   const handleClick = (e) => {
@@ -66,7 +66,7 @@ export default function CreateYourWunderPass(props) {
 
         <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-medium text-md">
           <p className="pl-2 lg:pl-3 pt-1 text-white">
-            Join Beta. Get free credits.
+            {text || 'Join Beta. Get free credits.'}
           </p>
         </div>
 

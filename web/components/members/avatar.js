@@ -12,6 +12,10 @@ export default function Avatar(props) {
       setImageUrl('/images/metamask.png');
       return;
     }
+    if (loginMethod == 'WalletConnect') {
+      setImageUrl('/images/walletconnect.png');
+      return;
+    }
     setImageUrl(null);
     if (!wunderId) return null;
     try {

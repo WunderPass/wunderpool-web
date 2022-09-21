@@ -16,14 +16,14 @@ function assetDetails(props) {
   const handleOpenClose = (onlyClose = false) => {
     if (onlyClose && !open) return;
     if (open) {
-      goBack(() => removeQueryParam('makeProposal'));
+      goBack(() => removeQueryParam('dialog'));
     } else {
-      addQueryParam({ makeProposal: 'buy' }, false);
+      addQueryParam({ dialog: 'makeProposal' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.makeProposal ? true : false);
+    setOpen(router.query?.dialog == 'makeProposal');
   }, [router.query]);
 
   return (

@@ -34,6 +34,11 @@ export default function Pools(props) {
     setShowAddress(!showAddress);
   };
 
+  const formatAddress = (str) => {
+    if (!str) return '';
+    return `${str.slice(0, 4)}...${str.slice(-4)}`;
+  };
+
   const handleOpenClose = () => {
     if (open) {
       goBack(() => removeQueryParam('createPool'));
@@ -61,7 +66,7 @@ export default function Pools(props) {
               <div className="flex flex-col">
                 <div className="flex flex-row items-center">
                   <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-medium">
-                    Hello {user?.wunderId}
+                    Hello {user?.wunderId || formatAddress(user?.address)}
                   </Typography>
                   <Tooltip
                     title={
