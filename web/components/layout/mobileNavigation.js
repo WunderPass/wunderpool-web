@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -9,8 +8,7 @@ import MyPools from './navComponents/myPools';
 import News from './navComponents/news';
 
 const mobileNavigation = (props) => {
-  const { user } = props;
-  const [open, setOpen] = useState(false);
+  const { user, open, setOpen } = props;
   const animateFrom = { opacity: 0, y: -40 };
   const animateTo = { opacity: 1, y: 0 };
 
@@ -41,7 +39,10 @@ const mobileNavigation = (props) => {
             </div>
           </div>
 
-          <button className="sm:block text-sm" onClick={() => setOpen(!open)}>
+          <button
+            className="sm:block text-sm"
+            onClick={() => setOpen((prev) => !prev)}
+          >
             {open ? closeIcon : hamburgerIcon}
           </button>
         </div>
