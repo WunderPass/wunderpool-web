@@ -1,15 +1,8 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from '@mui/material';
-import axios from 'axios';
+import { DialogActions, Typography } from '@mui/material';
 import { useState } from 'react';
 import TransactionFrame from '/components/utils/transactionFrame';
 import MemberInput from '../members/input';
+import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function InviteMemberDialog(props) {
   const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
@@ -37,44 +30,37 @@ export default function InviteMemberDialog(props) {
   };
 
   return (
-    <Dialog
-      fullWidth
+    <ResponsiveDialog
       maxWidth="sm"
       open={open}
       onClose={handleClose}
-      PaperProps={{
-        style: { borderRadius: 12 },
-      }}
+      title="Invite Member"
+      actions={
+        !loading && (
+          <DialogActions className="flex items-center justify-center mx-4">
+            <button className="btn-neutral w-full py-3" onClick={handleClose}>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn-kaico w-full py-3 mt-2"
+              onClick={handleSubmit}
+              disabled={!selectedUser?.address}
+            >
+              Invite
+            </button>
+          </DialogActions>
+        )
+      }
     >
-      <DialogTitle>Invite Member</DialogTitle>
-      <DialogContent>
-        <Typography variant="subtitle1">
-          Invite Users to the Pool. Invited Users can join your Pool
-        </Typography>
-        <MemberInput
-          selectedMembers={selectedUser}
-          setSelectedMembers={setSelectedUser}
-        />
-      </DialogContent>
-      {loading ? (
-        <Stack spacing={2} sx={{ textAlign: 'center' }}>
-          <Typography variant="subtitle1">Adding Member...</Typography>
-        </Stack>
-      ) : (
-        <DialogActions>
-          <button className="btn btn-default" onClick={handleClose}>
-            Cancel
-          </button>
-          <button
-            className="btn btn-success"
-            onClick={handleSubmit}
-            disabled={!selectedUser?.address}
-          >
-            Invite
-          </button>
-        </DialogActions>
-      )}
+      <Typography variant="subtitle1">
+        Invite Users to the Pool. Invited Users can join your Pool
+      </Typography>
+      <MemberInput
+        selectedMembers={selectedUser}
+        setSelectedMembers={setSelectedUser}
+      />
       <TransactionFrame open={loading} />
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

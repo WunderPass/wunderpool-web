@@ -20,6 +20,7 @@ export default function useUser() {
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   const [loginMethod, setLoginMethod] = useState(null);
+  const [walletConnectMeta, setWalletConnectMeta] = useState({});
 
   const image = useMemo(
     () => `/api/proxy/users/getImage?wunderId=${wunderId}`,
@@ -89,7 +90,6 @@ export default function useUser() {
   };
 
   const logOut = () => {
-    window.walletConnect?.wc?.killSession();
     localStorage.removeItem('address');
     localStorage.removeItem('wunderId');
     localStorage.removeItem('checkedTopUp');
@@ -100,6 +100,9 @@ export default function useUser() {
     setLoginMethod(null);
     setUnsupportedChain(false);
     setPools([]);
+    if (window.walletConnect?.wc?.connected)
+      window.walletConnect?.wc?.killSession();
+    window.walletConnect = undefined;
     router.push('/');
   };
 
@@ -124,12 +127,6 @@ export default function useUser() {
         },
         supportedChainIds: [137],
         chainId: 137,
-        clientMeta: {
-          name: 'Casma',
-          description: 'Pool Crypto with your Friends',
-          url: 'app.casama.io',
-          icons: ['https://app.casama.io/casama_logo.png'],
-        },
       });
 
       if (!window.walletConnect) {
@@ -139,6 +136,7 @@ export default function useUser() {
       wcProvider
         .enable()
         .then(([addr]) => {
+          setWalletConnectMeta(wcProvider.wc?.peerMeta);
           setUnsupportedChain(wcProvider.chainId != 137);
           wcProvider.on('accountsChanged', ([newAddress]) => {
             updateAddress(newAddress);
@@ -199,6 +197,7 @@ export default function useUser() {
     updateAddress,
     loginMethod,
     updateLoginMethod,
+    walletConnectMeta,
     loggedIn,
     logOut,
     pools,

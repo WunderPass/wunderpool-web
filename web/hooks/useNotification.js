@@ -1,14 +1,6 @@
-import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export default function useNotification() {
-  const [notification, setNotification] = useState({
-    type: null,
-    message: '',
-    active: false,
-    url: null,
-    label: null,
-  });
-
   const stringifyError = (msg) => {
     if (!msg) {
       return 'Something went wrong';
@@ -30,57 +22,20 @@ export default function useNotification() {
   };
 
   const handleError = (msg, opts = {}) => {
-    setNotification({
-      type: 'error',
-      message: stringifyError(msg),
-      active: true,
-      url: opts.url,
-      label: opts.label,
-    });
+    toast.error(stringifyError(msg));
   };
 
   const handleSuccess = (msg, opts = {}) => {
-    setNotification({
-      type: 'success',
-      message: msg,
-      active: true,
-      url: opts.url,
-      label: opts.label,
-    });
+    toast.success(stringifyError(msg));
   };
 
   const handleInfo = (msg, opts = {}) => {
-    setNotification({
-      type: 'info',
-      message: msg,
-      active: true,
-      url: opts.url,
-      label: opts.label,
-    });
+    toast.info(stringifyError(msg));
   };
 
   const handleWarning = (msg, opts = {}) => {
-    setNotification({
-      type: 'warning',
-      message: msg,
-      active: true,
-      url: opts.url,
-      label: opts.label,
-    });
+    toast.warn(stringifyError(msg));
   };
 
-  useEffect(() => {
-    if (!notification.active) return;
-    setTimeout(() => {
-      setNotification({
-        type: null,
-        message: '',
-        active: false,
-        url: null,
-        label: null,
-      });
-    }, 10000);
-  }, [notification]);
-
-  return [notification, handleError, handleSuccess, handleInfo, handleWarning];
+  return [handleError, handleSuccess, handleInfo, handleWarning];
 }

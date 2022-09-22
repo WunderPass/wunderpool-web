@@ -4,7 +4,15 @@ import { useState, useEffect } from 'react';
 import { cacheImageByURL } from '/services/caching';
 
 export default function Avatar(props) {
-  const { tooltip, text, separator = '-', wunderId, loginMethod, i } = props;
+  const {
+    tooltip,
+    text,
+    separator = '-',
+    wunderId,
+    loginMethod,
+    walletConnectUrl,
+    i,
+  } = props;
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(async () => {
@@ -13,7 +21,7 @@ export default function Avatar(props) {
       return;
     }
     if (loginMethod == 'WalletConnect') {
-      setImageUrl('/images/walletconnect.png');
+      setImageUrl(walletConnectUrl || '/images/walletconnect.png');
       return;
     }
     setImageUrl(null);

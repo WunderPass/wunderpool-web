@@ -81,13 +81,16 @@ export default function LoginWithMetaMask({ onSuccess, handleError }, props) {
 
   return (
     <button
-      className="flex w-full p-1  my-3 px-2 items-center justify-start text-center text-kaico-blue rounded-xl border-kaico-blue border-2"
+      className="flex w-full p-1 pt-1.5 my-3 px-2 items-center justify-start text-center text-kaico-blue rounded-xl border-kaico-blue border-2"
       onClick={loginWithWetaMask}
     >
-      <div className="pr-4">
-        <MetaMaskLogo width={0} height={0} />{' '}
+      <div className="pl-1">
+        {/* You cannot change height and width with hot reload */}
+        <MetaMaskLogo width={40} height={40} />
       </div>
-      {loading ? 'Connecting...' : 'Login with MetaMask'}
+      <div className="pl-5 ">
+        {loading ? 'Connecting...' : 'Login with MetaMask'}
+      </div>
     </button>
   );
 }
