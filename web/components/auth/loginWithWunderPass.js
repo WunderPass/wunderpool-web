@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Dialog, Stack } from '@mui/material';
+import Image from 'next/image';
 
 export default function LoginWithWunderPass(props) {
   const { dev, name, image, intent = [], onSuccess, disablePopup } = props;
@@ -60,22 +61,33 @@ export default function LoginWithWunderPass(props) {
   };
 
   return (
-    <>
-      <button onClick={handleClick}>
-        {/* Casama Native Login */}
-
-        <p
-          className="text-xs text-kaico-dark-blue hover:text-kaico-light-blue pt-0.5 underline cursor-pointer lg:mb-10"
-          onClick={handleClick}
+    <div className="w-full">
+      {!disablePopup && (
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={open}
+          onClose={dialogClose}
+          PaperProps={{
+            style: { borderRadius: 12 },
+          }}
         >
-          Log in here
-        </p>
-
-        {/* WP Login */}
-
-        {/* <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-md px-5 py-2 font-medium text-md">
+          <iframe
+            className="w-auto"
+            name="wunderPassAuth"
+            height="500"
+            style={{ transition: 'height 300ms ease' }}
+          ></iframe>
+          <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
+        </Dialog>
+      )}
+      <button
+        className="flex p-2 my-3 w-full justify-start items-center text-center text-kaico-blue rounded-xl border-kaico-blue border-2 "
+        onClick={handleClick}
+      >
+        <div className="pr-5 pl-1.5 pt-0.5">
           <svg
-            className="fill-white"
+            className="fill-wunder-blue"
             xmlns="http://www.w3.org/2000/svg"
             width="32"
             height="32"
@@ -87,30 +99,9 @@ export default function LoginWithWunderPass(props) {
               transform="matrix(.1 0 0 -.1 0 1917)"
             ></path>
           </svg>
-          <p className="pl-2 lg:pl-3 pt-1 text-white">Login with WunderPass</p>
-        </div> */}
+        </div>
+        {'Login with WunderPass'}
       </button>
-      {!disablePopup && (
-        <>
-          <Dialog
-            fullWidth
-            maxWidth="sm"
-            open={open}
-            onClose={dialogClose}
-            PaperProps={{
-              style: { borderRadius: 12 },
-            }}
-          >
-            <iframe
-              className="w-auto"
-              name="wunderPassAuth"
-              height="500"
-              style={{ transition: 'height 300ms ease' }}
-            ></iframe>
-            <Stack spacing={2} sx={{ textAlign: 'center' }}></Stack>
-          </Dialog>
-        </>
-      )}
-    </>
+    </div>
   );
 }

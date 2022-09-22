@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MetaMaskLogo from '../utils/metaMaskLogo';
 
 async function getAddress() {
@@ -48,7 +48,8 @@ async function switchChain() {
   }
 }
 
-export default function LoginWithMetaMask({ onSuccess, handleError }) {
+export default function LoginWithMetaMask({ onSuccess, handleError }, props) {
+  const { customClassName, test } = props;
   const [loading, setLoading] = useState(false);
 
   const loginWithWetaMask = async () => {
@@ -74,13 +75,19 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
     }
   };
 
+  useEffect(() => {
+    console.log(customClassName);
+  }, [customClassName]);
+
   return (
     <button
-      className="flex items-center text-kaico-blue rounded-xl border-kaico-blue border-2 p-1 px-2"
+      className="flex w-full p-1  my-3 px-2 items-center justify-start text-center text-kaico-blue rounded-xl border-kaico-blue border-2"
       onClick={loginWithWetaMask}
     >
-      <MetaMaskLogo width={50} height={40} />{' '}
-      {loading ? 'Connecting...' : 'Connect with MetaMask'}
+      <div className="pr-4">
+        <MetaMaskLogo width={0} height={0} />{' '}
+      </div>
+      {loading ? 'Connecting...' : 'Login with MetaMask'}
     </button>
   );
 }

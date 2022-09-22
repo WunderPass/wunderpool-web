@@ -32,67 +32,51 @@ function Home(props) {
 
   return (
     <>
-      <div className="flex flex-col h-screen lg:pt-7 ">
-        <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center ">
-          <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 lg:max-w-6xl w-screen lg:mb-7 ">
-            <div className="bg-kaico-blue text-white lg:rounded-t-2xl lg:py-52 lg:w-2/5 lg:rounded-tl-2xl lg:rounded-bl-2xl lg:rounded-tr-none">
-              <div className="flex-1 justify-center items-center mx-24 lg:mx-8 pt-6 lg:pt-0 ">
-                <Image
-                  className=""
-                  src={CasamaIcon}
-                  alt="WunderPoolIcon"
-                  layout="responsive"
-                />
-              </div>
-              <div className="px-6 lg:px-12">
-                <div className="text-center w-full pb-4"></div>
-                <h6 className="text-2xl font-medium mb-6">
-                  Co-invest in the best trades, earn fees for posting them.
-                </h6>
-                <div className="border-2 w-6 border-white inline-block mb-2 bg-white lg:w-10"></div>
-                <p className="text-md lg:pb-12 lg:mb-0 pb-6 mt-6 ">
-                  Casama lets you place joint trade orders to swap tokens as a
-                  group.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-5  bg-white rounded-bl-2xl lg:rounded-bl-none rounded-br-2xl lg:rounded-tr-2xl lg:w-3/5">
-              <div className="py-5 lg:py-10 mb-14">
-                <h2 className="text-3xl font-medium text-kaico-blue mb-6">
-                  Create your Account
+      <div className="flex flex-col h-screen lg:pt-7">
+        <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center bg-white lg:bg-[#f3f3f3] ">
+          <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3  w-screen lg:mb-7 ">
+            <div className="p-5 bg-white rounded-2xl w-full">
+              <div className="flex justify-center flex-col items-center py-5 lg:py-10 mb-14">
+                <h2 className="text-3xl font-medium text-kaico-blue mb-3 mt-10">
+                  Login
+                </h2>
+                <p className="text-gray-400 text-sm">or</p>
+                <h2 className="text-3xl font-medium text-kaico-blue mt-3 mb-6">
+                  Create your WunderPass
                 </h2>
                 <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>
-                <p className="text-gray-400 text-md my-3 mb-10 lg:mb-20">
-                  Includes a wallet with credits for transaction fees - powered
-                  by WunderPass.
+                <p className="text-gray-400 text-lg mt-10 mb-10 lg:mb-10 w-2/3 text-center">
+                  Connect with an external wallet like MetaMask or
+                  WalletConnect, or use our integrated WunderPass wallet to save
+                  all gas fees and get free credits to start investing
+                  immediately.
                 </p>
-
-                <div className="flex flex-col items-center justify-between mb-12 lg:mb-4">
-                  <div className="my-2 w-72 items-center mb-1 lg:mt-6">
-                    <CreateYourWunderPass
-                      name="Casama"
-                      redirect={'pools'}
-                      intent={['wunderId', 'address']}
-                      onSuccess={handleSuccess}
-                    />
-
-                    <p className="text-gray-400 text-xs my-2 mb-1 lg:mb-1">
-                      Already have an account?
-                    </p>
-
-                    <a>
-                      <LoginWithWunderPass
-                        disablePopup
-                        className="text-xs"
+                <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 ">
+                  <div className="my-2 w-72 items-centerlg:mt-6 mb-2">
+                    <div className="mb-14">
+                      <CreateYourWunderPass
                         name="Casama"
                         redirect={'pools'}
                         intent={['wunderId', 'address']}
                         onSuccess={handleSuccess}
                       />
-                    </a>
+                    </div>
+
+                    <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-8">
+                      Already have an account?
+                    </p>
                   </div>
+                  <LoginWithWunderPass
+                    disablePopup
+                    className="text-xs"
+                    name="Casama"
+                    redirect={'pools'}
+                    intent={['wunderId', 'address']}
+                    onSuccess={handleSuccess}
+                  />
                   <LoginWithMetaMask
+                    test="test"
+                    customClassName={'bg-black'}
                     onSuccess={handleSuccess}
                     handleError={handleError}
                   />
@@ -101,7 +85,6 @@ function Home(props) {
                     handleError={handleError}
                   />
                 </div>
-
                 <div className="flex flex-row justify-center lg:my-2">
                   <a
                     href="https://twitter.com/casama_io"
