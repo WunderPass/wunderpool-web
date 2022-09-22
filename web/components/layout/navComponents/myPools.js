@@ -3,10 +3,11 @@ import { Menu, MenuItem } from '@mui/material';
 import Link from 'next/link';
 
 const myPools = (props) => {
-  const { user } = props;
+  const { user, setOpen } = props;
   const [poolListOpen, setPoolListOpen] = useState(null);
 
   const handleMenuClose = () => {
+    setOpen(false);
     setPoolListOpen(null);
   };
 
