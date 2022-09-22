@@ -6,7 +6,7 @@ export default function ImageAvatar(props) {
     <>
       {tooltip ? (
         <Tooltip title={tooltip}>
-          <div className="avatar" type="file" name="profilePicture">
+          <div className="avatar bg-white" type="file" name="profilePicture">
             <img
               className="object-cover min-w-full min-h-full"
               src={imageUrl}
@@ -14,7 +14,7 @@ export default function ImageAvatar(props) {
           </div>
         </Tooltip>
       ) : (
-        <div className="avatar" type="file" name="profilePicture">
+        <div className="avatar bg-white" type="file" name="profilePicture">
           <img className="object-cover min-w-full min-h-full" src={imageUrl} />
         </div>
       )}

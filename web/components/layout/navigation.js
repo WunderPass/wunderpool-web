@@ -54,6 +54,11 @@ const navigation = (props) => {
             {!loading && (
               <Avatar
                 loginMethod={user.loginMethod}
+                walletConnectUrl={
+                  user.walletConnectMeta?.icons
+                    ? user.walletConnectMeta?.icons[0]
+                    : null
+                }
                 wunderId={user.wunderId}
                 text={user.wunderId || '0-X'}
                 i={1}

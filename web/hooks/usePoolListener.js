@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { cacheItemDB, getCachedItemDB } from '../services/caching';
 import { toEthString, currency, polyValueToUsd } from '../services/formatter';
@@ -30,18 +31,18 @@ export default function usePoolListener(handleInfo) {
     return new Promise(async (resolve, reject) => {
       try {
         const user =
-          (await getCachedItemDB(address)) ||
+          (await getCachedItemDB(address.toLowerCase())) ||
           (await cacheItemDB(
-            address,
+            address.toLowerCase(),
             (
               await axios({
                 url: '/api/proxy/users/find',
-                params: { address },
+                params: { address: address.toLowerCase() },
               })
             ).data,
             600
           ));
-        resolve(user?.wunderId || null);
+        resolve(user?.wunder_id || null);
       } catch (error) {
         resolve(null);
       }
@@ -146,10 +147,11 @@ export default function usePoolListener(handleInfo) {
           price = 0,
           decimals = 0,
         } = await resolveToken(tokenAddress);
-        const usdValue = amount
-          .mul(price)
-          .div(10 ** (decimals + 6))
-          .toNumber();
+        const usdValue =
+          amount
+            .mul(price)
+            .div(ethers.BigNumber.from(10).pow(decimals + 4))
+            .toNumber() / 100;
         if (usdValue > 0) {
           handleInfo(
             `${currency(usdValue)} of ${name || tokenAddress} sent to ${

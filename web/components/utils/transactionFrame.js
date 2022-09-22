@@ -27,8 +27,8 @@ export default function TransactionFrame({ open }) {
           src={WalletConnectIcon}
           alt="walletconnect"
           layout="fixed"
-          width={150}
-          height={150}
+          width={100}
+          height={100}
         />
       );
     }
@@ -41,12 +41,13 @@ export default function TransactionFrame({ open }) {
         className="w-full flex-grow overflow-hidden pb-3"
         style={{
           transition: 'max-height 300ms ease',
-          overflow: 'hidden',
           maxHeight: open ? '500px' : '0px',
         }}
       >
-        <div className="flex justify-center mt-3">{renderTitleImage()}</div>
-        <Typography textAlign="center">Please Sign With your Wallet</Typography>
+        <div className="flex justify-center my-4">{renderTitleImage()}</div>
+        <Typography variant="h6" textAlign="center">
+          Please Sign With your Wallet
+        </Typography>
       </div>
     );
   }
