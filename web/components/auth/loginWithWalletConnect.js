@@ -7,6 +7,7 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
 
   const loginWithWalletConnect = async () => {
+    setLoading(true);
     const provider = new WalletConnectProvider({
       rpc: {
         137: 'https://polygon-rpc.com',
@@ -21,8 +22,14 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
       },
     });
     window.walletConnect = provider;
-    const accounts = await provider.enable();
-    onSuccess({ address: accounts[0], loginMethod: 'WalletConnect' });
+    try {
+      const accounts = await provider.enable();
+      onSuccess({ address: accounts[0], loginMethod: 'WalletConnect' });
+      setLoading(false);
+    } catch (error) {
+      console.log('WalletConect', error.message);
+      setLoading(false);
+    }
   };
 
   return (
