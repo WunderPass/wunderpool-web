@@ -1,7 +1,8 @@
 import useUser from '/hooks/useUser';
 import '../styles/globals.css';
 import useNotification from '/hooks/useNotification';
-import Notification from '/components/utils/notification';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import usePoolListener from '/hooks/usePoolListener';
 import AlertTemplate from 'react-alert-template-basic';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
@@ -19,7 +20,7 @@ import SwitchChainAlert from '../components/dialogs/switchChainAlert';
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
   const user = useUser();
-  const [notification, handleError, handleSuccess, handleInfo, handleWarning] =
+  const [handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
   const [
     setupPoolListener,
@@ -86,7 +87,7 @@ function WunderPool({ Component, pageProps }) {
             <AlertProvider template={AlertTemplate} {...options}>
               <Navbar {...appProps} />
               <Component {...appProps} />
-              <Notification notification={notification} />
+              <ToastContainer position="bottom-left" autoClose={8000} />
               <TopUpAlert
                 open={user.topUpRequired}
                 setOpen={user.setTopUpRequired}
