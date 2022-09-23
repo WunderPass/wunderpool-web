@@ -40,7 +40,7 @@ export default function PoolCard(props) {
         sx={{ p: 2 }}
       >
         <div className="flex flex-row items-center justify-between relative ">
-          <div className="flex flex-row justify-between items-center md:w-full">
+          <div className="flex flex-row justify-between items-center w-2/5 md:w-5/6 lg:w-full">
             <div className="flex flex-row items-center justify-start w-52 md:w-auto">
               <div
                 className={`bg-white hover:bg-[#ededed] rounded-md border-kaico-extra-light-blue text-md font-medium cursor-pointer ${
@@ -49,7 +49,7 @@ export default function PoolCard(props) {
               >
                 {imageUrl && (
                   <img
-                    className="object-cover w-20 md:w-12 h-12 rounded-md"
+                    className="object-cover w-12 h-12 rounded-md"
                     src={imageUrl}
                     type="file"
                   />
@@ -96,7 +96,7 @@ export default function PoolCard(props) {
               )}
             </div>
           </div>
-          <div className="hidden md:flex flex-row items-center justify-center w-1/2 ">
+          <div className="hidden md:flex flex-row items-center justify-center lg:w-2/3 md:w-4/5 ">
             <div className="flex flex-row items-center container-gray-p-0 p-3  hover:bg-gray-300">
               <div className="text-base font-medium">
                 {pool.members?.length} / {pool.shareholderAgreement.maxMembers}{' '}
