@@ -48,7 +48,7 @@ export default function PublicPools() {
       <Typography className="subheader subheader-sm font-medium my-6 mt-6">
         Public Pools
       </Typography>
-      <div className="flex flex-col w-full md:gap-6 mb-2 md:mb-6 ">
+      <div className="flex flex-col w-full pb-6 lg:gap-6 md:gap-0.5">
         {visiblePools
           .sort((a, b) => b.totalBalance - a.totalBalance)
           .map((pool, i) => {
@@ -58,7 +58,7 @@ export default function PublicPools() {
                 className="min-w-full sm:min-w-[30%]"
               >
                 <div className="sm:hidden flex">
-                  <PoolCard pool={pool} />
+                  <PoolCard pool={pool} isPublic={true} />
                 </div>
                 <div className="hidden sm:flex">
                   <PublicPoolCard pool={pool} />

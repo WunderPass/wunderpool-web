@@ -2,14 +2,14 @@ import { currency } from '/services/formatter';
 import { useEffect, useState } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import Link from 'next/link';
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography, Divider } from '@mui/material';
 import Avatar from '/components/members/avatar';
 import InitialsAvatar from '/components/members/initialsAvatar';
 import { cacheImageByURL } from '../../services/caching';
 import { getNameFor } from '../../services/memberHelpers';
 
 export default function PoolCard(props) {
-  const { pool } = props;
+  const { pool, isPublic } = props;
   const [imageUrl, setImageUrl] = useState(false);
   const members = pool.members;
 
@@ -55,33 +55,48 @@ export default function PoolCard(props) {
           <Typography className="text-lg pt-3 ">
             {currency(pool.totalBalance)}
           </Typography>
-          <div className="flex flex-row justify-between items-center pb-4">
-            <div className="flex flex-row justify-start items-center ">
-              <PieChart
-                className="w-8 sm:w-6 my-1 mt-6"
-                data={[
-                  {
-                    title: 'One',
-                    value: 100 - parseInt(pool.userShare),
-                    color: '#E4DFFF',
-                  },
-                  {
-                    title: 'Two',
-                    value: parseInt(pool.userShare),
-                    color: '#5F45FD',
-                  },
-                ]}
-              />
+          <div className="flex flex-row justify-between items-center pb-3">
+            {isPublic ? (
+              <div className="flex flex-row items-center container-gray-p-0 p-3 px-6 mt-5 hover:bg-gray-300">
+                <div className="text-base font-medium">
+                  {pool.members?.length} /{' '}
+                  {pool.shareholderAgreement.maxMembers}
+                </div>
+                <Divider
+                  className=" mx-3"
+                  flexItem={true}
+                  orientation="vertical"
+                />
+                <div className="text-base font-medium">Join</div>
+              </div>
+            ) : (
+              <div className="flex flex-row justify-start items-center ">
+                <PieChart
+                  className="w-8 sm:w-6 my-1 mt-6"
+                  data={[
+                    {
+                      title: 'One',
+                      value: 100 - parseInt(pool.userShare),
+                      color: '#E4DFFF',
+                    },
+                    {
+                      title: 'Two',
+                      value: parseInt(pool.userShare),
+                      color: '#5F45FD',
+                    },
+                  ]}
+                />
 
-              <Typography className="text-md  pt-5 pl-3">
-                {pool.userShare &&
-                  `${parseInt(pool.userShare)}% (${currency(
-                    pool.userBalance
-                  )})`}
-              </Typography>
-            </div>
+                <Typography className="text-md  pt-5 pl-3">
+                  {pool.userShare &&
+                    `${parseInt(pool.userShare)}% (${currency(
+                      pool.userBalance
+                    )})`}
+                </Typography>
+              </div>
+            )}
 
-            <div className="flex flex-row   mt-4">
+            <div className="flex flex-row mt-4">
               <div className="flex flex-row">
                 {members &&
                   members
