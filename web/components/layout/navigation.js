@@ -75,7 +75,6 @@ const navigation = (props) => {
             >
               <MyPools {...props} />
             </motion.li>
-
             {user.loginMethod == 'WunderPass' && (
               <motion.li
                 initial={animateFrom}
