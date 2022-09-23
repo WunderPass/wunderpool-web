@@ -17,7 +17,7 @@ export default function CustomHeader({
       <meta
         name="twitter:image"
         content={`https://app.casama.io${
-          imageUrl || 'images/touch/homescreen192.png'
+          encodeURI(imageUrl) || 'images/touch/homescreen192.png'
         }`}
       />
       <meta name="twitter:creator" content="@casama_io" />
@@ -30,7 +30,7 @@ export default function CustomHeader({
       <meta
         property="og:image"
         content={`https://app.casama.io${
-          imageUrl || 'images/touch/homescreen512.png'
+          encodeURI(imageUrl) || 'images/touch/homescreen512.png'
         }`}
       />
       <meta property="og:title" content={title} />
