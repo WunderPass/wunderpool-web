@@ -240,7 +240,7 @@ export default function handler(req, res) {
       if (balance) {
         context.font = `light ${Math.round(0.03 * canvasWidth)}pt Graphik`;
         context.fillText(
-          `$${balance}`,
+          `${balance}`,
           padding,
           padding + poolImgWidth - poolImgWidth / (visibleLines.length + 1)
         );
