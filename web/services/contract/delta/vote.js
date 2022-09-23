@@ -19,7 +19,7 @@ export function voteDelta(poolAddress, proposalId, mode, userAddress) {
       .then((sig) => {
         axios({
           method: 'post',
-          url: '/api/proxy/pools/proposals/vote',
+          url: '/api/proposals/vote',
           data: {
             address: poolAddress,
             id: proposalId,

@@ -84,7 +84,7 @@ export default function PoolHeader(props) {
     formData.append('poolAddress', address.toLowerCase());
     axios({
       method: 'post',
-      url: '/api/proxy/pools/metadata/setImage',
+      url: '/api/pools/metadata/setImage',
       data: formData,
     })
       .then(() => {
@@ -102,7 +102,7 @@ export default function PoolHeader(props) {
     formData.append('poolAddress', address.toLowerCase());
     axios({
       method: 'post',
-      url: '/api/proxy/pools/metadata/setBanner',
+      url: '/api/pools/metadata/setBanner',
       data: formData,
     })
       .then(() => {
@@ -127,14 +127,14 @@ export default function PoolHeader(props) {
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${address}`,
-        `/api/proxy/pools/metadata/getImage?address=${address}`,
+        `/api/pools/metadata/getImage?address=${address}`,
         600
       )
     );
     setBannerUrl(
       await cacheImageByURL(
         `pool_banner_${address}`,
-        `/api/proxy/pools/metadata/getBanner?address=${address}`,
+        `/api/pools/metadata/getBanner?address=${address}`,
         600
       )
     );

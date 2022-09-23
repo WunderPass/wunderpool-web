@@ -62,7 +62,7 @@ export function addToWhiteListWithSecretZeta(
           signature: signature.signature,
         };
         postAndWaitForTransaction({
-          url: '/api/proxy/pools/whitelist',
+          url: '/api/pools/whitelist',
           body: body,
         })
           .then((res) => {

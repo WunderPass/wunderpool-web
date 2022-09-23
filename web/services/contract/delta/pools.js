@@ -49,7 +49,7 @@ export function joinPoolDelta(poolAddress, userAddress, value, secret) {
           secret: secret,
         };
 
-        postAndWaitForTransaction({ url: '/api/proxy/pools/join', body: body })
+        postAndWaitForTransaction({ url: '/api/pools/join', body: body })
           .then((res) => {
             resolve(res);
           })
@@ -83,7 +83,7 @@ export function addToWhiteListDelta(poolAddress, userAddress, newMember) {
           signature: signature.signature,
         };
         postAndWaitForTransaction({
-          url: '/api/proxy/pools/whitelist',
+          url: '/api/pools/whitelist',
           body: body,
         })
           .then((res) => {

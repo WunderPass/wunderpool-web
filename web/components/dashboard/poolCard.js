@@ -19,7 +19,7 @@ export default function PoolCard(props) {
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${pool.address}`,
-        `/api/proxy/pools/metadata/getImage?address=${pool.address}`,
+        `/api/pools/metadata/getImage?address=${pool.address}`,
         600
       )
     );
