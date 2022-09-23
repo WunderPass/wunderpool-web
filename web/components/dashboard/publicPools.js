@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchAllPools, formatPool } from '/services/contract/pools';
 import PoolCard from '../../components/dashboard/poolCard';
+import PublicPoolCard from '../../components/dashboard/publicPoolCard';
 import { Paper, Typography } from '@mui/material';
 
 export default function PublicPools() {
@@ -47,7 +48,7 @@ export default function PublicPools() {
       <Typography className="subheader subheader-sm font-medium my-6 mt-6">
         Public Pools
       </Typography>
-      <div className="flex flex-col sm:flex-row w-full gap-6 sm:px-6 mb-6 ">
+      <div className="flex flex-col w-full gap-6 mb-6 ">
         {visiblePools
           .sort((a, b) => b.totalBalance - a.totalBalance)
           .map((pool, i) => {
@@ -56,14 +57,14 @@ export default function PublicPools() {
                 key={`public-pool-card-${i}`}
                 className="min-w-full sm:min-w-[30%]"
               >
-                <PoolCard pool={pool} />
+                <PublicPoolCard pool={pool} />
               </div>
             );
           })}
         {canShowMore && (
           <div className="min-w-full sm:min-w-[25%] mb-4 pb-6 sm:p-0 lg:mb-0 sm:mb-6">
             <Paper
-              className="container-gray w-full h-full cursor-pointer flex items-center justify-center"
+              className="container-gray w-full h-full hover:bg-gray-300 cursor-pointer flex items-center justify-center"
               elevation={1}
               sx={{ p: 2 }}
               onClick={showMore}

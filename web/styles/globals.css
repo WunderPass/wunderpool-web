@@ -223,6 +223,9 @@ button:disabled {
 .container-gray {
   @apply border-solid text-black rounded-xl bg-gray-200 p-5 shadow-sm;
 }
+.container-gray-p-0 {
+  @apply border-solid text-black rounded-xl bg-gray-200 shadow-sm;
+}
 
 .container-red {
   @apply border-solid text-black rounded-xl bg-red-100 p-5 shadow-sm;
