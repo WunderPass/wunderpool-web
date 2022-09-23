@@ -138,7 +138,13 @@ function getImage(address) {
             var buffer = Buffer.concat(data);
             const img = new Image();
             img.src = buffer;
-            resolve(img);
+            if (img.width > 0) {
+              resolve(img);
+            } else {
+              loadImage('./public/casama_logo.png').then((image) => {
+                resolve(image);
+              });
+            }
           });
       } else {
         loadImage('./public/casama_logo.png').then((image) => {
@@ -188,16 +194,6 @@ export default function handler(req, res) {
         canvasHeight - padding,
         20
       );
-      context.fillStyle = '#00000077';
-      roundRect(
-        context,
-        canvasWidth - poolImgWidth - padding + 5,
-        padding + 5,
-        poolImgWidth,
-        poolImgWidth,
-        poolImgWidth * 0.1
-      );
-      context.fillStyle = '#fff';
       const croppedImage = square(image);
       const roundedImage = round(croppedImage);
       context.drawImage(
@@ -240,7 +236,7 @@ export default function handler(req, res) {
       if (balance) {
         context.font = `light ${Math.round(0.03 * canvasWidth)}pt Graphik`;
         context.fillText(
-          `$${balance}`,
+          `${balance}`,
           padding,
           padding + poolImgWidth - poolImgWidth / (visibleLines.length + 1)
         );
