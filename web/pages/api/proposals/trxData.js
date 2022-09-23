@@ -1,5 +1,5 @@
-import { fetchTransactionData } from '../../../../../services/contract/proposals';
-import { decodeParams, toEthString } from '../../../../../services/formatter';
+import { fetchTransactionData } from '/services/contract/proposals';
+import { decodeParams, toEthString } from '/services/formatter';
 
 const KNOWN_ADDRESSES = {
   '0x7c23a323600a58d160800cde2bddbc507e0bf20a': 'WunderSwapperAlpha',
