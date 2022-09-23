@@ -112,7 +112,7 @@ function formatProposal(
 export function fetchPoolProposals(address, userAddress, version) {
   if (version > 4) {
     return new Promise(async (resolve, reject) => {
-      axios({ url: `/api/proxy/pools/proposals?address=${address}` })
+      axios({ url: `/api/proposals?address=${address}` })
         .then(({ data }) => {
           resolve(
             data.map((proposal) => formatProposal(proposal, userAddress))
@@ -144,7 +144,7 @@ function createBackendProposal(options) {
     const { openPopup, sendSignatureRequest } = useWeb3();
     const popup = openPopup('sign');
     const proposal = await axios({
-      url: '/api/proxy/pools/proposals/request',
+      url: '/api/proposals/request',
       params: options,
     });
 
@@ -186,7 +186,7 @@ function createBackendProposal(options) {
       .then((sig) => {
         axios({
           method: 'post',
-          url: '/api/proxy/pools/proposals/create',
+          url: '/api/proposals/create',
           params: { address: pool_address },
           data: {
             title,

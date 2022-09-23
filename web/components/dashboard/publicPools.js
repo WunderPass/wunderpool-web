@@ -43,11 +43,11 @@ export default function PublicPools() {
   }, []);
 
   return (
-    <>
-      <Typography className="subheader subheader-sm font-medium my-6 px-4 sm:px-6">
+    <div className="">
+      <Typography className="subheader subheader-sm font-medium my-6 mt-6">
         Public Pools
       </Typography>
-      <div className="flex flex-col sm:flex-row w-full overflow-scroll gap-4 px-4 sm:px-6 mb-6">
+      <div className="flex flex-col sm:flex-row w-full gap-6 sm:px-6 mb-6 ">
         {visiblePools
           .sort((a, b) => b.totalBalance - a.totalBalance)
           .map((pool, i) => {
@@ -73,6 +73,6 @@ export default function PublicPools() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

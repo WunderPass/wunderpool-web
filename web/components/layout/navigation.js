@@ -1,17 +1,14 @@
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
-import { HiOutlineLogout } from 'react-icons/hi';
 import PoolInvites from './navComponents/poolInvites';
 import MyPools from './navComponents/myPools';
 import News from './navComponents/news';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Avatar from '/components/members/avatar';
-import Link from 'next/link';
 
 const navigation = (props) => {
-  const { user } = props;
-  const [open, setOpen] = useState(false);
+  const { user, open, setOpen } = props;
   const animateFrom = { opacity: 0, y: -40 };
   const animateTo = { opacity: 1, y: 0 };
   const [loading, setLoading] = useState(true);
@@ -49,7 +46,7 @@ const navigation = (props) => {
 
           <button
             className="hidden sm:block text-2xl pl-4  hover:text-red-500"
-            onClick={() => setOpen(!open)}
+            onClick={() => setOpen((prev) => !prev)}
           >
             {!loading && (
               <Avatar

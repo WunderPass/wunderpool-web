@@ -20,6 +20,7 @@
     "autoprefixer": "^10.4.8",
     "axios": "^0.24.0",
     "bip39": "^3.0.4",
+    "canvas": "^2.10.1",
     "crypto-js": "^4.1.1",
     "ethers": "^5.5.4",
     "file-system": "^2.2.2",

@@ -403,7 +403,7 @@ export default function usePool(
                   member.address,
                   (
                     await axios({
-                      url: '/api/proxy/users/find',
+                      url: '/api/users/find',
                       params: { address: member.address },
                     })
                   ).data,

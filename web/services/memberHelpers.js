@@ -8,7 +8,7 @@ export function getNameFor(member = {}) {
 
 export async function searchMembers(query) {
   const { data } = await axios({
-    url: '/api/proxy/users/search',
+    url: '/api/users/search',
     params: { query: query },
   });
   return data.map((member) => ({

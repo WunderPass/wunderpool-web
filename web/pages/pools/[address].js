@@ -224,23 +224,26 @@ export default function Pool(props) {
 
 export async function getServerSideProps(context) {
   const address = context.query.address;
-  const imageUrl = `/api/proxy/pools/metadata/getImage?address=${address}`;
 
   try {
-    const { pool_name, pool_description, pool_treasury } = await (
-      await fetch(
-        `https://app.casama.io/api/proxy/pools/show?address=${address}`
-      )
+    const {
+      pool_name,
+      pool_description,
+      pool_treasury,
+      pool_members,
+      shareholder_agreement,
+    } = await (
+      await fetch(`https://app.casama.io/api/pools/show?address=${address}`)
     ).json();
+
+    const balance = currency(pool_treasury.act_balance);
 
     return {
       props: {
         metaTagInfo: {
-          title: `Casama - ${pool_name} - ${currency(
-            pool_treasury.act_balance
-          )}`,
+          title: `Casama - ${pool_name} - ${balance}`,
           description: pool_description,
-          imageUrl,
+          imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=${pool_name}&balance=${balance}&maxMembers=${shareholder_agreement.max_members}&members=${pool_members.length}`,
         },
       },
     };
@@ -250,7 +253,7 @@ export async function getServerSideProps(context) {
       props: {
         metaTagInfo: {
           title: 'Casama',
-          imageUrl,
+          imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=Casama`,
         },
       },
     };

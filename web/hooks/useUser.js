@@ -23,7 +23,7 @@ export default function useUser() {
   const [walletConnectMeta, setWalletConnectMeta] = useState({});
 
   const image = useMemo(
-    () => `/api/proxy/users/getImage?wunderId=${wunderId}`,
+    () => `/api/users/getImage?wunderId=${wunderId}`,
     [wunderId]
   );
 
@@ -162,7 +162,7 @@ export default function useUser() {
       setIsReady(true);
       if (!wunderId) {
         axios({
-          url: '/api/proxy/users/find',
+          url: '/api/users/find',
           params: { address },
         })
           .then(({ data }) => {

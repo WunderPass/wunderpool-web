@@ -34,17 +34,19 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
 
   return (
     <button
-      className="flex items-center text-kaico-blue rounded-xl border-kaico-blue border-2 p-2 px-2 mt-4 gap-2"
+      className="flex p-1 my-3 w-full justify-start items-center text-center text-kaico-blue rounded-xl border-kaico-blue border-2 "
       onClick={loginWithWalletConnect}
     >
-      <Image
-        src={WalletConnectIcon}
-        alt="walletconnect"
-        layout="fixed"
-        width={30}
-        height={30}
-      />
-      {loading ? 'Connecting...' : 'WalletConnect'}
+      <div className="pr-5 pl-3 pt-1">
+        <Image
+          src={WalletConnectIcon}
+          alt="walletconnect"
+          layout="fixed"
+          width={30}
+          height={30}
+        />
+      </div>
+      {loading ? 'Connecting...' : 'Login with WalletConnect'}
     </button>
   );
 }

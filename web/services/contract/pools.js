@@ -69,7 +69,7 @@ export function createPool(
       .then(() => {
         axios({
           method: 'POST',
-          url: '/api/proxy/pools/create',
+          url: '/api/pools/create',
           data: formData,
           headers: { 'Content-Type': 'multipart/form-data' },
         })
@@ -165,7 +165,7 @@ async function formatMember(member, totalSupply) {
         member.members_address,
         (
           await axios({
-            url: '/api/proxy/users/find',
+            url: '/api/users/find',
             params: { address: member.members_address },
           })
         ).data,
@@ -266,7 +266,7 @@ export async function formatPool(pool, user = null) {
 
 export function fetchUserPools(userAddress) {
   return new Promise(async (resolve, reject) => {
-    axios({ url: `/api/proxy/pools/userPools?address=${userAddress}` })
+    axios({ url: `/api/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
         const pools = await Promise.all(
           // .filter((pool) => pool.active) => As of 29.07.2022 All Pools are {active: false} :(
@@ -289,7 +289,7 @@ export function fetchWhitelistedUserPools(userAddress) {
     resolve([...epsilonPools, ...zetaPools]);
   });
   // return new Promise(async (resolve, reject) => {
-  //   axios({ url: `/api/proxy/pools/whitelisted?address=${userAddress}` })
+  //   axios({ url: `/api/pools/whitelisted?address=${userAddress}` })
   //     .then(async (res) => {
   //       const pools = await Promise.all(
   //         res.data
@@ -304,7 +304,7 @@ export function fetchWhitelistedUserPools(userAddress) {
 
 export function fetchAllPools() {
   return new Promise(async (resolve, reject) => {
-    axios({ url: '/api/proxy/pools/all' })
+    axios({ url: '/api/pools/all' })
       .then((res) => {
         resolve(res.data);
       })
@@ -334,7 +334,7 @@ export function fetchPoolName(poolAddress, version = null) {
 
 export function isMember(poolAddress, userAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    axios({ url: `/api/proxy/pools/show?address=${poolAddress}` })
+    axios({ url: `/api/pools/show?address=${poolAddress}` })
       .then(async (res) => {
         var isMember = false;
         res.data.pool_members.forEach((element) => {
@@ -348,7 +348,7 @@ export function isMember(poolAddress, userAddress, version = null) {
 
 export function fetchPoolBalance(poolAddress, version = null) {
   return new Promise(async (resolve, reject) => {
-    axios({ url: `/api/proxy/pools/show?address=${poolAddress}` })
+    axios({ url: `/api/pools/show?address=${poolAddress}` })
       .then(async (res) => {
         resolve(res.data.pool_treasury.act_balance);
       })
@@ -402,8 +402,7 @@ export function fetchPoolData(poolAddress) {
   return new Promise(async (resolve, reject) => {
     try {
       resolve(
-        (await axios({ url: `/api/proxy/pools/show?address=${poolAddress}` }))
-          .data
+        (await axios({ url: `/api/pools/show?address=${poolAddress}` })).data
       );
     } catch (error) {
       reject(error);

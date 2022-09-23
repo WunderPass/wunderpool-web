@@ -30,7 +30,7 @@ export default function Avatar(props) {
       setImageUrl(
         await cacheImageByURL(
           `user_image_${wunderId}`,
-          `/api/proxy/users/getImage?wunderId=${wunderId}`
+          `/api/users/getImage?wunderId=${wunderId}`
         )
       );
     } catch (error) {

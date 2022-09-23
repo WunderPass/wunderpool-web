@@ -113,7 +113,7 @@ export default function NewPoolDialog(props) {
     formData.append('poolAddress', address);
     axios({
       method: 'post',
-      url: '/api/proxy/pools/metadata/setImage',
+      url: '/api/pools/metadata/setImage',
       data: formData,
     })
       .then(() => {})
