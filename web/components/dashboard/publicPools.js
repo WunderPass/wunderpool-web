@@ -50,10 +50,10 @@ export default function PublicPools() {
       <div className="flex flex-col sm:flex-row w-full gap-6 sm:px-6 mb-6 ">
         {visiblePools
           .sort((a, b) => b.totalBalance - a.totalBalance)
-          .map((pool, i) => {
+          .map((pool) => {
             return (
               <div
-                key={`public-pool-card-${i}`}
+                key={`public-pool-card-${pool.address}`}
                 className="min-w-full sm:min-w-[30%]"
               >
                 <PoolCard pool={pool} />

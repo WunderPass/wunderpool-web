@@ -9,21 +9,19 @@ import {
   Tooltip,
 } from '@mui/material';
 import NewPoolDialog from '/components/dialogs/newPool/dialog';
-import LoadingCircle from '/components/utils/loadingCircle';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
 import PoolList from '/components/dashboard/poolList';
-import CustomHeader from '../../components/utils/customHeader';
-import PublicPools from '../../components/dashboard/publicPools';
+import CustomHeader from '/components/utils/customHeader';
+import PublicPools from '/components/dashboard/publicPools';
 
 export default function Pools(props) {
   const { user, handleSuccess } = props;
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [loadingCircle, setLoadingCircle] = useState(true);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const [showAddress, setShowAddress] = useState(false);
   const router = useRouter();
@@ -51,15 +49,10 @@ export default function Pools(props) {
     setOpen(router.query?.createPool ? true : false);
   }, [router.query]);
 
-  useEffect(() => {
-    setLoadingCircle(!user.isReady);
-  }, [user.isReady]);
-
   return (
     <>
       <CustomHeader />
-      {loadingCircle && <LoadingCircle />}
-      <div className={`font-graphik ${loadingCircle ? 'blur' : ''}`}>
+      <div className="font-graphik">
         <Container>
           <div className="flex flex-col w-full justify-start">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
