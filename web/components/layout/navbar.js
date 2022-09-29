@@ -1,4 +1,4 @@
-import { AppBar, ClickAwayListener, Stack, Toolbar } from '@mui/material';
+import { AppBar, ClickAwayListener, Stack, Toolbar, Chip } from '@mui/material';
 import Image from 'next/image';
 import CasamaIcon from '/public/casama-wht.svg';
 import { useRouter } from 'next/router';
@@ -27,8 +27,8 @@ export default function Navbar(props) {
           <Toolbar>
             <Stack className="flex flex-row w-full justify-between items-center mt-1">
               <Link href="/pools">
-                <div className="flex flex-row cursor-pointer">
-                  <div className="hidden pl-1.5 items-center justify-center mr-4 sm:block">
+                <div className="flex flex-row cursor-pointer items-center">
+                  <div className="hidden pl-1.5 items-center justify-center mr-2 sm:block">
                     <div className="hidden pb-1.5 w-40 sm:block">
                       <Image
                         src={CasamaIcon}
@@ -38,6 +38,12 @@ export default function Navbar(props) {
                       />
                     </div>
                   </div>
+                  <Chip
+                    className="bg-kaico-extra-light-blue text-kaico-blue mb-1 mr-10"
+                    size="small"
+                    label="Beta"
+                  />
+
                   <div className="sm:hidden">
                     {!loading && (
                       <Avatar
