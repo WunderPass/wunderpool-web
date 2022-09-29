@@ -39,7 +39,7 @@ export default function Navbar(props) {
                     </div>
                   </div>
                   <Chip
-                    className="bg-casama-extra-light-blue text-casama-blue mb-1 mr-10"
+                    className="hidden sm:block bg-casama-extra-light-blue text-casama-blue mb-1 mr-10"
                     size="small"
                     label="Beta"
                   />
