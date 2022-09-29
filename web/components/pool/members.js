@@ -55,7 +55,7 @@ export default function PoolMembers(props) {
                 {version.number > 3 && !closed && (
                   <div>
                     <button
-                      className="btn-kaico items-center w-full mb-3 mt-3 py-3 text-md"
+                      className="btn-casama items-center w-full mb-3 mt-3 py-3 text-md"
                       onClick={() => setInviteMember(true)}
                     >
                       <Typography className="text-lg">Invite Member</Typography>
@@ -92,7 +92,7 @@ export default function PoolMembers(props) {
                   </div>
                 ) : (
                   <button
-                    className="btn-kaico items-center w-full my-5 py-3 px-3 text-md"
+                    className="btn-casama items-center w-full my-5 py-3 px-3 text-md"
                     onClick={handleOpenClose}
                     disabled={!Boolean(governanceToken)}
                   >

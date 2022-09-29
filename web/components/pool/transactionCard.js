@@ -38,7 +38,7 @@ function PolygonscanLink({ text, suffix = null }) {
       target="_blank"
       href={`https://polygonscan.com/${suffix || 'address/' + text}`}
     >
-      <Typography className="opacity-90 text-kaico-blue">{text}</Typography>
+      <Typography className="opacity-90 text-casama-blue">{text}</Typography>
     </Link>
   );
 }

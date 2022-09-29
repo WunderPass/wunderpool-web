@@ -4,10 +4,10 @@ const colors = {
   wunderBlue: '#0096FE',
   wunderLightBlue: '#01BFFF',
   wunderDarkBlue: '#020D30',
-  kaicoBlue: '#5F45FD',
-  kaicoDarkBlue: '#462cf1',
-  kaicoLightBlue: '#7560ff',
-  kaicoExtraLightBlue: '#E4DFFF',
+  casamaBlue: '#5F45FD',
+  casamaDarkBlue: '#462cf1',
+  casamaLightBlue: '#7560ff',
+  casamaExtraLightBlue: '#E4DFFF',
   brown: '#d6a34a',
   purple: '#551fbd',
   powderBlue: '#a0b6f7',
@@ -28,7 +28,7 @@ export default createTheme({
     MuiFab: {
       styleOverrides: {
         root: {
-          backgroundColor: `${colors.kaicoDarkBlue} !important`,
+          backgroundColor: `${colors.casamaDarkBlue} !important`,
         },
       },
     },

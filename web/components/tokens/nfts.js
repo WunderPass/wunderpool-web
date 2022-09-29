@@ -45,7 +45,7 @@ export default function NftList(props) {
           them a fair offer, they might agree to buy your NFT
         </Typography>
         <button
-          className="btn-kaico w-full p-2 mt-4"
+          className="btn-casama w-full p-2 mt-4"
           variant="contained"
           onClick={() => setOpen(true)}
         >

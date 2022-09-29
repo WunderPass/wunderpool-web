@@ -39,14 +39,14 @@ function Home(props) {
           <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3  w-screen lg:mb-7 ">
             <div className="p-5 bg-white rounded-2xl w-full">
               <div className="flex justify-center flex-col items-center py-5 lg:py-10 mb-14">
-                <h2 className="text-3xl font-medium text-kaico-blue mb-3 mt-10">
+                <h2 className="text-3xl font-medium text-casama-blue mb-3 mt-10">
                   Login
                 </h2>
                 <p className="text-gray-400 text-sm">or</p>
-                <h2 className="text-3xl font-medium text-kaico-blue mt-3 mb-6">
+                <h2 className="text-3xl font-medium text-casama-blue mt-3 mb-6">
                   Create your WunderPass
                 </h2>
-                <div className="border-2 w-6 border-kaico-blue bg-kaico-blue inline-block mb-2 lg:w-10"></div>
+                <div className="border-2 w-6 border-casama-blue bg-casama-blue inline-block mb-2 lg:w-10"></div>
                 <p className="text-gray-400 text-lg mt-10 mb-10 lg:mb-10 w-2/3 text-center">
                   Connect with an external wallet like MetaMask or
                   WalletConnect, or use our integrated WunderPass wallet to save

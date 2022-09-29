@@ -23,7 +23,7 @@ export default function Navbar(props) {
   return (
     <>
       <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <AppBar className="bg-kaico-blue" position="fixed" sx={{ top: 0 }}>
+        <AppBar className="bg-casama-blue" position="fixed" sx={{ top: 0 }}>
           <Toolbar>
             <Stack className="flex flex-row w-full justify-between items-center mt-1">
               <Link href="/pools">
@@ -39,7 +39,7 @@ export default function Navbar(props) {
                     </div>
                   </div>
                   <Chip
-                    className="bg-kaico-extra-light-blue text-kaico-blue mb-1 mr-10"
+                    className="bg-casama-extra-light-blue text-casama-blue mb-1 mr-10"
                     size="small"
                     label="Beta"
                   />

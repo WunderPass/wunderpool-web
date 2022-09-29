@@ -33,7 +33,7 @@ export default function PoolList(props) {
   ) : (
     <div className="container-white">
       <div className="flex flex-col items-center ">
-        <div className="border-solid text-kaico-blue rounded-full bg-kaico-extra-light-blue p-5 my-2 mt-6 mb-4">
+        <div className="border-solid text-casama-blue rounded-full bg-casama-extra-light-blue p-5 my-2 mt-6 mb-4">
           <MdGroups className="text-4xl" />
         </div>
         <div className="my-2 mb-10">
@@ -47,14 +47,14 @@ export default function PoolList(props) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Typography className="text-kaico-blue justify-center">
+              <Typography className="text-casama-blue justify-center">
                 (See Demo)
               </Typography>
             </a>
           </div>
         </div>
         <button
-          className="btn-kaico-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
+          className="btn-casama-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
           onClick={handleOpenClose}
         >
           Create your first pool

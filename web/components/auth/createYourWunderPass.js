@@ -64,7 +64,7 @@ export default function CreateYourWunderPass(props) {
       <a href={process.env.WUNDERPASS_URL} onClick={handleClick}>
         {/* Casama Native Signup */}
 
-        <div className="flex text-center items-center justify-center bg-kaico-blue hover:bg-kaico-dark-blue rounded-lg px-5 py-2 font-medium text-md">
+        <div className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue rounded-lg px-5 py-2 font-medium text-md">
           <p className="pl-2 lg:pl-3 p-1 text-white">
             {text || 'Create WunderPass wallet'}
           </p>
@@ -72,7 +72,7 @@ export default function CreateYourWunderPass(props) {
 
         {/* WP Signup */}
         {/* <p
-          className="text-xs text-kaico-dark-blue hover:text-kaico-light-blue pt-0.5 underline cursor-pointer lg:mb-10"
+          className="text-xs text-casama-dark-blue hover:text-casama-light-blue pt-0.5 underline cursor-pointer lg:mb-10"
           onClick={handleClick}
         >
           Create your WunderPass now

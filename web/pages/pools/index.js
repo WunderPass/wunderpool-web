@@ -78,11 +78,11 @@ export default function Pools(props) {
                     <button onClick={() => toggleAddress()}>
                       {showAddress ? (
                         <div className="flex flex-row items-center">
-                          <AiFillUpCircle className="text-kaico-blue sm:text-2xl font-medium text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                          <AiFillUpCircle className="text-casama-blue sm:text-2xl font-medium text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
                         </div>
                       ) : (
                         <div className="flex flex-row items-center">
-                          <AiOutlineDownCircle className="text-kaico-blue sm:text-2xl text-xl font-medium mt-3 sm:mt-4 ml-2 sm:ml-4" />
+                          <AiOutlineDownCircle className="text-casama-blue sm:text-2xl text-xl font-medium mt-3 sm:mt-4 ml-2 sm:ml-4" />
                         </div>
                       )}
                     </button>
@@ -92,8 +92,8 @@ export default function Pools(props) {
                 <div
                   className={
                     showAddress
-                      ? ' border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 '
-                      : ' border-solid text-kaico-blue truncate rounded-lg bg-gray-300 p-3 hidden'
+                      ? ' border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 '
+                      : ' border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 hidden'
                   }
                 >
                   <CopyToClipboard
@@ -110,7 +110,7 @@ export default function Pools(props) {
                 </div>
               </div>
               <button
-                className="btn-kaico w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
+                className="btn-casama w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
                 onClick={handleOpenClose}
               >
                 Create pool
