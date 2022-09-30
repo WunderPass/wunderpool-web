@@ -38,11 +38,13 @@ export default function Navbar(props) {
                       />
                     </div>
                   </div>
-                  <Chip
-                    className="hidden sm:block bg-casama-extra-light-blue text-casama-blue mb-1 mr-10"
-                    size="small"
-                    label="Beta"
-                  />
+                  <div className="mb-1">
+                    <Chip
+                      className="items-center hidden sm:flex bg-casama-extra-light-blue text-casama-blue  mr-10"
+                      size="small"
+                      label="Beta"
+                    />
+                  </div>
 
                   <div className="sm:hidden">
                     {!loading && (

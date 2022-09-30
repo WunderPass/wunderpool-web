@@ -92,6 +92,31 @@ export default function usePool(
     );
   };
 
+  //IMPLEMENT THIS BENEATH IN THE FUTURE
+
+  // const resolveMember = async (address) => {
+  //   if (address.toLowerCase() == poolAddress) return poolName;
+  //   return new Promise(async (resolve, reject) => {
+  //     try {
+  //       const user =
+  //         (await getCachedItemDB(address.toLowerCase())) ||
+  //         (await cacheItemDB(
+  //           address.toLowerCase(),
+  //           (
+  //             await axios({
+  //               url: '/api/users/find',
+  //               params: { address: address.toLowerCase() },
+  //             })
+  //           ).data,
+  //           600
+  //         ));
+  //       resolve(user?.wunder_id || address);
+  //     } catch (error) {
+  //       resolve(address);
+  //     }
+  //   });
+  // };
+
   const resolveProposal = (proposalId) => {
     return poolProposals.find((p) => p.id == proposalId);
   };
