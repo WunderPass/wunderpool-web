@@ -51,7 +51,7 @@ function OpenProposalDialog(props) {
             )
           }
         >
-          <ShareIcon className="text-kaico-blue" />
+          <ShareIcon className="text-casama-blue" />
         </IconButton>
       }
     >

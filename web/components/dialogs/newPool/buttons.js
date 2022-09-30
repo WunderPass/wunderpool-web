@@ -3,7 +3,7 @@ export default function NewPoolButtons(props) {
   if (retry)
     return (
       <div className="flex flex-col items-center justify-center w-full">
-        <button className="btn-kaico w-full py-3 mt-2" onClick={submit}>
+        <button className="btn-casama w-full py-3 mt-2" onClick={submit}>
           Retry
         </button>
       </div>
@@ -21,7 +21,7 @@ export default function NewPoolButtons(props) {
       )}
       {step != totalSteps && (
         <button
-          className="btn-kaico w-full py-3 mt-2"
+          className="btn-casama w-full py-3 mt-2"
           onClick={() => setStep((s) => s + 1)}
           disabled={disabled}
         >
@@ -29,7 +29,7 @@ export default function NewPoolButtons(props) {
         </button>
       )}
       {step == totalSteps && (
-        <button className="btn-kaico w-full py-3 mt-2" onClick={submit}>
+        <button className="btn-casama w-full py-3 mt-2" onClick={submit}>
           Submit
         </button>
       )}

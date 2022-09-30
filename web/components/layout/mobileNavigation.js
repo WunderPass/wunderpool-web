@@ -48,7 +48,7 @@ const mobileNavigation = (props) => {
         </div>
         {open && (
           <div>
-            <ul className="flex flex-col justify-between absolute top-13 left-0 bg-kaico-blue w-full border-t-2  border-t-white align-right pl-1 shadow-xl">
+            <ul className="flex flex-col justify-between absolute top-13 left-0 bg-casama-blue w-full border-t-2  border-t-white align-right pl-1 shadow-xl">
               <motion.li
                 className="px-2 py-1 pt-2"
                 initial={animateFrom}

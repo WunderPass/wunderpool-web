@@ -66,7 +66,9 @@ const poolInvites = (props) => {
                   </Link>
                 );
               })}
-          {user.pools.length == 0 && <MenuItem> - no invites - </MenuItem>}
+          {user.whitelistedPools.length == 0 && (
+            <MenuItem> - no invites - </MenuItem>
+          )}
         </Menu>
       </motion.li>
     </>

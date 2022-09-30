@@ -129,7 +129,7 @@ export default function NewPoolConfigStep(props) {
             {imageUrl ? (
               <img className="w-full" src={imageUrl} />
             ) : (
-              <BsImage className="text-kaico-light-blue text-4xl" />
+              <BsImage className="text-casama-light-blue text-4xl" />
             )}
           </div>
         </label>

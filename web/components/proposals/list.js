@@ -80,7 +80,7 @@ export default function ProposalList(props) {
           Decide which tokens to invest in first by making a buy proposal below!
         </Typography>
         <button
-          className="btn-kaico items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+          className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
           onClick={() => {
             handleOpenClose();
           }}

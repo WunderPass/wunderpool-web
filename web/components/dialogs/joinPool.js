@@ -137,7 +137,7 @@ export default function JoinPoolDialog(props) {
           <button
             className={
               isWallet
-                ? 'border-2 border-kaico-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
+                ? 'border-2 border-casama-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
                 : 'border container-checkbox flex flex-row items-center py-4 mt-2 z-2'
             }
             onClick={chooseWallet}
@@ -146,7 +146,7 @@ export default function JoinPoolDialog(props) {
               onClick={chooseWallet}
               className={
                 isWallet
-                  ? 'bg-kaico-blue border-kaico-blue rounded-md border'
+                  ? 'bg-casama-blue border-casama-blue rounded-md border'
                   : 'border border-gray-300  rounded-md'
               }
             >
@@ -162,7 +162,7 @@ export default function JoinPoolDialog(props) {
           <button /*
               className={
                 isPayPal
-                  ? 'border-2 border-kaico-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
+                  ? 'border-2 border-casama-blue container-checkbox flex flex-row items-center py-4 mt-2 z-2'
                   : 'border container-checkbox flex flex-row items-center py-4 mt-2 z-2'
               }
               onClick={choosePayPal}
@@ -170,7 +170,7 @@ export default function JoinPoolDialog(props) {
               <div
                 className={
                   isPayPal
-                    ? 'border bg-kaico-blue border-kaico-blue  rounded-md '
+                    ? 'border bg-casama-blue border-casama-blue  rounded-md '
                     : 'border border-gray-300  rounded-md'
                 }
               >
@@ -188,7 +188,7 @@ export default function JoinPoolDialog(props) {
         ) : (
           <DialogActions>
             <button
-              className="btn-kaico w-full py-3 mx-3 mb-2"
+              className="btn-casama w-full py-3 mx-3 mb-2"
               onClick={handleSubmit}
               disabled={!Boolean(amount) || Boolean(errorMsg) || !isWallet}
             >
