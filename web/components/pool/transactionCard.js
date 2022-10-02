@@ -351,7 +351,7 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
           <div className="text-ellipsis ... overflow-hidden">
             {newMemberName} was invited by {wunderId}{' '}
           </div>
-          <div className="mx-2">
+          <div className="mx-2 ml-4">
             <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
           </div>
         </div>
