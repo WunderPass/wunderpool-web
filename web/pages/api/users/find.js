@@ -39,18 +39,17 @@ async function getUsersByAddresses(addresses) {
 }
 
 export default async function handler(req, res) {
-  const { wunderId, address } = req.query || {};
+  const { wunderId, address, addresses } = req.query || {};
   let status, data;
   if (wunderId) {
     [status, data] = await getUserByWunderId(wunderId);
   } else if (address) {
     [status, data] = await getUsersByAddresses([address]);
     data = status == 200 ? data[0] : data;
-  } else if (req.query['addresses[]']) {
-    [status, data] = await getUsersByAddresses(req.query['addresses[]']);
+  } else if (addresses) {
+    [status, data] = await getUsersByAddresses(JSON.parse(addresses));
   } else {
     [status, data] = [403, { error: 'Address/Addresses or WunderId missing' }];
   }
-  console.log(status, data);
   res.status(status).json(data);
 }

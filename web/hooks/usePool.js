@@ -92,31 +92,6 @@ export default function usePool(
     );
   };
 
-  //IMPLEMENT THIS BENEATH IN THE FUTURE
-
-  // const resolveMember = async (address) => {
-  //   if (address.toLowerCase() == poolAddress) return poolName;
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       const user =
-  //         (await getCachedItemDB(address.toLowerCase())) ||
-  //         (await cacheItemDB(
-  //           address.toLowerCase(),
-  //           (
-  //             await axios({
-  //               url: '/api/users/find',
-  //               params: { address: address.toLowerCase() },
-  //             })
-  //           ).data,
-  //           600
-  //         ));
-  //       resolve(user?.wunder_id || address);
-  //     } catch (error) {
-  //       resolve(address);
-  //     }
-  //   });
-  // };
-
   const resolveProposal = (proposalId) => {
     return poolProposals.find((p) => p.id == proposalId);
   };
@@ -413,36 +388,38 @@ export default function usePool(
       });
       updateLoadingState('init');
 
-      const resolvedMembers = (
-        await axios({
-          url: '/api/users/find',
-          params: { addresses: pool_members.map((m) => m.members_address) },
-        })
-      ).data;
+      setPoolMembers(
+        await Promise.all(
+          pool_members.map(async (mem) => {
+            const member = {
+              address: mem.members_address,
+              tokens: mem.pool_shares_balance,
+              share: (mem.pool_shares_balance * 100) / totalShares,
+            };
+            try {
+              const user =
+                (await getCachedItemDB(member.address)) ||
+                (await cacheItemDB(
+                  member.address,
+                  (
+                    await axios({
+                      url: '/api/users/find',
+                      params: { address: member.address },
+                    })
+                  ).data,
+                  600
+                ));
 
-      const formattedMembers = await Promise.all(
-        pool_members.map(async (mem) => {
-          const member = {
-            address: mem.members_address,
-            tokens: mem.pool_shares_balance,
-            share: (mem.pool_shares_balance * 100) / totalShares,
-          };
-          try {
-            const user = resolvedMembers.find(
-              (m) => m.wallet_address == member.address
-            );
-
-            member.wunderId = user.wunder_id;
-            member.firstName = user.firstname;
-            member.lastName = user.lastname;
-          } catch (err) {
-            console.log(err);
-          }
-          return member;
-        })
+              member.wunderId = user.wunder_id;
+              member.firstName = user.firstname;
+              member.lastName = user.lastname;
+            } catch (err) {
+              console.log(err);
+            }
+            return member;
+          })
+        )
       );
-
-      setPoolMembers(formattedMembers);
       updateLoadingState('members');
 
       const tokens = await Promise.all(
