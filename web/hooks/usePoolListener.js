@@ -116,8 +116,8 @@ export default function usePoolListener(handleInfo) {
     wunderPool.on('ProposalExecuted', async (proposalId, executor, result) => {
       const wunderId = await resolveUser(executor);
       notifyIfRelevant(
-        `Proposal #${proposalId.toNumber()} was executed by ${
-          wunderId || executor
+        `Proposal #${proposalId.toNumber()} was executed${
+          wunderId ? ` by ${wunderId}` : ''
         }`,
         executor
       );

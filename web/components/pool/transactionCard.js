@@ -396,20 +396,11 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
       const wunderId = wunderPool.resolveMember(userAddress);
       let isClosePool = false;
       let color = 'text-4xl text-black';
-      if (
-        /Sell/.test(title + description) ||
-        /sell/.test(title + description)
-      ) {
+      if (/sell/i.test(title + description)) {
         color = 'text-4xl text-red-600 ';
-      } else if (
-        /Buy/.test(title + description) ||
-        /buy/.test(title + description)
-      ) {
+      } else if (/buy/i.test(title + description)) {
         color = 'text-4xl text-green-600';
-      } else if (
-        /Close/.test(title + description) ||
-        /close/.test(title + description)
-      ) {
+      } else if (/close/i.test(title + description)) {
         isClosePool = true;
         color = 'text-4xl text-red-600 ';
       }
