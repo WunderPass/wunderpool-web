@@ -15,10 +15,7 @@ import axios from 'axios';
 import { httpProvider } from './provider';
 import { approve } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
-import {
-  addToWhiteListWithSecretZeta,
-  fetchWhitelistedUserPoolsZeta,
-} from './zeta/pools';
+import { fetchWhitelistedUserPoolsZeta } from './zeta/pools';
 
 export function createPool(
   creator,
@@ -373,14 +370,7 @@ export function addToWhiteListWithSecret(
   validFor,
   version
 ) {
-  if (version > 5) {
-    return addToWhiteListWithSecretZeta(
-      poolAddress,
-      userAddress,
-      secret,
-      validFor
-    );
-  } else if (version > 4) {
+  if (version > 4) {
     return addToWhiteListWithSecretEpsilon(
       poolAddress,
       userAddress,
