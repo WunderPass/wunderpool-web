@@ -13,7 +13,7 @@ export default function PublicPools() {
   const showMore = () => {
     allPools.slice(visiblePools.length, visiblePools.length + 3).map((pool) => {
       formatPool(pool).then((p) => {
-        setVisiblePools((prev) => [...prev, p]);
+        if (p) setVisiblePools((prev) => [...prev, p]);
       });
     });
   };
@@ -37,7 +37,7 @@ export default function PublicPools() {
 
       validPools.slice(0, 3).map((pool) => {
         formatPool(pool).then((p) => {
-          setVisiblePools((prev) => [...prev, p]);
+          if (p) setVisiblePools((prev) => [...prev, p]);
         });
       });
     });
