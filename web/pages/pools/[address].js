@@ -80,6 +80,7 @@ export default function Pool(props) {
         }
       } else if (wunderPool.exists === false) {
         handleInfo('Pool was closed');
+        user.fetchUsdBalance();
         router.push('/pools');
       }
     }
@@ -88,6 +89,7 @@ export default function Pool(props) {
   useEffect(() => {
     if (wunderPool.liquidated) {
       handleInfo('Pool was closed.');
+      user.fetchUsdBalance();
       router.push('/pools');
     }
   }, [wunderPool.liquidated]);

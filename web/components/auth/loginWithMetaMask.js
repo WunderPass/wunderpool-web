@@ -75,10 +75,6 @@ export default function LoginWithMetaMask({ onSuccess, handleError }, props) {
     }
   };
 
-  useEffect(() => {
-    console.log(customClassName);
-  }, [customClassName]);
-
   return (
     <button
       className="flex w-full p-1 pt-1.5 my-3 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"

@@ -11,7 +11,6 @@ export default function Transactions(props) {
     if (wunderPool.poolAddress) {
       allPolygonscanTransactions(wunderPool.poolAddress)
         .then((transactions) => {
-          console.log(transactions);
           setAllTransactions(transactions);
         })
         .catch((err) => {
