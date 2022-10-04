@@ -43,7 +43,7 @@ export default function PoolCard(props) {
           <div className="flex flex-row justify-between items-center w-2/5 md:w-5/6 lg:w-full">
             <div className="flex flex-row items-center justify-start w-52 md:w-auto">
               <div
-                className={`bg-white hover:bg-[#ededed] rounded-md border-kaico-extra-light-blue text-md font-medium cursor-pointer ${
+                className={`bg-white hover:bg-[#ededed] rounded-md border-casama-extra-light-blue text-md font-medium cursor-pointer ${
                   imageUrl ? '' : 'p-6 border-2'
                 }`}
               >

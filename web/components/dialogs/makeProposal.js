@@ -107,7 +107,7 @@ export default function makeProposal(props) {
               </button>
               <button
                 type="submit"
-                className="btn-kaico w-full py-3 mt-2"
+                className="btn-casama w-full py-3 mt-2"
                 onClick={handleApe}
                 disabled={!tokenName || !tokenSymbol || value == 0}
               >

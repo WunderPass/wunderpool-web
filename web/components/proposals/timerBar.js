@@ -13,7 +13,7 @@ export default function TimerBar(props) {
             width: percentage(passed, total) + '%',
             transition: 'width 1s linear',
           }}
-          className="rounded-full shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-kaico-blue"
+          className="rounded-full shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-casama-blue"
         ></div>
       </div>
     </>

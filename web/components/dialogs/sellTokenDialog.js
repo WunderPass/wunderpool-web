@@ -41,7 +41,7 @@ export default function SellTokenDialog(props) {
           address,
           decimals,
           `Let's Sell ${name} (${symbol})`,
-          `We will sell ${amount} ${symbol}`,
+          `We will sell ${formatTokenBalance(amount)} ${symbol}`,
           amount
         )
         .then((res) => {

@@ -66,7 +66,7 @@ const navigation = (props) => {
       </ul>
       {open && (
         <div>
-          <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-kaico-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
+          <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-casama-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
             <motion.li
               className="px-2 py-1 pt-2"
               initial={animateFrom}

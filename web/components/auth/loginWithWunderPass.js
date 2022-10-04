@@ -82,7 +82,7 @@ export default function LoginWithWunderPass(props) {
         </Dialog>
       )}
       <button
-        className="flex p-2 my-3 w-full justify-start items-center text-center text-kaico-blue rounded-xl border-kaico-blue border-2 "
+        className="flex p-2 my-3 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
         onClick={handleClick}
       >
         <div className="pr-5 pl-1.5 pt-0.5">

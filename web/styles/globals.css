@@ -169,7 +169,7 @@ button:disabled {
 }
 
 .btn-primary {
-  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
+  @apply bg-casama-blue hover:bg-casama-light-blue text-white cursor-pointer rounded-xl;
 }
 
 .btn-success {
@@ -181,19 +181,19 @@ button:disabled {
 }
 
 .btn-info {
-  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
+  @apply bg-casama-blue hover:bg-casama-light-blue text-white cursor-pointer rounded-xl;
 }
 
 .btn-warning {
   @apply bg-[#f7b91b] hover:bg-[#dba418] text-black text-opacity-70 cursor-pointer rounded-full;
 }
 
-.btn-kaico {
-  @apply bg-kaico-blue hover:bg-kaico-light-blue text-white cursor-pointer rounded-xl;
+.btn-casama {
+  @apply bg-casama-blue hover:bg-casama-light-blue text-white cursor-pointer rounded-xl;
 }
 
-.btn-kaico-white {
-  @apply bg-white hover:bg-[#ededed] text-kaico-blue cursor-pointer rounded-xl border-2 border-kaico-blue;
+.btn-casama-white {
+  @apply bg-white hover:bg-[#ededed] text-casama-blue cursor-pointer rounded-xl border-2 border-casama-blue;
 }
 
 .btn-neutral {
@@ -201,15 +201,15 @@ button:disabled {
 }
 
 .btn-vote {
-  @apply hover:bg-kaico-blue hover:text-white bg-gray-200 text-black text-opacity-70 cursor-pointer rounded-full p-1 px-4 mx-2 border border-kaico-blue;
+  @apply hover:bg-casama-blue hover:text-white bg-gray-200 text-black text-opacity-70 cursor-pointer rounded-full p-1 px-4 mx-2 border border-casama-blue;
 }
 
 .btn-vote-filled {
-  @apply hover:text-white bg-kaico-blue text-white cursor-not-allowed rounded-full p-1 px-4 mx-2 border border-kaico-blue;
+  @apply hover:text-white bg-casama-blue text-white cursor-not-allowed rounded-full p-1 px-4 mx-2 border border-casama-blue;
 }
 
-.container-kaico {
-  @apply border-solid text-white rounded-xl bg-kaico-blue p-5 shadow-xl;
+.container-casama {
+  @apply border-solid text-white rounded-xl bg-casama-blue p-5 shadow-xl;
 }
 
 .container-white {
@@ -248,11 +248,11 @@ button:disabled {
 }
 
 .textfield {
-  @apply border w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-kaico-extra-light-blue;
+  @apply border w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-casama-extra-light-blue;
 }
 
 .container-checkbox {
-  @apply w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:border-kaico-blue;
+  @apply w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:border-casama-blue;
 }
 
 .label {
@@ -268,5 +268,5 @@ button:disabled {
 }
 
 .loading-circle {
-  @apply w-24 h-24 text-gray-200 animate-spin dark:text-gray-400 fill-kaico-blue;
+  @apply w-24 h-24 text-gray-200 animate-spin dark:text-gray-400 fill-casama-blue;
 }

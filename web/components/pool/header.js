@@ -147,7 +147,7 @@ export default function PoolHeader(props) {
           htmlFor={isMobile ? 'bannerUploadMobile' : 'bannerUploadDesktop'}
           className="cursor-pointer"
         >
-          <div className="flex flex-col border-solid text-black rounded-xl bg-kaico-extra-light-blue h-36 sm:h-52 w-full items-center justify-center cursor-pointer">
+          <div className="flex flex-col border-solid text-black rounded-xl bg-casama-extra-light-blue h-36 sm:h-52 w-full items-center justify-center cursor-pointer">
             {bannerUrl ? (
               <img
                 className="object-cover min-w-full min-h-full rounded-xl"
@@ -156,7 +156,7 @@ export default function PoolHeader(props) {
               />
             ) : (
               <>
-                <div className="border-solid bg-kaico-blue rounded-full text-gray-300 p-2 my-2 mb-2">
+                <div className="border-solid bg-casama-blue rounded-full text-gray-300 p-2 my-2 mb-2">
                   <FaLongArrowAltDown className="text-2xl" />
                 </div>
                 <Typography className="opacity-30">
@@ -210,7 +210,7 @@ export default function PoolHeader(props) {
                   className="flex items-center justify-center w-full bg-white rounded-full cursor-pointer"
                   type="file"
                 >
-                  <BsImage className="text-kaico-light-blue text-4xl m-5 bg-white " />
+                  <BsImage className="text-casama-light-blue text-4xl m-5 bg-white " />
                 </div>
               </label>
               <input
@@ -320,7 +320,7 @@ export default function PoolHeader(props) {
                 <Typography className="text-lg py-1 pt-6">
                   Pool Address
                 </Typography>
-                <div className=" border-solid text-kaico-blue truncate rounded-lg bg-gray-200 p-3 mt-2">
+                <div className=" border-solid text-casama-blue truncate rounded-lg bg-gray-200 p-3 mt-2">
                   <CopyToClipboard
                     text={address}
                     onCopy={() => handleSuccess('Address Copied!')}
@@ -382,7 +382,7 @@ export default function PoolHeader(props) {
                         <Typography>
                           <BsLink45Deg className="text-lg opacity-60 mr-1" />
                         </Typography>
-                        <Typography className="text-sm opacity-90 py-1 truncate ... text-kaico-blue cursor-pointer">
+                        <Typography className="text-sm opacity-90 py-1 truncate ... text-casama-blue cursor-pointer">
                           {govTokenAddress}
                         </Typography>
                       </div>

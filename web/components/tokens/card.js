@@ -116,7 +116,10 @@ export default function TokenCard(props) {
     <div className="container-gray">
       <TokenInfo token={token} data={data} />
       <div className="flex flex-col items-center justify-center">
-        <button className="btn-kaico w-full p-2 mb-0 mt-5" onClick={handleSell}>
+        <button
+          className="btn-casama w-full p-2 mb-0 mt-5"
+          onClick={handleSell}
+        >
           Sell
         </button>
       </div>

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { BsArrowDownLeft, BsArrowRight, BsArrowUpRight } from 'react-icons/bs';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import usePoolListener from '../../hooks/usePoolListener';
 import {
   decodeError,
   decodeInputParams,
@@ -13,6 +14,15 @@ import {
   formatTokenBalance,
   weiToMatic,
 } from '../../services/formatter';
+import { FaMoneyCheckAlt } from 'react-icons/fa';
+import { FiCheckCircle } from 'react-icons/fi';
+import { MdOutlineReportGmailerrorred } from 'react-icons/md';
+import { AiOutlineUserAdd } from 'react-icons/ai';
+import { AiOutlineUsergroupAdd } from 'react-icons/ai';
+import { MdHowToVote } from 'react-icons/md';
+import { ImEnter } from 'react-icons/im';
+import { HiLockClosed } from 'react-icons/hi';
+import Avatar from '/components/members/avatar';
 
 const unixTimeToDate = (unixTime) => {
   const date = new Date(unixTime * 1000);
@@ -38,7 +48,7 @@ function PolygonscanLink({ text, suffix = null }) {
       target="_blank"
       href={`https://polygonscan.com/${suffix || 'address/' + text}`}
     >
-      <Typography className="opacity-90 text-kaico-blue">{text}</Typography>
+      <Typography className="opacity-90 text-casama-blue">{text}</Typography>
     </Link>
   );
 }
@@ -46,13 +56,13 @@ function PolygonscanLink({ text, suffix = null }) {
 export default function TransactionCard({ wunderPool, transaction, number }) {
   const [errorMsg, setErrorMsg] = useState('');
 
-  const renderContent = () => {
+  const renderContent = (isError) => {
     if (transaction.type == 'TOKEN') {
       return TokenTransaction({ transaction, wunderPool, errorMsg });
     } else if (transaction.type == 'SWAP') {
       return SwapTransaction({ transaction, errorMsg });
     } else if (transaction.type == 'NORMAL') {
-      return NormalTransaction({ transaction, wunderPool, errorMsg });
+      return NormalTransaction({ transaction, wunderPool, errorMsg, isError });
     } else {
       return UnknownTransaction({ transaction, errorMsg });
     }
@@ -77,7 +87,9 @@ export default function TransactionCard({ wunderPool, transaction, number }) {
           {unixTimeToDate(transaction.timeStamp)}
         </Typography>
       </div>
-      <div className="max-w-screen overflow-x-auto">{renderContent()}</div>
+      <div className="max-w-screen overflow-x-auto">
+        {renderContent(isError)}
+      </div>
     </div>
   );
 }
@@ -123,16 +135,13 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
     <>
       <div className="flex flex-col md:flex-row items-center gap-2">
         <div className="flex-grow w-full">
-          <div className="flex items-center justify-evenly">
+          <div className="flex items-center justify-between lg:justify-evenly mt-2">
             <img className="w-12" src={tokenData?.image_url} alt="" />
-            <Typography className="flex items-center gap-1">
-              <span className="hidden sm:block">
-                {sentToken ? 'Sent' : 'Received'}
-              </span>
+            <Typography className="flex items-center gap-1 lg:mx-10">
               {sentToken ? (
-                <BsArrowUpRight className="text-lg text-red-400" />
+                <BsArrowUpRight className="text-3xl text-red-600 font-bold" />
               ) : (
-                <BsArrowDownLeft className="text-lg text-green-400" />
+                <BsArrowDownLeft className="text-3xl text-green-600 font-bold" />
               )}
             </Typography>
             <div>
@@ -145,6 +154,8 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex justify-center mt-0">
         <IconButton className="p-0" onClick={() => setExpand((e) => !e)}>
           {expand ? (
             <IoIosArrowUp className="text-xl" />
@@ -158,9 +169,27 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
         {(isDeposit || isWithdrawl) && (
           <>
             <Typography className="text-center">
-              {isDeposit
-                ? `Deposit from ${isDeposit.wunderId}`
-                : `Withdrawl from ${isWithdrawl.wunderId}`}
+              {isDeposit ? (
+                <div className="flex flex-row items-center justify-center">
+                  <div className="mr-3">Deposit from {isDeposit.wunderId}</div>
+                  <Avatar
+                    wunderId={isDeposit.wunderId}
+                    text={isDeposit.wunderId || '0-X'}
+                    i={1}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-row items-center justify-center">
+                  <div className="mr-3">
+                    Withdrawl from {isWithdrawl.wunderId}
+                  </div>
+                  <Avatar
+                    wunderId={isWithdrawl.wunderId}
+                    text={isWithdrawl.wunderId || '0-X'}
+                    i={1}
+                  />
+                </div>
+              )}
             </Typography>
             <Divider className="my-3" />
           </>
@@ -224,9 +253,9 @@ function SwapTransaction({ transaction, errorMsg }) {
   return (
     <>
       <div className="flex flex-col mt-2 md:mt-1 md:flex-row items-center gap-2">
-        <div className="flex-grow w-full">
-          <div className="flex items-center">
-            <div className="flex flex-col md:flex-row items-center gap-2 w-1/2">
+        <div className="flex-grow w-full ">
+          <div className="flex items-center justify-between lg:justify-evenly">
+            <div className="flex flex-col md:flex-row items-center gap-2 ">
               <img className="w-12" src={sentTokenData?.image_url} alt="" />
               <div className="text-center md:text-left">
                 <Typography>
@@ -241,7 +270,7 @@ function SwapTransaction({ transaction, errorMsg }) {
               </div>
             </div>
             <BsArrowRight className="text-lg justify-self-center" />
-            <div className="flex flex-col md:flex-row-reverse items-center gap-2 w-1/2">
+            <div className="flex flex-col md:flex-row-reverse items-center ">
               <img className="w-12" src={receivedTokenData?.image_url} alt="" />
               <div className="text-center md:text-left">
                 <Typography>
@@ -259,7 +288,9 @@ function SwapTransaction({ transaction, errorMsg }) {
             </div>
           </div>
         </div>
-        <IconButton onClick={() => setExpand((e) => !e)}>
+      </div>
+      <div className="flex justify-center mt-0">
+        <IconButton className="p-0" onClick={() => setExpand((e) => !e)}>
           {expand ? (
             <IoIosArrowUp className="text-xl" />
           ) : (
@@ -285,35 +316,124 @@ function SwapTransaction({ transaction, errorMsg }) {
   );
 }
 
-function NormalTransaction({ transaction, wunderPool, errorMsg }) {
+function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
   const { gasUsed, gasPrice, functionName, input, timeStamp } = transaction;
   const params = decodeInputParams(functionName, input);
   const [expand, setExpand] = useState(false);
 
   const transactionDescription = () => {
+    if (/createProposalForUser/.test(functionName)) {
+      const [userAddress, title, description] = params;
+      return `Description: ${description}`;
+    } else {
+      return '';
+    }
+  };
+
+  const transactionInfo = () => {
     if (/addToWhiteListForUser/.test(functionName)) {
       const [userAddress, newMember] = params;
       const wunderId = wunderPool.resolveMember(userAddress);
       const newMemberName = wunderPool.resolveMember(newMember);
 
-      return `${newMemberName} was invited by ${wunderId} to join the Pool`;
+      return (
+        <div className="flex flex-row items-center mt-1">
+          <div>
+            <AiOutlineUserAdd className="text-3xl mr-1" />
+          </div>
+          <div className="mx-2">
+            <Avatar
+              wunderId={newMemberName}
+              text={newMemberName || '0-X'}
+              i={1}
+            />
+          </div>
+          <div className="text-ellipsis ... overflow-hidden">
+            {newMemberName} was invited by {wunderId}{' '}
+          </div>
+          <div className="mx-2 ml-4">
+            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+          </div>
+        </div>
+      );
     } else if (/addToWhiteListWithSecret/.test(functionName)) {
       const [userAddress, secret, validFor] = params;
       const wunderId = wunderPool.resolveMember(userAddress);
 
-      return `${wunderId} created a Secret Invite Link for ${validFor.toString()} people`;
+      return (
+        <div className="flex flex-row items-center mt-1">
+          <div>
+            <AiOutlineUsergroupAdd className="text-4xl " />
+          </div>
+          <div className="mx-2">
+            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+          </div>
+          <div>
+            {wunderId} created a invite Link for {validFor.toString()} people.
+          </div>
+        </div>
+      );
     } else if (/joinForUser/.test(functionName)) {
       const [amount, user] = params;
       const wunderId = wunderPool.resolveMember(user);
 
-      return `${wunderId} joined the Pool with ${currency(
-        amount.div(1000000).toString()
-      )}`;
+      return (
+        <div className="flex flex-row items-center mt-1">
+          <div>
+            <ImEnter className="text-4xl mr-2" />
+          </div>
+          <div className="mx-2">
+            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+          </div>
+          <div>
+            {wunderId} joined the Pool with{' '}
+            {currency(amount.div(1000000).toString())}
+          </div>
+        </div>
+      );
     } else if (/createProposalForUser/.test(functionName)) {
       const [userAddress, title, description] = params;
       const wunderId = wunderPool.resolveMember(userAddress);
+      let isClosePool = false;
+      let color = 'text-4xl text-black';
+      if (
+        /Sell/.test(title + description) ||
+        /sell/.test(title + description)
+      ) {
+        color = 'text-4xl text-red-600 ';
+      } else if (
+        /Buy/.test(title + description) ||
+        /buy/.test(title + description)
+      ) {
+        color = 'text-4xl text-green-600';
+      } else if (
+        /Close/.test(title + description) ||
+        /close/.test(title + description)
+      ) {
+        isClosePool = true;
+        color = 'text-4xl text-red-600 ';
+      }
 
-      return `${wunderId} created Proposal ${title} // ${description}`;
+      return (
+        <div className="flex flex-row items-center mt-2 ">
+          {isClosePool ? (
+            <div className="mr-2">
+              <HiLockClosed className={color} />
+            </div>
+          ) : (
+            <div className="mr-2">
+              <FaMoneyCheckAlt className={color} />
+            </div>
+          )}
+
+          <div className="mx-2">
+            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+          </div>
+          <div className="text-ellipsis overflow-hidden ...">
+            {wunderId} created Proposal "{title}"
+          </div>
+        </div>
+      );
     } else if (/voteForUser/.test(functionName)) {
       const [userAddress, proposalId, mode] = params;
       const wunderId = wunderPool.resolveMember(userAddress);
@@ -321,16 +441,42 @@ function NormalTransaction({ transaction, wunderPool, errorMsg }) {
         wunderPool.resolveProposal(proposalId.toNumber())?.title ||
         `#${proposalId.toString()}`;
 
-      return `${wunderId} voted ${
-        mode.toNumber() == 2 ? 'NO' : 'YES'
-      } for Proposal ${proposalTitle}`;
+      return (
+        <div className="flex flex-row items-center mt-1">
+          <div className="mr-1">
+            <MdHowToVote
+              className={
+                mode.toNumber() == 2
+                  ? 'text-4xl text-red-600'
+                  : 'text-4xl text-green-600'
+              }
+            />
+          </div>
+          <div className="mx-2">
+            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+          </div>
+          <div>
+            {wunderId} voted {mode.toNumber() == 2 ? 'NO' : 'YES'} for Proposal{' '}
+            {proposalTitle}
+          </div>
+        </div>
+      );
     } else if (/executeProposal/.test(functionName)) {
       const [proposalId] = params;
       const proposalTitle =
         wunderPool.resolveProposal(proposalId.toNumber())?.title ||
         `#${proposalId.toString()}`;
 
-      return `Executed Proposal ${proposalTitle}`;
+      return (
+        <div className="flex flex-row items-center justify-start mt-2">
+          {isError == '1' ? (
+            <MdOutlineReportGmailerrorred className="text-6xl mr-2  text-red-600" />
+          ) : (
+            <FiCheckCircle className="text-4xl mr-2  text-green-600" />
+          )}
+          <div>Executed Proposal "{proposalTitle}"</div>
+        </div>
+      );
     } else {
       return '';
     }
@@ -340,8 +486,10 @@ function NormalTransaction({ transaction, wunderPool, errorMsg }) {
     <>
       <div className="flex flex-col md:flex-row items-center gap-2">
         <div className="flex-grow w-full">
-          <div className="text-left">{transactionDescription()}</div>
+          <div className="text-left">{transactionInfo()}</div>
         </div>
+      </div>
+      <div className="flex justify-center mt-1">
         <IconButton className="p-0" onClick={() => setExpand((e) => !e)}>
           {expand ? (
             <IoIosArrowUp className="text-xl" />
@@ -350,11 +498,13 @@ function NormalTransaction({ transaction, wunderPool, errorMsg }) {
           )}
         </IconButton>
       </div>
+
       <Collapse in={expand}>
         <Divider className="my-3" />
         {errorMsg && (
           <Typography className="my-2">Error: {errorMsg}</Typography>
         )}
+        <Typography className="my-2">{transactionDescription()}</Typography>
         <Typography className="my-2">
           Date: {unixTimeToDateTime(timeStamp)}
         </Typography>

@@ -26,7 +26,7 @@ function ContentWithLink(props) {
       >
         <span className="cursor-pointer text-md">
           <div className="flex flex-row items-center my-6">
-            <div className="text-kaico-blue truncate ...">{inviteLink}</div>
+            <div className="text-casama-blue truncate ...">{inviteLink}</div>
             <MdContentCopy className="text-gray-500 text-2xl ml-2" />
           </div>
         </span>
@@ -35,7 +35,7 @@ function ContentWithLink(props) {
         text={inviteLink}
         onCopy={() => handleSuccess('Copied Invite Link')}
       >
-        <button className="btn btn-kaico w-full">Copy Link</button>
+        <button className="btn btn-casama w-full">Copy Link</button>
       </CopyToClipboard>
     </DialogContent>
   );
@@ -73,7 +73,7 @@ function ContentWithoutLink(props) {
             Cancel
           </button>
           <button
-            className="btn btn-kaico"
+            className="btn btn-casama"
             onClick={handleSubmit}
             disabled={validFor < 1}
           >
@@ -119,7 +119,7 @@ export default function InviteLinkButton(props) {
   return wunderPool.version.number > 4 ? (
     <>
       <button
-        className=" btn-kaico-white items-center w-full py-3 px-3"
+        className=" btn-casama-white items-center w-full py-3 px-3"
         onClick={() => setOpen(true)}
       >
         <span className="cursor-pointer">

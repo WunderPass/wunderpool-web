@@ -15,7 +15,7 @@ function InfoBlock({ label, value }) {
   return (
     <div className="flex flex-col items-center justify-center m-3">
       <Typography className="text-md">{label}</Typography>
-      <Typography className="text-2xl text-kaico-blue">{value}</Typography>
+      <Typography className="text-2xl text-casama-blue">{value}</Typography>
     </div>
   );
 }
@@ -117,7 +117,7 @@ function InputJoinAmount(props) {
         </Typography>
       </div>
       <button
-        className="btn-kaico w-full py-3 mt-3"
+        className="btn-casama w-full py-3 mt-3"
         onClick={handleSubmit}
         disabled={!Boolean(amount) || Boolean(errorMsg)}
       >
@@ -243,7 +243,7 @@ export default function JoinPool(props) {
       <Container className="flex justify-center items-center" maxWidth="xl">
         <div className="flex flex-col container-white items-center justify-center mt-6">
           <Typography className="text-md">Join Pool</Typography>
-          <Typography className="text-2xl text-kaico-blue">
+          <Typography className="text-2xl text-casama-blue">
             {wunderPool.poolName}
           </Typography>
           <PoolStats
