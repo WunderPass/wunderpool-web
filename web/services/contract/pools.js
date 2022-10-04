@@ -153,30 +153,32 @@ export async function formatAsset(asset) {
   };
 }
 
-async function formatMember(member, totalSupply) {
-  let user;
-  try {
-    user =
-      (await getCachedItemDB(member.members_address)) ||
-      (await cacheItemDB(
-        member.members_address,
-        (
-          await axios({
-            url: '/api/users/find',
-            params: { address: member.members_address },
-          })
-        ).data,
-        600
-      ));
-  } catch (e) {}
-  return {
-    address: member.members_address,
-    shares: member.pool_shares_balance,
-    share: (member.pool_shares_balance * 100) / totalSupply,
-    wunderId: user?.wunder_id,
-    firstName: user?.firstname,
-    lastName: user?.lastname,
-  };
+async function formatMembers(members, totalSupply) {
+  const resolvedMembers = (
+    await axios({
+      url: '/api/users/find',
+      params: { addresses: members.map((m) => m.members_address) },
+    })
+  ).data;
+
+  return await Promise.all(
+    members.map(async (mem) => {
+      const member = {
+        address: mem.members_address,
+        tokens: mem.pool_shares_balance,
+        shares: mem.pool_shares_balance,
+        share: (mem.pool_shares_balance * 100) / totalSupply,
+      };
+      const user = resolvedMembers.find(
+        (m) => m.wallet_address == member.address
+      );
+
+      member.wunderId = user?.wunder_id;
+      member.firstName = user?.firstname;
+      member.lastName = user?.lastname;
+      return member;
+    })
+  );
 }
 
 function formatGovernanceToken(token) {
@@ -188,7 +190,8 @@ function formatGovernanceToken(token) {
     totalSupply: token.emmited_shares,
   };
 }
-async function formatShareholderAgreement(shareholderAgreement) {
+
+function formatShareholderAgreement(shareholderAgreement) {
   const minInvest = shareholderAgreement.min_invest;
   const maxInvest = shareholderAgreement.max_invest;
   const maxMembers = shareholderAgreement.max_members;
@@ -222,12 +225,11 @@ export async function formatPool(pool, user = null) {
 
     const governanceToken = formatGovernanceToken(pool.pool_shares);
 
-    const members = await Promise.all(
-      pool.pool_members.map(
-        async (member) =>
-          await formatMember(member, governanceToken.totalSupply)
-      )
+    const members = await formatMembers(
+      pool.pool_members,
+      governanceToken.totalSupply
     );
+
     const userShare = user
       ? members.find((member) => member.address.toLowerCase() == user)?.share
       : 0;
@@ -235,7 +237,7 @@ export async function formatPool(pool, user = null) {
 
     const shareholderAgreement =
       version.number > 4
-        ? await formatShareholderAgreement(pool.shareholder_agreement)
+        ? formatShareholderAgreement(pool.shareholder_agreement)
         : null;
 
     return {

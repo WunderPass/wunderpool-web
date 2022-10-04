@@ -13,7 +13,7 @@ export default function PublicPools() {
   const showMore = () => {
     allPools.slice(visiblePools.length, visiblePools.length + 3).map((pool) => {
       formatPool(pool).then((p) => {
-        setVisiblePools((prev) => [...prev, p]);
+        if (p) setVisiblePools((prev) => [...prev, p]);
       });
     });
   };
@@ -37,7 +37,7 @@ export default function PublicPools() {
 
       validPools.slice(0, 3).map((pool) => {
         formatPool(pool).then((p) => {
-          setVisiblePools((prev) => [...prev, p]);
+          if (p) setVisiblePools((prev) => [...prev, p]);
         });
       });
     });
@@ -51,10 +51,10 @@ export default function PublicPools() {
       <div className="flex flex-col w-full pb-6 lg:gap-6 md:gap-0.5">
         {visiblePools
           .sort((a, b) => b.totalBalance - a.totalBalance)
-          .map((pool, i) => {
+          .map((pool) => {
             return (
               <div
-                key={`public-pool-card-${i}`}
+                key={`public-pool-card-${pool.address}`}
                 className="min-w-full sm:min-w-[30%]"
               >
                 <div className="sm:hidden flex">
