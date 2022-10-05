@@ -156,6 +156,7 @@ export default function Pool(props) {
                 {...props}
               />
               <PoolBody
+                setupPoolListener={setupPoolListener}
                 address={address}
                 wunderPool={wunderPool}
                 tokenAddedEvent={tokenAddedEvent}

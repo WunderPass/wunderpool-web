@@ -283,25 +283,26 @@ export default function usePool(
 
   const determinePoolTokens = async (vers = null) => {
     if (liquidated) return;
-    try {
-      const { pool_treasury, pool_assets } = await fetchPoolData(poolAddress);
+    setTimeout(async () => {
+      try {
+        var tokens;
+        const { pool_treasury, pool_assets } = await fetchPoolData(poolAddress);
+        setUsdcBalance(pool_treasury.act_balance);
 
-      setUsdcBalance(pool_treasury.act_balance);
+        tokens = await Promise.all(
+          pool_assets.map(async (asset) => {
+            return await formatAsset(asset);
+          })
+        );
 
-      const tokens = await Promise.all(
-        pool_assets.map(async (asset) => {
-          return await formatAsset(asset);
-        })
-      );
-
-      setPoolTokens(tokens);
-      determineCustomBalances(tokens);
-      updateLoadingState('tokens');
-
-      return tokens;
-    } catch (error) {
-      throw error;
-    }
+        setPoolTokens(tokens);
+        determineCustomBalances(tokens);
+        updateLoadingState('tokens');
+        return tokens;
+      } catch (error) {
+        throw error;
+      }
+    }, 2000);
   };
 
   const determinePoolNfts = async () => {
