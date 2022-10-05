@@ -16,6 +16,7 @@ function BalanceBox(props) {
 
   let pools = user.pools;
 
+  console.log(user.friends);
   const topThree = pools
     .sort((a, b) => b.userBalance - a.userBalance)
     .slice(0, 4);
