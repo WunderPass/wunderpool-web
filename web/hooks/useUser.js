@@ -14,6 +14,7 @@ export default function useUser() {
   const [usdBalance, setUsdBalance] = useState(null);
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [unsupportedChain, setUnsupportedChain] = useState(false);
+  const [friends, setFriends] = useState([]);
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
@@ -75,6 +76,20 @@ export default function useUser() {
           reject(err);
         });
     });
+  };
+
+  const fetchFriends = async () => {
+    try {
+      await axios({
+        method: 'get',
+        url: '/api/users/getFriends',
+        params: { wunderId: wunderId },
+      }).then((res) => {
+        setFriends(res.data);
+      });
+    } catch (error) {
+      console.log('Could not Load Friends', error);
+    }
   };
 
   const fetchUsdBalance = async () => {
@@ -159,6 +174,7 @@ export default function useUser() {
       await fetchUsdBalance();
       await fetchPools();
       await fetchWhitelistedPools();
+      await fetchFriends();
       setIsReady(true);
       if (!wunderId) {
         axios({
@@ -202,6 +218,8 @@ export default function useUser() {
     logOut,
     pools,
     fetchPools,
+    friends,
+    fetchFriends,
     whitelistedPools,
     fetchWhitelistedPools,
     usdBalance,

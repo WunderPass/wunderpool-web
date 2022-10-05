@@ -2,7 +2,7 @@ import { DialogContentText, Divider, Stack, Typography } from '@mui/material';
 import MemberInput from '/components/members/input';
 
 export default function NewPoolInviteStep(props) {
-  const { members, setMembers } = props;
+  const { user, members, setMembers } = props;
 
   return (
     <Stack spacing={1}>
@@ -15,6 +15,7 @@ export default function NewPoolInviteStep(props) {
           Invite your friends via WunderPass
         </label>
         <MemberInput
+          user={user}
           multiple
           selectedMembers={members}
           setSelectedMembers={setMembers}

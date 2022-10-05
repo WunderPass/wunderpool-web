@@ -266,7 +266,7 @@ export default function NewPoolDialog(props) {
     >
       {step === 1 && <NewPoolConfigStep {...configProps} />}
       {step === 2 && <NewPoolVotingStep {...votingProps} />}
-      {step === 3 && <NewPoolInviteStep {...inviteProps} />}
+      {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />}
       {waitingForPool && (
         <div className="flex flex-row justify-between items-center gap-1 w-full px-6">
           <Typography className="text-md" color="GrayText">

@@ -13,8 +13,7 @@ function BalanceBox(props) {
   const [remainingPoolsBalance, setRemainingPoolsBalance] = useState(0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
-
-  const pools = user.pools;
+  let pools = user.pools;
   const topThree = pools
     .sort((a, b) => b.userBalance - a.userBalance)
     .slice(0, 4);
@@ -23,12 +22,16 @@ function BalanceBox(props) {
     .reduce((a, b) => a + b, 0);
 
   useEffect(() => {
+    pools = user.pools;
+  }, [user.pools]);
+
+  useEffect(() => {
     const topThreeTogether = topThree
       .map((p) => p.userBalance)
       .slice(0, 3)
       .reduce((a, b) => a + b, 0);
     setRemainingPoolsBalance(cashInPools - topThreeTogether);
-  }, [cashInPools]);
+  }, [cashInPools, user.usdBalance]);
 
   function percentage(partialValue, totalValue) {
     return (100 * partialValue) / totalValue;

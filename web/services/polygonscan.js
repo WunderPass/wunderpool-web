@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const treasuryAddresses = ['0x4d2ca400de2fc1b905197995e8b0a05f5fd3ee0d'];
+
 export function fetchPolygonscanTransactions(poolAddress, action) {
   return new Promise(async (resolve, reject) => {
     axios({
@@ -31,49 +33,67 @@ function formatErc20Transactions(transactions) {
     const hashTransactions = transactions.filter((trx) => trx.hash == hash);
     if (hashTransactions.length == 2) {
       const [first, second] = hashTransactions;
-      let swapTransaction = {
-        type: 'SWAP',
-        blockHash: first.blockHash,
-        blockNumber: first.blockNumber,
-        confirmations: first.confirmations,
-        cumulativeGasUsed: first.cumulativeGasUsed,
-        gas: first.gas,
-        gasPrice: first.gasPrice,
-        gasUsed: first.gasUsed,
-        hash: first.hash,
-        input: first.input,
-        nonce: first.nonce,
-        timeStamp: first.timeStamp,
-        transactionIndex: first.transactionIndex,
-      };
+      if (
+        treasuryAddresses.includes(first.to) ||
+        treasuryAddresses.includes(second.to)
+      ) {
+        const feeTrx = hashTransactions.find((trx) =>
+          treasuryAddresses.includes(trx.to)
+        );
+        const trxWithoutFee = hashTransactions.find(
+          (trx) => !treasuryAddresses.includes(trx.to)
+        );
 
-      const firstToken = {
-        contractAddress: first.contractAddress,
-        tokenDecimal: first.tokenDecimal,
-        tokenName: first.tokenName,
-        tokenSymbol: first.tokenSymbol,
-        type: first.type,
-        value: first.value,
-      };
-
-      const secondToken = {
-        contractAddress: second.contractAddress,
-        tokenDecimal: second.tokenDecimal,
-        tokenName: second.tokenName,
-        tokenSymbol: second.tokenSymbol,
-        type: second.type,
-        value: second.value,
-      };
-
-      if (first.from == second.to) {
-        swapTransaction.sentToken = firstToken;
-        swapTransaction.receivedToken = secondToken;
+        formattedTransactions.push({
+          ...trxWithoutFee,
+          type: 'TOKEN',
+          value: trxWithoutFee.value - feeTrx.value,
+        });
       } else {
-        swapTransaction.sentToken = secondToken;
-        swapTransaction.receivedToken = firstToken;
-      }
+        let swapTransaction = {
+          type: 'SWAP',
+          blockHash: first.blockHash,
+          blockNumber: first.blockNumber,
+          confirmations: first.confirmations,
+          cumulativeGasUsed: first.cumulativeGasUsed,
+          gas: first.gas,
+          gasPrice: first.gasPrice,
+          gasUsed: first.gasUsed,
+          hash: first.hash,
+          input: first.input,
+          nonce: first.nonce,
+          timeStamp: first.timeStamp,
+          transactionIndex: first.transactionIndex,
+        };
 
-      formattedTransactions.push(swapTransaction);
+        const firstToken = {
+          contractAddress: first.contractAddress,
+          tokenDecimal: first.tokenDecimal,
+          tokenName: first.tokenName,
+          tokenSymbol: first.tokenSymbol,
+          type: first.type,
+          value: first.value,
+        };
+
+        const secondToken = {
+          contractAddress: second.contractAddress,
+          tokenDecimal: second.tokenDecimal,
+          tokenName: second.tokenName,
+          tokenSymbol: second.tokenSymbol,
+          type: second.type,
+          value: second.value,
+        };
+
+        if (first.from == second.to) {
+          swapTransaction.sentToken = firstToken;
+          swapTransaction.receivedToken = secondToken;
+        } else {
+          swapTransaction.sentToken = secondToken;
+          swapTransaction.receivedToken = firstToken;
+        }
+
+        formattedTransactions.push(swapTransaction);
+      }
     } else {
       formattedTransactions.push(
         ...hashTransactions.map((trx) => ({ type: 'TOKEN', ...trx }))

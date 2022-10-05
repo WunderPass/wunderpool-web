@@ -7,11 +7,17 @@ import { useState, useEffect } from 'react';
 import TabBar from '/components/utils/tabBar';
 
 export default function body(props) {
-  const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
+  const {
+    wunderPool,
+    tokenAddedEvent,
+    newProposalEvent,
+    proposalExecutedEvent,
+  } = props;
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (!tokenAddedEvent) return;
+
     if (tokenAddedEvent.nft) {
       setTab(2);
     } else {
