@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import { getNameFor } from '../../services/memberHelpers';
 
 export default function PoolMembers(props) {
-  const { wunderPool, loginCallback } = props;
+  const { user, wunderPool, loginCallback } = props;
   const { loadingState, isMember, closed, governanceToken, members, version } =
     wunderPool;
   const [open, setOpen] = useState(false);
@@ -108,6 +108,7 @@ export default function PoolMembers(props) {
         </div>
       </div>
       <InviteMemberDialog
+        user={user}
         open={inviteMember}
         setOpen={setInviteMember}
         wunderPool={wunderPool}

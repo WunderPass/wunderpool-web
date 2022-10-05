@@ -8,11 +8,12 @@ export default function MemberInput({
   selectedMembers,
   setSelectedMembers,
   multiple = false,
+  user,
 }) {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [inputHasMoreThanTwoChars, setInputHasMoreThanTwoChars] =
-    useState(false);
+  const [inputTrue, setInputTrue] = useState(false);
+  const friends = Object.values(user.friends);
 
   const handleChange = (e, value, reason) => {
     setSelectedMembers(value);
@@ -22,8 +23,8 @@ export default function MemberInput({
 
   const handleInput = (e, value, reason) => {
     clearTimeout(timer);
-    setInputHasMoreThanTwoChars(value.length > 2);
-    if (reason == 'input' && value.length > 2) {
+    setInputTrue(value.length > 0);
+    if (reason == 'input' && value.length > 0) {
       setLoading(true);
       timer = setTimeout(() => {
         searchMembers(value).then((mems) => {
@@ -32,6 +33,7 @@ export default function MemberInput({
         });
       }, 800);
     } else {
+      setMembers(friends);
       setLoading(false);
     }
   };
@@ -41,7 +43,7 @@ export default function MemberInput({
       className="w-full text-gray-700 my-4 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
       multiple={multiple}
       loading={loading}
-      options={members}
+      options={inputTrue ? members : friends}
       value={selectedMembers}
       onChange={handleChange}
       onInputChange={handleInput}
@@ -49,9 +51,7 @@ export default function MemberInput({
       isOptionEqualToValue={(option, val) => option.address == val.address}
       getOptionLabel={(option) => getNameFor(option)}
       noOptionsText={
-        inputHasMoreThanTwoChars
-          ? 'No Users found'
-          : 'Type at least 3 Characters'
+        inputTrue ? 'No Users found' : 'Type at least 3 Characters'
       }
       renderInput={(params) => (
         <TextField
@@ -70,7 +70,7 @@ export default function MemberInput({
               spacing={2}
               sx={{ width: '100%' }}
             >
-              <Avatar wunderId={option.wunderId} text={option.wunderId} />
+              <Avatar wunderId={option.handle} text={option.handle} />
               <div>
                 <Typography
                   variant="subtitle1"

@@ -5,7 +5,7 @@ import MemberInput from '../members/input';
 import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function InviteMemberDialog(props) {
-  const { open, setOpen, wunderPool, handleSuccess, handleError } = props;
+  const { user, open, setOpen, wunderPool, handleSuccess, handleError } = props;
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -57,6 +57,7 @@ export default function InviteMemberDialog(props) {
         Invite Users to the Pool. Invited Users can join your Pool
       </Typography>
       <MemberInput
+        user={user}
         selectedMembers={selectedUser}
         setSelectedMembers={setSelectedUser}
       />
