@@ -283,6 +283,7 @@ export default function usePool(
 
   const determinePoolTokens = async (vers = null) => {
     if (liquidated) return;
+    //Timeout wird gebraucht weil backend langsamer ist als frontend (events in zukunft?)
     setTimeout(async () => {
       try {
         var tokens;
@@ -315,20 +316,24 @@ export default function usePool(
   };
 
   const determinePoolProposals = async (vers = null) => {
-    if (liquidated) return;
-    updateLoadingState('proposals', false);
-    try {
-      const proposals = await fetchPoolProposals(
-        poolAddress,
-        userAddress,
-        (vers || version)?.number
-      );
-      setPoolProposals(proposals);
-    } catch (error) {
-      handleError('Proposals could not be loaded');
-      console.log('ERROR fetching Proposals', error);
-    }
-    updateLoadingState('proposals');
+    //Timeout wird gebraucht weil backend langsamer ist als frontend (events in zukunft?)
+    setTimeout(async () => {
+      console.log('komme rein');
+      if (liquidated) return;
+      updateLoadingState('proposals', false);
+      try {
+        const proposals = await fetchPoolProposals(
+          poolAddress,
+          userAddress,
+          (vers || version)?.number
+        );
+        setPoolProposals(proposals);
+      } catch (error) {
+        handleError('Proposals could not be loaded');
+        console.log('ERROR fetching Proposals', error);
+      }
+      updateLoadingState('proposals');
+    }, 2000);
   };
 
   const getTransactionData = async (id, transactionCount) => {
