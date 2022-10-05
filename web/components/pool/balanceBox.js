@@ -13,10 +13,7 @@ function BalanceBox(props) {
   const [remainingPoolsBalance, setRemainingPoolsBalance] = useState(0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
-
   let pools = user.pools;
-
-  console.log(user.friends);
   const topThree = pools
     .sort((a, b) => b.userBalance - a.userBalance)
     .slice(0, 4);

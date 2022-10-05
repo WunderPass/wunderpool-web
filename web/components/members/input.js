@@ -50,9 +50,6 @@ export default function MemberInput({
       filterOptions={filterOptions}
       isOptionEqualToValue={(option, val) => option.address == val.address}
       getOptionLabel={(option) => getNameFor(option)}
-      noOptionsText={
-        inputTrue ? 'No Users found' : 'Type at least 3 Characters'
-      }
       renderInput={(params) => (
         <TextField
           {...params}
