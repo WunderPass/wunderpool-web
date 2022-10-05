@@ -295,7 +295,6 @@ export default function usePool(
             return await formatAsset(asset);
           })
         );
-
         setPoolTokens(tokens);
         determineCustomBalances(tokens);
         updateLoadingState('tokens');
@@ -318,7 +317,6 @@ export default function usePool(
   const determinePoolProposals = async (vers = null) => {
     //Timeout wird gebraucht weil backend langsamer ist als frontend (events in zukunft?)
     setTimeout(async () => {
-      console.log('komme rein');
       if (liquidated) return;
       updateLoadingState('proposals', false);
       try {
