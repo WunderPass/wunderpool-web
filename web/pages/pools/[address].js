@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Container, Stack } from '@mui/material';
+import { Container, Grid, Stack } from '@mui/material';
 import FundPoolDialog from '/components/dialogs/fundPoolDialog';
 import PoolHeader from '/components/pool/header';
 import PoolBody from '/components/pool/body';
@@ -129,8 +129,9 @@ export default function Pool(props) {
 
   useEffect(() => {
     // For Debugging - Access wunderPool in your console
-    if (process.env.NODE_ENV == 'development') window.wunderPool = wunderPool;
-  }, []);
+    if (wunderPool.isReady && process.env.NODE_ENV == 'development')
+      window.wunderPool = wunderPool;
+  }, [wunderPool.isReady]);
 
   return (
     <>
@@ -140,35 +141,38 @@ export default function Pool(props) {
         imageUrl={metaTagInfo.imageUrl}
       />
       <Container
-        className={`${wunderPool.loadingState.init ? '' : 'blur'}`}
+        className={`${wunderPool.loadingState.init ? '' : 'blur'} my-4`}
         maxWidth="xl"
       >
-        <Stack className="flex-col" paddingTop={2} style={{ maxWidth: '100%' }}>
-          <div
-            className="hidden md:flex md:flex-row" //Desktop
+        <Grid container spacing={2} sx={{ position: 'relative' }}>
+          <Grid item xs={12} md={8}>
+            <PoolHeader
+              name={name}
+              address={address}
+              wunderPool={wunderPool}
+              isMobile={false}
+              {...props}
+            />
+          </Grid>
+          <Grid
+            item
+            container
+            spacing={2}
+            xs={12}
+            md={4}
+            sx={{
+              position: { md: 'absolute' },
+              right: 0,
+            }}
           >
-            <div className="md:flex md:flex-col max-w-4xl w-screen">
-              <PoolHeader
-                name={name}
-                address={address}
-                wunderPool={wunderPool}
-                isMobile={false}
-                {...props}
-              />
-              <PoolBody
-                address={address}
-                wunderPool={wunderPool}
-                tokenAddedEvent={tokenAddedEvent}
-                newProposalEvent={newProposalEvent}
-                {...props}
-              />
-            </div>
-            <div className="flex-col max-w-sm w-screen">
+            <Grid item xs={12}>
               <PoolDetails
                 address={address}
                 wunderPool={wunderPool}
                 {...props}
               />
+            </Grid>
+            <Grid item xs={12}>
               <PoolMembers
                 user={user}
                 address={address}
@@ -176,49 +180,58 @@ export default function Pool(props) {
                 loginCallback={loginCallback}
                 {...props}
               />
-            </div>
-          </div>
-
-          <div
-            className="block md:hidden" //Mobile
-          >
-            <div className="flex-col ">
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <PoolBody
+              address={address}
+              wunderPool={wunderPool}
+              tokenAddedEvent={tokenAddedEvent}
+              newProposalEvent={newProposalEvent}
+              {...props}
+            />
+          </Grid>
+        </Grid>
+        {/* <Grid container spacing={2}>
+          <Grid item container spacing={2} xs={12}>
+            <Grid item xs={12} md={8}>
               <PoolHeader
                 name={name}
                 address={address}
                 wunderPool={wunderPool}
-                isMobile={true}
+                isMobile={false}
                 {...props}
               />
+            </Grid>
+            <Grid item xs={12} md={4}>
               <PoolDetails
                 address={address}
                 wunderPool={wunderPool}
                 {...props}
               />
+            </Grid>
+          </Grid>
+          <Grid item container spacing={2} xs={12} direction="row-reverse">
+            <Grid item xs={12} md={4}>
               <PoolMembers
+                user={user}
                 address={address}
                 wunderPool={wunderPool}
                 loginCallback={loginCallback}
                 {...props}
               />
+            </Grid>
+            <Grid item xs={12} md={8}>
               <PoolBody
                 address={address}
                 wunderPool={wunderPool}
                 tokenAddedEvent={tokenAddedEvent}
                 newProposalEvent={newProposalEvent}
-                loginCallback={loginCallback}
                 {...props}
               />
-            </div>
-          </div>
-        </Stack>
-
-        <FundPoolDialog
-          open={fundDialog}
-          setOpen={setFundDialog}
-          address={address}
-          {...props}
-        />
+            </Grid>
+          </Grid>
+        </Grid> */}
       </Container>
     </>
   );

@@ -33,11 +33,9 @@ export default function PoolMembers(props) {
   }, [router.query]);
 
   return loadingState.init ? (
-    <div className="md:ml-4 w-full">
+    <div className="w-full">
       <div
-        className={`flex container-white overflow-clip justify-start md:justify-center ${
-          isMember ? 'md:mb-0 mt-6 md:mt-4' : 'mb-4 mt-6 md:mt-6'
-        }`}
+        className={`flex container-white overflow-clip justify-start md:justify-center`}
       >
         <div className="flex flex-col items-start justify-center grow">
           <div className="flex flex-col w-full">
@@ -66,7 +64,7 @@ export default function PoolMembers(props) {
               </>
             ) : (
               <>
-                <div className="flex flex-row flex-wrap w-full mt-2">
+                <div className="flex flex-row flex-wrap w-full">
                   {members.map((member, i) => {
                     return (
                       <Avatar

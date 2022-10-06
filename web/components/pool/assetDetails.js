@@ -6,10 +6,12 @@ import { currency } from '/services/formatter';
 import { GrMoney } from 'react-icons/gr';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
+import BettingGameDialog from '../dialogs/bettingGame';
 
 function assetDetails(props) {
   const { wunderPool } = props;
   const [open, setOpen] = useState(false);
+  const [openBet, setOpenBet] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
@@ -22,15 +24,25 @@ function assetDetails(props) {
     }
   };
 
+  const handleOpenCloseBetting = (onlyClose = false) => {
+    if (onlyClose && !openBet) return;
+    if (openBet) {
+      goBack(() => removeQueryParam('dialog'));
+    } else {
+      addQueryParam({ dialog: 'newGroupBet' }, false);
+    }
+  };
+
   useEffect(() => {
     setOpen(router.query?.dialog == 'makeProposal');
+    setOpenBet(router.query?.dialog == 'newGroupBet');
   }, [router.query]);
 
   return (
     <>
       {wunderPool.isMember ? (
-        <div className="md:ml-4 mt-6 w-full">
-          <div className="flex container-white justify-start sm:justify-center mb-4 ">
+        <div className="w-full">
+          <div className="flex container-white justify-start sm:justify-center">
             <div className="flex flex-col items-center justify-start w-full">
               <Typography className="text-xl w-full">Asset details</Typography>
               <div className="flex lg:flex-row flex-col lg:justify-between w-full">
@@ -68,16 +80,29 @@ function assetDetails(props) {
               <button
                 className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
                 onClick={() => {
+                  handleOpenCloseBetting();
+                }}
+              >
+                Start Betting Game
+              </button>
+              <button
+                className="btn-casama-white items-center w-full mb-2 mt-3 py-3 px-3 text-lg"
+                onClick={() => {
                   handleOpenClose();
                 }}
               >
-                Make Proposal
+                Buy Token
               </button>
             </div>
           </div>
           <MakeProposalDialog
             open={open}
             handleOpenClose={handleOpenClose}
+            {...props}
+          />
+          <BettingGameDialog
+            open={openBet}
+            handleOpenClose={handleOpenCloseBetting}
             {...props}
           />
         </div>

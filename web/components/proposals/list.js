@@ -5,7 +5,6 @@ import MakeProposalDialog from '/components/dialogs/makeProposal';
 import TabBar from '/components/utils/tabBar';
 import CurrentVotingsList from '/components/proposals/currentVotingsList';
 import HistoryList from '/components/proposals/historyList';
-import ExecutableList from '/components/proposals/executableList';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function ProposalList(props) {
@@ -50,7 +49,7 @@ export default function ProposalList(props) {
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
-          tabs={['Votings', 'Executable', 'History']}
+          tabs={['Votings', 'History']}
           tab={proposalsTab}
           setTab={setProposalsTab}
           proposals={wunderPool.proposals}
@@ -62,11 +61,6 @@ export default function ProposalList(props) {
         <CurrentVotingsList openProposal={openProposal} {...props} />
       )}
       {proposalsTab == 1 && (
-        <div>
-          <ExecutableList openProposal={openProposal} {...props} />
-        </div>
-      )}
-      {proposalsTab == 2 && (
         <HistoryList openProposal={openProposal} {...props} />
       )}
     </Stack>
