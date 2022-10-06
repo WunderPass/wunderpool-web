@@ -61,6 +61,7 @@ export default function usePool(
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
   const [poolProposals, setPoolProposals] = useState([]);
+  const [bettingGames, setBettingGames] = useState([]);
 
   const [minInvest, setMinInvest] = useState('');
   const [maxInvest, setMaxInvest] = useState('');
@@ -276,6 +277,7 @@ export default function usePool(
           assetCount++;
         }
       });
+
     setAssetBalance(assetBalance);
     setTotalBalance(totalBalance);
     setAssetCount(assetCount);
@@ -311,6 +313,31 @@ export default function usePool(
       setPoolNfts(await fetchPoolNfts(poolAddress, version?.number));
     } catch (error) {
       handleError('Could not load NFTs');
+    }
+  };
+
+  const determinePoolBettingGames = async () => {
+    try {
+      const events = (
+        await axios({
+          url: '/api/betting/events',
+        })
+      ).data;
+      const games = (
+        await axios({
+          url: '/api/betting/games',
+          params: { address: poolAddress },
+        })
+      ).data;
+
+      setBettingGames(
+        games.map((g) => ({
+          ...g,
+          event: events.find((e) => e.id == g.eventId),
+        }))
+      );
+    } catch (error) {
+      handleError('Could not load Games');
     }
   };
 
@@ -471,6 +498,7 @@ export default function usePool(
         .then(async ({ vers, exists, isMem }) => {
           if (exists && isMem) {
             await determinePoolNfts();
+            await determinePoolBettingGames();
             await determinePoolProposals(vers);
           }
         })
@@ -528,6 +556,7 @@ export default function usePool(
     assetCount,
     tokens: poolTokens,
     nfts: poolNfts,
+    bettingGames,
     governanceToken: poolGovernanceToken,
     proposals: poolProposals,
     getTransactionData,
@@ -545,6 +574,7 @@ export default function usePool(
     execute,
     determineTokens: determinePoolTokens,
     determineNfts: determinePoolNfts,
+    determineBettingGames: determinePoolBettingGames,
     determineProposals: determinePoolProposals,
     determineBalance: determineUsdcBalance,
   };

@@ -5,14 +5,16 @@ import NftList from '/components/tokens/nfts';
 import TransactionsList from '/components/pool/transactions';
 import { useState, useEffect } from 'react';
 import TabBar from '/components/utils/tabBar';
+import GameList from '../games/list';
 
 export default function body(props) {
-  const {
-    wunderPool,
-    tokenAddedEvent,
-    newProposalEvent,
-    proposalExecutedEvent,
-  } = props;
+  const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
+  const [tabOptions, setTabOptions] = useState({
+    0: 'Proposals',
+    1: 'Assets',
+    2: 'NFTs',
+    3: 'Transactions',
+  });
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
@@ -30,8 +32,19 @@ export default function body(props) {
     setTab(0);
   }, [newProposalEvent]);
 
+  useEffect(() => {
+    if (wunderPool.bettingGames.length == 0) return;
+    setTabOptions({
+      0: 'Proposals',
+      1: 'Assets',
+      2: 'NFTs',
+      3: 'Betting',
+      4: 'Transactions',
+    });
+  }, [wunderPool.bettingGames.length]);
+
   return (
-    <div className="mt-4 mb-8 ">
+    <div className="">
       {wunderPool.isMember &&
         (!wunderPool.loadingState.init ? (
           <Skeleton
@@ -43,18 +56,23 @@ export default function body(props) {
           <div className="flex container-white ">
             <div className="flex flex-col w-full">
               <TabBar
-                tabs={['Proposals', 'Assets', "NFT's", 'Transactions']}
+                tabs={Object.values(tabOptions)}
                 tab={tab}
                 setTab={setTab}
                 parent="body"
               />
               <Divider className="mb-1 mt-1 opacity-70" />
 
-              {tab == 0 && <ProposalList wunderPool={wunderPool} {...props} />}
-              {tab == 1 && <TokenList tokens={wunderPool.tokens} {...props} />}
-              {tab == 2 && <NftList nfts={wunderPool.nfts} {...props} />}
-              {tab == 3 && (
-                <TransactionsList wunderPool={wunderPool} {...props} />
+              {tabOptions[tab] == 'Proposals' && <ProposalList {...props} />}
+              {tabOptions[tab] == 'Assets' && (
+                <TokenList tokens={wunderPool.tokens} {...props} />
+              )}
+              {tabOptions[tab] == 'NFTs' && (
+                <NftList nfts={wunderPool.nfts} {...props} />
+              )}
+              {tabOptions[tab] == 'Betting' && <GameList {...props} />}
+              {tabOptions[tab] == 'Transactions' && (
+                <TransactionsList {...props} />
               )}
             </div>
           </div>
