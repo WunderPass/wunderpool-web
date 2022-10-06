@@ -11,3 +11,4 @@ describe('Reach CasamaApp from the Landing Page', () => {
     cy.url().should('include', 'app.casama.io');
   });
 });
+export {};
