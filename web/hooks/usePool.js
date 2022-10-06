@@ -285,25 +285,26 @@ export default function usePool(
 
   const determinePoolTokens = async (vers = null) => {
     if (liquidated) return;
-    try {
-      const { pool_treasury, pool_assets } = await fetchPoolData(poolAddress);
+    //Timeout wird gebraucht weil backend langsamer ist als frontend (events in zukunft?)
+    setTimeout(async () => {
+      try {
+        var tokens;
+        const { pool_treasury, pool_assets } = await fetchPoolData(poolAddress);
+        setUsdcBalance(pool_treasury.act_balance);
 
-      setUsdcBalance(pool_treasury.act_balance);
-
-      const tokens = await Promise.all(
-        pool_assets.map(async (asset) => {
-          return await formatAsset(asset);
-        })
-      );
-
-      setPoolTokens(tokens);
-      determineCustomBalances(tokens);
-      updateLoadingState('tokens');
-
-      return tokens;
-    } catch (error) {
-      throw error;
-    }
+        tokens = await Promise.all(
+          pool_assets.map(async (asset) => {
+            return await formatAsset(asset);
+          })
+        );
+        setPoolTokens(tokens);
+        determineCustomBalances(tokens);
+        updateLoadingState('tokens');
+        return tokens;
+      } catch (error) {
+        throw error;
+      }
+    }, 2000);
   };
 
   const determinePoolNfts = async () => {
@@ -341,20 +342,23 @@ export default function usePool(
   };
 
   const determinePoolProposals = async (vers = null) => {
-    if (liquidated) return;
-    updateLoadingState('proposals', false);
-    try {
-      const proposals = await fetchPoolProposals(
-        poolAddress,
-        userAddress,
-        (vers || version)?.number
-      );
-      setPoolProposals(proposals);
-    } catch (error) {
-      handleError('Proposals could not be loaded');
-      console.log('ERROR fetching Proposals', error);
-    }
-    updateLoadingState('proposals');
+    //Timeout wird gebraucht weil backend langsamer ist als frontend (events in zukunft?)
+    setTimeout(async () => {
+      if (liquidated) return;
+      updateLoadingState('proposals', false);
+      try {
+        const proposals = await fetchPoolProposals(
+          poolAddress,
+          userAddress,
+          (vers || version)?.number
+        );
+        setPoolProposals(proposals);
+      } catch (error) {
+        handleError('Proposals could not be loaded');
+        console.log('ERROR fetching Proposals', error);
+      }
+      updateLoadingState('proposals');
+    }, 2000);
   };
 
   const getTransactionData = async (id, transactionCount) => {

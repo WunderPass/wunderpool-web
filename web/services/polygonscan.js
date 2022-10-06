@@ -25,7 +25,6 @@ export function erc20Transactions(poolAddress) {
 }
 
 function formatErc20Transactions(transactions) {
-  console.log(transactions);
   const formattedTransactions = [];
   const uniqueHashes = transactions
     .map(({ hash }) => hash)

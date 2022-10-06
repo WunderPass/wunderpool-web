@@ -120,6 +120,7 @@ export default function PoolHeader(props) {
   };
 
   useEffect(async () => {
+    if (!address) return;
     setShowSaveButton(false);
     setImageUrl(null);
     setBannerUrl(null);

@@ -192,46 +192,6 @@ export default function Pool(props) {
             />
           </Grid>
         </Grid>
-        {/* <Grid container spacing={2}>
-          <Grid item container spacing={2} xs={12}>
-            <Grid item xs={12} md={8}>
-              <PoolHeader
-                name={name}
-                address={address}
-                wunderPool={wunderPool}
-                isMobile={false}
-                {...props}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <PoolDetails
-                address={address}
-                wunderPool={wunderPool}
-                {...props}
-              />
-            </Grid>
-          </Grid>
-          <Grid item container spacing={2} xs={12} direction="row-reverse">
-            <Grid item xs={12} md={4}>
-              <PoolMembers
-                user={user}
-                address={address}
-                wunderPool={wunderPool}
-                loginCallback={loginCallback}
-                {...props}
-              />
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <PoolBody
-                address={address}
-                wunderPool={wunderPool}
-                tokenAddedEvent={tokenAddedEvent}
-                newProposalEvent={newProposalEvent}
-                {...props}
-              />
-            </Grid>
-          </Grid>
-        </Grid> */}
       </Container>
     </>
   );

@@ -19,6 +19,7 @@ export default function body(props) {
 
   useEffect(() => {
     if (!tokenAddedEvent) return;
+
     if (tokenAddedEvent.nft) {
       setTab(2);
     } else {
