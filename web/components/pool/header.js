@@ -121,7 +121,6 @@ export default function PoolHeader(props) {
 
   useEffect(async () => {
     if (!address) return;
-    console.log('BANNER UND IMAGE GELADEN 1');
     setShowSaveButton(false);
     setImageUrl(null);
     setBannerUrl(null);
