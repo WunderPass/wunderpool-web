@@ -3,9 +3,7 @@ import { Typography } from '@mui/material';
 import TimerBar from '/components/proposals/timerBar';
 
 const Timer = (props) => {
-  const { proposal } = props;
-  const finalTime = proposal.deadline;
-  const start = proposal.createdAt;
+  const { start, end, text = 'Days Left', bar } = props;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {
@@ -30,7 +28,7 @@ const Timer = (props) => {
   };
 
   useEffect(() => {
-    const newTimer = Math.floor((new Date(finalTime) - new Date()) / 1000);
+    const newTimer = Math.floor((new Date(end) - new Date()) / 1000);
     let timeout = null;
     if (newTimer > 172800) {
       setTimer(newTimer);
@@ -54,9 +52,7 @@ const Timer = (props) => {
         <div className="flex flex-row opacity-50">
           {timer >= 86400 ? (
             <>
-              <Typography className="text-xs mr-1">
-                Days Left to Vote
-              </Typography>
+              <Typography className="text-xs mr-1">{text}</Typography>
             </>
           ) : (
             <>
@@ -67,12 +63,14 @@ const Timer = (props) => {
           )}
         </div>
       </div>
-      <div className="mt-5">
-        <TimerBar
-          passed={Math.round(Number(new Date())) - start}
-          total={finalTime - start}
-        />
-      </div>
+      {bar && (
+        <div className="mt-5">
+          <TimerBar
+            passed={Math.round(Number(new Date())) - start}
+            total={end - start}
+          />
+        </div>
+      )}
     </div>
   );
 };

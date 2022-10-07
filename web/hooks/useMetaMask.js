@@ -64,13 +64,14 @@ export default function useMetaMask() {
           });
       }
       if (tx) {
+        const sanitizedTx = { data: tx.data, from: tx.from, to: tx.to };
         window.ethereum
           .request({
             method: 'eth_sendTransaction',
-            params: [tx],
+            params: [sanitizedTx],
           })
           .then((txHash) => {
-            resolve(txHash);
+            resolve({ hash: txHash });
           })
           .catch((err) => {
             reject(err);

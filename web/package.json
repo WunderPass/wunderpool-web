@@ -51,6 +51,7 @@
     "react-swipeable-views": "^0.14.0",
     "react-toastify": "^9.0.8",
     "react-trend": "^1.2.5",
+    "react-whatsapp": "^0.3.0",
     "sass": "^1.44.0",
     "styled-components": "^5.3.5",
     "tailwindcss": "^3.1.8",

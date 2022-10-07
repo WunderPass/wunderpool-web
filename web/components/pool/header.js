@@ -121,7 +121,6 @@ export default function PoolHeader(props) {
 
   useEffect(async () => {
     if (!address) return;
-    console.log('BANNER UND IMAGE GELADEN 1');
     setShowSaveButton(false);
     setImageUrl(null);
     setBannerUrl(null);
@@ -144,7 +143,7 @@ export default function PoolHeader(props) {
 
   return (
     <>
-      <div className="flex flex-col container-white-p-0 max-w-full sm:mt-6 ">
+      <div className="flex flex-col container-white-p-0 max-w-full">
         <label
           htmlFor={isMobile ? 'bannerUploadMobile' : 'bannerUploadDesktop'}
           className="cursor-pointer"
