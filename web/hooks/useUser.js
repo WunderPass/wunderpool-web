@@ -123,16 +123,27 @@ export default function useUser() {
 
   useEffect(() => {
     if (loginMethod == 'MetaMask') {
-      const metaMask = window.ethereum;
-      setUnsupportedChain(metaMask?.chainId != '0x89');
-      metaMask.on('accountsChanged', function ([newAddress]) {
+      console.log(window.ethereum);
+      console.log(window.ethereum?.chainId);
+      setTimeout(
+        () => {
+          setUnsupportedChain(
+            window.ethereum?.chainId
+              ? window.ethereum?.chainId != '0x89'
+              : false
+          );
+        },
+        window.ethereum?.chainId ? 0 : 1000
+      );
+
+      window.ethereum.on('accountsChanged', function ([newAddress]) {
         if (newAddress) {
           updateAddress(newAddress);
         } else {
           logOut();
         }
       });
-      metaMask.on('networkChanged', function (networkId) {
+      window.ethereum.on('networkChanged', function (networkId) {
         setUnsupportedChain(networkId != 137);
       });
     } else if (loginMethod == 'WalletConnect') {
