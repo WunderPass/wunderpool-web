@@ -15,3 +15,4 @@ describe('My First Test', () => {
       .should('have.value', 'fake@email.com');
   });
 });
+export {};

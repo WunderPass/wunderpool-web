@@ -18,3 +18,4 @@ describe('window open', function () {
     //unfinished
   });
 });
+export {};
