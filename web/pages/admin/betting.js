@@ -15,6 +15,7 @@ import { registerEvent, resolveEvent } from '/services/contract/betting/events';
 import ResponsiveDialog from '/components/utils/responsiveDialog';
 import { MdSportsSoccer } from 'react-icons/md';
 import { determineGame } from '../../services/contract/betting/games';
+import { IoMdRefresh } from 'react-icons/io';
 
 const admins = ['0x7e0b49362897706290b7312d0b0902a1629397d8'];
 
@@ -345,7 +346,16 @@ export default function AdminBettingPage(props) {
           })}
         </div>
         <div>
-          <Typography variant="h4">Games</Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h4">Games</Typography>
+            <button className="text-3xl text-casama-blue" onClick={fetchGames}>
+              <IoMdRefresh />
+            </button>
+          </Stack>
           {games.map((game) => {
             return (
               <GameCard
