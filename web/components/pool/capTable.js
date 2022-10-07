@@ -67,15 +67,6 @@ export default function CapTable(props) {
                     </Typography>
                   </div>
                 </td>
-                {/* {console.log('wunderPool', usdcBalance)}
-                {console.log(
-                  'wunderPool.governanceToken?.tokensForDollar',
-                  wunderPool.governanceToken?.tokensForDollar
-                )} */}
-                {console.log(
-                  'member',
-                  (member.share * wunderPool.usdcBalance) / 100
-                )}
 
                 <td className="text-right pb-2">
                   <Typography className="">
