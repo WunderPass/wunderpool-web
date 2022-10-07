@@ -66,9 +66,6 @@ export default function body(props) {
         )
       );
     }
-    console.log(
-      wunderPool.proposals.filter((p) => !(p.executed || p.declined))
-    );
   }, [wunderPool.proposals]);
 
   return (
