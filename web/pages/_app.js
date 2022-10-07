@@ -10,7 +10,6 @@ import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import muiTheme from '/theme/mui';
 import Navbar from '/components/layout/navbar';
 import TopUpAlert from '../components/dialogs/topUpAlert';
-import { HistoryManagerProvider, useHistoryManager } from '/hooks/useHistory';
 import Script from 'next/script';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -31,7 +30,6 @@ function WunderPool({ Component, pageProps }) {
     proposalExecutedEvent,
     resetEvents,
   ] = usePoolListener(handleInfo);
-  const historyManager = useHistoryManager();
 
   const appProps = Object.assign(
     {
@@ -81,23 +79,21 @@ function WunderPool({ Component, pageProps }) {
     
       gtag('config', '${process.env.GA_TRACKING_CODE}');`}
       </Script>
-      <HistoryManagerProvider value={historyManager}>
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={muiTheme}>
-            <AlertProvider template={AlertTemplate} {...options}>
-              <Navbar {...appProps} />
-              <Component {...appProps} />
-              <ToastContainer position="bottom-left" autoClose={8000} />
-              <TopUpAlert
-                open={user.topUpRequired}
-                setOpen={user.setTopUpRequired}
-                user={user}
-              />
-              <SwitchChainAlert user={user} />
-            </AlertProvider>
-          </ThemeProvider>
-        </StyledEngineProvider>
-      </HistoryManagerProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={muiTheme}>
+          <AlertProvider template={AlertTemplate} {...options}>
+            <Navbar {...appProps} />
+            <Component {...appProps} />
+            <ToastContainer position="top-right" autoClose={8000} />
+            <TopUpAlert
+              open={user.topUpRequired}
+              setOpen={user.setTopUpRequired}
+              user={user}
+            />
+            <SwitchChainAlert user={user} />
+          </AlertProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </>
   );
 }

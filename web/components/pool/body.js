@@ -7,14 +7,20 @@ import { useState, useEffect } from 'react';
 import TabBar from '/components/utils/tabBar';
 import GameList from '../games/list';
 
+function setBadgeFor(options, title, badge) {
+  return options.map((opt) =>
+    opt.title == title ? { ...opt, badge: badge } : opt
+  );
+}
+
 export default function body(props) {
   const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
-  const [tabOptions, setTabOptions] = useState({
-    0: 'Proposals',
-    1: 'Assets',
-    2: 'NFTs',
-    3: 'Transactions',
-  });
+  const [tabOptions, setTabOptions] = useState([
+    { title: 'Proposals', index: 0 },
+    { title: 'Assets', index: 1 },
+    { title: 'Betting', index: 2 },
+    { title: 'Transactions', index: 3 },
+  ]);
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
@@ -33,15 +39,37 @@ export default function body(props) {
   }, [newProposalEvent]);
 
   useEffect(() => {
-    if (wunderPool.bettingGames.length == 0) return;
-    setTabOptions({
-      0: 'Proposals',
-      1: 'Assets',
-      2: 'NFTs',
-      3: 'Betting',
-      4: 'Transactions',
-    });
-  }, [wunderPool.bettingGames.length]);
+    if (wunderPool.bettingGames.length == 0) {
+      setTabOptions((opts) => setBadgeFor(opts, 'Betting', 0));
+    } else {
+      setTabOptions((opts) =>
+        setBadgeFor(
+          opts,
+          'Betting',
+          wunderPool.bettingGames.filter((g) => !g.closed).length
+        )
+      );
+    }
+  }, [wunderPool.bettingGames]);
+
+  useEffect(() => {
+    if (wunderPool.proposals.length == 0) {
+      setTabOptions((opts) => setBadgeFor(opts, 'Proposals', 0));
+    } else {
+      setTabOptions((opts) =>
+        setBadgeFor(
+          opts,
+          'Proposals',
+          wunderPool.proposals.filter(
+            (p) => !(p.executed || p.declined || p.hasVoted)
+          ).length
+        )
+      );
+    }
+    console.log(
+      wunderPool.proposals.filter((p) => !(p.executed || p.declined))
+    );
+  }, [wunderPool.proposals]);
 
   return (
     <div className="">
@@ -56,22 +84,24 @@ export default function body(props) {
           <div className="flex container-white ">
             <div className="flex flex-col w-full">
               <TabBar
-                tabs={Object.values(tabOptions)}
+                tabs={tabOptions}
                 tab={tab}
                 setTab={setTab}
                 parent="body"
               />
               <Divider className="mb-1 mt-1 opacity-70" />
 
-              {tabOptions[tab] == 'Proposals' && <ProposalList {...props} />}
-              {tabOptions[tab] == 'Assets' && (
+              {tabOptions[tab].title == 'Proposals' && (
+                <ProposalList {...props} />
+              )}
+              {tabOptions[tab].title == 'Assets' && (
                 <TokenList tokens={wunderPool.tokens} {...props} />
               )}
-              {tabOptions[tab] == 'NFTs' && (
+              {tabOptions[tab].title == 'NFTs' && (
                 <NftList nfts={wunderPool.nfts} {...props} />
               )}
-              {tabOptions[tab] == 'Betting' && <GameList {...props} />}
-              {tabOptions[tab] == 'Transactions' && (
+              {tabOptions[tab].title == 'Betting' && <GameList {...props} />}
+              {tabOptions[tab].title == 'Transactions' && (
                 <TransactionsList {...props} />
               )}
             </div>

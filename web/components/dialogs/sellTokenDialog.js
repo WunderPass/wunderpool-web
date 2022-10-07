@@ -26,6 +26,7 @@ export default function SellTokenDialog(props) {
     token;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
+
   const handleClose = () => {
     setAmount('');
     setLoading(false);

@@ -52,7 +52,6 @@ export default function ProposalList(props) {
           tabs={['Votings', 'History']}
           tab={proposalsTab}
           setTab={setProposalsTab}
-          proposals={wunderPool.proposals}
           parent="list"
         />
         <Divider className="mb-6 mt-1 opacity-70" />
