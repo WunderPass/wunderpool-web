@@ -15,6 +15,12 @@ export default function MemberInput({
   const [inputTrue, setInputTrue] = useState(false);
   const friends = Object.values(user.friends);
 
+  {
+    console.log(friends);
+  }
+  {
+    console.log(members);
+  }
   const handleChange = (e, value, reason) => {
     setSelectedMembers(value);
   };
@@ -40,7 +46,6 @@ export default function MemberInput({
 
   return (
     <>
-      {console.log('inputTrue', inputTrue)}
       <Autocomplete
         className="w-full text-gray-700 my-4 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
         multiple={multiple}
@@ -50,7 +55,11 @@ export default function MemberInput({
         onChange={handleChange}
         onInputChange={handleInput}
         filterOptions={filterOptions}
-        isOptionEqualToValue={(option, val) => option.address == val.address}
+        isOptionEqualToValue={
+          inputTrue
+            ? (option, val) => option.address == val.address
+            : (option, val) => option.wallet_address == val.wallet_address
+        }
         getOptionLabel={(option) => getNameFor(option)}
         renderInput={(params) => (
           <TextField
