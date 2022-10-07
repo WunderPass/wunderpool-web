@@ -182,7 +182,7 @@ export default function NewPoolConfigStep(props) {
         <label className="label pb-2" htmlFor="value">
           Your Investment *
         </label>
-        <div>
+        <div id="amount">
           <CurrencyInput
             value={value}
             placeholder="$ 50.00"
@@ -196,7 +196,7 @@ export default function NewPoolConfigStep(props) {
         className="text-black text-sm font-medium mt-2"
         onClick={() => setShowMoreOptions((val) => !val)}
       >
-        <div className="flex flex-row items-center text-lg">
+        <div id="advanced" className="flex flex-row items-center text-lg">
           Advanced Options
           {showMoreOptions ? (
             <MdOutlineKeyboardArrowUp className="ml-3 text-lg" />
@@ -211,24 +211,28 @@ export default function NewPoolConfigStep(props) {
             <label className="label pb-2" htmlFor="value">
               Minimum investment to join the Pool
             </label>
-            <CurrencyInput
-              value={minInvest}
-              placeholder={valueAsDollarString}
-              onChange={handleMinInvest}
-              error={minInvestErrorMsg}
-            />
+            <div id="minAmount">
+              <CurrencyInput
+                value={minInvest}
+                placeholder={valueAsDollarString}
+                onChange={handleMinInvest}
+                error={minInvestErrorMsg}
+              />
+            </div>
           </div>
 
           <div>
             <label className="label pb-2" htmlFor="value">
               Maximum investment to join the Pool
             </label>
-            <CurrencyInput
-              value={maxInvest}
-              placeholder={valueAsDollarString}
-              onChange={handleMaxInvest}
-              error={maxInvestErrorMsg}
-            />
+            <div id="maxAmount">
+              <CurrencyInput
+                value={maxInvest}
+                placeholder={valueAsDollarString}
+                onChange={handleMaxInvest}
+                error={maxInvestErrorMsg}
+              />
+            </div>
           </div>
 
           <div>

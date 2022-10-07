@@ -21,6 +21,7 @@ export default function NewPoolButtons(props) {
       )}
       {step != totalSteps && (
         <button
+          id="continue"
           className="btn-casama w-full py-3 mt-2"
           onClick={() => setStep((s) => s + 1)}
           disabled={disabled}
