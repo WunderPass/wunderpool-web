@@ -17,7 +17,13 @@ import { MdSportsSoccer } from 'react-icons/md';
 import { determineGame } from '../../services/contract/betting/games';
 import { IoMdRefresh } from 'react-icons/io';
 
-const admins = ['0x7e0b49362897706290b7312d0b0902a1629397d8'];
+const admins = [
+  '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
+  '0xac4c7c8c3a2cfffd889c1fb78b7468e281032284', // Despot
+  '0x1a8459f9ddecabe92281ebdfa62874010a53fdc6', // Gerwin
+  '0x097bf9d9a2c838e12fe153e4d7f83b48adb572c6', // Slava
+  '0x466274eefdd3265e3d8085933e69890f33023048', // Max
+];
 
 function NewEventDialog({
   open,
@@ -204,6 +210,7 @@ function EventCard({
         spacing={1}
         rowGap={2}
         flexWrap="wrap"
+        className="relative"
       >
         <Stack
           direction="row"
