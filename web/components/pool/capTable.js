@@ -34,7 +34,7 @@ export default function CapTable(props) {
               </Typography>
             </th>
             <th className="text-right pb-4">
-              <Typography className="opacity-50">Invested</Typography>
+              <Typography className="opacity-50">Stake</Typography>
             </th>
           </tr>
         </thead>
@@ -67,12 +67,10 @@ export default function CapTable(props) {
                     </Typography>
                   </div>
                 </td>
+
                 <td className="text-right pb-2">
                   <Typography className="">
-                    {currency(
-                      member.tokens /
-                        wunderPool.governanceToken?.tokensForDollar
-                    )}
+                    {currency((member.share * wunderPool.usdcBalance) / 100)}
                   </Typography>
                 </td>
               </tr>

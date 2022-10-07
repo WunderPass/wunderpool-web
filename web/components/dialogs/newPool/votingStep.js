@@ -121,6 +121,7 @@ export default function NewPoolVotingStep(props) {
       <div className="flex flex-row justify-between  items-center pb-4">
         <Typography className="text-xl">Votings</Typography>
         <Switch
+          id="votingSwitch"
           checked={votingEnabled}
           onClick={() => setVotingEnabled((val) => !val)}
         />
@@ -131,7 +132,10 @@ export default function NewPoolVotingStep(props) {
           <label className="label pb-1" htmlFor="value">
             Duration of voting
           </label>
-          <div className="flex flex-row textfield py-2 justify-between mt-2">
+          <div
+            id="durationVotings"
+            className="flex flex-row textfield py-2 justify-between mt-2"
+          >
             {VotingDurations.map((option, i) => {
               return (
                 <OptionButton

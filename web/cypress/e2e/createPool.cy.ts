@@ -20,25 +20,23 @@ describe('Create Pool', function () {
     //pooldescription
     cy.get('#poolDescription').type('die description');
     //amount
-    cy.get(':nth-child(5) > div > .textfield').type('$ 3');
+    cy.get('#amount').type('$ 3');
     //click auf advanced
-    cy.get('.ml-3').click();
+    cy.get('#advanced').click();
     //minimum amount
-    cy.get(':nth-child(1) > .textfield').type('$ 3');
+    cy.get('#minAmount').type('$ 3');
     //maximum amount
-    cy.get('.css-1p5q5e5-MuiStack-root > :nth-child(2) > .textfield').type(
-      '$ 3'
-    );
+    cy.get('#maxAmount').type('$ 3');
     //maxmembers auf 19 wechselns
     cy.get('#maxMembers').type('19');
     //click auf CONTINUE
-    cy.get('.MuiDialogActions-root > .flex > .btn-casama').click();
+    cy.get('#continue').click();
     //Votings ausschalten
-    cy.get('.MuiSwitch-input').uncheck();
+    cy.get('#votingSwitch').uncheck();
     //duration of voting ändern
-    cy.get('.pb-4.w-full > .flex-row > :nth-child(3) > .text-black').click();
+    cy.get('#durationVotings').click();
     //votings anschalten
-    cy.get('.MuiSwitch-input').check();
+    cy.get('#votingSwitch').check();
     //how many people have to vote ändern
     cy.get(':nth-child(3) > .flex-row > :nth-child(1) > .text-black').click();
     //how many % custom testen
@@ -54,6 +52,7 @@ describe('Create Pool', function () {
     //freund auswählen
     cy.contains('s-tschurilin').click();
     //freund 2 auswählen
+    cy.contains('g-fricke').click();
 
     //fremde wunder id suchen
 
