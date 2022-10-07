@@ -45,7 +45,9 @@ export default function InviteMemberDialog(props) {
               type="submit"
               className="btn-casama w-full py-3 mt-2"
               onClick={handleSubmit}
-              disabled={!selectedUser?.address}
+              disabled={
+                !(selectedUser?.address || selectedUser?.wallet_address)
+              }
             >
               Invite
             </button>
