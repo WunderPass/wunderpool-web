@@ -1,11 +1,13 @@
-import { DialogActions, Stack, Typography } from '@mui/material';
-import { useState, useMemo } from 'react';
+import { DialogActions, Stack, Typography, IconButton } from '@mui/material';
+import { useState, useMemo, useEffect } from 'react';
 import CurrencyInput from '/components/utils/currencyInput';
 import TransactionFrame from '../utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
 import EventInput from '../events/input';
 import { registerGame } from '../../services/contract/betting/games';
+import ShareIcon from '@mui/icons-material/Share';
+import { handleShare } from '../../services/shareLink';
 
 const PayoutRules = [
   { label: 'Winner Takes It All', value: 0 },
@@ -36,6 +38,7 @@ export default function BettingGameDialog(props) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [payoutRule, setPayoutRule] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const maxStake = useMemo(() => {
     return (
@@ -48,9 +51,6 @@ export default function BettingGameDialog(props) {
   const totalTokens = useMemo(() => {
     return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
   }, [wunderPool.members, wunderPool.usdcBalance]);
-
-  const submitDisabled =
-    !stakeInTokens || stakeInTokens <= 0 || loading || event.id == undefined;
 
   const handleCreate = () => {
     setLoading(true);
@@ -76,7 +76,9 @@ export default function BettingGameDialog(props) {
   };
 
   const handleInput = (value, float) => {
+    //currently not able to use bets below 0.1€
     setStake(value);
+
     setStakeInTokens(
       Math.floor((totalTokens / wunderPool.usdcBalance) * float)
     );
@@ -86,6 +88,12 @@ export default function BettingGameDialog(props) {
       setErrorMsg(null);
     }
   };
+
+  useEffect(() => {
+    setSubmitDisabled(
+      !stakeInTokens || stakeInTokens <= 0 || loading || event.id == undefined
+    );
+  }, [stakeInTokens, loading, event.id]);
 
   return (
     <ResponsiveDialog

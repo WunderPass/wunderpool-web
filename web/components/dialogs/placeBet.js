@@ -1,8 +1,10 @@
-import { Stack, Typography, DialogActions } from '@mui/material';
-import { useState } from 'react';
+import { Stack, Typography, DialogActions, IconButton } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { registerParticipant } from '../../services/contract/betting/games';
 import ResponsiveDialog from '../utils/responsiveDialog';
 import TransactionFrame from '../utils/transactionFrame';
+import ShareIcon from '@mui/icons-material/Share';
+import { handleShare } from '../../services/shareLink';
 
 export default function PlaceBetDialog({
   open,
@@ -12,17 +14,21 @@ export default function PlaceBetDialog({
   wunderPool,
   handleSuccess,
   handleError,
+  handleOpenBetNow,
 }) {
   const [loading, setLoading] = useState(false);
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
 
-  const onClose = () => {
-    setLoading(false);
-    setGuessOne('');
-    setGuessTwo('');
-    setOpen(false);
-  };
+  useEffect(() => {
+    if (!open) {
+      setLoading(false);
+      setGuessOne('');
+      setGuessTwo('');
+      setOpen(false);
+      handleOpenBetNow(true);
+    }
+  }, [open]);
 
   const handleCreate = () => {
     setLoading(true);
@@ -37,7 +43,8 @@ export default function PlaceBetDialog({
       .then((res) => {
         console.log(res);
         handleSuccess(`Placed Bet on ${game.event.name}`);
-        setOpen(false);
+        //setOpen(false);
+        handleOpenBetNow(true);
         wunderPool.determineBettingGames();
       })
       .catch(handleError)
@@ -48,13 +55,25 @@ export default function PlaceBetDialog({
     <ResponsiveDialog
       maxWidth="sm"
       open={open}
-      onClose={onClose}
+      onClose={() => handleOpenBetNow(true)}
       title="Place Your Bet"
+      actionButtons={
+        <IconButton
+          onClick={() =>
+            handleShare(location.href, `Look at this Bet: `, handleSuccess)
+          }
+        >
+          <ShareIcon className="text-casama-blue" />
+        </IconButton>
+      }
       actions={
         !loading && (
           <DialogActions className="flex items-center justify-center mx-4">
             <div className="flex flex-col items-center justify-center w-full">
-              <button className="btn-neutral w-full py-3" onClick={onClose}>
+              <button
+                className="btn-neutral w-full py-3"
+                onClick={() => handleOpenBetNow(true)}
+              >
                 Cancel
               </button>
               <button

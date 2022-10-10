@@ -5,6 +5,7 @@ import GameCard from './gameCard';
 import TabBar from '/components/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import BettingGameDialog from '../dialogs/bettingGame';
+import { AiOutlineConsoleSql } from 'react-icons/ai';
 
 export default function GameList(props) {
   const { wunderPool } = props;
@@ -12,6 +13,7 @@ export default function GameList(props) {
   const [openBet, setOpenBet] = useState(false);
   const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  console.log('wunderPool', wunderPool);
 
   const totalTokens = useMemo(() => {
     return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
@@ -19,6 +21,7 @@ export default function GameList(props) {
 
   useEffect(() => {
     setGamesTab(Number(router.query?.gameTab || 0));
+    setOpenBet(router.query?.bet ? Number(router.query.bet) : null);
   }, [router.query]);
 
   useEffect(() => {
@@ -52,6 +55,7 @@ export default function GameList(props) {
           .map((game) => {
             return (
               <GameCard
+                openBet={openBet}
                 key={`game-card-${game.id}`}
                 game={game}
                 totalTokens={totalTokens}
@@ -65,6 +69,7 @@ export default function GameList(props) {
           .map((game) => {
             return (
               <GameCard
+                openBet={openBet}
                 key={`game-card-${game.id}`}
                 game={game}
                 totalTokens={totalTokens}

@@ -1,10 +1,12 @@
 import { Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '../../services/formatter';
 import PlaceBetDialog from '../dialogs/placeBet';
 import Avatar from '../members/avatar';
 import Timer from '../proposals/timer';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 function ParticipantTable({ game, stake }) {
   const { participants, event } = game;
@@ -48,13 +50,29 @@ function ParticipantTable({ game, stake }) {
 }
 
 export default function GameCard(props) {
-  const { game, totalTokens, wunderPool } = props;
+  const { game, totalTokens, wunderPool, openBet } = props;
   const [open, setOpen] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
 
   const stake = (game.stake * wunderPool.usdcBalance) / totalTokens;
   const usersBet = game.participants.find(
     (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
   )?.prediction;
+
+  const handleOpenBetNow = (onlyClose = false) => {
+    if (onlyClose && !openBet) return;
+
+    if (openBet === game.event.id) {
+      goBack(() => removeQueryParam('bet'));
+    } else {
+      addQueryParam({ bet: game.event.id }, false);
+    }
+  };
+
+  useEffect(() => {
+    setOpen(router.query?.bet == game.event.id);
+  }, [router.query]);
 
   return (
     <div className="container-gray mb-6">
@@ -89,14 +107,19 @@ export default function GameCard(props) {
           ) : (
             <button
               className="btn-casama py-2 text-xl"
-              onClick={() => setOpen(true)}
+              onClick={() => handleOpenBetNow()}
             >
               Bet Now
             </button>
           )}
         </Stack>
       </div>
-      <PlaceBetDialog open={open} setOpen={setOpen} {...props} />
+      <PlaceBetDialog
+        open={open}
+        setOpen={setOpen}
+        handleOpenBetNow={handleOpenBetNow}
+        {...props}
+      />
     </div>
   );
 }
