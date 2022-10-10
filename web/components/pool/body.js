@@ -37,14 +37,14 @@ export default function body(props) {
 
   useEffect(() => {
     if (!tokenAddedEvent) return;
-    if (!tokenAddedEvent.nft) {
-      addQueryParam({ tab: 2 });
-    }
+    removeQueryParam('tab');
+    addQueryParam({ tab: 2 });
   }, [tokenAddedEvent]);
 
   useEffect(() => {
     //DOESNT WORK CURRENTLY
     if (!newProposalEvent) return;
+    removeQueryParam('tab');
     addQueryParam({ tab: 1 });
   }, [newProposalEvent]);
 
