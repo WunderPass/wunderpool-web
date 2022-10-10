@@ -41,6 +41,7 @@ export default function usePool(
     members: false,
     tokens: false,
     proposals: false,
+    bets: false,
   });
 
   const [userAddress, setUserAddress] = useState(userAddr);
@@ -336,8 +337,10 @@ export default function usePool(
           event: events.find((e) => e.id == g.eventId),
         }))
       );
+      updateLoadingState('bets', true);
     } catch (error) {
       handleError('Could not load Games');
+      updateLoadingState('bets', true);
     }
   };
 

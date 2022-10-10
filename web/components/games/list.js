@@ -1,4 +1,4 @@
-import { Stack, Divider, Typography } from '@mui/material';
+import { Stack, Divider, Typography, Skeleton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
 import GameCard from './gameCard';
@@ -13,7 +13,6 @@ export default function GameList(props) {
   const [openBet, setOpenBet] = useState(false);
   const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  console.log('wunderPool', wunderPool);
 
   const totalTokens = useMemo(() => {
     return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
@@ -37,13 +36,19 @@ export default function GameList(props) {
     }
   };
 
-  return wunderPool.bettingGames.length > 0 ? (
+  return !wunderPool.loadingState.bets ? (
+    <Skeleton
+      variant="rectangular"
+      width="100%"
+      sx={{ height: '100px', borderRadius: 3 }}
+    />
+  ) : wunderPool.bettingGames.length > 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Open', 'History']}
           tab={gamesTab}
-          setTab={setGamesTab}
+          handleClick={setGamesTab}
           proposals={wunderPool.proposals}
           parent="list"
         />
@@ -56,6 +61,7 @@ export default function GameList(props) {
             return (
               <GameCard
                 openBet={openBet}
+                setOpenBet={setOpenBet}
                 key={`game-card-${game.id}`}
                 game={game}
                 totalTokens={totalTokens}

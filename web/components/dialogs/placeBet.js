@@ -26,7 +26,6 @@ export default function PlaceBetDialog({
       setGuessOne('');
       setGuessTwo('');
       setOpen(false);
-      handleOpenBetNow(true);
     }
   }, [open]);
 

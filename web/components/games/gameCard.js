@@ -50,7 +50,7 @@ function ParticipantTable({ game, stake }) {
 }
 
 export default function GameCard(props) {
-  const { game, totalTokens, wunderPool, openBet } = props;
+  const { game, totalTokens, wunderPool, openBet, setOpenBet } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
@@ -62,8 +62,7 @@ export default function GameCard(props) {
 
   const handleOpenBetNow = (onlyClose = false) => {
     if (onlyClose && !openBet) return;
-
-    if (openBet === game.event.id) {
+    if (onlyClose) {
       goBack(() => removeQueryParam('bet'));
     } else {
       addQueryParam({ bet: game.event.id }, false);
@@ -71,7 +70,12 @@ export default function GameCard(props) {
   };
 
   useEffect(() => {
-    setOpen(router.query?.bet == game.event.id);
+    if (!router.query?.bet) {
+      setOpen(false);
+      return;
+    }
+    setOpen(true);
+    setOpenBet(router.query.bet);
   }, [router.query]);
 
   return (

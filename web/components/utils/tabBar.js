@@ -2,12 +2,8 @@ import { Typography, Badge } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export default function TabBar(props) {
-  const { tabs, tab, setTab, parent, proposals } = props;
+  const { tabs, tab, handleClick, parent, proposals } = props;
   const [currentVotingsCount, setCurrentVotingsCount] = useState(0);
-
-  const handleClick = (index) => {
-    setTab(index);
-  };
 
   useEffect(() => {
     proposals &&

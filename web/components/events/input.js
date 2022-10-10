@@ -26,7 +26,6 @@ export default function EventInput(props) {
 
   useEffect(() => {
     axios({ url: '/api/betting/events' }).then((res) => {
-      console.log(res.data);
       setOptions(res.data.filter((e) => !e.resolved));
       setLoading(false);
     });
