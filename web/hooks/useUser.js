@@ -187,8 +187,9 @@ export default function useUser() {
       setIsReady(true);
       if (!wunderId) {
         axios({
+          method: 'POST',
           url: '/api/users/find',
-          params: { address },
+          data: { address },
         })
           .then(({ data }) => {
             setWunderId(data.wunder_id);

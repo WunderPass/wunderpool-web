@@ -36,8 +36,9 @@ export default function usePoolListener(handleInfo) {
             address.toLowerCase(),
             (
               await axios({
+                method: 'POST',
                 url: '/api/users/find',
-                params: { address: address.toLowerCase() },
+                data: { address: address.toLowerCase() },
               })
             ).data,
             600
