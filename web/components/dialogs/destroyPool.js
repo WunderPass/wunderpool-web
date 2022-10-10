@@ -46,9 +46,6 @@ export default function DestroyPoolDialog(props) {
         })
         .catch((err) => {
           setLoading(false);
-        })
-        .then(() => {
-          handleClose();
         });
     }, 50);
   };

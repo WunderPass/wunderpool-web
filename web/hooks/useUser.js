@@ -123,8 +123,6 @@ export default function useUser() {
 
   useEffect(() => {
     if (loginMethod == 'MetaMask') {
-      console.log(window.ethereum);
-      console.log(window.ethereum?.chainId);
       setTimeout(
         () => {
           setUnsupportedChain(

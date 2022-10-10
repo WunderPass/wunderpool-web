@@ -46,14 +46,14 @@ export default function PoolHeader(props) {
 
   const handleOpenClose = () => {
     if (destroyDialog) {
-      goBack(() => removeQueryParam('closePool'));
+      goBack(() => removeQueryParam('dialog', true));
     } else {
-      addQueryParam({ closePool: 'closePool' }, false);
+      addQueryParam({ dialog: 'closePool' }, false);
     }
   };
 
   useEffect(() => {
-    setDestroyDialog(router.query?.closePool ? true : false);
+    setDestroyDialog(router.query?.dialog == 'closePool' ? true : false);
   }, [router.query]);
 
   const toggleAdvanced = () => {
