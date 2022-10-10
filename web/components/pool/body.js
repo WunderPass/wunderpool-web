@@ -33,6 +33,7 @@ export default function body(props) {
   };
 
   useEffect(() => {
+    console.log('tokenAddedEvent', tokenAddedEvent);
     if (!tokenAddedEvent) return;
     if (!tokenAddedEvent.nft) {
       addQueryParam({ tab: 2 });
@@ -40,7 +41,12 @@ export default function body(props) {
   }, [tokenAddedEvent]);
 
   useEffect(() => {
+    //DOESNT WORK CURRENTLY
+    console.log('new Proposal event entered');
+    console.log('newProposalEvent', newProposalEvent);
+
     if (!newProposalEvent) return;
+    console.log('new Proposal event');
     addQueryParam({ tab: 1 });
   }, [newProposalEvent]);
 
