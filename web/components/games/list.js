@@ -5,7 +5,6 @@ import GameCard from './gameCard';
 import TabBar from '/components/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import BettingGameDialog from '../dialogs/bettingGame';
-import { AiOutlineConsoleSql } from 'react-icons/ai';
 
 export default function GameList(props) {
   const { wunderPool } = props;
@@ -23,9 +22,12 @@ export default function GameList(props) {
     setOpenBet(router.query?.bet ? Number(router.query.bet) : null);
   }, [router.query]);
 
-  useEffect(() => {
-    addQueryParam({ gameTab: gamesTab });
-  }, [gamesTab]);
+  const handleClick = (index) => {
+    if (gamesTab == index) return;
+    index === 0
+      ? removeQueryParam('gameTab')
+      : addQueryParam({ gameTab: index });
+  };
 
   const handleOpenCloseBetting = (onlyClose = false) => {
     if (onlyClose && !openBet) return;
@@ -48,7 +50,7 @@ export default function GameList(props) {
         <TabBar
           tabs={['Open', 'History']}
           tab={gamesTab}
-          handleClick={setGamesTab}
+          handleClick={handleClick}
           proposals={wunderPool.proposals}
           parent="list"
         />

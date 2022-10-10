@@ -2,16 +2,7 @@ import { Typography, Badge } from '@mui/material';
 import { useState } from 'react';
 
 export default function TabBar(props) {
-  const { tabs, tab, handleClick, parent, proposals } = props;
-  const [currentVotingsCount, setCurrentVotingsCount] = useState(0);
-
-  useEffect(() => {
-    proposals &&
-      setCurrentVotingsCount(
-        proposals.filter((p) => !(p.executed || p.declined || p.executable))
-          .length
-      );
-  }, [proposals]);
+  const { tabs, tab, handleClick, parent } = props;
 
   return (
     <div className="flex flex-row justify-start items-center w-full overflow-x-auto">
@@ -35,7 +26,7 @@ export default function TabBar(props) {
               >
                 <div
                   className={
-                    tab == i
+                    tab == index
                       ? 'flex flex-row items-center justify-center'
                       : 'flex flex-row items-center justify-center opacity-40'
                   }
@@ -46,7 +37,7 @@ export default function TabBar(props) {
             ) : (
               <div
                 className={
-                  tab == i
+                  tab == index
                     ? 'flex flex-row items-center justify-center'
                     : 'flex flex-row items-center justify-center opacity-40'
                 }

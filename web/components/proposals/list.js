@@ -24,9 +24,12 @@ export default function ProposalList(props) {
     );
   }, [router.query]);
 
-  useEffect(() => {
-    addQueryParam({ proposalsTab: proposalsTab });
-  }, [proposalsTab]);
+  const handleClick = (index) => {
+    if (proposalsTab == index) return;
+    index === 0
+      ? removeQueryParam('proposalsTab')
+      : addQueryParam({ proposalsTab: index });
+  };
 
   const handleOpenClose = (onlyClose = false) => {
     if (onlyClose && !open) return;
@@ -53,7 +56,7 @@ export default function ProposalList(props) {
         <TabBar
           tabs={['Votings', 'History']}
           tab={proposalsTab}
-          handleClick={setProposalsTab}
+          handleClick={handleClick}
           proposals={wunderPool.proposals}
           parent="list"
         />

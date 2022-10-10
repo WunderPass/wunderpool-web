@@ -10,23 +10,20 @@ import GameList from '../games/list';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 function setBadgeFor(options, title, badge) {
-  console.log('options', options);
-  return options.map((opt) =>
-    opt.title == title ? { ...opt, badge: badge } : opt
-  );
+  return options.map((opt) => (opt.title == title ? { ...opt, badge } : opt));
 }
 
 export default function body(props) {
   const router = useRouter();
   const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
   const [tab, setTab] = useState(router.query.tab || 0);
-  const { addQueryParam } = UseAdvancedRouter();
-  const [tabOptions, setTabOptions] = useState({
-    0: 'Betting',
-    1: 'Investing',
-    2: 'Assets',
-    3: 'Transactions',
-  });
+  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
+  const [tabOptions, setTabOptions] = useState([
+    { index: 0, title: 'Betting' },
+    { index: 1, title: 'Investing' },
+    { index: 2, title: 'Assets' },
+    { index: 3, title: 'Transactions' },
+  ]);
 
   useEffect(() => {
     if (router.query?.tab == tab) return;
@@ -35,7 +32,7 @@ export default function body(props) {
 
   const handleClick = (index) => {
     if (tab == index) return;
-    addQueryParam({ tab: index });
+    index === 0 ? removeQueryParam('tab') : addQueryParam({ tab: index });
   };
 
   useEffect(() => {
@@ -53,9 +50,7 @@ export default function body(props) {
 
   useEffect(() => {
     if (wunderPool.bettingGames.length == 0) {
-      setTabOptions((opts) => {
-        setBadgeFor(opts, 'Betting', 0);
-      });
+      setTabOptions((opts) => setBadgeFor(opts, 'Betting', 0));
     } else {
       setTabOptions((opts) =>
         setBadgeFor(
