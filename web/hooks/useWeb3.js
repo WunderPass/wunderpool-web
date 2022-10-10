@@ -11,7 +11,7 @@ export default function useWeb3() {
       return useMetaMask().sendSignatureRequest(types, values, packed);
     } else if (loginMethod == 'WalletConnect') {
       return useWalletConnect().sendSignatureRequest(types, values, packed);
-    } else if (loginMethod == 'WunderPass') {
+    } else {
       return useWunderPass({
         name: 'Casama',
         accountId: 'ABCDE',
@@ -30,7 +30,7 @@ export default function useWeb3() {
       return useMetaMask().smartContractTransaction(tx, usdc, network);
     } else if (loginMethod == 'WalletConnect') {
       return useWalletConnect().smartContractTransaction(tx, usdc, network);
-    } else if (loginMethod == 'WunderPass') {
+    } else {
       return useWunderPass({
         name: 'Casama',
         accountId: 'ABCDE',
@@ -44,7 +44,7 @@ export default function useWeb3() {
       return () => {};
     } else if (loginMethod == 'WalletConnect') {
       return () => {};
-    } else if (loginMethod == 'WunderPass') {
+    } else {
       return useWunderPass({
         name: 'Casama',
         accountId: 'ABCDE',
