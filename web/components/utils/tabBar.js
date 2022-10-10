@@ -2,11 +2,16 @@ import { Typography, Badge } from '@mui/material';
 import { useState } from 'react';
 
 export default function TabBar(props) {
-  const { tabs, tab, setTab, parent } = props;
+  const { tabs, tab, handleClick, parent, proposals } = props;
+  const [currentVotingsCount, setCurrentVotingsCount] = useState(0);
 
-  const handleClick = (index) => {
-    setTab(index);
-  };
+  useEffect(() => {
+    proposals &&
+      setCurrentVotingsCount(
+        proposals.filter((p) => !(p.executed || p.declined || p.executable))
+          .length
+      );
+  }, [proposals]);
 
   return (
     <div className="flex flex-row justify-start items-center w-full overflow-x-auto">

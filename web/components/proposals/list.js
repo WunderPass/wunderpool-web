@@ -12,18 +12,20 @@ export default function ProposalList(props) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [openProposal, setOpenProposal] = useState(null);
-  const [proposalsTab, setProposalsTab] = useState(router.query.tab || 0);
+  const [proposalsTab, setProposalsTab] = useState(
+    router.query.proposalsTab || 0
+  );
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
   useEffect(() => {
-    setProposalsTab(Number(router.query?.tab || 0));
+    setProposalsTab(Number(router.query?.proposalsTab || 0));
     setOpenProposal(
       router.query?.proposal ? Number(router.query.proposal) : null
     );
   }, [router.query]);
 
   useEffect(() => {
-    addQueryParam({ tab: proposalsTab });
+    addQueryParam({ proposalsTab: proposalsTab });
   }, [proposalsTab]);
 
   const handleOpenClose = (onlyClose = false) => {
@@ -51,7 +53,8 @@ export default function ProposalList(props) {
         <TabBar
           tabs={['Votings', 'History']}
           tab={proposalsTab}
-          setTab={setProposalsTab}
+          handleClick={setProposalsTab}
+          proposals={wunderPool.proposals}
           parent="list"
         />
         <Divider className="mb-6 mt-1 opacity-70" />
@@ -64,7 +67,7 @@ export default function ProposalList(props) {
       )}
     </Stack>
   ) : (
-    <div className="container-gray border-2">
+    <div className="container-gray border-2 mt-4">
       <Stack sx={{ textAlign: 'center' }}>
         <Typography className="mt-3" variant="h5">
           No Open Proposals

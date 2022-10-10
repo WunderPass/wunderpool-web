@@ -1,10 +1,14 @@
-import { Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Stack, Typography, IconButton } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '../../services/formatter';
 import PlaceBetDialog from '../dialogs/placeBet';
 import Avatar from '../members/avatar';
 import Timer from '../proposals/timer';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
+import ShareIcon from '@mui/icons-material/Share';
+import { handleShare } from '../../services/shareLink';
 
 function ParticipantTable({ game, stake }) {
   const { participants, event } = game;
@@ -48,20 +52,50 @@ function ParticipantTable({ game, stake }) {
 }
 
 export default function GameCard(props) {
-  const { game, totalTokens, wunderPool } = props;
+  const { game, totalTokens, wunderPool, openBet, setOpenBet, handleSuccess } =
+    props;
   const [open, setOpen] = useState(false);
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const router = useRouter();
 
   const stake = (game.stake * wunderPool.usdcBalance) / totalTokens;
   const usersBet = game.participants.find(
     (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
   )?.prediction;
 
+  const handleOpenBetNow = (onlyClose = false) => {
+    if (onlyClose && !openBet) return;
+    if (onlyClose) {
+      goBack(() => removeQueryParam('bet'));
+    } else {
+      addQueryParam({ bet: game.event.id }, false);
+    }
+  };
+
+  useEffect(() => {
+    if (!router.query?.bet) {
+      setOpen(false);
+      return;
+    }
+    setOpen(true);
+    setOpenBet(router.query.bet);
+  }, [router.query]);
+
   return (
     <div className="container-gray mb-6">
       <div className="flex items-center gap-2 flex-col sm:flex-row">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
         <Stack spacing={1} flexGrow="1">
-          <Typography className="text-xl ">{game.event.name}</Typography>
+          <div className="flex flex-row items-center justify-start">
+            <Typography className="text-xl ">{game.event.name}</Typography>
+            <IconButton
+              onClick={() =>
+                handleShare(location.href, `Look at this Bet: `, handleSuccess)
+              }
+            >
+              <ShareIcon className="text-casama-blue" />
+            </IconButton>
+          </div>
           <Stack
             direction="row"
             spacing={1}
@@ -89,14 +123,19 @@ export default function GameCard(props) {
           ) : (
             <button
               className="btn-casama py-2 text-xl"
-              onClick={() => setOpen(true)}
+              onClick={() => handleOpenBetNow()}
             >
               Bet Now
             </button>
           )}
         </Stack>
       </div>
-      <PlaceBetDialog open={open} setOpen={setOpen} {...props} />
+      <PlaceBetDialog
+        open={open}
+        setOpen={setOpen}
+        handleOpenBetNow={handleOpenBetNow}
+        {...props}
+      />
     </div>
   );
 }

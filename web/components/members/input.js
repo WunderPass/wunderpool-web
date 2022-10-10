@@ -15,12 +15,6 @@ export default function MemberInput({
   const [inputTrue, setInputTrue] = useState(false);
   const friends = Object.values(user.friends);
 
-  {
-    console.log(friends);
-  }
-  {
-    console.log(members);
-  }
   const handleChange = (e, value, reason) => {
     setSelectedMembers(value);
   };
