@@ -10,10 +10,11 @@ import GameList from '../games/list';
 export default function body(props) {
   const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
   const [tabOptions, setTabOptions] = useState({
-    0: 'Proposals',
-    1: 'Assets',
-    2: 'NFTs',
+    0: 'Betting',
+    1: 'Proposals',
+    2: 'Assets',
     3: 'Transactions',
+    // 4: "NFT's",
   });
   const [tab, setTab] = useState(0);
 
@@ -35,11 +36,11 @@ export default function body(props) {
   useEffect(() => {
     if (wunderPool.bettingGames.length == 0) return;
     setTabOptions({
-      0: 'Proposals',
-      1: 'Assets',
-      2: 'NFTs',
-      3: 'Betting',
-      4: 'Transactions',
+      0: 'Betting',
+      1: 'Proposals',
+      2: 'Assets',
+      3: 'Transactions',
+      // 4: "NFT's",
     });
   }, [wunderPool.bettingGames.length]);
 
@@ -62,15 +63,14 @@ export default function body(props) {
                 parent="body"
               />
               <Divider className="mb-1 mt-1 opacity-70" />
-
+              {tabOptions[tab] == 'Betting' && <GameList {...props} />}
               {tabOptions[tab] == 'Proposals' && <ProposalList {...props} />}
               {tabOptions[tab] == 'Assets' && (
                 <TokenList tokens={wunderPool.tokens} {...props} />
               )}
-              {tabOptions[tab] == 'NFTs' && (
+              {/* {tabOptions[tab] == 'NFTs' && (
                 <NftList nfts={wunderPool.nfts} {...props} />
-              )}
-              {tabOptions[tab] == 'Betting' && <GameList {...props} />}
+              )} */}
               {tabOptions[tab] == 'Transactions' && (
                 <TransactionsList {...props} />
               )}
