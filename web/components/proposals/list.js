@@ -65,7 +65,7 @@ export default function ProposalList(props) {
       )}
     </Stack>
   ) : (
-    <div className="container-gray border-2">
+    <div className="container-gray border-2 mt-4">
       <Stack sx={{ textAlign: 'center' }}>
         <Typography className="mt-3" variant="h5">
           No Open Proposals

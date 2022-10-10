@@ -11,7 +11,7 @@ export default function body(props) {
   const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
   const [tabOptions, setTabOptions] = useState({
     0: 'Betting',
-    1: 'Proposals',
+    1: 'Investing',
     2: 'Assets',
     3: 'Transactions',
     // 4: "NFT's",
@@ -37,7 +37,7 @@ export default function body(props) {
     if (wunderPool.bettingGames.length == 0) return;
     setTabOptions({
       0: 'Betting',
-      1: 'Proposals',
+      1: 'Investing',
       2: 'Assets',
       3: 'Transactions',
       // 4: "NFT's",
@@ -64,7 +64,7 @@ export default function body(props) {
               />
               <Divider className="mb-1 mt-1 opacity-70" />
               {tabOptions[tab] == 'Betting' && <GameList {...props} />}
-              {tabOptions[tab] == 'Proposals' && <ProposalList {...props} />}
+              {tabOptions[tab] == 'Investing' && <ProposalList {...props} />}
               {tabOptions[tab] == 'Assets' && (
                 <TokenList tokens={wunderPool.tokens} {...props} />
               )}
