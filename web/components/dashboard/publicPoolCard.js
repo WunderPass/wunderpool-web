@@ -11,29 +11,22 @@ import { getNameFor } from '../../services/memberHelpers';
 export default function PoolCard(props) {
   const { pool } = props;
   const [imageUrl, setImageUrl] = useState(false);
-  const members = pool.members;
+  const members = pool.pool.members;
 
   useEffect(async () => {
     setImageUrl(null);
-    if (!pool.address) return;
+    if (!pool.pool.address) return;
     setImageUrl(
       await cacheImageByURL(
-        `pool_image_${pool.address}`,
-        `/api/proxy/pools/metadata/getImage?address=${pool.address}`,
+        `pool_image_${pool.pool.poolAddress}`,
+        `/api/proxy/pools/metadata/getImage?address=${pool.pool.poolAddress}`,
         600
       )
     );
-  }, [pool.address]);
+  }, [pool.pool.poolAddress]);
 
   return (
-    <Link
-      href={`/pools/join/${pool.address}?name=${pool.name.replaceAll(
-        '&',
-        '%26'
-      )}`}
-      passHref
-      className=""
-    >
+    <Link href={pool.inviteLink} passHref className="">
       <Paper
         className="container-white cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden w-full"
         elevation={1}
@@ -56,14 +49,14 @@ export default function PoolCard(props) {
                 )}
               </div>
               <div className="text-md font-medium pl-4 trunacte ... ">
-                {pool.name}
+                {pool.pool.poolName}
               </div>
             </div>
           </div>
 
           <div className="flex flex-row justify-between items-center w-full ">
             <Typography className="text-lg font-medium pl-5">
-              {currency(pool.totalBalance)}
+              {currency(pool.pool.usdcBalance)}
             </Typography>
             <div className="flex flex-row mr-0 md:mr-4">
               <div className="flex flex-row ">
@@ -74,7 +67,7 @@ export default function PoolCard(props) {
                     .map((member, i) => {
                       return (
                         <Avatar
-                          key={`avatar-${pool.address}-${i}`}
+                          key={`avatar-${pool.pool.address}-${i}`}
                           wunderId={member.wunderId}
                           tooltip={`${getNameFor(
                             member
@@ -99,8 +92,7 @@ export default function PoolCard(props) {
           <div className="hidden md:flex flex-row items-center justify-center lg:w-2/3 md:w-4/5 ">
             <div className="flex flex-row items-center container-gray-p-0 p-3 px-5  hover:bg-gray-300">
               <div className="text-base font-medium">
-                {pool.members?.length} / {pool.shareholderAgreement.maxMembers}{' '}
-                members
+                {pool.pool.members?.length} / {pool.pool.maxMembers} members
               </div>
               <Divider
                 className=" mx-3"

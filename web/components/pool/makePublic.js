@@ -1,17 +1,10 @@
 import axios from 'axios';
 
-export async function makePublic(
-  poolName,
-  usdcBalance,
-  inviteLink,
-  poolAddress
-) {
+export async function makePublic(pool, inviteLink) {
   try {
     const data = {
-      poolName,
-      usdcBalance,
+      pool,
       inviteLink,
-      poolAddress,
     };
 
     const res = await axios({

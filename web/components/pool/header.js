@@ -54,6 +54,7 @@ export default function PoolHeader(props) {
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
+  const [isPublic, setIsPublic] = useState(false);
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
@@ -92,6 +93,15 @@ export default function PoolHeader(props) {
     }
   };
 
+  const checkIfAlreadyPublic = async () => {
+    axios({
+      method: 'get',
+      url: `/api/pools/public/find?address=${address}`,
+    }).then((res) => {
+      setIsPublic(res.data.length != 0);
+    });
+  };
+
   const handleClose = () => {
     setOpen(false);
     setLoading(false);
@@ -113,21 +123,21 @@ export default function PoolHeader(props) {
       })
       .then(() => {
         setOpen(false);
-        makePublic(
-          wunderPool.poolName,
-          wunderPool.usdcBalance,
-          inviteLink,
-          wunderPool.poolAddress
-        )
-          .then((res) => {
-            console.log(res);
-            handleSuccess('Pool is now Public');
-            setLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            handleError(err);
-          });
+        if (inviteLink != '') {
+          makePublic(wunderPool, inviteLink)
+            .then((res) => {
+              console.log(res);
+              handleSuccess('Pool is now Public');
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.log(err);
+              handleError(err);
+            });
+        } else {
+          console.log('something failed');
+          handleError('Something went wrong please try again');
+        }
       });
   };
 
@@ -182,7 +192,7 @@ export default function PoolHeader(props) {
     setShowSaveButton(false);
     setImageUrl(null);
     setBannerUrl(null);
-    if (!address) return;
+    checkIfAlreadyPublic();
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${address}`,
@@ -283,9 +293,14 @@ export default function PoolHeader(props) {
             </div>
           )}
           <div className="flex flex-row justify-between">
-            <Typography className="text-2xl mt-4 sm:ml-24 sm:-mt-5">
-              {name}
-            </Typography>
+            <div className="flex sm:flex-row flex-col justify-start sm:items-center items-start mt-4 sm:ml-24 sm:-mt-5 ">
+              <Typography className="text-2xl">{name}</Typography>
+              {isPublic && (
+                <Typography className="text-2xl text-casama-blue font-bold ml-0 sm:ml-5">
+                  Public
+                </Typography>
+              )}
+            </div>
             <div className="flex flex-row justify-end ">
               <Typography className="text-2xl mt-4 font-medium sm:-mt-5 sm:mr-2 pl-2 text-right">
                 Cash: {currency(usdcBalance)}
@@ -336,7 +351,7 @@ export default function PoolHeader(props) {
                 }
               >
                 {/* ONLY IF IT IS NOT ACTIVE check invite member logic */}
-                <div className={wunderPool.closed ? 'hidden' : ''}>
+                <div className={wunderPool.closed || isPublic ? 'hidden' : ''}>
                   <button
                     style={{
                       transition: 'transform 200ms ease',
