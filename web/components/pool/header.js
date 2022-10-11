@@ -143,7 +143,7 @@ export default function PoolHeader(props) {
           handleError(err);
         });
     } else {
-      console.log('something failed');
+      console.log('link was empty');
       handleError('Something went wrong please try again');
     }
   };
