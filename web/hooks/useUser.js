@@ -123,8 +123,6 @@ export default function useUser() {
 
   useEffect(() => {
     if (loginMethod == 'MetaMask') {
-      console.log(window.ethereum);
-      console.log(window.ethereum?.chainId);
       setTimeout(
         () => {
           setUnsupportedChain(
@@ -189,8 +187,9 @@ export default function useUser() {
       setIsReady(true);
       if (!wunderId) {
         axios({
+          method: 'POST',
           url: '/api/users/find',
-          params: { address },
+          data: { address },
         })
           .then(({ data }) => {
             setWunderId(data.wunder_id);

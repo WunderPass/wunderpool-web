@@ -1,15 +1,17 @@
-import { Stack, Divider } from '@mui/material';
+import { Stack, Divider, Typography, Skeleton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
 import GameCard from './gameCard';
 import TabBar from '/components/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import BettingGameDialog from '../dialogs/bettingGame';
 
 export default function GameList(props) {
   const { wunderPool } = props;
   const router = useRouter();
+  const [openBet, setOpenBet] = useState(false);
   const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
-  const { addQueryParam } = UseAdvancedRouter();
+  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
   const totalTokens = useMemo(() => {
     return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
@@ -17,19 +19,38 @@ export default function GameList(props) {
 
   useEffect(() => {
     setGamesTab(Number(router.query?.gameTab || 0));
+    setOpenBet(router.query?.bet ? Number(router.query.bet) : null);
   }, [router.query]);
 
-  useEffect(() => {
-    addQueryParam({ gameTab: gamesTab });
-  }, [gamesTab]);
+  const handleClick = (index) => {
+    if (gamesTab == index) return;
+    index === 0
+      ? removeQueryParam('gameTab')
+      : addQueryParam({ gameTab: index });
+  };
 
-  return (
+  const handleOpenCloseBetting = (onlyClose = false) => {
+    if (onlyClose && !openBet) return;
+    if (openBet) {
+      goBack(() => removeQueryParam('dialog'));
+    } else {
+      addQueryParam({ dialog: 'newGroupBet' }, false);
+    }
+  };
+
+  return !wunderPool.loadingState.bets ? (
+    <Skeleton
+      variant="rectangular"
+      width="100%"
+      sx={{ height: '100px', borderRadius: 3 }}
+    />
+  ) : wunderPool.bettingGames.length > 0 ? (
     <Stack spacing={1} style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Open', 'History']}
           tab={gamesTab}
-          setTab={setGamesTab}
+          handleClick={handleClick}
           proposals={wunderPool.proposals}
           parent="list"
         />
@@ -41,6 +62,8 @@ export default function GameList(props) {
           .map((game) => {
             return (
               <GameCard
+                openBet={openBet}
+                setOpenBet={setOpenBet}
                 key={`game-card-${game.id}`}
                 game={game}
                 totalTokens={totalTokens}
@@ -54,6 +77,7 @@ export default function GameList(props) {
           .map((game) => {
             return (
               <GameCard
+                openBet={openBet}
                 key={`game-card-${game.id}`}
                 game={game}
                 totalTokens={totalTokens}
@@ -62,5 +86,29 @@ export default function GameList(props) {
             );
           })}
     </Stack>
+  ) : (
+    <div className="container-gray border-2 mt-4">
+      <Stack sx={{ textAlign: 'center' }}>
+        <Typography className="mt-3" variant="h5">
+          No Open Bets
+        </Typography>
+        <Typography className="mb-2 mt-3" variant="subtitle1">
+          Create a new bet below!
+        </Typography>
+        <button
+          className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+          onClick={() => {
+            handleOpenCloseBetting();
+          }}
+        >
+          Start Betting Game
+        </button>
+        <BettingGameDialog
+          open={openBet}
+          handleOpenClose={handleOpenCloseBetting}
+          {...props}
+        />
+      </Stack>
+    </div>
   );
 }

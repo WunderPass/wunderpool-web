@@ -9,10 +9,9 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'get',
-      url: `${
-        process.env.POOLS_SERVICE
-      }/web3Proxy/pools/byIsInvitedFor/${req.query.address?.toLowerCase()}`,
+      url: `${process.env.POOLS_SERVICE}/web3Proxy/pools/whitelists`,
       headers: headers,
+      params: { userAddress: req.query.address?.toLowerCase() },
     });
     res.status(200).json(resp.data);
   } catch (error) {

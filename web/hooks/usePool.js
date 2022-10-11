@@ -41,6 +41,7 @@ export default function usePool(
     members: false,
     tokens: false,
     proposals: false,
+    bets: false,
   });
 
   const [userAddress, setUserAddress] = useState(userAddr);
@@ -105,8 +106,9 @@ export default function usePool(
   //           address.toLowerCase(),
   //           (
   //             await axios({
+  //               method: 'POST',
   //               url: '/api/users/find',
-  //               params: { address: address.toLowerCase() },
+  //               data: { address: address.toLowerCase() },
   //             })
   //           ).data,
   //           600
@@ -336,8 +338,10 @@ export default function usePool(
           event: events.find((e) => e.id == g.eventId),
         }))
       );
+      updateLoadingState('bets', true);
     } catch (error) {
       handleError('Could not load Games');
+      updateLoadingState('bets', true);
     }
   };
 
@@ -446,8 +450,9 @@ export default function usePool(
 
       const resolvedMembers = (
         await axios({
+          method: 'POST',
           url: '/api/users/find',
-          params: { addresses: pool_members.map((m) => m.members_address) },
+          data: { addresses: pool_members.map((m) => m.members_address) },
         })
       ).data;
 

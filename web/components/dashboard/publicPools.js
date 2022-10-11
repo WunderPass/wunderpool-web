@@ -3,6 +3,7 @@ import { fetchAllPools, formatPool } from '/services/contract/pools';
 import PoolCard from '../../components/dashboard/poolCard';
 import PublicPoolCard from '../../components/dashboard/publicPoolCard';
 import { Paper, Typography } from '@mui/material';
+import axios from 'axios';
 
 export default function PublicPools() {
   const [visiblePools, setVisiblePools] = useState([]);
@@ -18,29 +19,47 @@ export default function PublicPools() {
     });
   };
 
-  useEffect(() => {
-    setVisiblePools([]);
-    setAllPools([]);
-    fetchAllPools().then((pools) => {
-      const validPools = pools
-        .filter(
-          ({ pool_name, active, closed, pool_treasury }) =>
-            active &&
-            !closed &&
-            pool_treasury.act_balance > 3 &&
-            !/test/i.test(pool_name)
-        )
-        .sort(
-          (a, b) => b.pool_treasury.act_balance - a.pool_treasury.act_balance
-        );
-      setAllPools(validPools);
-
-      validPools.slice(0, 3).map((pool) => {
-        formatPool(pool).then((p) => {
+  const getAllPublicPools = async () => {
+    axios({
+      method: 'get',
+      url: '/api/pools/public/getAll',
+    }).then((res) => {
+      console.log(res.data);
+      setVisiblePools([]);
+      setAllPools([]);
+      const orderedPools = res.data.sort(
+        (a, b) => b.pool.usdcBalance - a.pool.usdcBalance
+      );
+      setAllPools(orderedPools);
+      orderedPools.slice(0, 3).map((pool) => {
+        orderedPools.map((p) => {
           if (p) setVisiblePools((prev) => [...prev, p]);
         });
       });
     });
+  };
+
+  useEffect(() => {
+    getAllPublicPools();
+    // fetchAllPools().then((pools) => {
+    //   const validPools = pools
+    //     .filter(
+    //       ({ pool_name, active, closed, pool_treasury }) =>
+    //         active &&
+    //         !closed &&
+    //         pool_treasury.act_balance > 3 &&
+    //         !/test/i.test(pool_name)
+    //     )
+    //     .sort(
+    //       (a, b) => b.pool_treasury.act_balance - a.pool_treasury.act_balance
+    //     );
+    //   setAllPools(validPools);
+    //   validPools.slice(0, 3).map((pool) => {
+    //     formatPool(pool).then((p) => {
+    //       if (p) setVisiblePools((prev) => [...prev, p]);
+    //     });
+    //   });
+    // });
   }, []);
 
   return (
@@ -54,13 +73,13 @@ export default function PublicPools() {
           .map((pool) => {
             return (
               <div
-                key={`public-pool-card-${pool.address}`}
+                key={`public-pool-card-${pool.poolAddress}`}
                 className="min-w-full sm:min-w-[30%]"
               >
-                <div className="sm:hidden flex">
+                {/* <div className="sm:hidden flex">
                   <PoolCard pool={pool} isPublic={true} />
-                </div>
-                <div className="hidden sm:flex">
+                </div> */}
+                <div className="flex">
                   <PublicPoolCard pool={pool} />
                 </div>
               </div>

@@ -1,40 +1,6 @@
-import useWunderPass from '/hooks/useWunderPass';
 import { ethers } from 'ethers';
-import { initLauncherEpsilon, initPoolEpsilon } from './init';
 import { postAndWaitForTransaction } from '../../backendApi';
 import useWeb3 from '../../../hooks/useWeb3';
-
-export function fetchWhitelistedUserPoolsEpsilon(userAddress) {
-  return new Promise(async (resolve, reject) => {
-    const [poolLauncher] = initLauncherEpsilon();
-    const whiteListPools = await poolLauncher.whiteListedPoolsOfMember(
-      userAddress
-    );
-    const memberPools = await poolLauncher.poolsOfMember(userAddress);
-
-    const poolAddresses = whiteListPools.filter(
-      (pool) => !memberPools.includes(pool)
-    );
-
-    const pools = await Promise.all(
-      poolAddresses.map(async (addr) => {
-        const [wunderPool] = initPoolEpsilon(addr);
-        try {
-          return {
-            address: addr,
-            name: await wunderPool.name(),
-            version: { version: 'EPSILON', number: 5 },
-            isMember: false,
-            closed: await wunderPool.poolClosed(),
-          };
-        } catch (err) {
-          return null;
-        }
-      })
-    );
-    resolve(pools.filter((elem) => elem));
-  });
-}
 
 export function addToWhiteListWithSecretEpsilon(
   poolAddress,

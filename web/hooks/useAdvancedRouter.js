@@ -1,12 +1,10 @@
 import { useRouter } from 'next/router';
-import { useHistory } from './useHistory';
 
 export default function UseAdvancedRouter() {
   const router = useRouter();
-  const historyManager = useHistory();
 
   function goBack(fallBack) {
-    if (historyManager.canGoBack()) {
+    if (history.state?.idx > 0) {
       router.back();
     } else {
       fallBack();

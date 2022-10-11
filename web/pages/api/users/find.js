@@ -20,13 +20,6 @@ async function getUserByWunderId(wunderId) {
 }
 
 async function getUsersByAddresses(addresses) {
-  var newTypeAddresses = new Array();
-  if (typeof addresses == 'string') {
-    newTypeAddresses[0] = addresses;
-  } else {
-    newTypeAddresses = addresses;
-  }
-
   try {
     const resp = await axios({
       method: 'post',
@@ -36,7 +29,7 @@ async function getUsersByAddresses(addresses) {
       headers: {
         Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
       },
-      data: newTypeAddresses.map((a) => a.toLowerCase()),
+      data: addresses.map((a) => a.toLowerCase()),
     });
     return [200, resp.data];
   } catch (error) {
@@ -46,15 +39,15 @@ async function getUsersByAddresses(addresses) {
 }
 
 export default async function handler(req, res) {
-  const { wunderId, address } = req.query || {};
+  const { wunderId, address, addresses } = req.body || {};
   let status, data;
   if (wunderId) {
     [status, data] = await getUserByWunderId(wunderId);
   } else if (address) {
     [status, data] = await getUsersByAddresses([address]);
     data = status == 200 ? data[0] : data;
-  } else if (req.query['addresses[]']) {
-    [status, data] = await getUsersByAddresses(req.query['addresses[]']);
+  } else if (addresses) {
+    [status, data] = await getUsersByAddresses(addresses);
   } else {
     [status, data] = [403, { error: 'Address/Addresses or WunderId missing' }];
   }

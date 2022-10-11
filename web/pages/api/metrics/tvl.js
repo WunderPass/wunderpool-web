@@ -111,13 +111,23 @@ export default async function handler(req, res) {
       return;
     }
 
-    const poolResult = (
+    const activePools = (
       await axios({
         method: 'get',
-        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools`,
+        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools?active=true`,
         headers,
       })
     ).data;
+
+    const liquidatedPools = (
+      await axios({
+        method: 'get',
+        url: `${process.env.POOLS_SERVICE}/web3Proxy/pools?active=false`,
+        headers,
+      })
+    ).data;
+
+    const poolResult = [...activePools, ...liquidatedPools];
 
     const pools = await Promise.all(
       poolResult.map(async (pool) => {

@@ -1,47 +1,82 @@
 import { Skeleton, Divider } from '@mui/material';
 import ProposalList from '/components/proposals/list';
+import { useRouter } from 'next/router';
 import TokenList from '/components/tokens/list';
 import NftList from '/components/tokens/nfts';
 import TransactionsList from '/components/pool/transactions';
 import { useState, useEffect } from 'react';
 import TabBar from '/components/utils/tabBar';
 import GameList from '../games/list';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+
+function setBadgeFor(options, title, badge) {
+  return options.map((opt) => (opt.title == title ? { ...opt, badge } : opt));
+}
 
 export default function body(props) {
+  const router = useRouter();
   const { wunderPool, tokenAddedEvent, newProposalEvent } = props;
-  const [tabOptions, setTabOptions] = useState({
-    0: 'Proposals',
-    1: 'Assets',
-    2: 'NFTs',
-    3: 'Transactions',
-  });
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(router.query.tab || 0);
+  const { addQueryParam, removeQueryParam } = UseAdvancedRouter();
+  const [tabOptions, setTabOptions] = useState([
+    { index: 0, title: 'Betting' },
+    { index: 1, title: 'Investing' },
+    { index: 2, title: 'Assets' },
+    { index: 3, title: 'Transactions' },
+  ]);
+
+  useEffect(() => {
+    if (router.query?.tab == tab) return;
+    setTab(Number(router.query?.tab || 0));
+  }, [router.query]);
+
+  const handleClick = (index) => {
+    if (tab == index) return;
+    index === 0 ? removeQueryParam('tab') : addQueryParam({ tab: index });
+  };
 
   useEffect(() => {
     if (!tokenAddedEvent) return;
-
-    if (tokenAddedEvent.nft) {
-      setTab(2);
-    } else {
-      setTab(1);
-    }
+    removeQueryParam('tab');
+    addQueryParam({ tab: 2 });
   }, [tokenAddedEvent]);
 
   useEffect(() => {
+    //DOESNT WORK CURRENTLY
     if (!newProposalEvent) return;
-    setTab(0);
+    removeQueryParam('tab');
+    addQueryParam({ tab: 1 });
   }, [newProposalEvent]);
 
   useEffect(() => {
-    if (wunderPool.bettingGames.length == 0) return;
-    setTabOptions({
-      0: 'Proposals',
-      1: 'Assets',
-      2: 'NFTs',
-      3: 'Betting',
-      4: 'Transactions',
-    });
-  }, [wunderPool.bettingGames.length]);
+    if (wunderPool.bettingGames.length == 0) {
+      setTabOptions((opts) => setBadgeFor(opts, 'Betting', 0));
+    } else {
+      setTabOptions((opts) =>
+        setBadgeFor(
+          opts,
+          'Betting',
+          wunderPool.bettingGames.filter((g) => !g.closed).length
+        )
+      );
+    }
+  }, [wunderPool.bettingGames]);
+
+  useEffect(() => {
+    if (wunderPool.proposals.length == 0) {
+      setTabOptions((opts) => setBadgeFor(opts, 'Proposals', 0));
+    } else {
+      setTabOptions((opts) =>
+        setBadgeFor(
+          opts,
+          'Investing',
+          wunderPool.proposals.filter(
+            (p) => !(p.executed || p.declined || p.hasVoted)
+          ).length
+        )
+      );
+    }
+  }, [wunderPool.proposals]);
 
   return (
     <div className="">
@@ -56,22 +91,26 @@ export default function body(props) {
           <div className="flex container-white ">
             <div className="flex flex-col w-full">
               <TabBar
-                tabs={Object.values(tabOptions)}
+                tabs={tabOptions}
                 tab={tab}
                 setTab={setTab}
                 parent="body"
+                handleClick={handleClick}
               />
               <Divider className="mb-1 mt-1 opacity-70" />
 
-              {tabOptions[tab] == 'Proposals' && <ProposalList {...props} />}
-              {tabOptions[tab] == 'Assets' && (
+              {tabOptions[tab].title == 'Betting' && <GameList {...props} />}
+
+              {tabOptions[tab].title == 'Investing' && (
+                <ProposalList {...props} />
+              )}
+              {tabOptions[tab].title == 'Assets' && (
                 <TokenList tokens={wunderPool.tokens} {...props} />
               )}
-              {tabOptions[tab] == 'NFTs' && (
+              {tabOptions[tab].title == 'NFTs' && (
                 <NftList nfts={wunderPool.nfts} {...props} />
               )}
-              {tabOptions[tab] == 'Betting' && <GameList {...props} />}
-              {tabOptions[tab] == 'Transactions' && (
+              {tabOptions[tab].title == 'Transactions' && (
                 <TransactionsList {...props} />
               )}
             </div>
