@@ -8,15 +8,26 @@ import { BsLink45Deg } from 'react-icons/bs';
 import { BsImage } from 'react-icons/bs';
 import { FaLongArrowAltDown } from 'react-icons/fa';
 import Link from 'next/link';
-import { Typography, Collapse, Divider, Box } from '@mui/material';
+import {
+  Typography,
+  Collapse,
+  Divider,
+  Box,
+  DialogContent,
+  DialogTitle,
+  Dialog,
+} from '@mui/material';
 import axios from 'axios';
 import { cacheImageByURL, deleteItemDB } from '../../services/caching';
 const FormData = require('form-data');
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
+import { makePublic } from '/components/pool/makePublic';
+import TransactionFrame from '../utils/transactionFrame';
 
 export default function PoolHeader(props) {
-  const { name, address, wunderPool, isMobile, handleSuccess } = props;
+  const { name, address, wunderPool, isMobile, handleSuccess, handleError } =
+    props;
   const {
     usdcBalance,
     isMember,
@@ -41,6 +52,9 @@ export default function PoolHeader(props) {
   const [bannerUrl, setBannerUrl] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [showSaveButton, setShowSaveButton] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [inviteLink, setInviteLink] = useState('');
+  const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
@@ -76,6 +90,50 @@ export default function PoolHeader(props) {
       setBannerUrl(URL.createObjectURL(i));
       setShowSaveButton(true);
     }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setLoading(false);
+  };
+
+  const createInviteLinkForPublicPool = async (maxMembers) => {
+    const secret = [...Array(33)]
+      .map(() => (~~(Math.random() * 36)).toString(36))
+      .join('');
+    wunderPool
+      .createInviteLink(secret, maxMembers)
+      .then((res) => {
+        setInviteLink(
+          `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`
+        );
+      })
+      .catch((err) => {
+        handleError(err);
+      })
+      .then(() => {
+        setOpen(false);
+        makePublic(
+          wunderPool.poolName,
+          wunderPool.usdcBalance,
+          inviteLink,
+          wunderPool.poolAddress
+        )
+          .then((res) => {
+            console.log(res);
+            handleSuccess('Pool is now Public');
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            handleError(err);
+          });
+      });
+  };
+
+  const handleMakePublic = async () => {
+    setLoading(true);
+    await createInviteLinkForPublicPool(wunderPool.maxMembers);
   };
 
   const uploadImageToServer = async () => {
@@ -269,17 +327,86 @@ export default function PoolHeader(props) {
                   </div>
                 </div>
               </button>
-              <button
-                style={{
-                  transition: 'transform 200ms ease',
-                  transform:
-                    isMember && showMoreInfo ? 'scaleY(1)' : 'scaleY(0)',
-                }}
-                className="btn-danger p-3 px-4"
-                onClick={handleOpenClose}
+
+              <div
+                className={
+                  !showMoreInfo
+                    ? 'sm:hidden'
+                    : 'flex sm:flex-row flex-col justify-center items-center'
+                }
               >
-                Close Pool
-              </button>
+                {/* ONLY IF IT IS NOT ACTIVE check invite member logic */}
+                <div className={wunderPool.closed ? 'hidden' : ''}>
+                  <button
+                    style={{
+                      transition: 'transform 200ms ease',
+                      transform:
+                        isMember && showMoreInfo ? 'scaleY(1)' : 'scaleY(0)',
+                    }}
+                    className="btn-casama p-3 px-4 mr-2 my-2 sm:my-0 w-full sm:w-auto"
+                    onClick={() => setOpen(true)}
+                  >
+                    Make Public
+                  </button>
+                </div>
+                <button
+                  style={{
+                    transition: 'transform 200ms ease',
+                    transform:
+                      isMember && showMoreInfo ? 'scaleY(1)' : 'scaleY(0)',
+                  }}
+                  className="btn-danger p-3 px-4 w-full sm:w-auto"
+                  onClick={handleOpenClose}
+                >
+                  Close Pool
+                </button>
+                <Dialog
+                  fullWidth
+                  maxWidth="sm"
+                  open={open}
+                  onClose={handleClose}
+                  PaperProps={{
+                    style: { borderRadius: 12 },
+                  }}
+                >
+                  <DialogTitle>
+                    Are you sure you want to make this pool public?
+                  </DialogTitle>
+                  <DialogContent>You can't revert this change.</DialogContent>
+                  <TransactionFrame open={loading} />
+
+                  {!loading && (
+                    <div className="flex flex-row justify-between px-5 py-4">
+                      <button
+                        style={{
+                          transition: 'transform 200ms ease',
+                          transform:
+                            isMember && showMoreInfo
+                              ? 'scaleY(1)'
+                              : 'scaleY(0)',
+                        }}
+                        className="btn-casama p-3 px-2 mx-1 mr-2 w-full"
+                        onClick={handleMakePublic}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        style={{
+                          transition: 'transform 200ms ease',
+                          transform:
+                            isMember && showMoreInfo
+                              ? 'scaleY(1)'
+                              : 'scaleY(0)',
+                        }}
+                        className="btn-danger p-3 px-2 mx-1 ml-2 w-full"
+                        onClick={handleClose}
+                      >
+                        No
+                      </button>
+                    </div>
+                  )}
+                </Dialog>
+              </div>
             </div>
             <Collapse in={showMoreInfo}>
               <div className="lg:flex lg:flex-row lg:w-3/4 lg:justify-between">
