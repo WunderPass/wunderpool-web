@@ -165,8 +165,6 @@ export default async function handler(req, res) {
       })
     );
 
-    const activePools = pools.filter((p) => p.active && p.totalBalance > 0);
-
     const poolData = ['Zeta', 'Epsilon'].map((version) => {
       const versionFilter = (p) => p.launcher.launcher_version == version;
       const versionPools = pools.filter(versionFilter);
