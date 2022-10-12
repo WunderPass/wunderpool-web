@@ -19,6 +19,8 @@ export default async function handler(req, res) {
     let response;
 
     if (newMember) {
+      console.log('in New Member');
+
       body.invited_address = newMember;
 
       response = await axios({
@@ -30,6 +32,8 @@ export default async function handler(req, res) {
         data: body,
       });
     } else if (secret && validFor) {
+      console.log('in Secrect amd valid');
+
       body.secret = secret;
       body.validFor = validFor;
 
@@ -47,8 +51,10 @@ export default async function handler(req, res) {
         .json({ error: 'Invalid Invite - newMember or secret required' });
     }
 
+    console.log('response.data', response.data);
     res.status(200).json(response.data);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 }

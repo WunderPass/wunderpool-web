@@ -71,9 +71,6 @@ export default function PublicPools(props) {
                   key={`public-pool-card-${pool.poolAddress}`}
                   className="min-w-full sm:min-w-[30%]"
                 >
-                  {/* <div className="sm:hidden flex">
-                    <PoolCard pool={pool} isPublic={true} />
-                  </div> */}
                   <div className="flex">
                     <PublicPoolCard pool={pool} />
                   </div>

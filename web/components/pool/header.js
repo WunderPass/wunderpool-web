@@ -122,14 +122,14 @@ export default function PoolHeader(props) {
     wunderPool
       .createInviteLink(secret, maxMembers)
       .then((res) => {
-        setInviteLink(
-          `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`
-        );
-        makePoolPublic();
+        let link = `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`;
+        setInviteLink(link);
+        makePoolPublic(link);
       })
       .catch((err) => {
         console.log(err);
         handleError(err);
+        setLoading(false);
       });
   };
 
@@ -138,10 +138,10 @@ export default function PoolHeader(props) {
     await createInviteLinkForPublicPool(wunderPool.maxMembers);
   };
 
-  const makePoolPublic = () => {
+  const makePoolPublic = (link) => {
     setOpen(false);
-    if (inviteLink != '') {
-      makePublic(address, inviteLink)
+    if (link != '') {
+      makePublic(address, link)
         .then((res) => {
           console.log(res);
           handleSuccess('Pool is now Public');
@@ -150,10 +150,12 @@ export default function PoolHeader(props) {
         .catch((err) => {
           console.log(err);
           handleError(err);
+          setLoading(false);
         });
     } else {
       console.log('link was empty');
-      handleError('Something went wrong please try again');
+      handleError('Something went wrong, please try again');
+      setLoading(false);
     }
   };
 
