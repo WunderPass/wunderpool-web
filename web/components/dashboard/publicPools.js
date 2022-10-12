@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchPoolData, formatPool } from '/services/contract/pools';
 import PublicPoolCard from '../../components/dashboard/publicPoolCard';
+import PoolCard from '../../components/dashboard/poolCard';
+
 import { Paper, Typography } from '@mui/material';
 import axios from 'axios';
 
@@ -70,8 +72,8 @@ export default function PublicPools(props) {
                   className="min-w-full sm:min-w-[30%]"
                 >
                   {/* <div className="sm:hidden flex">
-                <PoolCard pool={pool} isPublic={true} />
-              </div> */}
+                    <PoolCard pool={pool} isPublic={true} />
+                  </div> */}
                   <div className="flex">
                     <PublicPoolCard pool={pool} />
                   </div>
