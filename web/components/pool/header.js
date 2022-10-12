@@ -56,6 +56,7 @@ export default function PoolHeader(props) {
   const [inviteLink, setInviteLink] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showMakePublicButton, setShowMakePublicButton] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
@@ -70,6 +71,13 @@ export default function PoolHeader(props) {
   useEffect(() => {
     setDestroyDialog(router.query?.dialog == 'closePool' ? true : false);
   }, [router.query]);
+
+  useEffect(() => {
+    if (!wunderPool.version) return;
+    let canBeMadePublic =
+      !wunderPool.closed && !isPublic && wunderPool.version.number > 5;
+    setShowMakePublicButton(canBeMadePublic);
+  }, [wunderPool.version, wunderPool.closed]);
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
@@ -117,11 +125,12 @@ export default function PoolHeader(props) {
         setInviteLink(
           `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`
         );
+        makePoolPublic();
       })
       .catch((err) => {
+        console.log(err);
         handleError(err);
-      })
-      .then(() => makePoolPublic());
+      });
   };
 
   const handleMakePublicButton = async () => {
@@ -353,16 +362,8 @@ export default function PoolHeader(props) {
                 }
               >
                 {/* ONLY IF IT IS NOT ACTIVE check invite member logic */}
-                <div
-                  className={
-                    wunderPool.version &&
-                    (wunderPool.closed ||
-                    isPublic ||
-                    wunderPool.version.number > 5
-                      ? 'hidden'
-                      : '')
-                  }
-                >
+
+                <div className={showMakePublicButton ? '' : 'hidden'}>
                   <button
                     style={{
                       transition: 'transform 200ms ease',

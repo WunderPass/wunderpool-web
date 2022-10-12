@@ -5,6 +5,7 @@ export default async function handler(req, res) {
     const { poolAddress, userAddress, newMember, secret, validFor, signature } =
       req.body;
 
+    console.log('req.body', req.body);
     const headers = {
       'Content-Type': 'application/json',
       authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
