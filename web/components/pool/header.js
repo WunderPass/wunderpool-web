@@ -132,7 +132,7 @@ export default function PoolHeader(props) {
   const makePoolPublic = () => {
     setOpen(false);
     if (inviteLink != '') {
-      makePublic(wunderPool, inviteLink)
+      makePublic(address, inviteLink)
         .then((res) => {
           console.log(res);
           handleSuccess('Pool is now Public');
@@ -353,7 +353,16 @@ export default function PoolHeader(props) {
                 }
               >
                 {/* ONLY IF IT IS NOT ACTIVE check invite member logic */}
-                <div className={wunderPool.closed || isPublic ? 'hidden' : ''}>
+                <div
+                  className={
+                    wunderPool.version &&
+                    (wunderPool.closed ||
+                    isPublic ||
+                    wunderPool.version.number > 5
+                      ? 'hidden'
+                      : '')
+                  }
+                >
                   <button
                     style={{
                       transition: 'transform 200ms ease',

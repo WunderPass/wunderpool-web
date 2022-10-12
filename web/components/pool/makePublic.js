@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export async function makePublic(pool, inviteLink) {
+export async function makePublic(poolAddress, inviteLink) {
   try {
     const data = {
-      pool,
+      poolAddress,
       inviteLink,
     };
 

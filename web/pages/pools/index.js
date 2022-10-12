@@ -155,7 +155,7 @@ export default function Pools(props) {
                 )}
               </div>
             </div>
-            <PublicPools />
+            <PublicPools pools={user.pools} {...props} />
           </div>
 
           <NewPoolDialog
