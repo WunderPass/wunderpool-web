@@ -9,10 +9,10 @@ export default async function handler(req, res) {
       );
     }
 
-    const { pool, inviteLink } = req.body;
+    const { poolAddress, inviteLink } = req.body;
 
     const publicPool = {
-      pool,
+      poolAddress,
       inviteLink,
     };
 

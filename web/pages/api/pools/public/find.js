@@ -8,8 +8,7 @@ export default async function handler(req, res) {
       );
       const publicPools = json.filter((pool) =>
         req.query.address
-          ? pool.pool.poolAddress.toLowerCase() ==
-            req.query.address.toLowerCase()
+          ? pool.poolAddress.toLowerCase() == req.query.address.toLowerCase()
           : true
       );
 

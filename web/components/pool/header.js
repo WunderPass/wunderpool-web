@@ -121,29 +121,31 @@ export default function PoolHeader(props) {
       .catch((err) => {
         handleError(err);
       })
-      .then(() => {
-        setOpen(false);
-        if (inviteLink != '') {
-          makePublic(wunderPool, inviteLink)
-            .then((res) => {
-              console.log(res);
-              handleSuccess('Pool is now Public');
-              setLoading(false);
-            })
-            .catch((err) => {
-              console.log(err);
-              handleError(err);
-            });
-        } else {
-          console.log('something failed');
-          handleError('Something went wrong please try again');
-        }
-      });
+      .then(() => makePoolPublic());
   };
 
-  const handleMakePublic = async () => {
+  const handleMakePublicButton = async () => {
     setLoading(true);
     await createInviteLinkForPublicPool(wunderPool.maxMembers);
+  };
+
+  const makePoolPublic = () => {
+    setOpen(false);
+    if (inviteLink != '') {
+      makePublic(address, inviteLink)
+        .then((res) => {
+          console.log(res);
+          handleSuccess('Pool is now Public');
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          handleError(err);
+        });
+    } else {
+      console.log('link was empty');
+      handleError('Something went wrong please try again');
+    }
   };
 
   const uploadImageToServer = async () => {
@@ -351,7 +353,16 @@ export default function PoolHeader(props) {
                 }
               >
                 {/* ONLY IF IT IS NOT ACTIVE check invite member logic */}
-                <div className={wunderPool.closed || isPublic ? 'hidden' : ''}>
+                <div
+                  className={
+                    wunderPool.version &&
+                    (wunderPool.closed ||
+                    isPublic ||
+                    wunderPool.version.number > 5
+                      ? 'hidden'
+                      : '')
+                  }
+                >
                   <button
                     style={{
                       transition: 'transform 200ms ease',
@@ -401,7 +412,7 @@ export default function PoolHeader(props) {
                               : 'scaleY(0)',
                         }}
                         className="btn-casama p-3 px-2 mx-1 mr-2 w-full"
-                        onClick={handleMakePublic}
+                        onClick={handleMakePublicButton}
                       >
                         Yes
                       </button>
