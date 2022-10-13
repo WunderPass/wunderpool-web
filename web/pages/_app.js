@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '../components/dialogs/switchChainAlert';
+import * as React from 'react';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
