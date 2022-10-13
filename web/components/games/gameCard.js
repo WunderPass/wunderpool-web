@@ -145,7 +145,7 @@ export default function GameCard(props) {
             </Typography>
           </div>
 
-          <div className="">
+          <div className="flex ">
             {game.participants.length > 0 && (
               <ParticipantTable game={game} stake={stake} />
             )}
@@ -155,7 +155,7 @@ export default function GameCard(props) {
               </div>
             ) : (
               <button
-                className="btn-casama py-2 text-xl"
+                className="btn-casama py-2 px-6 text-xl"
                 onClick={() => handleOpenBetNow()}
               >
                 Bet Now

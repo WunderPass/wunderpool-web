@@ -56,6 +56,7 @@ export default function PoolHeader(props) {
   const [inviteLink, setInviteLink] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showMakePublicButton, setShowMakePublicButton] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
@@ -70,6 +71,13 @@ export default function PoolHeader(props) {
   useEffect(() => {
     setDestroyDialog(router.query?.dialog == 'closePool' ? true : false);
   }, [router.query]);
+
+  useEffect(() => {
+    if (!wunderPool.version) return;
+    let canBeMadePublic =
+      !wunderPool.closed && !isPublic && wunderPool.version.number > 5;
+    setShowMakePublicButton(canBeMadePublic);
+  }, [wunderPool.version, wunderPool.closed]);
 
   const toggleAdvanced = () => {
     setShowMoreInfo(!showMoreInfo);
@@ -114,14 +122,15 @@ export default function PoolHeader(props) {
     wunderPool
       .createInviteLink(secret, maxMembers)
       .then((res) => {
-        setInviteLink(
-          `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`
-        );
+        let link = `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`;
+        setInviteLink(link);
+        makePoolPublic(link);
       })
       .catch((err) => {
+        console.log(err);
         handleError(err);
-      })
-      .then(() => makePoolPublic());
+        setLoading(false);
+      });
   };
 
   const handleMakePublicButton = async () => {
@@ -129,10 +138,10 @@ export default function PoolHeader(props) {
     await createInviteLinkForPublicPool(wunderPool.maxMembers);
   };
 
-  const makePoolPublic = () => {
+  const makePoolPublic = (link) => {
     setOpen(false);
-    if (inviteLink != '') {
-      makePublic(address, inviteLink)
+    if (link != '') {
+      makePublic(address, link)
         .then((res) => {
           console.log(res);
           handleSuccess('Pool is now Public');
@@ -141,10 +150,12 @@ export default function PoolHeader(props) {
         .catch((err) => {
           console.log(err);
           handleError(err);
+          setLoading(false);
         });
     } else {
       console.log('link was empty');
-      handleError('Something went wrong please try again');
+      handleError('Something went wrong, please try again');
+      setLoading(false);
     }
   };
 
@@ -353,16 +364,8 @@ export default function PoolHeader(props) {
                 }
               >
                 {/* ONLY IF IT IS NOT ACTIVE check invite member logic */}
-                <div
-                  className={
-                    wunderPool.version &&
-                    (wunderPool.closed ||
-                    isPublic ||
-                    wunderPool.version.number > 5
-                      ? 'hidden'
-                      : '')
-                  }
-                >
+
+                <div className={showMakePublicButton ? '' : 'hidden'}>
                   <button
                     style={{
                       transition: 'transform 200ms ease',
