@@ -8,10 +8,17 @@ import {
   Checkbox,
   Typography,
   Divider,
+  Chip,
 } from '@mui/material';
 import Link from 'next/link';
 import { forwardRef, useState, useEffect } from 'react';
 import CreateYourWunderPass from '../auth/createYourWunderPass';
+import { BsApple } from 'react-icons/bs';
+import { SiSepa } from 'react-icons/si';
+import { RiVisaFill } from 'react-icons/ri';
+import { SiMastercard } from 'react-icons/si';
+import { FaGooglePay } from 'react-icons/fa';
+import { FaCcPaypal } from 'react-icons/fa';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -46,20 +53,75 @@ export default function TopUpAlert(props) {
       onClose={handleClose}
       TransitionComponent={Transition}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Deposit Funds</DialogTitle>
+      <DialogTitle sx={{ textAlign: 'center' }}>Manage Funds</DialogTitle>
       <DialogContent>
         {user.loginMethod == 'WunderPass' ? (
-          <Stack spacing={2}>
+          <Stack spacing={4} className="flex w-full ">
             <Alert severity={user.usdBalance > 1 ? 'info' : 'warning'}>
-              You will receive the digital currency USD Coin (USDC) in your
-              wallet at current market rates in exchange for depositing fiat
-              (USD or EUR).
+              <span className="font-bold">Buy </span>
+              <span className="">or </span>
+              <span className="font-bold">Sell </span>
+              <span>
+                your USDC for fiat money directly with Transak. Supports SEPA,
+                Visa, Mastercard, ApplePay and GooglePay.
+              </span>
+              <div className="flex flex-col sm:flex-row items-center justify-center my-5 ">
+                <Chip
+                  className="items-center p-2 my-1 flex bg-casama-extra-light-blue text-casama-blue  mr-4"
+                  size="medium"
+                  label={<SiSepa className="text-5xl" />}
+                />
+                <Chip
+                  className="items-center p-2 my-1 flex bg-casama-extra-light-blue text-casama-blue  mr-4"
+                  size="medium"
+                  label={<RiVisaFill className="text-4xl" />}
+                />
+                <Chip
+                  className="items-center p-2  my-1 flex bg-casama-extra-light-blue text-casama-blue  mr-4"
+                  size="medium"
+                  label={<SiMastercard className="text-4xl" />}
+                />
+                <Chip
+                  className="items-center my-1  p-2 flex bg-casama-extra-light-blue text-casama-blue  mr-4"
+                  size="medium"
+                  label={<FaGooglePay className="text-5xl" />}
+                />
+
+                <Chip
+                  className="items-center p-2 my-1 flex bg-casama-extra-light-blue text-casama-blue  mr-4"
+                  size="medium"
+                  label={<BsApple className="text-2xl" />}
+                />
+              </div>
+              <a
+                href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}`}
+                target="_blank"
+              >
+                <button className="btn btn-info w-full">Use Transak</button>
+              </a>
             </Alert>
-            <Link
-              href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
-            >
-              <button className="btn btn-info">Select a Payment Method</button>
-            </Link>
+
+            <Alert severity={user.usdBalance > 1 ? 'info' : 'warning'}>
+              Manage your wallet in WunderPass and decide which provider you
+              want to use there.
+              <div className="flex flex-row items-center justify-center my-5  ">
+                <Chip
+                  className="items-center p-2 my-1 sm:flex bg-casama-extra-light-blue text-casama-blue  mr-4"
+                  size="medium"
+                  label={<FaCcPaypal className="text-3xl" />}
+                />
+              </div>
+              <a
+                className="flex w-full "
+                href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+                target="_blank"
+              >
+                <button className="btn btn-info w-full">
+                  Go to WunderPass
+                </button>
+              </a>
+            </Alert>
+
             {user.usdBalance < 1 && !user.checkedTopUp && (
               <div className="flex flex-row justify-start items-center mt-2">
                 <Checkbox
