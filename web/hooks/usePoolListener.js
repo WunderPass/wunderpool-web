@@ -195,9 +195,7 @@ export default function usePoolListener(handleInfo) {
 
   const startListener = async () => {
     if (eventSource) return;
-    const es = new EventSource(
-      `http://localhost:${process.env.SOCKET_PORT}/subscribe`
-    );
+    const es = new EventSource(`${process.env.SOCKET_URL}/subscribe`);
 
     es.addEventListener('POOL_CREATED', handlePoolCreated);
     es.addEventListener('USER_JOINED', handleUserJoined);
