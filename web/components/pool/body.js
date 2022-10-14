@@ -44,8 +44,10 @@ export default function body(props) {
   useEffect(() => {
     //DOESNT WORK CURRENTLY
     if (!newProposalEvent) return;
-    removeQueryParam('tab');
-    addQueryParam({ tab: 1 });
+    setTimeout(() => {
+      removeQueryParam('tab');
+      addQueryParam({ tab: 1 });
+    }, 1000);
   }, [newProposalEvent]);
 
   useEffect(() => {

@@ -19,7 +19,7 @@ import CustomHeader from '/components/utils/customHeader';
 import PublicPools from '/components/dashboard/publicPools';
 
 export default function Pools(props) {
-  const { user, handleSuccess } = props;
+  const { user, handleSuccess, updateListener } = props;
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
@@ -48,6 +48,10 @@ export default function Pools(props) {
   useEffect(() => {
     setOpen(router.query?.createPool ? true : false);
   }, [router.query]);
+
+  useEffect(() => {
+    if (user.pools.length > 0) updateListener(user.pools, null, user.address);
+  }, [user.pools]);
 
   return (
     <>
