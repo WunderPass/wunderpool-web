@@ -109,7 +109,7 @@ export default function PoolCard(props) {
                 <div className="flex flex-row items-center container-gray-p-0 p-3 px-5  hover:bg-gray-300">
                   <div className="text-base font-medium">
                     {pool.members?.length} /{' '}
-                    {pool.shareholderAgreement.maxMembers} members
+                    {pool.shareholderAgreement?.maxMembers} members
                   </div>
                   <Divider
                     className=" mx-3"
@@ -158,7 +158,7 @@ export default function PoolCard(props) {
                 <div className="flex flex-row items-center container-gray-p-0 p-3 px-6 mt-5 hover:bg-gray-300">
                   <div className="text-base font-medium">
                     {pool.members?.length} /{' '}
-                    {pool.shareholderAgreement.maxMembers}
+                    {pool.shareholderAgreement?.maxMembers}
                   </div>
                   <Divider
                     className=" mx-2"
