@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, MenuItem } from '@mui/material';
+import { Menu, MenuItem, Chip, Divider } from '@mui/material';
 import Link from 'next/link';
 
 const myPools = (props) => {
@@ -36,7 +36,17 @@ const myPools = (props) => {
                 passHref
               >
                 <MenuItem>
-                  {pool.name} ({pool.version?.name})
+                  <div className="flex flex-row items-center justify-between  w-full">
+                    <div>{pool.name}</div>
+                    <div className="ml-2">
+                      <Chip
+                        className="items-center hidden sm:flex bg-casama-extra-light-blue text-casama-blue  "
+                        size="small"
+                        label={(pool.version?.name).toLowerCase()}
+                      />
+                    </div>
+                  </div>
+                  <Divider className="my-2 opacity-80 font-black" />
                 </MenuItem>
               </Link>
             );
