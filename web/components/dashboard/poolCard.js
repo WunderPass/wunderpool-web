@@ -105,7 +105,7 @@ export default function PoolCard(props) {
                     .map((member, i) => {
                       return (
                         <Avatar
-                          key={`avatar-${pool.address}-${i}`}
+                          key={`avatar-${pool.address}-${member.address}`}
                           wunderId={member.wunderId}
                           tooltip={`${getNameFor(
                             member

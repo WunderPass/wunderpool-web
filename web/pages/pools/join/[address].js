@@ -10,6 +10,8 @@ import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
 import CustomHeader from '../../../components/utils/customHeader';
 import { fetchPoolData } from '/services/contract/pools';
+import Avatar from '../../../components/members/avatar';
+import { getNameFor } from '../../../services/memberHelpers';
 
 function InfoBlock({ label, value }) {
   return (
@@ -130,7 +132,7 @@ function InputJoinAmount(props) {
 export default function JoinPool(props) {
   const router = useRouter();
   const {
-    setupPoolListener,
+    updateListener,
     user,
     metaTagInfo,
     handleSuccess,
@@ -194,7 +196,7 @@ export default function JoinPool(props) {
   };
 
   const loginCallback = () => {
-    setupPoolListener(address, user.address);
+    updateListener(user.pools, address, user.address);
     router.push(`/pools/${address}?name=${wunderPool.poolName}`);
   };
 
@@ -254,6 +256,23 @@ export default function JoinPool(props) {
             maxMembers={wunderPool.maxMembers}
             totalBalance={wunderPool.totalBalance}
           />
+          <div className="flex flex-row">
+            {wunderPool.members &&
+              wunderPool.members.slice(0, 10).map((member, i) => {
+                return (
+                  <Avatar
+                    key={`avatar-${member.address}`}
+                    wunderId={member.wunderId}
+                    tooltip={`${getNameFor(member)}: ${member.share.toFixed(
+                      0
+                    )}%`}
+                    text={member.wunderId ? member.wunderId : '0-X'}
+                    color={['green', 'blue', 'red'][i % 3]}
+                    i={i}
+                  />
+                );
+              })}
+          </div>
           {wunderPool.closed && (
             <Alert severity="warning" className="w-full items-center my-1">
               This Pool is already closed

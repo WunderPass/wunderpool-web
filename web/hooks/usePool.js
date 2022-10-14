@@ -468,9 +468,9 @@ export default function usePool(
               (m) => m.wallet_address == member.address
             );
 
-            member.wunderId = user.wunder_id;
-            member.firstName = user.firstname;
-            member.lastName = user.lastname;
+            member.wunderId = user?.wunder_id;
+            member.firstName = user?.firstname;
+            member.lastName = user?.lastname;
           } catch (err) {
             console.log(err);
           }

@@ -11,13 +11,11 @@ import { useMemo, useState, useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import TokenInput from '../tokens/input';
 import TransactionFrame from '../utils/transactionFrame';
-import { currency, round, usdc, polyValueToUsd } from '/services/formatter';
+import { currency, round } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
-import axios from 'axios';
 
 export default function makeProposal(props) {
-  const { open, wunderPool, handleSuccess, handleError, handleOpenClose } =
-    props;
+  const { open, wunderPool, handleError, handleOpenClose } = props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [proposalName, setProposalName] = useState('');
   const [proposalDescription, setProposalDescription] = useState('');
@@ -67,8 +65,6 @@ export default function makeProposal(props) {
           value
         )
         .then((res) => {
-          handleSuccess(`Created Proposal to buy ${tokenSymbol}`);
-          wunderPool.determineProposals();
           handleOpenClose(true);
         })
         .catch((err) => {

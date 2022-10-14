@@ -8,14 +8,14 @@ import usePool from '/hooks/usePool';
 import PoolDetails from '/components/pool/assetDetails';
 import PoolMembers from '/components/pool/members';
 import { currency } from '/services/formatter';
-import { fetchPoolName } from '/services/contract/pools';
 import CustomHeader from '../../components/utils/customHeader';
 
 export default function Pool(props) {
   const router = useRouter();
   const {
-    setupPoolListener,
+    updateListener,
     user,
+    poolName,
     metaTagInfo,
     tokenAddedEvent,
     votedEvent,
@@ -27,12 +27,11 @@ export default function Pool(props) {
     handleError,
   } = props;
   const [address, setAddress] = useState(null);
-  const [name, setName] = useState('');
   const [fundDialog, setFundDialog] = useState(false);
   const wunderPool = usePool(user.address, address, handleError);
 
   const loginCallback = () => {
-    setupPoolListener(address, user.address);
+    updateListener(user.pools, address, user.address);
     // window.location.reload();
   };
 
@@ -40,32 +39,24 @@ export default function Pool(props) {
     if (!address || !user.address) return;
     if (
       votedEvent &&
-      votedEvent?.voter.toLowerCase() == user.address.toLowerCase()
+      votedEvent.voter?.toLowerCase() == user.address.toLowerCase()
     )
       return;
     if (
       newProposalEvent &&
-      newProposalEvent?.creator.toLowerCase() == user.address.toLowerCase()
-    )
-      return;
-    if (
-      proposalExecutedEvent &&
-      proposalExecutedEvent?.executor.toLowerCase() ==
-        user.address.toLowerCase()
+      newProposalEvent.user_address?.toLowerCase() == user.address.toLowerCase()
     )
       return;
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {
       if (proposalExecutedEvent) {
-        fetchPoolName(address)
-          .then(() => {
-            wunderPool.determineProposals();
-            wunderPool.determinePoolData();
-          })
-          .catch(() => {
-            handleInfo('Pool was closed.');
-            user.fetchUsdBalance();
-            router.push('/pools');
-          });
+        if (proposalExecutedEvent.proposal_action == 'LIQUIDATE_POOL') {
+          handleInfo('Pool was closed.');
+          user.fetchUsdBalance();
+          router.push('/pools');
+        } else {
+          wunderPool.determineProposals();
+          wunderPool.determinePoolData();
+        }
       } else {
         wunderPool.determineProposals();
       }
@@ -97,7 +88,6 @@ export default function Pool(props) {
   useEffect(() => {
     if (router.isReady && router.query.address && user.address) {
       setAddress(router.query.address);
-      setName(router.query.name);
       wunderPool.setPoolAddress(router.query.address);
       wunderPool.setUserAddress(user.address);
     }
@@ -147,7 +137,7 @@ export default function Pool(props) {
         <Grid container spacing={2} sx={{ position: 'relative' }}>
           <Grid item xs={12} md={8}>
             <PoolHeader
-              name={name}
+              name={poolName}
               address={address}
               wunderPool={wunderPool}
               isMobile={false}
@@ -205,15 +195,18 @@ export async function getServerSideProps(context) {
       await fetch(`https://app.casama.io/api/pools/show?address=${address}`)
     ).json();
 
-    const balance = currency(pool_treasury.act_balance);
+    const balance = currency(pool_treasury?.act_balance || 0);
 
     return {
       props: {
         metaTagInfo: {
           title: `Casama - ${pool_name} - ${balance}`,
           description: pool_description,
-          imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=${pool_name}&balance=${balance}&maxMembers=${shareholder_agreement.max_members}&members=${pool_members.length}`,
+          imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=${pool_name}&balance=${balance}&maxMembers=${
+            shareholder_agreement?.max_members || 1
+          }&members=${pool_members?.length || 1}`,
         },
+        poolName: pool_name,
       },
     };
   } catch (error) {
@@ -224,6 +217,7 @@ export async function getServerSideProps(context) {
           title: 'Casama',
           imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=Casama`,
         },
+        poolName: 'Unknown Pool',
       },
     };
   }

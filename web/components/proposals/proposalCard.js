@@ -60,7 +60,14 @@ function OpenProposalDialog(props) {
       </Typography>
 
       <div className="mt-4 mb-8">
-        {!proposal.executed && !proposal.declined && <Timer {...props} />}
+        {!proposal.executed && !proposal.declined && (
+          <Timer
+            start={proposal.createdAt}
+            end={proposal.deadline}
+            text="Days Left to Vote"
+            bar
+          />
+        )}
       </div>
 
       <VotingResults yes={yesVotes} no={noVotes} total={totalVotes} />

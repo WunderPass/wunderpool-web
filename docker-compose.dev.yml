@@ -11,6 +11,29 @@ services:
     stdin_open: true
     env_file:
       - ./.env
+  socket:
+    build:
+      context: ./socket
+    restart: always
+    command: bash -c "npm install --unsafe-perm && npm run dev"
+    volumes:
+      - './socket:/socket'
+    ports:
+      - 5001:5001
+    stdin_open: true
+    env_file:
+      - ./.env
+  # nginx:
+  #   image: nginx
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/dev.d:/etc/nginx/conf.d
+  #     - ./nginx/html:/var/www/html
+  #   ports:
+  #     - "81:81"
+  #   depends_on:
+  #     - web
+  #     - socket
   cypress:
     image: "cypress/included:3.2.0"
     depends_on:

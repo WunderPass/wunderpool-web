@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
+import TopUpAlert from '/components/dialogs/topUpAlert';
 
 function BalanceBox(props) {
   const { user } = props;
@@ -10,6 +11,7 @@ function BalanceBox(props) {
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [totalBalance, setTotalBalance] = useState(0);
   const [open, setOpen] = useState(false);
+  const [topUpOpen, setTopUpOpen] = useState(false);
   const [remainingPoolsBalance, setRemainingPoolsBalance] = useState(0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
@@ -143,25 +145,27 @@ function BalanceBox(props) {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col w-full ">
-              {user.usdBalance == 0 && (
-                <div>
-                  <div className="flex flex-row items-center">
-                    <Typography className="pt-5 py-1">
-                      No cash yet to create pools, please top up your account{' '}
-                    </Typography>
-                  </div>
+            <>
+              <div className="flex flex-col w-full ">
+                {user.usdBalance == 0 && (
+                  <div>
+                    <div className="flex flex-row items-center">
+                      <Typography className="pt-5 py-1">
+                        No cash yet to create pools, please top up your account{' '}
+                      </Typography>
+                    </div>
 
-                  <Link
-                    href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
-                  >
-                    <button className="btn-casama w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors">
-                      Deposit Funds
+                    <button
+                      className="btn-casama w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors"
+                      onClick={() => setTopUpOpen(true)}
+                    >
+                      Manage Funds
                     </button>
-                  </Link>
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+              </div>
+              <TopUpAlert open={topUpOpen} setOpen={setTopUpOpen} user={user} />
+            </>
           )}
         </div>
       </div>

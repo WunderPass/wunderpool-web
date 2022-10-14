@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { toast } from 'react-toastify';
 
 export default function useNotification() {
@@ -21,20 +22,31 @@ export default function useNotification() {
     return 'Somenthing went wrong';
   };
 
+  const Msg = ({ msg, opts }) => (
+    <div className="flex items-center justify-between">
+      {msg}
+      {opts.href && opts.btn && (
+        <Link href={opts.href}>
+          <button className="btn-casama py-1 px-3">{opts.btn}</button>
+        </Link>
+      )}
+    </div>
+  );
+
   const handleError = (msg, opts = {}) => {
     toast.error(stringifyError(msg));
   };
 
   const handleSuccess = (msg, opts = {}) => {
-    toast.success(stringifyError(msg));
+    toast.success(<Msg msg={msg} opts={opts} />);
   };
 
   const handleInfo = (msg, opts = {}) => {
-    toast.info(stringifyError(msg));
+    toast.info(<Msg msg={msg} opts={opts} />);
   };
 
   const handleWarning = (msg, opts = {}) => {
-    toast.warn(stringifyError(msg));
+    toast.warn(<Msg msg={msg} opts={opts} />);
   };
 
   return [handleError, handleSuccess, handleInfo, handleWarning];
