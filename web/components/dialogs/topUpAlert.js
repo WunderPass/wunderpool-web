@@ -31,6 +31,26 @@ export default function TopUpAlert(props) {
   const [isApple, setIsApple] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [checked, setChecked] = useState(null);
+  // const [userData, setUserData] = useState(null);
+
+  // useEffect(() => {
+  //   let userData = {
+  //     firstName: user.firstName,
+  //     lastName: user.lastName,
+  //     email: user.email,
+  //     mobileNumber: user.phoneNumber,
+  //     dob: '-',
+  //     address: {
+  //       addressLine1: '-',
+  //       addressLine2: '-',
+  //       city: 'Berlin',
+  //       state: '-',
+  //       postCode: '10178',
+  //       countryCode: 'GER',
+  //     },
+  //   };
+  //   setUserData(userData);
+  // }, [user]);
 
   useEffect(() => {
     setIsApple(window.navigator.vendor.toLowerCase().match(/apple/));
@@ -142,8 +162,11 @@ export default function TopUpAlert(props) {
                   />
                 </div>
               </div>
+              {console.log(user)}
               <a
-                href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}`}
+                //https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238 = QUERY PARAMS
+                // href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&cryptoCurrencyCode=USDC&defaultNetwork=polygon&walletAddress=${user.address}&redirectURL=https://app.casama.io/pools`}
+                href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&walletAddress=${user.address}&redirectURL=https://app.casama.io/pools`}
                 target="_blank"
               >
                 <button className="btn-casama-white p-2 w-full">
