@@ -36,17 +36,6 @@ export default function Pool(props) {
   };
 
   const reactToEvent = () => {
-    if (!address || !user.address) return;
-    if (
-      votedEvent &&
-      votedEvent.voter?.toLowerCase() == user.address.toLowerCase()
-    )
-      return;
-    if (
-      newProposalEvent &&
-      newProposalEvent.user_address?.toLowerCase() == user.address.toLowerCase()
-    )
-      return;
     if (votedEvent || newProposalEvent || proposalExecutedEvent) {
       if (proposalExecutedEvent) {
         if (proposalExecutedEvent.proposal_action == 'LIQUIDATE_POOL') {

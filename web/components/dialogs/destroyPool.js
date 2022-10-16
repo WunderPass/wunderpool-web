@@ -16,14 +16,7 @@ import { formatTokenBalance } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
 
 export default function DestroyPoolDialog(props) {
-  const {
-    open,
-    handleOpenClose,
-    name,
-    wunderPool,
-    handleSuccess,
-    handleError,
-  } = props;
+  const { open, handleOpenClose, wunderPool } = props;
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -40,8 +33,6 @@ export default function DestroyPoolDialog(props) {
           'This proposal will close the pool and split the remaining tokens and funds amongst all members.'
         )
         .then((res) => {
-          handleSuccess(`Created new Proposal to close the Pool ${name}`);
-          wunderPool.determineProposals();
           handleClose();
         })
         .catch((err) => {
