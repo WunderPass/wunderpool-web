@@ -46,8 +46,6 @@ export default function SellTokenDialog(props) {
           amount
         )
         .then((res) => {
-          handleSuccess(`Created Proposal to sell ${name}`);
-          wunderPool.determineProposals();
           handleClose();
         })
         .catch((err) => {
