@@ -105,10 +105,7 @@ export default function useUser() {
   };
 
   const logOut = () => {
-    localStorage.removeItem('address');
-    localStorage.removeItem('wunderId');
-    localStorage.removeItem('checkedTopUp');
-    localStorage.removeItem('loginMethod');
+    localStorage.clear();
     setWunderId(null);
     setAddress(null);
     setCheckedTopUp(null);

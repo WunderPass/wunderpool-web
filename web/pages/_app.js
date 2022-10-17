@@ -11,7 +11,7 @@ import muiTheme from '/theme/mui';
 import Navbar from '/components/layout/navbar';
 import TopUpAlert from '../components/dialogs/topUpAlert';
 import Script from 'next/script';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '../components/dialogs/switchChainAlert';
@@ -20,6 +20,8 @@ import * as React from 'react';
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
   const user = useUser();
+  const [isFetched, setIsFetched] = useState(false);
+
   const [handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
   const [
@@ -56,6 +58,18 @@ function WunderPool({ Component, pageProps }) {
     offset: '30px',
     transition: transitions.SCALE,
   };
+
+  //reroute user if not logged in
+  useEffect(() => {
+    if (user.loggedIn === null && !isFetched) {
+      setIsFetched(true);
+
+      return;
+    }
+    if (user.loggedIn === null) {
+      router.push('/');
+    }
+  }, [user.loggedIn, isFetched]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {

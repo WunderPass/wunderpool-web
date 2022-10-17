@@ -84,8 +84,8 @@ export default function LoginWithMetaMask({ onSuccess, handleError }, props) {
         {/* You cannot change height and width with hot reload */}
         <MetaMaskLogo width={40} height={40} />
       </div>
-      <div className="pl-5 ">
-        {loading ? 'Connecting...' : 'Login with MetaMask'}
+      <div className="pl-2 ">
+        {loading ? 'Connecting...' : 'Connect with MetaMask'}
       </div>
     </button>
   );
