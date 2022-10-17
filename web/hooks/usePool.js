@@ -417,7 +417,7 @@ export default function usePool(
 
       setPoolName(pool_name);
       setExists(active);
-      const vers = versionLookup[launcher.launcher_version];
+      const vers = versionLookup[launcher.launcher_version?.toLowerCase()];
       setVersion(vers);
       setClosed(closed);
 

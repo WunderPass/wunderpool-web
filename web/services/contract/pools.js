@@ -218,7 +218,8 @@ export async function formatPool(pool, user = null) {
         : []
     );
     const usdBalance = pool.pool_treasury.act_balance;
-    const version = versionLookup[pool.launcher.launcher_version];
+    const version =
+      versionLookup[pool.launcher.launcher_version?.toLowerCase()];
     const cashInTokens = tokens
       .map((tkn) => tkn.usdValue)
       .reduce((a, b) => a + b, 0);

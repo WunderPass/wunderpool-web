@@ -7,6 +7,7 @@ import {
 } from '/services/contract/pools';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
+import { fetchUserFriends } from '../services/memberHelpers';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
@@ -80,13 +81,7 @@ export default function useUser() {
 
   const fetchFriends = async () => {
     try {
-      await axios({
-        method: 'get',
-        url: '/api/users/getFriends',
-        params: { wunderId: wunderId },
-      }).then((res) => {
-        setFriends(res.data);
-      });
+      setFriends(await fetchUserFriends(wunderId));
     } catch (error) {
       console.log('Could not Load Friends', error);
     }

@@ -23,7 +23,7 @@ function notifyClients(title, event) {
 const eventList = [
   'POOL_CREATED',
   'USER_JOINED',
-  'USER_IVITED',
+  'USER_INVITED',
   'TRANSACTION_REVERTED',
   'TRANSACTION_FAILED',
   'PROPOSAL_CREATED',
