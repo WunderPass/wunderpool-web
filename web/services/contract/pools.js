@@ -10,7 +10,7 @@ import { fundPoolGamma, joinPoolGamma } from './gamma/pools';
 import { addToWhiteListWithSecretEpsilon } from './epsilon/pools';
 import axios from 'axios';
 import { httpProvider } from './provider';
-import { approve } from './token';
+import { approveUSDC } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
 
 export function createPool(
@@ -58,7 +58,11 @@ export function createPool(
     const formData = new FormData();
     formData.append('pool_image', image);
     formData.append('pool', JSON.stringify(body));
-    approve(creator, '0xB5Ae136D3817d8116Fce70Ac47e856fc484dafAe', usdc(amount))
+    approveUSDC(
+      creator,
+      '0xB5Ae136D3817d8116Fce70Ac47e856fc484dafAe',
+      usdc(amount)
+    )
       .then(() => {
         axios({
           method: 'POST',

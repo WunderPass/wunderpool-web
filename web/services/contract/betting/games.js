@@ -64,33 +64,17 @@ export async function registerParticipant(
   gameId,
   prediction,
   participant,
-  wunderId,
-  tokenAddress,
-  stake
+  wunderId
 ) {
-  const [distributor, provider] = initDistributor();
+  const { openPopup, sendSignatureRequest } = useWeb3();
+  const popup = openPopup('sign');
+  const [distributor] = initDistributor();
   try {
-    const { smartContractTransaction, sendSignatureRequest } = useWeb3();
-    const token = new ethers.Contract(
-      tokenAddress,
-      ['function increaseAllowance(address,uint)'],
-      provider
-    );
-    const populatedTx = await token.populateTransaction.increaseAllowance(
-      distributor.address,
-      stake,
-      {
-        gasPrice: await gasPrice(),
-        from: participant,
-      }
-    );
-
-    const approveTx = await smartContractTransaction(populatedTx);
-    await provider.waitForTransaction(approveTx.hash);
-
     const { signature } = await sendSignatureRequest(
       ['uint256', 'address', 'uint256[]'],
-      [gameId, distributor.address, prediction]
+      [gameId, distributor.address, prediction],
+      true,
+      popup
     );
 
     const tx = await connectContract(distributor).registerParticipantForUser(

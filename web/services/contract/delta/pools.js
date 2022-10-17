@@ -1,10 +1,9 @@
 import { usdc } from '/services/formatter';
-import useWunderPass from '/hooks/useWunderPass';
 import { gasPrice } from '/services/contract/init';
 import { initLauncherDelta, initPoolDelta } from './init';
-import { approve } from '../token';
+import { approveUSDC } from '../token';
 import { postAndWaitForTransaction } from '../../backendApi';
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 export function fetchWhitelistedUserPoolsDelta(userAddress) {
   return new Promise(async (resolve, reject) => {
@@ -40,7 +39,7 @@ export function fetchWhitelistedUserPoolsDelta(userAddress) {
 
 export function joinPoolDelta(poolAddress, userAddress, value, secret) {
   return new Promise((resolve, reject) => {
-    approve(userAddress, poolAddress, usdc(value))
+    approveUSDC(userAddress, poolAddress, usdc(value))
       .then(async () => {
         const body = {
           poolAddress: poolAddress,
