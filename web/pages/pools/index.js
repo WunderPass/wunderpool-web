@@ -17,9 +17,10 @@ import { AiOutlineDownCircle } from 'react-icons/ai';
 import PoolList from '/components/dashboard/poolList';
 import CustomHeader from '/components/utils/customHeader';
 import PublicPools from '/components/dashboard/publicPools';
+import QrCode from '/components/utils/qrCode';
 
 export default function Pools(props) {
-  const { user, handleSuccess, updateListener } = props;
+  const { user, handleSuccess, updateListener, isMobile } = props;
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
@@ -85,26 +86,47 @@ export default function Pools(props) {
                     </button>
                   </Tooltip>
                 </div>
-
-                <div
-                  className={
-                    showAddress
-                      ? ' border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 '
-                      : ' border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 hidden'
-                  }
-                >
-                  <CopyToClipboard
-                    text={user?.address}
-                    onCopy={() => handleSuccess('address copied!')}
-                  >
-                    <span className=" cursor-pointer text-md">
-                      <div className="flex flex-row items-center">
-                        <div className="truncate ...">{user?.address}</div>
-                        <MdContentCopy className="text-gray-500 ml-4" />
+                {showAddress && (
+                  <div className="flex flex-row">
+                    <div
+                      className={
+                        showAddress
+                          ? 'border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 '
+                          : 'border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 hidden'
+                      }
+                    >
+                      <CopyToClipboard
+                        text={user?.address}
+                        onCopy={() => handleSuccess('address copied!')}
+                      >
+                        <span className=" cursor-pointer text-md">
+                          <div className="flex flex-row items-center">
+                            <div className="truncate ...">{user?.address}</div>
+                            <MdContentCopy className="text-gray-500 ml-4 text-2xl sm:text-base" />
+                          </div>
+                        </span>
+                      </CopyToClipboard>
+                    </div>
+                    <div className="ml-6 -mt-9 sm:-mt-16 border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3">
+                      <div className="hidden sm:flex ">
+                        <QrCode
+                          text={user?.address || 'https://casama.io'}
+                          dark={false}
+                          size="3"
+                          {...props}
+                        />
                       </div>
-                    </span>
-                  </CopyToClipboard>
-                </div>
+                      <div className="sm:hidden flex ">
+                        <QrCode
+                          text={user?.address || 'https://casama.io'}
+                          dark={false}
+                          size="4"
+                          {...props}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               <button
                 className="btn-casama w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
