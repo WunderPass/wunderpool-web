@@ -24,15 +24,16 @@ function WunderPool({ Component, pageProps }) {
 
   const [handleError, handleSuccess, handleInfo, handleWarning] =
     useNotification();
-  const [
-    setupPoolListener,
-    votedEvent,
-    newProposalEvent,
+  const {
+    updateListener,
+    newPoolEvent,
     newMemberEvent,
-    tokenAddedEvent,
+    newProposalEvent,
+    votedEvent,
     proposalExecutedEvent,
+    tokenAddedEvent,
     resetEvents,
-  ] = usePoolListener(handleInfo);
+  } = usePoolListener(handleInfo);
 
   const appProps = Object.assign(
     {
@@ -41,12 +42,13 @@ function WunderPool({ Component, pageProps }) {
       handleSuccess,
       handleInfo,
       handleWarning,
-      setupPoolListener,
-      votedEvent,
-      newProposalEvent,
+      updateListener,
+      newPoolEvent,
       newMemberEvent,
-      tokenAddedEvent,
+      newProposalEvent,
+      votedEvent,
       proposalExecutedEvent,
+      tokenAddedEvent,
       resetEvents,
     },
     pageProps

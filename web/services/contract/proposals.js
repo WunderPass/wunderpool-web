@@ -205,7 +205,6 @@ function createBackendProposal(options) {
           .then((res) => {
             waitForTransaction(res.data)
               .then((tx) => {
-                console.log(tx);
                 resolve(tx);
               })
               .catch((err) => {

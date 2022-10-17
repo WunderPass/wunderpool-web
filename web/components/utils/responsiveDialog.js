@@ -35,7 +35,7 @@ export default function ResponsiveDialog(props) {
       fullScreen={fullScreen}
       maxWidth={maxWidth || 'sm'}
       className={dialogClass || 'w-full'}
-      open={open}
+      open={Boolean(open)}
       onClose={onCloseDialog || onClose}
       PaperProps={{
         style: { borderRadius: fullScreen ? 0 : 12 },

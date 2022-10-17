@@ -1,22 +1,26 @@
 import { DialogActions, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
-import { waitForTransaction } from '/services/contract/provider';
-import { getPoolAddressFromTx } from '/services/contract/pools';
 import { useRouter } from 'next/router';
 import NewPoolConfigStep from './configStep';
 import NewPoolInviteStep from './inviteStep';
 import NewPoolVotingStep from './votingStep';
 import NewPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
-const FormData = require('form-data');
-import axios from 'axios';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '../../utils/responsiveDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function NewPoolDialog(props) {
-  const { open, setOpen, handleSuccess, handleInfo, handleError, user } = props;
+  const {
+    open,
+    setOpen,
+    handleSuccess,
+    handleInfo,
+    handleError,
+    user,
+    newPoolEvent,
+  } = props;
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -50,6 +54,8 @@ export default function NewPoolDialog(props) {
   const [showCustomPerson, setShowCustomPerson] = useState(false);
 
   const [members, setMembers] = useState([]);
+
+  const [txHash, setTxHash] = useState(null);
 
   const configProps = {
     user,
@@ -104,22 +110,6 @@ export default function NewPoolDialog(props) {
   const inviteProps = {
     members,
     setMembers,
-  };
-
-  //main functions
-  const uploadImageToServer = async (address) => {
-    const formData = new FormData();
-    formData.append('pool_image', image);
-    formData.append('poolAddress', address);
-    axios({
-      method: 'post',
-      url: '/api/pools/metadata/setImage',
-      data: formData,
-    })
-      .then(() => {})
-      .catch((err) => {
-        console.error(err);
-      });
   };
 
   const handleClose = () => {
@@ -187,23 +177,7 @@ export default function NewPoolDialog(props) {
         .then((res) => {
           handleClose();
           handleInfo('Waiting for Blockchain Transaction');
-          waitForTransaction(res)
-            .then((tx) => {
-              handleSuccess(`Created Pool "${poolName}"`);
-              getPoolAddressFromTx(res)
-                .then(({ address, name }) => {
-                  user.fetchUsdBalance();
-                  router.push(`/pools/${address}?name=${name}`);
-                  // uploadImageToServer(address.toLowerCase());
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
-            })
-            .catch((err) => {
-              console.log(err);
-              handleError('Pool Creation failed');
-            });
+          setTxHash(res);
         })
         .catch((err) => {
           setLoading(false);
@@ -213,6 +187,16 @@ export default function NewPoolDialog(props) {
         });
     }, 10);
   };
+
+  useEffect(() => {
+    if (txHash) {
+      if (newPoolEvent?.hash?.toLowerCase() == txHash?.toLowerCase()) {
+        handleSuccess(`Created Pool "${newPoolEvent.name}"`);
+        user.fetchUsdBalance();
+        router.push(`/pools/${newPoolEvent.address}`);
+      }
+    }
+  }, [txHash, newPoolEvent?.hash]);
 
   useEffect(() => {
     setDisabled(false);

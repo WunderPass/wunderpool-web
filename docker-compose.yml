@@ -11,6 +11,18 @@ services:
     stdin_open: true
     env_file:
       - ./.env
+  socket:
+    build:
+      context: ./socket
+    restart: always
+    command: bash -c "npm install --unsafe-perm && npm run start"
+    volumes:
+      - './socket:/socket'
+    ports:
+      - 5000:5000
+    stdin_open: true
+    env_file:
+      - ./.env
   nginx:
     image: nginx
     restart: always
@@ -24,6 +36,7 @@ services:
       - '443:443'
     depends_on:
       - web
+      - socket
   certbot:
     image: certbot/certbot
     volumes:
