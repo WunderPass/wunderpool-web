@@ -53,6 +53,8 @@ export default function useWunderPass(config) {
               window.removeEventListener('message', handleMessage);
               event.source.window.close();
               resolve(event.data);
+            } else if (event.error) {
+              reject(event.error);
             }
           }
         };

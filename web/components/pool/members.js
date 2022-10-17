@@ -50,7 +50,7 @@ export default function PoolMembers(props) {
             {isMember ? (
               <>
                 <CapTable members={members} {...props} />
-                {version.number > 3 && !closed && (
+                {version?.number > 3 && !closed && (
                   <div>
                     <button
                       className="btn-casama items-center w-full mb-3 mt-3 py-3 text-md"
