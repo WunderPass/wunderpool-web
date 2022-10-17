@@ -5,10 +5,11 @@ import ResponsiveDialog from '../utils/responsiveDialog';
 import TransactionFrame from '../utils/transactionFrame';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '../../services/shareLink';
+import { approve } from '../../services/contract/token';
+import { distributorAddress } from '../../services/contract/betting/init';
 
 export default function PlaceBetDialog({
   open,
-  setOpen,
   game,
   user,
   wunderPool,
@@ -17,17 +18,27 @@ export default function PlaceBetDialog({
   handleOpenBetNow,
 }) {
   const [loading, setLoading] = useState(false);
+  const [approved, setApproved] = useState(false);
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
 
-  useEffect(() => {
-    if (!open) {
-      setLoading(false);
-      setGuessOne('');
-      setGuessTwo('');
-      setOpen(false);
-    }
-  }, [open]);
+  const handleClose = () => {
+    setLoading(false);
+    setApproved(false);
+    setGuessOne('');
+    setGuessTwo('');
+    handleOpenBetNow(true);
+  };
+
+  const handleApprove = () => {
+    setLoading(true);
+    approve(user.address, distributorAddress, game.stake, game.tokenAddress)
+      .then((res) => {
+        setApproved(true);
+      })
+      .catch(handleError)
+      .then(() => setLoading(false));
+  };
 
   const handleCreate = () => {
     setLoading(true);
@@ -35,15 +46,11 @@ export default function PlaceBetDialog({
       game.id,
       [Number(guessOne), Number(guessTwo)],
       user.address,
-      user.wunderId || wunderPool.resolveMember(user.address),
-      game.tokenAddress,
-      game.stake
+      user.wunderId || wunderPool.resolveMember(user.address)
     )
       .then((res) => {
-        console.log(res);
         handleSuccess(`Placed Bet on ${game.event.name}`);
-        //setOpen(false);
-        handleOpenBetNow(true);
+        handleClose();
         wunderPool.determineBettingGames();
       })
       .catch(handleError)
@@ -54,7 +61,7 @@ export default function PlaceBetDialog({
     <ResponsiveDialog
       maxWidth="sm"
       open={open}
-      onClose={() => handleOpenBetNow(true)}
+      onClose={handleClose}
       title="Place Your Bet"
       actionButtons={
         <IconButton
@@ -69,17 +76,20 @@ export default function PlaceBetDialog({
         !loading && (
           <DialogActions className="flex items-center justify-center mx-4">
             <div className="flex flex-col items-center justify-center w-full">
-              <button
-                className="btn-neutral w-full py-3"
-                onClick={() => handleOpenBetNow(true)}
-              >
+              <button className="btn-neutral w-full py-3" onClick={handleClose}>
                 Cancel
               </button>
               <button
-                type="submit"
+                className="btn-casama w-full py-3 mt-2"
+                onClick={handleApprove}
+                disabled={loading || !guessOne || !guessTwo || approved}
+              >
+                Approve
+              </button>
+              <button
                 className="btn-casama w-full py-3 mt-2"
                 onClick={handleCreate}
-                disabled={loading || !guessOne || !guessTwo}
+                disabled={loading || !guessOne || !guessTwo || !approved}
               >
                 Bet
               </button>
@@ -91,7 +101,7 @@ export default function PlaceBetDialog({
       {loading ? (
         <div className="px-6 pb-1">
           <Typography className="text-md text-center" color="GrayText">
-            Placing Bet...
+            {approved ? 'Placing Bet...' : 'Approving...'}
           </Typography>
         </div>
       ) : (
@@ -121,7 +131,7 @@ export default function PlaceBetDialog({
           <Typography>{game.event.teams[1]}</Typography>
         </Stack>
       )}
-      {<TransactionFrame open={loading} />}
+      <TransactionFrame open={loading} />
     </ResponsiveDialog>
   );
 }
