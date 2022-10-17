@@ -201,7 +201,7 @@ export default function TopUpAlert(props) {
               </div>
               <a
                 className="flex w-full "
-                href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+                href={`${process.env.WUNDERPASS_URL}/balance?redirectUrl=${redirectUrl}`}
                 target="_blank"
               >
                 <button className="btn-casama-white p-2 w-full">
