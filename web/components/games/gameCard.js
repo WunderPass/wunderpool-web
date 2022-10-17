@@ -145,28 +145,21 @@ export default function GameCard(props) {
             </Typography>
           </div>
 
-          <div className="flex ">
-            {game.participants.length > 0 && (
-              <ParticipantTable game={game} stake={stake} />
-            )}
-            {usersBet ? (
-              <div className="text-xl mt-4 ml-2">
-                Your Bet: {usersBet[0]}:{usersBet[1]}
-              </div>
-            ) : (
-              <button
-                className="btn-casama py-2 px-6 text-xl"
-                onClick={() => handleOpenBetNow()}
-              >
-                Bet Now
-              </button>
-            )}
-          </div>
+          {game.participants.length > 0 && (
+            <ParticipantTable game={game} stake={stake} />
+          )}
+          {!usersBet && (
+            <button
+              className="btn-casama py-2 px-6 mt-2"
+              onClick={() => handleOpenBetNow()}
+            >
+              Bet Now
+            </button>
+          )}
         </div>
       </div>
       <PlaceBetDialog
         open={open}
-        setOpen={setOpen}
         handleOpenBetNow={handleOpenBetNow}
         {...props}
       />

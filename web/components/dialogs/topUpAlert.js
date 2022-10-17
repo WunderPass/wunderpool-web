@@ -162,7 +162,6 @@ export default function TopUpAlert(props) {
                   />
                 </div>
               </div>
-              {console.log(user)}
               <a
                 //https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238 = QUERY PARAMS
                 // href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&cryptoCurrencyCode=USDC&defaultNetwork=polygon&walletAddress=${user.address}&redirectURL=https://app.casama.io/pools`}
@@ -202,7 +201,7 @@ export default function TopUpAlert(props) {
               </div>
               <a
                 className="flex w-full "
-                href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+                href={`${process.env.WUNDERPASS_URL}/balance?redirectUrl=${redirectUrl}`}
                 target="_blank"
               >
                 <button className="btn-casama-white p-2 w-full">

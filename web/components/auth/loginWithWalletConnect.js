@@ -37,7 +37,7 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
       className="flex p-1 my-3 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
       onClick={loginWithWalletConnect}
     >
-      <div className="pr-5 pl-3 pt-1">
+      <div className="pr-2 pl-3 pt-1">
         <Image
           src={WalletConnectIcon}
           alt="walletconnect"
@@ -46,7 +46,7 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
           height={30}
         />
       </div>
-      {loading ? 'Connecting...' : 'Login with WalletConnect'}
+      {loading ? 'Connecting...' : 'Connect with WalletConnect'}
     </button>
   );
 }

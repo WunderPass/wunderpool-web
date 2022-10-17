@@ -85,7 +85,7 @@ export default function LoginWithWunderPass(props) {
         className="flex p-2 my-3 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
         onClick={handleClick}
       >
-        <div className="pr-5 pl-1.5 pt-0.5">
+        <div className="pr-3 pl-1.5 pt-0.5">
           <svg
             className="fill-wunder-blue"
             xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +100,7 @@ export default function LoginWithWunderPass(props) {
             ></path>
           </svg>
         </div>
-        {'Login with WunderPass'}
+        {'Connect with WunderPass'}
       </button>
     </div>
   );

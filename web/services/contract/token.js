@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import useWunderPass from '/hooks/useWunderPass';
 import { fetchPoolNftsDelta } from './delta/token';
 import { fetchPoolNftsGamma, fetchPoolTokensGamma } from './gamma/token';
-import { tokenAbi, usdcAddress } from './init';
+import { gasPrice, tokenAbi, usdcAddress } from './init';
 import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
 import axios from 'axios';
@@ -105,7 +105,42 @@ export async function usdcBalanceOf(address) {
   return await tokenBalanceOf(address, usdcAddress, 6);
 }
 
-export function approve(user, spender, amount) {
+export function approve(user, spender, amount, tokenAddress) {
+  return new Promise(async (resolve, reject) => {
+    const { openPopup, smartContractTransaction } = useWeb3();
+    const popup = openPopup('smartContract');
+    const provider = httpProvider;
+    try {
+      const token = new ethers.Contract(
+        tokenAddress,
+        ['function increaseAllowance(address,uint)'],
+        provider
+      );
+      const populatedTx = await token.populateTransaction.increaseAllowance(
+        spender,
+        amount,
+        {
+          gasPrice: await gasPrice(),
+          from: user,
+        }
+      );
+
+      const approveTx = await smartContractTransaction(
+        populatedTx,
+        null,
+        'polygon',
+        popup
+      );
+      const receipt = await provider.waitForTransaction(approveTx.hash);
+      resolve(receipt);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  });
+}
+
+export function approveUSDC(user, spender, amount) {
   return new Promise(async (resolve, reject) => {
     const provider = httpProvider;
 

@@ -91,3 +91,9 @@ function handleSubscribe(request, response, next) {
 app.get('/subscribe', handleSubscribe);
 
 app.listen(port, '0.0.0.0', () => console.log(`Listening on Port ${port}...`));
+
+for (let signal of ['SIGTERM', 'SIGINT'])
+  process.on(signal, () => {
+    console.info(`${signal} signal received.`);
+    if (eventEmitter) eventEmitter.close();
+  });
