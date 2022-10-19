@@ -2,16 +2,16 @@ import { DialogActions, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
 import { useRouter } from 'next/router';
-import NewPoolConfigStep from './configStep';
-import NewPoolInviteStep from './inviteStep';
-import NewPoolVotingStep from './votingStep';
-import NewPoolButtons from './buttons';
+// import NewPoolConfigStep from './configStep';
+// import NewPoolInviteStep from './inviteStep';
+// import NewPoolVotingStep from './votingStep';
+// import NewPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '../../utils/responsiveDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
-export default function NewPoolDialog(props) {
+export default function AdvancedPoolDialog(props) {
   const {
     open,
     setOpen,
@@ -46,8 +46,8 @@ export default function NewPoolDialog(props) {
   const [maxMembers, setMaxMembers] = useState('50');
 
   const [votingEnabled, setVotingEnabled] = useState(true);
-  const [votingThreshold, setVotingThreshold] = useState('50');
-  const [votingTime, setVotingTime] = useState('24');
+  const [votingThreshold, setVotingThreshold] = useState('1');
+  const [votingTime, setVotingTime] = useState('0.5');
   const [minYesVoters, setMinYesVoters] = useState('1');
   const [showCustomDuration, setShowCustomDuration] = useState(false);
   const [showCustomPercent, setShowCustomPercent] = useState(false);
@@ -232,25 +232,25 @@ export default function NewPoolDialog(props) {
       onClose={handleCloseKeepValues}
       maxWidth="sm"
       disablePadding={loading}
-      title="Create a pool"
+      title="Create a quick pool"
       actions={
         !waitingForPool && (
           <DialogActions className="flex items-center justify-center mx-4">
-            <NewPoolButtons
+            {/* <NewPoolButtons
               step={step}
               totalSteps={3}
               disabled={disabled}
               setStep={setStep}
               submit={submit}
               retry={retry}
-            />
+            /> */}
           </DialogActions>
         )
       }
     >
-      {step === 1 && <NewPoolConfigStep {...configProps} />}
+      {/* {step === 1 && <NewPoolConfigStep {...configProps} />}
       {step === 2 && <NewPoolVotingStep {...votingProps} />}
-      {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />}
+      {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />} */}
       {waitingForPool && (
         <div className="flex flex-row justify-between items-center gap-1 w-full px-6">
           <Typography className="text-md" color="GrayText">

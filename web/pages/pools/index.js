@@ -8,7 +8,8 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material';
-import NewPoolDialog from '/components/dialogs/newPool/dialog';
+import AdvancedPoolDialog from '/components/dialogs/advancedPool/dialog';
+import QuickPoolDialog from '/components/dialogs/quickPool/dialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
@@ -21,7 +22,8 @@ import QrCode from '/components/utils/qrCode';
 
 export default function Pools(props) {
   const { user, handleSuccess, updateListener, isMobile } = props;
-  const [open, setOpen] = useState(false);
+  const [openAdvanced, setOpenAdvanced] = useState(false);
+  const [openQuick, setOpenQuick] = useState(false);
   const [page, setPage] = useState(1);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const [showAddress, setShowAddress] = useState(false);
@@ -38,16 +40,25 @@ export default function Pools(props) {
     return `${str.slice(0, 4)}...${str.slice(-4)}`;
   };
 
-  const handleOpenClose = () => {
-    if (open) {
-      goBack(() => removeQueryParam('createPool'));
+  const handleOpenCloseAdvanced = () => {
+    if (openAdvanced) {
+      goBack(() => removeQueryParam('advancedPool'));
     } else {
-      addQueryParam({ createPool: 'createPool' }, false);
+      addQueryParam({ advancedPool: 'advancedPool' }, false);
+    }
+  };
+
+  const handleOpenCloseQuick = () => {
+    if (openAdvanced) {
+      goBack(() => removeQueryParam('quickPool'));
+    } else {
+      addQueryParam({ quickPool: 'quickPool' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.createPool ? true : false);
+    setOpenAdvanced(router.query?.advancedPool ? true : false);
+    setOpenQuick(router.query?.quick ? true : false);
   }, [router.query]);
 
   useEffect(() => {
@@ -128,12 +139,20 @@ export default function Pools(props) {
                   </div>
                 )}
               </div>
-              <button
-                className="btn-casama w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
-                onClick={handleOpenClose}
-              >
-                Create pool
-              </button>
+              <div className="flex flex-col items-center justify-between ">
+                <button
+                  className="btn-casama-light w-full mx-1  mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
+                  onClick={handleOpenCloseQuick}
+                >
+                  Launch Pool
+                </button>
+                <button
+                  className="w-full mx-1 mt-3 sm:mt-4 mb-2 px-3 underline text-casama-blue text-base cursor-pointer  "
+                  onClick={handleOpenCloseAdvanced}
+                >
+                  Advanced Settings
+                </button>
+              </div>
             </div>
 
             <div className="sm:flex sm:flex-row">
@@ -184,9 +203,15 @@ export default function Pools(props) {
             <PublicPools pools={user.pools} {...props} />
           </div>
 
-          <NewPoolDialog
-            open={open}
-            setOpen={handleOpenClose}
+          <QuickPoolDialog
+            open={openQuick}
+            setOpen={handleOpenCloseQuick}
+            fetchPools={user.fetchPools}
+            {...props}
+          />
+          <AdvancedPoolDialog
+            open={openAdvanced}
+            setOpen={handleOpenCloseAdvanced}
             fetchPools={user.fetchPools}
             {...props}
           />

@@ -192,6 +192,14 @@ button:disabled {
   @apply bg-casama-blue hover:bg-casama-light-blue text-white cursor-pointer rounded-xl;
 }
 
+.btn-casama-light {
+  @apply bg-casama-light-blue hover:bg-casama-light-blue text-white cursor-pointer rounded-xl;
+}
+
+.btn-casama-extra-light {
+  @apply bg-casama-extra-light-blue hover:bg-casama-light-blue text-white cursor-pointer rounded-xl;
+}
+
 .btn-casama-white {
   @apply bg-white hover:bg-[#ededed] text-casama-blue cursor-pointer rounded-xl border-2 border-casama-blue;
 }
