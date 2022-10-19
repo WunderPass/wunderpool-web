@@ -137,7 +137,7 @@ export default function NewPoolConfigStep(props) {
 
       <div className="pb-3">
         <label className="label pb-2 " htmlFor="value">
-          Your Investment
+          Pool entrance amount
         </label>
         <div id="amount">
           <CurrencyInput

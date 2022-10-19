@@ -2,9 +2,7 @@ import { DialogActions, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
 import { useRouter } from 'next/router';
-import NewPoolConfigStep from './configStep';
-import NewPoolInviteStep from './inviteStep';
-import NewPoolVotingStep from './votingStep';
+import CreatePoolStep from './createStep';
 import QuickPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
 import { currency } from '/services/formatter';
@@ -251,11 +249,7 @@ export default function AdvancedPoolDialog(props) {
         }
       >
         {!loading ? (
-          <>
-            {step === 1 && <NewPoolConfigStep {...configProps} />}
-            {step === 2 && <NewPoolVotingStep {...votingProps} />}
-            {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />}
-          </>
+          <>{step === 1 && <CreatePoolStep {...configProps} />}</>
         ) : (
           <>
             {waitingForPool && (

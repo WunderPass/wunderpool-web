@@ -232,7 +232,7 @@ export default function AdvancedPoolDialog(props) {
       onClose={handleCloseKeepValues}
       maxWidth="sm"
       disablePadding={loading}
-      title="Create a pool"
+      title="Create an advanced pool"
       actions={
         !waitingForPool && (
           <DialogActions className="flex items-center justify-center mx-4">
