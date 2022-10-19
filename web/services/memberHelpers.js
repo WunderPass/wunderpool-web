@@ -6,12 +6,8 @@ export function getNameFor(member = {}) {
     : member.wunder_id || member.wunderId || 'External User';
 }
 
-export async function searchMembers(query) {
-  const { data } = await axios({
-    url: '/api/users/search',
-    params: { query: query },
-  });
-  return data.map((member) => ({
+function formatMember(member) {
+  return {
     email: member.email,
     handle: member.handle,
     firstName: member.firstname,
@@ -19,5 +15,22 @@ export async function searchMembers(query) {
     phoneNumber: member.phone_number,
     address: member.wallet_address,
     wunderId: member.wunder_id,
-  }));
+  };
+}
+
+export async function searchMembers(query) {
+  const { data } = await axios({
+    url: '/api/users/search',
+    params: { query },
+  });
+  return data.map(formatMember);
+}
+
+export async function fetchUserFriends(wunderId) {
+  if (!wunderId) return [];
+  const { data } = await axios({
+    url: '/api/users/getFriends',
+    params: { wunderId },
+  });
+  return data.map(formatMember);
 }

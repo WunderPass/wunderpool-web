@@ -6,7 +6,6 @@ import News from './navComponents/news';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Avatar from '/components/members/avatar';
-import Example from '/components/utils/example';
 
 const navigation = (props) => {
   const { user, open, setOpen } = props;
@@ -26,9 +25,6 @@ const navigation = (props) => {
         <div className="flex flex-row justify-start">
           <li className="px-2 hidden sm:block">
             <MyPools {...props} />
-          </li>
-          <li className="px-2 hidden sm:block">
-            <Example menuButton="My Pools" itemList={user.pools} {...props} />
           </li>
         </div>
         <div className="flex flex-row items-center justify-end ">

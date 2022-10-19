@@ -136,7 +136,7 @@ export default function usePoolListener(handleInfo) {
   };
 
   const handleUserInvited = (event) => {
-    console.log('USER_IVITED', JSON.parse(event.data));
+    console.log('USER_INVITED', JSON.parse(event.data));
     if (!relevantForPool(event)) return;
   };
 
@@ -199,7 +199,7 @@ export default function usePoolListener(handleInfo) {
 
     es.addEventListener('POOL_CREATED', handlePoolCreated);
     es.addEventListener('USER_JOINED', handleUserJoined);
-    es.addEventListener('USER_IVITED', handleUserInvited);
+    es.addEventListener('USER_INVITED', handleUserInvited);
     es.addEventListener('TRANSACTION_REVERTED', handleTransactionReverted);
     es.addEventListener('TRANSACTION_FAILED', handleTransactionFailed);
     es.addEventListener('PROPOSAL_CREATED', handleProposalCreated);
