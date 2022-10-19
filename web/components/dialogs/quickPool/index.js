@@ -49,7 +49,7 @@ export default function Pools(props) {
   };
 
   const handleOpenCloseQuick = () => {
-    if (openQuick) {
+    if (openAdvanced) {
       goBack(() => removeQueryParam('quickPool'));
     } else {
       addQueryParam({ quickPool: 'quickPool' }, false);
@@ -58,7 +58,7 @@ export default function Pools(props) {
 
   useEffect(() => {
     setOpenAdvanced(router.query?.advancedPool ? true : false);
-    setOpenQuick(router.query?.quickPool ? true : false);
+    setOpenQuick(router.query?.quick ? true : false);
   }, [router.query]);
 
   useEffect(() => {
@@ -204,13 +204,13 @@ export default function Pools(props) {
           </div>
 
           <QuickPoolDialog
-            openQuick={openQuick}
+            open={openQuick}
             setOpen={handleOpenCloseQuick}
             fetchPools={user.fetchPools}
             {...props}
           />
           <AdvancedPoolDialog
-            openAdvanced={openAdvanced}
+            open={openAdvanced}
             setOpen={handleOpenCloseAdvanced}
             fetchPools={user.fetchPools}
             {...props}

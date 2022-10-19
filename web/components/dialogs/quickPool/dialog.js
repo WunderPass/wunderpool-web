@@ -2,10 +2,10 @@ import { DialogActions, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
 import { useRouter } from 'next/router';
-// import NewPoolConfigStep from './configStep';
-// import NewPoolInviteStep from './inviteStep';
-// import NewPoolVotingStep from './votingStep';
-// import NewPoolButtons from './buttons';
+import NewPoolConfigStep from './configStep';
+import NewPoolInviteStep from './inviteStep';
+import NewPoolVotingStep from './votingStep';
+import QuickPoolButtons from './buttons';
 import TransactionFrame from '/components/utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '../../utils/responsiveDialog';
@@ -13,7 +13,7 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function AdvancedPoolDialog(props) {
   const {
-    open,
+    openQuick,
     setOpen,
     handleSuccess,
     handleInfo,
@@ -47,7 +47,7 @@ export default function AdvancedPoolDialog(props) {
 
   const [votingEnabled, setVotingEnabled] = useState(true);
   const [votingThreshold, setVotingThreshold] = useState('1');
-  const [votingTime, setVotingTime] = useState('0.5');
+  const [votingTime, setVotingTime] = useState('0.16');
   const [minYesVoters, setMinYesVoters] = useState('1');
   const [showCustomDuration, setShowCustomDuration] = useState(false);
   const [showCustomPercent, setShowCustomPercent] = useState(false);
@@ -88,6 +88,8 @@ export default function AdvancedPoolDialog(props) {
     setTokenNameTouched,
     tokenSymbolTouched,
     setTokenSymbolTouched,
+    members,
+    setMembers,
   };
 
   const votingProps = {
@@ -113,7 +115,7 @@ export default function AdvancedPoolDialog(props) {
   };
 
   const handleClose = () => {
-    removeQueryParam('createPool');
+    removeQueryParam('quickPool');
     setWaitingForPool(false);
     setLoading(false);
     setStep(1);
@@ -135,8 +137,8 @@ export default function AdvancedPoolDialog(props) {
     setMaxInvestErrorMsg(null);
     setMaxMembers('50');
     setVotingEnabled(true);
-    setVotingThreshold('50');
-    setVotingTime('24');
+    setVotingThreshold('1');
+    setVotingTime('0.16');
     setMinYesVoters('1');
     setShowCustomDuration(false);
     setShowCustomPercent(false);
@@ -154,7 +156,6 @@ export default function AdvancedPoolDialog(props) {
 
   const submit = () => {
     setRetry(false);
-    setStep((val) => val + 1);
     setLoading(true);
     setWaitingForPool(true);
     setTimeout(() => {
@@ -227,43 +228,52 @@ export default function AdvancedPoolDialog(props) {
   ]);
 
   return (
-    <ResponsiveDialog
-      open={open}
-      onClose={handleCloseKeepValues}
-      maxWidth="sm"
-      disablePadding={loading}
-      title="Create a quick pool"
-      actions={
-        !waitingForPool && (
-          <DialogActions className="flex items-center justify-center mx-4">
-            {/* <NewPoolButtons
-              step={step}
-              totalSteps={3}
-              disabled={disabled}
-              setStep={setStep}
-              submit={submit}
-              retry={retry}
-            /> */}
-          </DialogActions>
-        )
-      }
-    >
-      {/* {step === 1 && <NewPoolConfigStep {...configProps} />}
-      {step === 2 && <NewPoolVotingStep {...votingProps} />}
-      {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />} */}
-      {waitingForPool && (
-        <div className="flex flex-row justify-between items-center gap-1 w-full px-6">
-          <Typography className="text-md" color="GrayText">
-            {poolName}
-          </Typography>
-          <Typography className="text-md" color="GrayText">
-            {currency(value)}
-          </Typography>
-        </div>
-      )}
-      {retry &&
-        'We could not create your Pool. This could be due to Blockchain issues. Do you want to try again?'}
-      <TransactionFrame open={loading} />
-    </ResponsiveDialog>
+    <>
+      <ResponsiveDialog
+        open={openQuick}
+        onClose={handleCloseKeepValues}
+        maxWidth="sm"
+        disablePadding={loading}
+        title="Create a quick pool"
+        actions={
+          !waitingForPool && (
+            <DialogActions className="flex items-center justify-center mx-4">
+              <QuickPoolButtons
+                step={step}
+                totalSteps={3}
+                disabled={disabled}
+                setStep={setStep}
+                submit={submit}
+                retry={retry}
+              />
+            </DialogActions>
+          )
+        }
+      >
+        {!loading ? (
+          <>
+            {step === 1 && <NewPoolConfigStep {...configProps} />}
+            {step === 2 && <NewPoolVotingStep {...votingProps} />}
+            {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />}
+          </>
+        ) : (
+          <>
+            {waitingForPool && (
+              <div className="flex flex-row justify-between items-center gap-1 w-full px-6">
+                <Typography className="text-md" color="GrayText">
+                  {poolName}
+                </Typography>
+                <Typography className="text-md" color="GrayText">
+                  {currency(value)}
+                </Typography>
+              </div>
+            )}
+            {retry &&
+              'We could not create your Pool. This could be due to Blockchain issues. Do you want to try again?'}
+            <TransactionFrame open={loading} />
+          </>
+        )}
+      </ResponsiveDialog>
+    </>
   );
 }

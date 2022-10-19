@@ -13,7 +13,7 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
 export default function AdvancedPoolDialog(props) {
   const {
-    open,
+    openAdvanced,
     setOpen,
     handleSuccess,
     handleInfo,
@@ -113,7 +113,7 @@ export default function AdvancedPoolDialog(props) {
   };
 
   const handleClose = () => {
-    removeQueryParam('createPool');
+    removeQueryParam('advancedPool');
     setWaitingForPool(false);
     setLoading(false);
     setStep(1);
@@ -228,7 +228,7 @@ export default function AdvancedPoolDialog(props) {
 
   return (
     <ResponsiveDialog
-      open={open}
+      open={openAdvanced}
       onClose={handleCloseKeepValues}
       maxWidth="sm"
       disablePadding={loading}
