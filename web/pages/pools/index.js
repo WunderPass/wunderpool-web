@@ -141,7 +141,7 @@ export default function Pools(props) {
               </div>
               <div className="flex flex-col items-center justify-between ">
                 <button
-                  className="btn-casama-light w-full mx-1  mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
+                  className="btn-casama w-full mx-1  mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
                   onClick={handleOpenCloseQuick}
                 >
                   Launch Pool
