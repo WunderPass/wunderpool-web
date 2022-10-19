@@ -182,33 +182,35 @@ export default function BettingGameDialog(props) {
               }}
             >
               <Typography>
-                <div className="flex flex-col text-gray-500 text-sm">
-                  <div className="flex flex-col m-2 mx-3">
+                <div className="flex flex-col text-gray-500 text-sm my-2 sm:my-0">
+                  <div className="flex flex-col m-2 mx-3 ">
                     <span className="text-base font-bold underline sm:text-center mb-1">
                       Scoring system:
                     </span>
-                    <span>
-                      <span className="font-bold">3 Points:</span> Hit the exact
-                      result of the game.
-                    </span>
-                    <span>
-                      <span className="font-bold">2 Points: </span> Hit the
-                      winning team and the right goal difference between the
-                      teams.
-                    </span>
-                    <span>
-                      <span className="font-bold">1 Point: </span> Hit the
-                      winning team.{' '}
-                    </span>
-                    <span>
-                      <span className="font-bold">0 Points: </span> Bet on the
-                      wrong team.
-                    </span>
+                    <div className="flex flex-col mx-0 sm:mx-2">
+                      <span>
+                        <span className="font-bold">3 Points:</span> Hit the
+                        exact result of the game.
+                      </span>
+                      <span>
+                        <span className="font-bold">2 Points: </span> Hit the
+                        winning team and the right goal difference between the
+                        teams.
+                      </span>
+                      <span>
+                        <span className="font-bold">1 Point: </span> Hit the
+                        winning team.{' '}
+                      </span>
+                      <span>
+                        <span className="font-bold">0 Points: </span> Bet on the
+                        wrong team.
+                      </span>
+                    </div>
                   </div>
                   <Divider flexItem />
                   <div className="flex sm:flex-row flex-col">
                     <div className="m-2 mx-3">
-                      <div className="flex flex-col w-60 ">
+                      <div className="flex flex-col w-64">
                         <span className="text-base font-bold underline sm:text-center mb-1">
                           Winner Takes It All:
                         </span>
@@ -226,7 +228,7 @@ export default function BettingGameDialog(props) {
                     />
                     <Divider className="sm:hidden flex" flexItem />
                     <div className="m-2 mx-3">
-                      <div className="flex flex-col w-60">
+                      <div className="flex flex-col w-64">
                         <span className="text-base font-bold underline sm:text-center mb-1">
                           Proportional:
                         </span>
