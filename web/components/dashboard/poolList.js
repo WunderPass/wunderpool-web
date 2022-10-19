@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MdGroups } from 'react-icons/md';
 import { Typography } from '@mui/material';
-import NewPoolDialog from '/components/dialogs/newPool/dialog';
+import AdvancedPoolDialog from '/components/dialogs/advancedPool/dialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import PoolCard from '/components/dashboard/poolCard';
 
@@ -60,7 +60,7 @@ export default function PoolList(props) {
           Create your first pool
         </button>
       </div>
-      <NewPoolDialog open={open} setOpen={handleOpenClose} {...props} />
+      <AdvancedPoolDialog open={open} setOpen={handleOpenClose} {...props} />
     </div>
   );
 }

@@ -173,6 +173,35 @@ function EventCard({
     if (index == 1) setValueTwo(value);
   };
 
+  const settleAllGames = async (eventId) => {
+    axios({ url: '/api/betting/games' }).then(async (res) => {
+      console.log('eventId2', eventId);
+      const openGames = res.data
+        .filter((g) => eventId == g.eventId)
+        .filter((g) => !g.closed);
+      console.log('current open games: ', openGames);
+      var closedGames = await Promise.all(
+        openGames.map(async (game) => {
+          console.log('trying to close game:', game.name);
+          return await determineGame(game.id)
+            .then((res) => {
+              console.log('then');
+              console.log(res);
+              handleSuccess(`Closed Game "${game.name}"`);
+            })
+            .catch((err) => {
+              console.log('catch');
+              handleError(err);
+            })
+            .then(() => {
+              setLoading(false);
+            });
+        })
+      );
+      return closedGames;
+    });
+  };
+
   const handleResolve = () => {
     setLoading(true);
     resolveEvent(event.id, [valueOne, valueTwo])
@@ -185,7 +214,11 @@ function EventCard({
       .catch((err) => {
         handleError(err);
       })
-      .then(() => setLoading(false));
+      .then(() => {
+        setLoading(false);
+        console.log('eventId', event.id);
+        settleAllGames(event.id);
+      });
   };
 
   return !event.resolved || gameCount > 0 ? (
@@ -239,14 +272,23 @@ function EventCard({
           </div>
           <Typography>{event.teams[1]}</Typography>
         </Stack>
-        {!event.resolved && (
+        {!event.resolved ? (
           <button
             className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto sm:-translate-x-1/2"
             onClick={handleResolve}
             // disabled={loading || event.endDate > Number(new Date())}
             disabled={loading}
           >
-            Resolve
+            Resolve Event and settle all
+          </button>
+        ) : (
+          <button
+            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto sm:-translate-x-1/2"
+            onClick={() => settleAllGames(event.id)}
+            // disabled={loading || event.endDate > Number(new Date())}
+            disabled={loading}
+          >
+            Settle All Games
           </button>
         )}
       </Stack>

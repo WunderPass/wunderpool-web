@@ -45,14 +45,12 @@ export default function SellTokenDialog(props) {
           `We will sell ${formatTokenBalance(amount)} ${symbol}`,
           amount
         )
-        .then((res) => {
-          handleClose();
-        })
         .catch((err) => {
           handleError(err);
         })
         .then(() => {
           setLoading(false);
+          handleClose();
         });
     }, 40);
   };
