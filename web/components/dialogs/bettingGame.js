@@ -91,11 +91,12 @@ export default function BettingGameDialog(props) {
     setStakeInTokens(
       Math.floor((totalTokens / wunderPool.usdcBalance) * float)
     );
-    if (float && float > maxStake) {
-      setErrorMsg(`Maximum Stake of ${currency(maxStake)} surpassed`);
-    } else {
-      setErrorMsg(null);
-    }
+    //Validation to only allow bets wiht max amount same as the member with the least amount of stake
+    //  if (float && float > maxStake) {
+    //       setErrorMsg(`Maximum Stake of ${currency(maxStake)} surpassed`);
+    //     } else {
+    //       setErrorMsg(null);
+    //     }
   };
 
   const showPayoutRuleInfo = (e) => {
