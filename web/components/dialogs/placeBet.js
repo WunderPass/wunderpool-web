@@ -57,6 +57,10 @@ export default function PlaceBetDialog({
       .then(() => setLoading(false));
   };
 
+  useEffect(() => {
+    setApproved(wunderPool?.version?.number || 0 > 6);
+  }, [wunderPool?.version?.number]);
+
   return (
     <ResponsiveDialog
       maxWidth="sm"
@@ -79,20 +83,23 @@ export default function PlaceBetDialog({
               <button className="btn-neutral w-full py-3" onClick={handleClose}>
                 Cancel
               </button>
-              <button
-                className="btn-casama w-full py-3 mt-2"
-                onClick={handleApprove}
-                disabled={loading || !guessOne || !guessTwo || approved}
-              >
-                Approve
-              </button>
-              <button
-                className="btn-casama w-full py-3 mt-2"
-                onClick={handleCreate}
-                disabled={loading || !guessOne || !guessTwo || !approved}
-              >
-                Bet
-              </button>
+              {approved ? (
+                <button
+                  className="btn-casama w-full py-3 mt-2"
+                  onClick={handleCreate}
+                  disabled={loading || !guessOne || !guessTwo}
+                >
+                  Bet
+                </button>
+              ) : (
+                <button
+                  className="btn-casama w-full py-3 mt-2"
+                  onClick={handleApprove}
+                  disabled={loading || !guessOne || !guessTwo}
+                >
+                  Approve
+                </button>
+              )}
             </div>
           </DialogActions>
         )
