@@ -11,9 +11,9 @@ import { currency } from '/services/formatter';
 import ResponsiveDialog from '../../utils/responsiveDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 
-export default function NewPoolDialog(props) {
+export default function AdvancedPoolDialog(props) {
   const {
-    open,
+    openAdvanced,
     setOpen,
     handleSuccess,
     handleInfo,
@@ -48,7 +48,7 @@ export default function NewPoolDialog(props) {
   const [votingEnabled, setVotingEnabled] = useState(true);
   const [votingThreshold, setVotingThreshold] = useState('50');
   const [votingTime, setVotingTime] = useState('24');
-  const [minYesVoters, setMinYesVoters] = useState('2');
+  const [minYesVoters, setMinYesVoters] = useState('1');
   const [showCustomDuration, setShowCustomDuration] = useState(false);
   const [showCustomPercent, setShowCustomPercent] = useState(false);
   const [showCustomPerson, setShowCustomPerson] = useState(false);
@@ -113,7 +113,7 @@ export default function NewPoolDialog(props) {
   };
 
   const handleClose = () => {
-    removeQueryParam('createPool');
+    removeQueryParam('advancedPool');
     setWaitingForPool(false);
     setLoading(false);
     setStep(1);
@@ -137,7 +137,7 @@ export default function NewPoolDialog(props) {
     setVotingEnabled(true);
     setVotingThreshold('50');
     setVotingTime('24');
-    setMinYesVoters('2');
+    setMinYesVoters('1');
     setShowCustomDuration(false);
     setShowCustomPercent(false);
     setShowCustomPerson(false);
@@ -228,11 +228,11 @@ export default function NewPoolDialog(props) {
 
   return (
     <ResponsiveDialog
-      open={open}
+      open={openAdvanced}
       onClose={handleCloseKeepValues}
       maxWidth="sm"
       disablePadding={loading}
-      title="Create a pool"
+      title="Create an advanced pool"
       actions={
         !waitingForPool && (
           <DialogActions className="flex items-center justify-center mx-4">

@@ -1,4 +1,10 @@
-import { DialogContentText, Divider, Stack, Typography } from '@mui/material';
+import {
+  DialogContentText,
+  Divider,
+  Stack,
+  Typography,
+  Alert,
+} from '@mui/material';
 import MemberInput from '/components/members/input';
 
 export default function NewPoolInviteStep(props) {
@@ -11,7 +17,7 @@ export default function NewPoolInviteStep(props) {
       </DialogContentText>
 
       <div>
-        <label className="label pr-52" htmlFor="poolName">
+        <label className="label sm:pr-52" htmlFor="poolName">
           Invite your friends via WunderPass
         </label>
         <MemberInput
@@ -26,9 +32,9 @@ export default function NewPoolInviteStep(props) {
 
       <div className="flex justify-between items-center pt-4">
         <div className="flex flex-row justify-between items-center">
-          <Typography className="mr-3">
+          <Alert severity="info">
             You can invite friends without a WunderPass after creating the Pool!
-          </Typography>
+          </Alert>
         </div>
       </div>
     </Stack>
