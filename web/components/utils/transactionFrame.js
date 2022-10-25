@@ -57,8 +57,11 @@ export default function TransactionFrame({ open }) {
       className="w-full flex-grow"
       id="fr"
       name="transactionFrame"
-      height={!isSafari && open ? '500' : '0'}
-      style={{ transition: 'height 300ms ease' }}
+      style={{
+        transition: 'max-height 300ms ease',
+        maxHeight: !isSafari && open ? 'unset' : '0',
+        height: !isSafari && open ? '500px' : '0',
+      }}
     ></iframe>
   );
 }
