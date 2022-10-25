@@ -33,6 +33,11 @@ export const versionLookup = {
     number: 6,
   },
   zeta: { name: 'ZETA', number: 6 },
+  '0x8c3B8456077F0A853c667BF18F4B77E4B3Ca0cB1': {
+    name: 'ETA',
+    number: 7,
+  },
+  eta: { name: 'ETA', number: 7 },
 };
 
 export const latestVersion = { name: 'ZETA', number: 6 };
