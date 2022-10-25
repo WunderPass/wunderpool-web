@@ -28,6 +28,7 @@ export default function PlaceBetDialog({
     setGuessOne('');
     setGuessTwo('');
     handleOpenBetNow(true);
+    handleOpenBetNow(true);
   };
 
   const handleApprove = () => {
@@ -58,7 +59,7 @@ export default function PlaceBetDialog({
   };
 
   useEffect(() => {
-    setApproved(wunderPool?.version?.number || 0 > 6);
+    setApproved((wunderPool?.version?.number || 0) > 6);
   }, [wunderPool?.version?.number]);
 
   return (

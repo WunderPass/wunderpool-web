@@ -22,7 +22,7 @@ function WunderPool({ Component, pageProps }) {
   const user = useUser();
   const [isFetched, setIsFetched] = useState(false);
 
-  const [handleError, handleSuccess, handleInfo, handleWarning] =
+  const [handleError, handleSuccess, handleInfo, handleWarning, handlePromise] =
     useNotification();
   const {
     updateListener,
@@ -42,6 +42,7 @@ function WunderPool({ Component, pageProps }) {
       handleSuccess,
       handleInfo,
       handleWarning,
+      handlePromise,
       updateListener,
       newPoolEvent,
       newMemberEvent,
