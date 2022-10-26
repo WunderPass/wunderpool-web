@@ -18,7 +18,7 @@ export default function Navbar(props) {
     if (user.address != null) setLoading(false);
   }, [user.address]);
 
-  if (pathname === '/') return null;
+  if (pathname === '/' || pathname === '/auth/create') return null;
 
   return (
     <>

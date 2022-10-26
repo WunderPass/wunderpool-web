@@ -23,6 +23,7 @@
     "bip39": "^3.0.4",
     "canvas": "^2.10.1",
     "crypto-js": "^4.1.1",
+    "ethereumjs-wallet": "^1.0.2",
     "ethers": "^5.5.4",
     "file-system": "^2.2.2",
     "form-data": "^4.0.0",

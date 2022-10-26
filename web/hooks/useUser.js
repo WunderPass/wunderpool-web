@@ -25,6 +25,7 @@ export default function useUser() {
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [unsupportedChain, setUnsupportedChain] = useState(false);
   const [friends, setFriends] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(null);
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
@@ -37,8 +38,6 @@ export default function useUser() {
     () => `/api/users/getImage?wunderId=${wunderId}`,
     [wunderId]
   );
-
-  const loggedIn = wunderId || address;
 
   const updateWunderId = (id) => {
     id && localStorage.setItem('wunderId', id);
@@ -58,6 +57,47 @@ export default function useUser() {
   const updateCheckedTopUp = (checked) => {
     localStorage.setItem('checkedTopUp', checked);
     setCheckedTopUp(checked);
+  };
+
+  const createUser = (
+    //TODO update me so that its easier to create user
+    firstName,
+    lastName,
+    handle,
+    privKey,
+    email,
+    phoneNumber
+  ) => {
+    return new Promise((resolve, reject) => {
+      const publicKey = publicFromPrivate(privKey);
+
+      const reqData = {
+        firstName,
+        lastName,
+        handle,
+        email,
+        phoneNumber,
+        public_key: publicKey,
+      };
+      const { signedMessage, signature } = signMillis(privKey);
+      const headers = { signed: signedMessage, signature: signature };
+      axios({
+        method: 'post',
+        url: '/api/users/create',
+        data: reqData,
+        headers: headers,
+      })
+        .then((res) => {
+          setPrivateKey(privKey);
+          setLoggedIn(true);
+          localStorage.setItem('authToken', res.data.authToken);
+          resolve(res.data);
+        })
+        .catch((err) => {
+          console.log('hier schon?');
+          reject(err?.response?.data?.error || err);
+        });
+    });
   };
 
   const fetchPools = () => {
@@ -356,5 +396,6 @@ export default function useUser() {
     setPasswordRequired,
     setPrivateKey,
     decryptAndSign,
+    createUser,
   };
 }

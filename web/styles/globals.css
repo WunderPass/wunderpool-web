@@ -208,6 +208,10 @@ button:disabled {
   @apply bg-white hover:bg-[#ededed] text-gray-500 cursor-pointer rounded-xl border-2 border-gray-200;
 }
 
+.btn-processing {
+  @apply rounded-xl px-5 font-semibold text-gray-400 bg-gray-300 border-gray-300  cursor-not-allowed;
+}
+
 .btn-vote {
   @apply hover:bg-casama-blue hover:text-white bg-gray-200 text-black text-opacity-70 cursor-pointer rounded-full p-1 px-4 mx-2 border border-casama-blue;
 }
@@ -277,4 +281,8 @@ button:disabled {
 
 .loading-circle {
   @apply w-24 h-24 text-gray-200 animate-spin dark:text-gray-400 fill-casama-blue;
+}
+
+.loading-circle-button {
+  @apply w-5 h-5 text-gray-200 animate-spin dark:text-gray-400 fill-white;
 }

@@ -1,10 +1,12 @@
 export default function LoadingCircle(props) {
+  const style = props;
+
   return (
     <>
-      <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50">
+      <div className="">
         <svg
           aria-hidden="true"
-          className="loading-circle"
+          className="loading-circle-button"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
