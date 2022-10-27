@@ -370,7 +370,7 @@ export default function AdminBettingPage(props) {
 
   return (
     <Container maxWidth="xl">
-      <Stack spacing={3}>
+      <Stack spacing={1}>
         <div className="flex justify-end">
           <button
             onClick={() => setOpen(true)}
@@ -407,13 +407,15 @@ export default function AdminBettingPage(props) {
           </Stack>
           {games.map((game) => {
             return (
-              <GameCard
-                key={`game-${game.id}`}
-                game={game}
-                event={events.find((e) => e.id == game.eventId)}
-                fetchGames={fetchGames}
-                {...props}
-              />
+              <div className="mb-16">
+                <GameCard
+                  key={`game-${game.id}`}
+                  game={game}
+                  event={events.find((e) => e.id == game.eventId)}
+                  fetchGames={fetchGames}
+                  {...props}
+                />
+              </div>
             );
           })}
         </div>

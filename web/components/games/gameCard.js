@@ -131,7 +131,7 @@ export default function GameCard(props) {
   }, [router.query]);
 
   return (
-    <div className="container-gray mb-6 ">
+    <div className="container-gray pb-16 ">
       <div className="flex flex-col items-start gap-2  ">
         <div className="flex flex-row justify-center items-start w-full mb-4">
           <div className="flex flex-col justify-start items-start">

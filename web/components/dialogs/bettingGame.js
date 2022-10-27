@@ -48,8 +48,6 @@ export default function BettingGameDialog(props) {
   const [payoutRule, setPayoutRule] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
-  const [showInfo, setShowInfo] = useState(false);
-  const [infoBoxAnchorEl, setInfoBoxAnchorEl] = useState(false);
 
   const maxStake = useMemo(() => {
     return (
@@ -98,15 +96,6 @@ export default function BettingGameDialog(props) {
     //     } else {
     //       setErrorMsg(null);
     //     }
-  };
-
-  const showPayoutRuleInfo = (e) => {
-    setInfoBoxAnchorEl(e.currentTarget);
-    setShowInfo(!showInfo);
-  };
-
-  const handleClose = () => {
-    setShowInfo(false);
   };
 
   useEffect(() => {
