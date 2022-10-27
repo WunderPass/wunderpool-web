@@ -56,11 +56,7 @@ export default function GameList(props) {
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
-      {console.log(
-        'condition',
-        gamesTab == 0 &&
-          wunderPool.bettingGames.filter((bet) => !bet.closed).length > 0
-      )}
+
       {gamesTab == 0 &&
       wunderPool.bettingGames.filter((bet) => !bet.closed).length > 0
         ? wunderPool.bettingGames
@@ -102,7 +98,6 @@ export default function GameList(props) {
               </Stack>
             </div>
           )}
-      {console.log(gamesTab, 'gamesTabe')}
       {gamesTab == 1 &&
         wunderPool.bettingGames
           .filter((p) => p.closed)

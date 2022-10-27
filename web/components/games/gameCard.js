@@ -148,7 +148,7 @@ export default function GameCard(props) {
           {game.participants.length > 0 && (
             <ParticipantTable game={game} stake={stake} />
           )}
-          {!usersBet && (
+          {!usersBet && !game.event.resolved && (
             <button
               className="btn-casama py-2 px-6 mt-2"
               onClick={() => handleOpenBetNow()}
