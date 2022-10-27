@@ -29,7 +29,7 @@ export default function CapTable(props) {
               <Typography className="opacity-50">Member</Typography>
             </th>
             <th className="pb-4">
-              <Typography className="text-left opacity-50 md:text-center">
+              <Typography className="text-left opacity-50 lg:text-center">
                 Share
               </Typography>
             </th>
@@ -54,7 +54,7 @@ export default function CapTable(props) {
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                       i={i}
                     />
-                    <Typography className="ml-1 md:hidden">
+                    <Typography className="ml-1 ">
                       {member.wunderId ? member.wunderId : 'External User'}
                     </Typography>
                   </div>
