@@ -45,7 +45,7 @@ export default function GameList(props) {
       sx={{ height: '100px', borderRadius: 3 }}
     />
   ) : wunderPool.bettingGames.length > 0 ? (
-    <Stack spacing={1} style={{ maxWidth: '100%' }}>
+    <Stack style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Open', 'History']}
@@ -63,14 +63,16 @@ export default function GameList(props) {
             .filter((bet) => !bet.closed)
             .map((game) => {
               return (
-                <GameCard
-                  openBet={openBet}
-                  setOpenBet={setOpenBet}
-                  key={`game-card-${game.id}`}
-                  game={game}
-                  totalTokens={totalTokens}
-                  {...props}
-                />
+                <div className="mb-16">
+                  <GameCard
+                    openBet={openBet}
+                    setOpenBet={setOpenBet}
+                    key={`game-card-${game.id}`}
+                    game={game}
+                    totalTokens={totalTokens}
+                    {...props}
+                  />
+                </div>
               );
             })
         : gamesTab == 0 && (
@@ -103,13 +105,15 @@ export default function GameList(props) {
           .filter((p) => p.closed)
           .map((game) => {
             return (
-              <GameCard
-                openBet={openBet}
-                key={`game-card-${game.id}`}
-                game={game}
-                totalTokens={totalTokens}
-                {...props}
-              />
+              <div className="mb-16">
+                <GameCard
+                  openBet={openBet}
+                  key={`game-card-${game.id}`}
+                  game={game}
+                  totalTokens={totalTokens}
+                  {...props}
+                />
+              </div>
             );
           })}
     </Stack>
