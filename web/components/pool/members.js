@@ -35,7 +35,7 @@ export default function PoolMembers(props) {
   return loadingState.init ? (
     <div className="w-full">
       <div
-        className={`flex container-white overflow-clip justify-start md:justify-center`}
+        className={`flex container-white p-5 overflow-clip justify-start md:justify-center`}
       >
         <div className="flex flex-col items-start justify-center grow">
           <div className="flex flex-col w-full">
