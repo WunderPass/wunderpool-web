@@ -92,8 +92,10 @@ function ParticipantTable({ game, stake, user }) {
                   )}
                 </div>
               </div>
-              <div className=" text-right py-3 w-full text-xl">
-                {participant.prediction[0]}:{participant.prediction[1]}
+              <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
+                <p>{participant.prediction[0]}</p>
+                <p className="px-1">:</p>
+                <p>{participant.prediction[1]}</p>
               </div>
             </div>
           </div>
@@ -161,7 +163,6 @@ export default function GameCard(props) {
           <Typography className="text-xl sm:text-2xl font-semibold text-gray-800 text-center my-1 sm:my-3">
             {game.event.name}
           </Typography>
-          {console.log(game.event.outcome[0])}
           <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
             {game.event.resolved ? (
               <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
