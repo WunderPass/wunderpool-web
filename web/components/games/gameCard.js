@@ -94,7 +94,7 @@ function ParticipantTable({ game, stake }) {
 }
 
 export default function GameCard(props) {
-  const { game, totalTokens, wunderPool, handleSuccess } = props;
+  const { game, totalTokens, wunderPool, handleSuccess, user } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
@@ -145,9 +145,14 @@ export default function GameCard(props) {
             </Typography>
           </div>
 
-          {game.participants.length > 0 && (
-            <ParticipantTable game={game} stake={stake} />
-          )}
+          {/* Only Show participants if user has voted */}
+          {game.participants.find(
+            (participant) => participant.address === user.address
+          ) &&
+            game.participants.length > 0 && (
+              <ParticipantTable game={game} stake={stake} />
+            )}
+
           {!usersBet && !game.event.resolved && (
             <button
               className="btn-casama py-2 px-6 mt-2"
