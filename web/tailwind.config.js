@@ -17,6 +17,7 @@ module.exports = {
         'wunder-blue': '#0096FE',
         'wunder-light-blue': '#01BFFF',
         'wunder-dark-blue': '#020D30',
+        'casama-light': '#6e7df0',
         'casama-blue': '#5F45FD',
         'casama-dark-blue': '#462cf1',
         'casama-light-blue': '#7560ff',
