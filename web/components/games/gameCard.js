@@ -2,6 +2,7 @@ import { Stack, Typography, IconButton, Divider } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '../../services/formatter';
+import PayoutRuleInfoButton from '../utils/payoutRuleInfoButton';
 import PlaceBetDialog from '../dialogs/placeBet';
 import Avatar from '../members/avatar';
 import Timer from '../proposals/timer';
@@ -150,21 +151,25 @@ export default function GameCard(props) {
               </IconButton>
             </div>
           </div>
-          <Typography className="text-xl sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
+          <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
             {game.event.name}
           </Typography>
         </div>
 
         <div className="flex flex-col w-full ">
           <div className="flex flex-col w-full justify-center items-center mb-5 ">
-            <div className="w-full sm:w-2/3 md:w-5/12">
+            <div className="w-full sm:w-2/3 md:w-7/12">
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                <Typography className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center truncate ...">
-                  <p className="mx-2">
+                <Typography className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
+                  <p className="mx-2 ">
                     {game.payoutRule == 0
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>
+
+                  <div className="mt-2">
+                    <PayoutRuleInfoButton />
+                  </div>
                 </Typography>
                 <Divider className="my-1" />
                 <Typography className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
