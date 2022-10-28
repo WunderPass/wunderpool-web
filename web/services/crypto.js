@@ -23,7 +23,7 @@ export function encryptKey(privateKey, password, save = false) {
   const encrypted = encrypt(privateKey, password);
   localStorage.setItem('privKey', encrypted);
   if (save) {
-    localStorage.setItem('encrPrivKey', privateKey);
+    localStorage.setItem('decrPrivKey', privateKey);
     localStorage.setItem('destroyKeyAt', new Date().getTime() + 604800000);
   }
 }
@@ -33,7 +33,7 @@ export function decryptKey(password, save = false) {
   if (privateKey) {
     const privKey = decrypt(privateKey, password);
     if (save) {
-      localStorage.setItem('encrPrivKey', privKey);
+      localStorage.setItem('decrPrivKey', privKey);
       localStorage.setItem('destroyKeyAt', new Date().getTime() + 604800000);
     }
     return privKey;
@@ -44,12 +44,12 @@ export function decryptKey(password, save = false) {
 
 export function retreiveKey() {
   if (new Date().getTime() > Number(localStorage.getItem('destroyKeyAt'))) {
-    localStorage.removeItem('encrPrivKey');
+    localStorage.removeItem('decrPrivKey');
   } else {
-    const encrPrivKey = localStorage.getItem('encrPrivKey');
-    if (encrPrivKey == 'null') {
+    const decrPrivKey = localStorage.getItem('decrPrivKey');
+    if (decrPrivKey == 'null') {
       return null;
-    } else return encrPrivKey;
+    } else return decrPrivKey;
   }
   return null;
 }
@@ -63,6 +63,7 @@ export function generateKeys(seedPhrase) {
   return {
     privKey: wallet.getPrivateKey().toString('hex'),
     pubKey: wallet.getPublicKey().toString('hex'),
+    address: wallet.getAddress().toString('hex'),
   };
 }
 

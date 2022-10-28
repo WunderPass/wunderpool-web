@@ -5,13 +5,12 @@ import { currency } from '/services/formatter';
 import CurrencyInput from '/components/utils/currencyInput';
 import usePool from '/hooks/usePool';
 import { toFixed } from '/services/formatter';
-import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
 import Link from 'next/link';
 import TransactionDialog from '/components/utils/transactionDialog';
 import CustomHeader from '../../../components/utils/customHeader';
-import { fetchPoolData } from '/services/contract/pools';
 import Avatar from '../../../components/members/avatar';
 import { getNameFor } from '../../../services/memberHelpers';
+import SignUpWithCasama from '../../../components/auth/signupWithCasama';
 
 function InfoBlock({ label, value }) {
   return (
@@ -49,17 +48,10 @@ function NotLoggedIn({ handleLogin }) {
   return (
     <>
       <Typography className="text-sm mt-3">
-        To join this Pool, you need a WunderPass Account
+        Create an Account to join this Pool
       </Typography>
       <Divider className="mt-2 mb-4 opacity-70" />
-      <LoginWithWunderPass
-        disablePopup
-        className="text-xs"
-        name="Casama"
-        redirect={'pools'}
-        intent={['wunderId', 'address']}
-        onSuccess={handleLogin}
-      />
+      <SignUpWithCasama onSuccess={handleLogin} />
     </>
   );
 }
