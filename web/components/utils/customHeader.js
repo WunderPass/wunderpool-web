@@ -12,7 +12,6 @@ export default function CustomHeader({
       <meta name="description" content={description} />
       <link rel="shortcut icon" href={favicon} />
       <link rel="icon" href={favicon} />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
 
       <meta
         name="twitter:image"

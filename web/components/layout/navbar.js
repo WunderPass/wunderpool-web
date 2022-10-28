@@ -23,7 +23,14 @@ export default function Navbar(props) {
   return (
     <>
       <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <AppBar className="bg-casama-blue" position="fixed" sx={{ top: 0 }}>
+        <AppBar
+          className="bg-casama-blue"
+          position="fixed"
+          sx={{
+            paddingTop: 'env(safe-area-inset-top)',
+            top: 0,
+          }}
+        >
           <Toolbar>
             <Stack className="flex flex-row w-full justify-between items-center mt-1">
               <Link href="/pools">
@@ -74,6 +81,11 @@ export default function Navbar(props) {
         </AppBar>
       </ClickAwayListener>
       <Toolbar />
+      <div
+        style={{
+          height: 'env(safe-area-inset-top)',
+        }}
+      ></div>
     </>
   );
 }
