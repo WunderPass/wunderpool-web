@@ -199,31 +199,11 @@ export default function AdvancedPoolDialog(props) {
 
   useEffect(() => {
     setDisabled(false);
-    switch (step) {
-      case 1:
-        if (
-          !value ||
-          valueErrorMsg ||
-          poolName.length < 3 ||
-          minInvestErrorMsg ||
-          maxInvestErrorMsg
-        ) {
-          setDisabled(true);
-        }
-      case 2:
-        if (!votingThreshold || !votingTime || !minYesVoters) setDisabled(true);
-      default:
-        break;
+
+    if (!value || poolName.length < 3) {
+      setDisabled(true);
     }
-  }, [
-    step,
-    value,
-    minInvest,
-    maxInvest,
-    votingThreshold,
-    votingTime,
-    minYesVoters,
-  ]);
+  }, [value, poolName]);
 
   return (
     <>

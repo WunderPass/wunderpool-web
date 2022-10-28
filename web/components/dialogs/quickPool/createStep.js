@@ -1,17 +1,5 @@
-import {
-  Collapse,
-  DialogContent,
-  DialogContentText,
-  Stack,
-  Tooltip,
-  Divider,
-  Alert,
-} from '@mui/material';
+import { Stack, Divider, Alert } from '@mui/material';
 import { useState } from 'react';
-import { BsImage } from 'react-icons/bs';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
-import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
-import HintLabel from '../../utils/hintLabel';
 import CurrencyInput from '/components/utils/currencyInput';
 import MemberInput from '/components/members/input';
 
@@ -22,9 +10,6 @@ export default function NewPoolConfigStep(props) {
     setMembers,
     poolName,
     setPoolName,
-    poolDescription,
-    setPoolDescription,
-    imageUrl,
     setImageUrl,
     setImage,
     value,
@@ -33,22 +18,14 @@ export default function NewPoolConfigStep(props) {
     setValueErrorMsg,
     minInvest,
     setMinInvest,
-    minInvestErrorMsg,
     setMinInvestErrorMsg,
     maxInvest,
     setMaxInvest,
-    maxInvestErrorMsg,
     setMaxInvestErrorMsg,
-    maxMembers,
-    setMaxMembers,
-    tokenName,
     setTokenName,
-    tokenSymbol,
     setTokenSymbol,
     tokenNameTouched,
-    setTokenNameTouched,
     tokenSymbolTouched,
-    setTokenSymbolTouched,
   } = props;
   const [poolNameTouched, setPoolNameTouched] = useState(poolName.length > 0);
 
