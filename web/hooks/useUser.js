@@ -8,7 +8,7 @@ import {
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
 import { fetchUserFriends } from '../services/memberHelpers';
-import { publicFromPrivate, decryptKey, retreiveKey } from '/services/crypto';
+import { decryptKey, retreiveKey } from '/services/crypto';
 import { signMillis, signMessage } from '/services/sign';
 
 export default function useUser() {
@@ -25,7 +25,6 @@ export default function useUser() {
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [unsupportedChain, setUnsupportedChain] = useState(false);
   const [friends, setFriends] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(null);
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
@@ -38,6 +37,8 @@ export default function useUser() {
     () => `/api/users/getImage?wunderId=${wunderId}`,
     [wunderId]
   );
+
+  const loggedIn = wunderId || address;
 
   const updateWunderId = (id) => {
     id && localStorage.setItem('wunderId', id);
@@ -57,47 +58,6 @@ export default function useUser() {
   const updateCheckedTopUp = (checked) => {
     localStorage.setItem('checkedTopUp', checked);
     setCheckedTopUp(checked);
-  };
-
-  const createUser = (
-    //TODO update me so that its easier to create user
-    firstName,
-    lastName,
-    handle,
-    privKey,
-    email,
-    phoneNumber
-  ) => {
-    return new Promise((resolve, reject) => {
-      const publicKey = publicFromPrivate(privKey);
-
-      const reqData = {
-        firstName,
-        lastName,
-        handle,
-        email,
-        phoneNumber,
-        public_key: publicKey,
-      };
-      const { signedMessage, signature } = signMillis(privKey);
-      const headers = { signed: signedMessage, signature: signature };
-      axios({
-        method: 'post',
-        url: '/api/users/create',
-        data: reqData,
-        headers: headers,
-      })
-        .then((res) => {
-          setPrivateKey(privKey);
-          setLoggedIn(true);
-          localStorage.setItem('authToken', res.data.authToken);
-          resolve(res.data);
-        })
-        .catch((err) => {
-          console.log('hier schon?');
-          reject(err?.response?.data?.error || err);
-        });
-    });
   };
 
   const fetchPools = () => {
@@ -196,13 +156,8 @@ export default function useUser() {
   };
 
   const getSignedMillis = () => {
-    console.log('enter in getSigned>Millis');
     const savedKey = retreiveKey();
-    console.log('enter in getSigned>Millis after retreiveKey');
-
     if (savedKey) setPrivateKey(savedKey);
-    console.log('savedKey', savedKey);
-    console.log('privateKey', privateKey);
 
     if (privateKey || savedKey) {
       const { signedMessage, signature } = signMillis(privateKey || savedKey);
@@ -330,17 +285,8 @@ export default function useUser() {
   }, [router.asPath]);
 
   useEffect(() => {
-    console.log('entered in router.isReady');
-    if (!router.isReady) return;
-    console.log('entered in router.isReady after if');
-
     setEmail(localStorage.getItem('email'));
     setPhoneNumber(localStorage.getItem('phoneNumber'));
-    setWunderId(localStorage.getItem('wunderId'));
-    setAddress(localStorage.getItem('address'));
-  }, [router.isReady]);
-
-  useEffect(() => {
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
     setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
@@ -396,6 +342,5 @@ export default function useUser() {
     setPasswordRequired,
     setPrivateKey,
     decryptAndSign,
-    createUser,
   };
 }
