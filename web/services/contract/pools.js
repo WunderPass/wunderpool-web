@@ -33,7 +33,7 @@ export function createPool(
     const body = {
       launcher: {
         launcher_name: 'PoolLauncher',
-        launcher_version: 'Zeta',
+        launcher_version: 'Eta',
         launcher_network: 'POLYGON_MAINNET',
       },
       pool_name: poolName,
@@ -60,7 +60,7 @@ export function createPool(
     formData.append('pool', JSON.stringify(body));
     approveUSDC(
       creator,
-      '0xB5Ae136D3817d8116Fce70Ac47e856fc484dafAe',
+      '0x8c3B8456077F0A853c667BF18F4B77E4B3Ca0cB1',
       usdc(amount)
     )
       .then(() => {
