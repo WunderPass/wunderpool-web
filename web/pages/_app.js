@@ -66,13 +66,16 @@ function WunderPool({ Component, pageProps }) {
   useEffect(() => {
     if (user.loggedIn === null && !isFetched) {
       setIsFetched(true);
-
       return;
     }
-    if (user.loggedIn === null) {
+
+    if (
+      user.loggedIn === null &&
+      !['/pools/join/[address]'].includes(router.pathname)
+    ) {
       router.push('/');
     }
-  }, [user.loggedIn, isFetched]);
+  }, [router.pathname, user.loggedIn, isFetched]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
