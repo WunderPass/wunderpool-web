@@ -38,7 +38,7 @@ export default function PoolList(props) {
         </div>
         <div className="my-2 mb-10">
           <Typography variant="h7">
-            Get invited to an investment pool or start one and invite others in
+            Get invited to an betting pool or start one and invite others in
             minutes
           </Typography>
           <div className="flex justify-center mt-2 cursor-pointer">

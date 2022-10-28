@@ -153,7 +153,6 @@ export default function PoolHeader(props) {
           setLoading(false);
         });
     } else {
-      console.log('link was empty');
       handleError('Something went wrong, please try again');
       setLoading(false);
     }
