@@ -19,15 +19,27 @@ export async function registerGame(
   ]);
 
   try {
-    const tx = await connectContract(distributor).registerGame(
-      name,
-      stake,
-      tokenAddress,
-      eventId,
-      payoutRule,
-      false,
-      { gasPrice: await gasPrice() }
-    );
+    let tx;
+    if (version == 'ALPHA') {
+      tx = await connectContract(distributor).registerGame(
+        name,
+        stake,
+        tokenAddress,
+        eventId,
+        payoutRule,
+        { gasPrice: await gasPrice() }
+      );
+    } else if (version == 'BETA') {
+      tx = await connectContract(distributor).registerGame(
+        name,
+        stake,
+        tokenAddress,
+        eventId,
+        payoutRule,
+        false,
+        { gasPrice: await gasPrice() }
+      );
+    }
 
     const receipt = await tx.wait();
     const events = receipt.logs.map((log) => {
