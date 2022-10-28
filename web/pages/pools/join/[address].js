@@ -64,7 +64,8 @@ function NotLoggedIn({ handleLogin }) {
   );
 }
 
-function TopUpRequired() {
+function TopUpRequired(props) {
+  const { user } = props;
   const [redirectUrl, setRedirectUrl] = useState(null);
 
   useEffect(() => {
@@ -77,14 +78,16 @@ function TopUpRequired() {
         To continue, your Account needs at least $3.00
       </Typography>
       <Typography className="text-xl my-3">
-        Deposit funds to your WunderId
+        Deposit funds to your wallet
       </Typography>
       {redirectUrl && (
-        <Link
-          href={`${process.env.WUNDERPASS_URL}/balance/topUp?redirectUrl=${redirectUrl}`}
+        <a
+          className="w-full"
+          href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&productsAvailed=BUY&network=polygon&cryptoCurrencyCode=USDC&walletAddress=${user.address}&defaultCryptoAmount=50&redirectURL=https://app.wunderpass.org/balance`}
+          target="_blank"
         >
-          <button className="btn btn-info w-full">Deposit now</button>
-        </Link>
+          <button className="btn-casama p-3 w-full">Deposit now</button>
+        </a>
       )}
     </>
   );
@@ -286,7 +289,7 @@ export default function JoinPool(props) {
           )}
           {user?.loggedIn ? (
             user?.usdBalance < 3 ? (
-              <TopUpRequired />
+              <TopUpRequired {...props} />
             ) : (
               <InputJoinAmount
                 amount={amount}
