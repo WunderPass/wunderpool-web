@@ -33,7 +33,7 @@ export default function PayoutRuleInfoButton(props) {
           horizontal: 'left',
         }}
       >
-        <Typography>
+        <div>
           <div className="flex flex-col text-gray-500 text-sm my-2 sm:my-0">
             <div className="flex flex-col m-2 mx-3 ">
               <span className="text-base font-bold underline sm:text-center mb-1">
@@ -90,7 +90,7 @@ export default function PayoutRuleInfoButton(props) {
               </div>
             </div>
           </div>
-        </Typography>
+        </div>
       </Popover>
     </>
   );

@@ -46,7 +46,8 @@ export default function PlaceBetDialog({
       game.id,
       [Number(guessOne), Number(guessTwo)],
       user.address,
-      user.wunderId || wunderPool.resolveMember(user.address)
+      user.wunderId || wunderPool.resolveMember(user.address),
+      game.version
     )
       .then((res) => {
         handleSuccess(`Placed Bet on ${game.event.name}`);
@@ -58,8 +59,10 @@ export default function PlaceBetDialog({
   };
 
   useEffect(() => {
-    setApproved((wunderPool?.version?.number || 0) > 6);
-  }, [wunderPool?.version?.number]);
+    setApproved(
+      (wunderPool?.version?.number || 0) > 6 && game.version != 'ALPHA'
+    );
+  }, [wunderPool?.version?.number, game.version]);
 
   return (
     <ResponsiveDialog

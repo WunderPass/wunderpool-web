@@ -161,7 +161,7 @@ export default function GameCard(props) {
           <div className="flex flex-col w-full justify-center items-center mb-5 ">
             <div className="w-full sm:w-2/3 md:w-7/12">
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                <Typography className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
+                <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
                     {game.payoutRule == 0
                       ? 'Winner Takes It All'
@@ -171,25 +171,25 @@ export default function GameCard(props) {
                   <div className="mt-2">
                     <PayoutRuleInfoButton />
                   </div>
-                </Typography>
+                </div>
                 <Divider className="my-1" />
-                <Typography className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Participants:</p>
                   <p className="ml-2">{`${game.participants.length}`}</p>
-                </Typography>
+                </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
-                <Typography className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Entry:</p>
                   <p className="ml-2">{`${currency(stake)}`}</p>
-                </Typography>
+                </div>
                 <Divider className="my-1" />
-                <Typography className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
                   <p>Pot:</p>
                   <p className="ml-2">{` ${currency(
                     stake * game.participants.length
                   )} `}</p>
-                </Typography>
+                </div>
               </div>
             </div>
           </div>

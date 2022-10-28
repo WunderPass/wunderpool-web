@@ -4,7 +4,7 @@ import { connectContract, gasPrice } from '../init';
 import { initDistributor } from './init';
 
 export async function registerEvent(name, endDate, eventType, params = {}) {
-  const [distributor] = initDistributor();
+  const [distributor] = initDistributor('BETA');
   const iface = new ethers.utils.Interface([
     'event NewEvent(uint256 indexed id, string name, uint256 endDate)',
   ]);
@@ -29,6 +29,7 @@ export async function registerEvent(name, endDate, eventType, params = {}) {
     const { id } = event;
 
     const data = {
+      version: 'BETA',
       id: id.toNumber(),
       name,
       endDate,
@@ -49,8 +50,8 @@ export async function registerEvent(name, endDate, eventType, params = {}) {
   }
 }
 
-export async function resolveEvent(eventId, outcome) {
-  const [distributor] = initDistributor();
+export async function resolveEvent(eventId, outcome, version) {
+  const [distributor] = initDistributor(version);
   try {
     const tx = await connectContract(distributor).setEventOutcome(
       eventId,
@@ -64,6 +65,7 @@ export async function resolveEvent(eventId, outcome) {
     const data = {
       eventId,
       outcome,
+      version,
     };
 
     const res = await axios({

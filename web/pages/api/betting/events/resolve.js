@@ -7,9 +7,9 @@ export default async function handler(req, res) {
       events = JSON.parse(fs.readFileSync('./data/events.json', 'utf8'));
     }
 
-    const { eventId, outcome } = req.body;
+    const { eventId, outcome, version } = req.body;
 
-    const event = events.find((e) => e.id == eventId);
+    const event = events.find((e) => e.id == eventId && e.version == version);
     event.outcome = outcome;
     event.resolved = true;
     fs.writeFileSync('./data/events.json', JSON.stringify(events));

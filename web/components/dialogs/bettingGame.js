@@ -1,22 +1,11 @@
-import {
-  DialogActions,
-  Stack,
-  Typography,
-  IconButton,
-  Popover,
-  Divider,
-} from '@mui/material';
+import { DialogActions, Stack, Typography } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import CurrencyInput from '/components/utils/currencyInput';
-import TransactionFrame from '../utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '../utils/responsiveDialog';
 import EventInput from '../events/input';
 import { registerGame } from '../../services/contract/betting/games';
-import ShareIcon from '@mui/icons-material/Share';
-import { handleShare } from '../../services/shareLink';
 import PayoutRuleInfoButton from '../utils/payoutRuleInfoButton';
-import { FaRegQuestionCircle } from 'react-icons/fa';
 
 const PayoutRules = [
   { label: 'Winner Takes It All', value: 0 },
@@ -69,7 +58,8 @@ export default function BettingGameDialog(props) {
       wunderPool.governanceToken.address,
       event.id,
       payoutRule,
-      wunderPool.poolAddress
+      wunderPool.poolAddress,
+      event.version
     )
       .then((res) => {
         console.log(res);

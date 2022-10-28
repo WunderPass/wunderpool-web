@@ -204,7 +204,7 @@ function EventCard({
 
   const handleResolve = () => {
     setLoading(true);
-    resolveEvent(event.id, [valueOne, valueTwo])
+    resolveEvent(event.id, [valueOne, valueTwo], event.version)
       .then((res) => {
         console.log(res);
         handleSuccess(`Resolved Event "${event.name}"`);

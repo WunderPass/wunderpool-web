@@ -13,22 +13,23 @@ import { httpProvider } from './provider';
 import { approveUSDC } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
 
-export function createPool(
+export function createPool({
   creator,
   poolName,
-  poolDescription,
+  poolDescription = '',
   tokenName,
   tokenSymbol,
   minInvest,
   maxInvest,
   amount,
   members,
-  maxMembers,
-  votingThreshold,
+  maxMembers = 50,
+  votingThreshold = 50,
   votingTime,
   minYesVoters,
-  image
-) {
+  isPublic = false,
+  image,
+}) {
   return new Promise(async (resolve, reject) => {
     const body = {
       launcher: {
@@ -45,14 +46,15 @@ export function createPool(
       pool_creator: creator.toLowerCase(),
       pool_members: members.map((m) => ({ members_address: m.toLowerCase() })),
       shareholder_agreement: {
-        min_invest: minInvest,
-        max_invest: maxInvest,
+        min_invest: minInvest || amount,
+        max_invest: maxInvest || amount,
         max_members: maxMembers,
         voting_threshold: votingThreshold,
         voting_time: votingTime,
         min_yes_voters: minYesVoters,
       },
       initial_invest: amount,
+      public: isPublic,
     };
 
     const formData = new FormData();
