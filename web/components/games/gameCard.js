@@ -58,9 +58,11 @@ function ParticipantTable({ game, stake, user }) {
 
   return (
     <div className="">
-      <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
-        Participants :
-      </div>
+      {participants.length > 0 && (
+        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
+          Participants :
+        </div>
+      )}
 
       {participants.map((participant, i) => {
         return (
@@ -172,6 +174,7 @@ export default function GameCard(props) {
                   </div>
                 </Typography>
                 <Divider className="my-1" />
+
                 <Typography className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Participants:</p>
                   <p className="ml-2">{`${game.participants.length}`}</p>
@@ -224,11 +227,23 @@ export default function GameCard(props) {
             )}
           </div>
 
-          {/* Only Show participants if user has voted */}
-          {game.event.resolved ||
-            (game.participants.find(
+          {console.log(game.event.resolved)}
+          {console.log(
+            game.participants.find(
               (participant) => participant.address === user.address
-            ) && <ParticipantTable game={game} stake={stake} user={user} />)}
+            )
+          )}
+
+          {/* Only Show participants if user has voted */}
+          {game.event.resolved ? (
+            <ParticipantTable game={game} stake={stake} user={user} />
+          ) : (
+            <>
+              {game.participants.find(
+                (participant) => participant.address === user.address
+              ) && <ParticipantTable game={game} stake={stake} user={user} />}
+            </>
+          )}
 
           {!usersBet && !game.event.resolved && (
             <div className="flex justify-center items-center">
