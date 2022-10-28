@@ -19,6 +19,7 @@ import { RiVisaFill } from 'react-icons/ri';
 import { SiMastercard } from 'react-icons/si';
 import { FaGooglePay } from 'react-icons/fa';
 import { FaCcPaypal } from 'react-icons/fa';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 import TransakLogo from '/public/transak.png';
 import Image from 'next/image';
 
@@ -80,7 +81,15 @@ export default function TopUpAlert(props) {
       onClose={handleClose}
       TransitionComponent={Transition}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Manage Funds</DialogTitle>
+      <DialogTitle>
+        <div className="flex flex-row justify-between items-center w-full">
+          <div></div>
+          <div className="">Manage Funds</div>
+          <button onClick={handleClose}>
+            <AiOutlineCloseCircle />
+          </button>
+        </div>
+      </DialogTitle>
       <DialogContent>
         {user.loginMethod == 'WunderPass' ? (
           <Stack spacing={4} className="flex w-full ">
@@ -230,7 +239,7 @@ export default function TopUpAlert(props) {
             </Alert>
             <Divider />
             <Typography textAlign="center">
-              Or use Casama with WunderPass to pay with PayPal and get $10 for
+              Or use Casama with WunderPass to pay with Transak and get $10 for
               free
             </Typography>
             <CreateYourWunderPass
