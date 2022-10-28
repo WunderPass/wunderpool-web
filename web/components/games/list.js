@@ -45,7 +45,7 @@ export default function GameList(props) {
       sx={{ height: '100px', borderRadius: 3 }}
     />
   ) : wunderPool.bettingGames.length > 0 ? (
-    <Stack spacing={1} style={{ maxWidth: '100%' }}>
+    <Stack style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Open', 'History']}
@@ -56,33 +56,64 @@ export default function GameList(props) {
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
+
       {gamesTab == 0 &&
-        wunderPool.bettingGames
-          .filter((p) => !p.closed)
-          .map((game) => {
-            return (
-              <GameCard
-                openBet={openBet}
-                setOpenBet={setOpenBet}
-                key={`game-card-${game.id}`}
-                game={game}
-                totalTokens={totalTokens}
-                {...props}
-              />
-            );
-          })}
+      wunderPool.bettingGames.filter((bet) => !bet.closed).length > 0
+        ? wunderPool.bettingGames
+            .filter((bet) => !bet.closed)
+            .map((game) => {
+              return (
+                <div className="mb-16">
+                  <GameCard
+                    openBet={openBet}
+                    setOpenBet={setOpenBet}
+                    key={`game-card-${game.id}`}
+                    game={game}
+                    totalTokens={totalTokens}
+                    {...props}
+                  />
+                </div>
+              );
+            })
+        : gamesTab == 0 && (
+            <div className="container-gray border-2 mt-4">
+              <Stack sx={{ textAlign: 'center' }}>
+                <Typography className="mt-3" variant="h5">
+                  No Open Bets
+                </Typography>
+                <Typography className="mb-2 mt-3" variant="subtitle1">
+                  Create a new bet below!
+                </Typography>
+                <button
+                  className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+                  onClick={() => {
+                    handleOpenCloseBetting();
+                  }}
+                >
+                  Start Betting Game
+                </button>
+                <BettingGameDialog
+                  open={openBet}
+                  handleOpenClose={handleOpenCloseBetting}
+                  {...props}
+                />
+              </Stack>
+            </div>
+          )}
       {gamesTab == 1 &&
         wunderPool.bettingGames
           .filter((p) => p.closed)
           .map((game) => {
             return (
-              <GameCard
-                openBet={openBet}
-                key={`game-card-${game.id}`}
-                game={game}
-                totalTokens={totalTokens}
-                {...props}
-              />
+              <div className="mb-16">
+                <GameCard
+                  openBet={openBet}
+                  key={`game-card-${game.id}`}
+                  game={game}
+                  totalTokens={totalTokens}
+                  {...props}
+                />
+              </div>
             );
           })}
     </Stack>

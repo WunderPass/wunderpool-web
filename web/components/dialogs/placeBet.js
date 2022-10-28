@@ -28,6 +28,7 @@ export default function PlaceBetDialog({
     setGuessOne('');
     setGuessTwo('');
     handleOpenBetNow(true);
+    handleOpenBetNow(true);
   };
 
   const handleApprove = () => {
@@ -58,7 +59,7 @@ export default function PlaceBetDialog({
   };
 
   useEffect(() => {
-    setApproved(wunderPool?.version?.number || 0 > 6);
+    setApproved((wunderPool?.version?.number || 0) > 6);
   }, [wunderPool?.version?.number]);
 
   return (
@@ -122,6 +123,7 @@ export default function PlaceBetDialog({
           <Typography>{game.event.teams[0]}</Typography>
           <div className="w-12">
             <input
+              inputMode="numeric"
               className="textfield text-center py-1 px-3"
               value={guessOne}
               onChange={(e) => setGuessOne(e.target.value)}
@@ -130,6 +132,7 @@ export default function PlaceBetDialog({
           <Typography>:</Typography>
           <div className="w-12">
             <input
+              inputMode="numeric"
               className="textfield text-center py-1 px-3"
               value={guessTwo}
               onChange={(e) => setGuessTwo(e.target.value)}

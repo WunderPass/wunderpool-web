@@ -82,14 +82,6 @@ export default function MemberInput({
                   >
                     {getNameFor(option)}
                   </Typography>
-                  <Typography
-                    variant="subtitle2"
-                    whiteSpace="nowrap"
-                    textOverflow="ellipsis"
-                    overflow="hidden"
-                  >
-                    {option.email}
-                  </Typography>
                 </div>
               </Stack>
             </li>

@@ -15,14 +15,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '../components/dialogs/switchChainAlert';
-import * as React from 'react';
+import Head from 'next/head';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
   const user = useUser();
   const [isFetched, setIsFetched] = useState(false);
 
-  const [handleError, handleSuccess, handleInfo, handleWarning] =
+  const [handleError, handleSuccess, handleInfo, handleWarning, handlePromise] =
     useNotification();
   const {
     updateListener,
@@ -42,6 +42,7 @@ function WunderPool({ Component, pageProps }) {
       handleSuccess,
       handleInfo,
       handleWarning,
+      handlePromise,
       updateListener,
       newPoolEvent,
       newMemberEvent,
@@ -96,12 +97,22 @@ function WunderPool({ Component, pageProps }) {
     
       gtag('config', '${process.env.GA_TRACKING_CODE}');`}
       </Script>
+      <Head>
+        <meta
+          name="viewport"
+          content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        ></meta>
+      </Head>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={muiTheme}>
           <AlertProvider template={AlertTemplate} {...options}>
             <Navbar {...appProps} />
             <Component {...appProps} />
-            <ToastContainer position="top-right" autoClose={8000} />
+            <ToastContainer
+              position="top-right"
+              autoClose={8000}
+              style={{ marginTop: 'env(safe-area-inset-top)' }}
+            />
             <TopUpAlert
               open={user.topUpRequired}
               setOpen={user.setTopUpRequired}

@@ -122,6 +122,19 @@ export async function determineGame(gameId) {
     return res.data;
   } catch (error) {
     console.log(error);
-    throw error;
+    if (/game already closed/i.test(error)) {
+      const data = {
+        gameId,
+      };
+
+      const res = await axios({
+        method: 'POST',
+        url: '/api/betting/games/close',
+        data,
+      });
+      return res.data;
+    } else {
+      throw error;
+    }
   }
 }

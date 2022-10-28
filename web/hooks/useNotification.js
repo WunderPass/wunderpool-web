@@ -49,5 +49,17 @@ export default function useNotification() {
     toast.warn(<Msg msg={msg} opts={opts} />);
   };
 
-  return [handleError, handleSuccess, handleInfo, handleWarning];
+  const handlePromise = (promise, success) => {
+    toast.promise(promise, {
+      pending: 'Waiting for Blockchain Transaction',
+      success,
+      error: {
+        render({ data }) {
+          return stringifyError(data);
+        },
+      },
+    });
+  };
+
+  return [handleError, handleSuccess, handleInfo, handleWarning, handlePromise];
 }

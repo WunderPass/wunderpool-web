@@ -42,7 +42,6 @@ export default function body(props) {
   }, [tokenAddedEvent]);
 
   useEffect(() => {
-    //DOESNT WORK CURRENTLY
     if (!newProposalEvent) return;
     setTimeout(() => {
       removeQueryParam('tab');

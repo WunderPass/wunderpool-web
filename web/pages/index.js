@@ -1,10 +1,8 @@
 import CreateYourWunderPass from '/components/auth/createYourWunderPass';
 import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
-import CasamaIcon from '/public/casama-wht.svg';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Image from 'next/image';
 import ReactGA from 'react-ga';
 import LoginWithMetaMask from '../components/auth/loginWithMetaMask';
 import LoginWithWalletConnect from '../components/auth/loginWithWalletConnect';
