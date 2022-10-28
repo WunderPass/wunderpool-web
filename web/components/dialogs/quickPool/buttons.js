@@ -12,9 +12,9 @@ export default function QuickPoolButtons(props) {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <button
-        disabled={disabled}
         className="btn-casama w-full py-3 mt-2"
         onClick={submit}
+        disabled={disabled}
       >
         Submit
       </button>
