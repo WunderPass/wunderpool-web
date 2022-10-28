@@ -3,7 +3,13 @@ import { ethers } from 'ethers';
 import { connectContract, gasPrice } from '../init';
 import { initDistributor } from './init';
 
-export async function registerEvent(name, endDate, eventType, params = {}) {
+export async function registerEvent(
+  name,
+  startDate,
+  endDate,
+  eventType,
+  params = {}
+) {
   const [distributor] = initDistributor('BETA');
   const iface = new ethers.utils.Interface([
     'event NewEvent(uint256 indexed id, string name, uint256 endDate)',
@@ -12,6 +18,7 @@ export async function registerEvent(name, endDate, eventType, params = {}) {
   try {
     const tx = await connectContract(distributor).registerEvent(
       name,
+      startDate,
       endDate,
       eventType,
       { gasPrice: await gasPrice() }

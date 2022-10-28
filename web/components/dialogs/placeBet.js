@@ -32,7 +32,12 @@ export default function PlaceBetDialog({
 
   const handleApprove = () => {
     setLoading(true);
-    approve(user.address, distributorAddress, game.stake, game.tokenAddress)
+    approve(
+      user.address,
+      distributorAddress(game.version),
+      game.stake,
+      game.tokenAddress
+    )
       .then((res) => {
         setApproved(true);
       })

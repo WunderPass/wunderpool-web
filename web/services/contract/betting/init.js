@@ -1,7 +1,10 @@
 import { ethers } from 'ethers';
 import { httpProvider, wsProvider } from '../provider';
 
-export const distributorAddress = '0x1189fB98a6f7eb5e59bA3a16AD9668Fe48D06a3D';
+export function distributorAddress(version) {
+  if (version == 'ALPHA') return '0x1189fB98a6f7eb5e59bA3a16AD9668Fe48D06a3D';
+  if (version == 'BETA') return '0x1Ec1144ccCDE222449A02288d5eC1C22960CaCDc';
+}
 
 function initDistributorAlpha() {
   const abi = [
@@ -17,7 +20,10 @@ function initDistributorAlpha() {
     'function clearReservedAmounts(uint256 _id)',
   ];
   const provider = httpProvider;
-  return [new ethers.Contract(distributorAddress, abi, provider), provider];
+  return [
+    new ethers.Contract(distributorAddress('ALPHA'), abi, provider),
+    provider,
+  ];
 }
 
 function initDistributorBeta() {
@@ -34,7 +40,10 @@ function initDistributorBeta() {
     'function clearReservedAmounts(uint256 _id)',
   ];
   const provider = httpProvider;
-  return [new ethers.Contract(distributorAddress, abi, provider), provider];
+  return [
+    new ethers.Contract(distributorAddress('BETA'), abi, provider),
+    provider,
+  ];
 }
 
 export function initDistributor(version) {

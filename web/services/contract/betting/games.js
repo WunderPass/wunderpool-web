@@ -25,6 +25,7 @@ export async function registerGame(
       tokenAddress,
       eventId,
       payoutRule,
+      false,
       { gasPrice: await gasPrice() }
     );
 
@@ -121,6 +122,7 @@ export async function determineGame(gameId, version) {
     await tx.wait();
     const data = {
       gameId,
+      version,
     };
 
     const res = await axios({

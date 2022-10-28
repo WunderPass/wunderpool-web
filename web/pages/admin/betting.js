@@ -36,12 +36,15 @@ function NewEventDialog({
   const [name, setName] = useState('');
   const [teamOne, setTeamOne] = useState('');
   const [teamTwo, setTeamTwo] = useState('');
+  const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [eventType, setEventType] = useState(0);
 
   const handleCreate = () => {
     setLoading(true);
-    registerEvent(name, endDate, eventType, { teams: [teamOne, teamTwo] })
+    registerEvent(name, startDate, endDate, eventType, {
+      teams: [teamOne, teamTwo],
+    })
       .then((res) => {
         console.log(res);
         handleSuccess(`Created Event "${name}"`);
@@ -100,6 +103,17 @@ function NewEventDialog({
                 placeholder="WM Finale"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="label" htmlFor="eventStartDate">
+                Start Date
+              </label>
+              <input
+                className="textfield py-4 px-3 mt-2"
+                id="eventStartDate"
+                type="datetime-local"
+                onChange={(e) => setStartDate(Number(new Date(e.target.value)))}
               />
             </div>
             <div>
@@ -183,7 +197,7 @@ function EventCard({
       var closedGames = await Promise.all(
         openGames.map(async (game) => {
           console.log('trying to close game:', game.name);
-          return await determineGame(game.id)
+          return await determineGame(game.id, game.version)
             .then((res) => {
               console.log('then');
               console.log(res);
@@ -301,7 +315,7 @@ function GameCard({ game, event, fetchGames, handleSuccess, handleError }) {
 
   const handleClose = () => {
     setLoading(true);
-    determineGame(game.id)
+    determineGame(game.id, game.version)
       .then((res) => {
         console.log(res);
         handleSuccess(`Closed Game "${game.name}"`);
