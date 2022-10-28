@@ -14,8 +14,10 @@ export default async function handler(req, res) {
       games = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
     }
 
-    const { gameId } = req.body;
-    const game = games.find((game) => game.id == gameId);
+    const { gameId, version } = req.body;
+    const game = games.find(
+      (game) => game.id == gameId && game.version == version
+    );
     game.closed = true;
 
     fs.writeFileSync('./data/games.json', JSON.stringify(games));

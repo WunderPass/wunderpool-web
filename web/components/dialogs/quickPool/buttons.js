@@ -1,5 +1,5 @@
 export default function QuickPoolButtons(props) {
-  const { step, totalSteps, disabled, setStep, submit, retry } = props;
+  const { disabled, submit, retry } = props;
   if (retry)
     return (
       <div className="flex flex-col items-center justify-center w-full">
@@ -11,7 +11,11 @@ export default function QuickPoolButtons(props) {
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      <button className="btn-casama w-full py-3 mt-2" onClick={submit}>
+      <button
+        className="btn-casama w-full py-3 mt-2"
+        onClick={submit}
+        disabled={disabled}
+      >
         Submit
       </button>
     </div>

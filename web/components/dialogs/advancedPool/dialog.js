@@ -158,22 +158,23 @@ export default function AdvancedPoolDialog(props) {
     setLoading(true);
     setWaitingForPool(true);
     setTimeout(() => {
-      createPool(
-        user.address,
+      createPool({
+        creator: user.address,
         poolName,
         poolDescription,
         tokenName,
         tokenSymbol,
-        minInvest || value,
-        maxInvest || value,
-        value,
-        members.map((m) => m.address),
-        maxMembers || 50,
-        votingThreshold || 50,
-        (Number(votingTime) || 72) * 3600,
-        minYesVoters || 1,
-        image
-      )
+        minInvest,
+        maxInvest,
+        amount: value,
+        members: members.map((m) => m.address),
+        maxMembers,
+        votingThreshold,
+        votingTime: (Number(votingTime) || 72) * 3600,
+        minYesVoters: minYesVoters || 1,
+        isPublic: false,
+        image: image,
+      })
         .then((res) => {
           handleClose();
           handleInfo('Waiting for Blockchain Transaction');

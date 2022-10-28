@@ -184,7 +184,7 @@ export default function useUser() {
           data: { address },
         })
           .then(({ data }) => {
-            setWunderId(data.wunder_id);
+            updateWunderId(data.wunder_id);
           })
           .catch((err) => {
             console.log('No User Found');
@@ -192,6 +192,12 @@ export default function useUser() {
       }
     }
   }, [address]);
+
+  useEffect(async () => {
+    if (wunderId) {
+      await fetchFriends();
+    }
+  }, [wunderId]);
 
   useEffect(() => {
     if (router.asPath == '/pools') {
