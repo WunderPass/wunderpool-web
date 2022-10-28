@@ -203,7 +203,7 @@ export default function SignUpWithCasama({ onSuccess }) {
             <div>
               <input
                 className="textfield py-4 px-3"
-                placeholder="PasswordConfirmation"
+                placeholder="Password Confirmation"
                 type="password"
                 value={passwordConfirmation}
                 onChange={(e) => {
