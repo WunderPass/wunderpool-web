@@ -120,6 +120,7 @@ export default function GameCard(props) {
   const handleOpenBetNow = (onlyClose = false) => {
     if (onlyClose && !open) return;
     if (open) {
+      setOpen(false);
       goBack(() => removeQueryParam('bet'));
     } else {
       addQueryParam({ bet: game.id }, false);

@@ -28,7 +28,6 @@ export default function PlaceBetDialog({
     setGuessOne('');
     setGuessTwo('');
     handleOpenBetNow(true);
-    handleOpenBetNow(true);
   };
 
   const handleApprove = () => {
