@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import PoolInvites from './navComponents/poolInvites';
 import MyPools from './navComponents/myPools';
 import News from './navComponents/news';
+import Link from 'next/link';
 
 const mobileNavigation = (props) => {
   const { user, open, setOpen } = props;
@@ -58,22 +59,17 @@ const mobileNavigation = (props) => {
                 <MyPools {...props} />
               </motion.li>
 
-              {user.loginMethod == 'WunderPass' && (
-                <motion.li
-                  initial={animateFrom}
-                  animate={animateTo}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="px-2 py-1">
-                    <a
-                      target="_blank"
-                      href={`${process.env.WUNDERPASS_URL}/profile`}
-                    >
-                      Profile
-                    </a>
-                  </div>
-                </motion.li>
-              )}
+              <motion.li
+                initial={animateFrom}
+                animate={animateTo}
+                transition={{ delay: 0.1 }}
+              >
+                <div className="px-2 py-1">
+                  <Link href="/profile">
+                    <a onClick={() => setOpen(false)}>Profile</a>
+                  </Link>
+                </div>
+              </motion.li>
 
               <motion.li
                 initial={animateFrom}

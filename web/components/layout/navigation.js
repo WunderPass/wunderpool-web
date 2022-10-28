@@ -6,6 +6,7 @@ import News from './navComponents/news';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Avatar from '/components/members/avatar';
+import Link from 'next/link';
 
 const navigation = (props) => {
   const { user, open, setOpen } = props;
@@ -75,22 +76,17 @@ const navigation = (props) => {
             >
               <MyPools {...props} />
             </motion.li>
-            {user.loginMethod == 'WunderPass' && (
-              <motion.li
-                initial={animateFrom}
-                animate={animateTo}
-                transition={{ delay: 0.1 }}
-              >
-                <div className="px-2 py-1">
-                  <a
-                    target="_blank"
-                    href={`${process.env.WUNDERPASS_URL}/profile`}
-                  >
-                    Profile
-                  </a>
-                </div>
-              </motion.li>
-            )}
+            <motion.li
+              initial={animateFrom}
+              animate={animateTo}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="px-2 py-1">
+                <Link href="/profile">
+                  <a onClick={() => setOpen(false)}>Profile</a>
+                </Link>
+              </div>
+            </motion.li>
 
             <motion.li
               initial={animateFrom}
