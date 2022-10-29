@@ -18,8 +18,8 @@ export async function registerEvent(
   try {
     const tx = await connectContract(distributor).registerEvent(
       name,
-      startDate,
-      endDate,
+      startDate / 1000,
+      endDate / 1000,
       eventType,
       { gasPrice: await gasPrice() }
     );
@@ -39,6 +39,7 @@ export async function registerEvent(
       version: 'BETA',
       id: id.toNumber(),
       name,
+      startDate,
       endDate,
       eventType,
       owner: '0xe11e61b3A603Fb1d4d208574bfc25cF69177BB0C',

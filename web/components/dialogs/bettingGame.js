@@ -34,13 +34,22 @@ export default function BettingGameDialog(props) {
   const [stake, setStake] = useState(null);
   const [stakeInTokens, setStakeInTokens] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [warningMsg, setWarningMsg] = useState(null);
   const [payoutRule, setPayoutRule] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
-  const maxStake = useMemo(() => {
+  const lowestStake = useMemo(() => {
     return (
       (Math.min(...wunderPool.members.map((m) => m.share)) *
+        wunderPool.usdcBalance) /
+      100
+    );
+  }, [wunderPool.members, wunderPool.usdcBalance]);
+
+  const highestStake = useMemo(() => {
+    return (
+      (Math.max(...wunderPool.members.map((m) => m.share)) *
         wunderPool.usdcBalance) /
       100
     );
@@ -80,17 +89,27 @@ export default function BettingGameDialog(props) {
     setStakeInTokens(
       Math.floor((totalTokens / wunderPool.usdcBalance) * float)
     );
-    //Validation to only allow bets wiht max amount same as the member with the least amount of stake
-    //  if (float && float > maxStake) {
-    //       setErrorMsg(`Maximum Stake of ${currency(maxStake)} surpassed`);
-    //     } else {
-    //       setErrorMsg(null);
-    //     }
+    // Validation to only allow bets wiht max amount same as the member with the least amount of stake
+    if (float && float > highestStake) {
+      setErrorMsg(`Maximum Stake of ${currency(highestStake)} surpassed`);
+    } else {
+      setErrorMsg(null);
+    }
+
+    if (float && float > lowestStake) {
+      setWarningMsg(`Not everyone will be able to participate`);
+    } else {
+      setWarningMsg(null);
+    }
   };
 
   useEffect(() => {
     setSubmitDisabled(
-      !stakeInTokens || stakeInTokens <= 0 || loading || event.id == undefined
+      !stakeInTokens ||
+        stakeInTokens <= 0 ||
+        loading ||
+        event.id == undefined ||
+        errorMsg
     );
   }, [stakeInTokens, loading, event.id]);
 
@@ -139,6 +158,11 @@ export default function BettingGameDialog(props) {
             onChange={handleInput}
             error={errorMsg}
           />
+          {warningMsg && !errorMsg && (
+            <div className="text-yellow-600" style={{ marginTop: 0 }}>
+              {warningMsg}
+            </div>
+          )}
           <div className="flex flex-row items-center">
             <Typography>Payout Rule</Typography>
             <PayoutRuleInfoButton />

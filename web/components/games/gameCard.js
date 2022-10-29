@@ -220,7 +220,10 @@ export default function GameCard(props) {
               </div>
             ) : (
               <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
-                <Timer start={Number(new Date())} end={game.event.endDate} />
+                <Timer
+                  start={Number(new Date())}
+                  end={game.event.startDate || game.event.endDate}
+                />
               </div>
             )}
           </div>
@@ -231,16 +234,20 @@ export default function GameCard(props) {
               (participant) => participant.address === user.address
             ) && <ParticipantTable game={game} stake={stake} user={user} />)}
 
-          {!usersBet && !game.event.resolved && (
-            <div className="flex justify-center items-center">
-              <button
-                className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
-                onClick={() => handleOpenBetNow()}
-              >
-                Place your Bet
-              </button>
-            </div>
-          )}
+          {!usersBet &&
+            !game.event.resolved &&
+            (game.event.startDate
+              ? game.event.startDate > Number(new Date())
+              : true) && (
+              <div className="flex justify-center items-center">
+                <button
+                  className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
+                  onClick={() => handleOpenBetNow()}
+                >
+                  Place your Bet
+                </button>
+              </div>
+            )}
         </div>
       </div>
       <PlaceBetDialog
