@@ -16,7 +16,9 @@ export default function PublicPools(props) {
 
   const showMore = () => {
     allPools.slice(visiblePools.length, visiblePools.length + 3).map((pool) => {
-      if (pool) setVisiblePools((prev) => [...prev, pool]);
+      formatPool(pool).then((p) => {
+        if (p) setVisiblePools((prev) => [...prev, p]);
+      });
     });
   };
 
@@ -24,8 +26,18 @@ export default function PublicPools(props) {
     axios({
       method: 'get',
       url: '/api/pools/public/getAll',
-    }).then((res) => {
-      getPoolInfoFromBackend([...res.data]);
+    }).then(({ data }) => {
+      const uniquePools = [];
+      for (let index = 0; index < data.length; index++) {
+        const p = data[index];
+        if (
+          !uniquePools
+            .map(({ poolAddress }) => poolAddress)
+            .includes(p.poolAddress)
+        )
+          uniquePools.push(p);
+      }
+      getPoolInfoFromBackend(uniquePools);
     });
   };
 
@@ -41,10 +53,7 @@ export default function PublicPools(props) {
       .sort(
         (a, b) => b.pool_treasury.act_balance - a.pool_treasury.act_balance
       );
-
-    setAllPools([]);
-    setAllPools([...validPools]);
-    setVisiblePools([]);
+    setAllPools(validPools);
     validPools.slice(0, 3).map((pool) => {
       formatPool(pool).then((p) => {
         if (p) setVisiblePools((prev) => [...prev, p]);
@@ -68,7 +77,7 @@ export default function PublicPools(props) {
             .map((pool) => {
               return (
                 <div
-                  key={`public-pool-card-${pool.poolAddress}`}
+                  key={`public-pool-card-${pool.address}`}
                   className="min-w-full sm:min-w-[30%]"
                 >
                   <div className="flex">
