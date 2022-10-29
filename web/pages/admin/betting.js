@@ -52,6 +52,11 @@ function NewEventDialog({
       .then((res) => {
         console.log(res);
         handleSuccess(`Created Event "${name}"`);
+        setName('');
+        setTeamOne('');
+        setTeamTwo('');
+        setStartDate('');
+        setEndDate('');
         setOpen(false);
         fetchEvents(false);
       })
