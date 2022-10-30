@@ -44,6 +44,8 @@ export default function AdvancedPoolDialog(props) {
   const [maxInvest, setMaxInvest] = useState('');
   const [maxInvestErrorMsg, setMaxInvestErrorMsg] = useState(null);
   const [maxMembers, setMaxMembers] = useState('50');
+  const [isPublic, setIsPublic] = useState(false);
+  const [autoLiquidateTs, setAutoLiquidateTs] = useState(0);
 
   const [votingEnabled, setVotingEnabled] = useState(true);
   const [votingThreshold, setVotingThreshold] = useState('50');
@@ -88,6 +90,10 @@ export default function AdvancedPoolDialog(props) {
     setTokenNameTouched,
     tokenSymbolTouched,
     setTokenSymbolTouched,
+    isPublic,
+    setIsPublic,
+    autoLiquidateTs,
+    setAutoLiquidateTs,
   };
 
   const votingProps = {
@@ -172,7 +178,8 @@ export default function AdvancedPoolDialog(props) {
         votingThreshold,
         votingTime: (Number(votingTime) || 72) * 3600,
         minYesVoters: minYesVoters || 1,
-        isPublic: false,
+        isPublic,
+        autoLiquidateTs,
         image: image,
       })
         .then((res) => {

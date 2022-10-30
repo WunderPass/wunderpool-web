@@ -35,7 +35,6 @@ export default async (req, res) => {
             contentType: files['pool_banner'].mimetype,
           }
         );
-
       axios({
         method: 'post',
         url: `${process.env.POOLS_SERVICE}/v2/web3Proxy/pools`,
@@ -43,6 +42,7 @@ export default async (req, res) => {
           Authorization: `Bearer ${process.env.POOL_SERVICE_TOKEN}`,
           ...data.getHeaders(),
         },
+        params: { poolType: req.query.pool_type },
         data: data,
       })
         .then((response) => {

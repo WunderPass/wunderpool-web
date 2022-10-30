@@ -28,10 +28,12 @@ export function createPool({
   votingTime,
   minYesVoters,
   isPublic = false,
+  autoLiquidateTs = 0,
   image,
 }) {
   return new Promise(async (resolve, reject) => {
     const body = {
+      pool_type: autoLiquidateTs > 0 ? 'TEMPORARY' : 'LONG_LASTING',
       launcher: {
         launcher_name: 'PoolLauncher',
         launcher_version: 'Eta',
@@ -55,6 +57,8 @@ export function createPool({
       },
       initial_invest: amount,
       public: isPublic,
+      lifetime_end:
+        autoLiquidateTs > 0 ? new Date(autoLiquidateTs).toISOString() : null,
     };
 
     const formData = new FormData();
@@ -70,6 +74,9 @@ export function createPool({
           method: 'POST',
           url: '/api/pools/create',
           data: formData,
+          params: {
+            pool_type: autoLiquidateTs > 0 ? 'TEMPORARY' : 'LONG_LASTING',
+          },
           headers: { 'Content-Type': 'multipart/form-data' },
         })
           .then((res) => {

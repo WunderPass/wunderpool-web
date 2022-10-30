@@ -9,8 +9,9 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'get',
-      url: `${process.env.POOLS_SERVICE}/web3Proxy/pools?active=true&closed=false`,
+      url: `${process.env.POOLS_SERVICE}/web3Proxy/pools`,
       headers: headers,
+      params: { active: true, closed: false, publicPool: req.query.public },
     });
     res.status(200).json(resp.data);
   } catch (error) {
