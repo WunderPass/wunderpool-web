@@ -335,7 +335,9 @@ export default function usePool(
       setBettingGames(
         games.map((g) => ({
           ...g,
-          event: events.find((e) => e.id == g.eventId),
+          event: events.find(
+            (e) => e.id == g.eventId && e.version == g.version
+          ),
         }))
       );
       updateLoadingState('bets', true);

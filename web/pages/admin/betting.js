@@ -197,6 +197,7 @@ function EventCard({
   };
 
   const settleAllGames = async (eventId) => {
+    setLoading(true);
     axios({ url: '/api/betting/games' }).then(async (res) => {
       const openGames = res.data
         .filter((g) => eventId == g.eventId)
