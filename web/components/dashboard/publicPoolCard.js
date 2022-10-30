@@ -18,7 +18,7 @@ export default function PoolCard(props) {
   useEffect(async () => {
     setImageUrl(null);
     if (!pool.address) return;
-    getInviteLinkFromAddress(pool.address);
+    // getInviteLinkFromAddress(pool.address);
     setImageUrl(
       await cacheImageByURL(
         `pool_image_${pool.address}`,
@@ -42,7 +42,7 @@ export default function PoolCard(props) {
     <>
       {/* DESKTOP VIEW */}
       <div className="hidden sm:flex w-full">
-        <Link href={inviteLink} passHref>
+        <Link href={`/pools/${pool.address}`} passHref>
           <Paper
             className="container-white cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden w-full"
             elevation={1}

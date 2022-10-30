@@ -196,12 +196,12 @@ function EventCard({
     if (index == 1) setValueTwo(value);
   };
 
-  const settleAllGames = async (eventId) => {
+  const settleAllGames = async () => {
     setLoading(true);
     axios({ url: '/api/betting/games' }).then(async (res) => {
-      const openGames = res.data
-        .filter((g) => eventId == g.eventId)
-        .filter((g) => !g.closed);
+      const openGames = res.data.filter(
+        (g) => event.id == g.eventId && g.version == event.version && !g.closed
+      );
       var closedGames = await Promise.all(
         openGames.map(async (game) => {
           return await determineGame(game.id, game.version)
@@ -233,7 +233,7 @@ function EventCard({
       })
       .then(() => {
         setLoading(false);
-        settleAllGames(event.id);
+        settleAllGames();
       });
   };
 
@@ -241,15 +241,17 @@ function EventCard({
     <Paper className="p-3 my-2 rounded-xl">
       <Stack direction="row" spacing={1} alignItems="center">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <Stack spacing={1} flexGrow="1">
-          <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" justifyContent="space-between" flexGrow="1">
+          <Stack spacing={1}>
             <Typography variant="h6">{event.name}</Typography>
+            <Typography>Owner: {event.owner}</Typography>
+            <Typography>Games: {gameCount}</Typography>
+          </Stack>
+          <Stack spacing={1} justifyContent="space-between">
             <Typography>
               {new Date(event.startDate || event.endDate).toLocaleString()}
             </Typography>
           </Stack>
-          <Typography>Owner: {event.owner}</Typography>
-          <Typography>Games: {gameCount}</Typography>
         </Stack>
       </Stack>
       <Divider />
@@ -261,7 +263,7 @@ function EventCard({
         spacing={1}
         rowGap={2}
         flexWrap="wrap"
-        className="relative"
+        className="relative w-full"
       >
         <Stack
           direction="row"
@@ -290,23 +292,23 @@ function EventCard({
           </div>
           <Typography>{event.teams[1]}</Typography>
         </Stack>
-        {!event.resolved ? (
+        {event.resolved ? (
           <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto sm:-translate-x-1/2"
+            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
+            onClick={() => settleAllGames()}
+            // disabled={loading || event.endDate > Number(new Date())}
+            disabled={loading}
+          >
+            Settle All Games
+          </button>
+        ) : (
+          <button
+            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
             onClick={handleResolve}
             // disabled={loading || event.endDate > Number(new Date())}
             disabled={loading}
           >
             Resolve Event and settle all
-          </button>
-        ) : (
-          <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto sm:-translate-x-1/2"
-            onClick={() => settleAllGames(event.id)}
-            // disabled={loading || event.endDate > Number(new Date())}
-            disabled={loading}
-          >
-            Settle All Games
           </button>
         )}
       </Stack>
