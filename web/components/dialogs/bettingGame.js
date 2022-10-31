@@ -87,7 +87,11 @@ export default function BettingGameDialog(props) {
     //currently not able to use bets below 0.1€
     setStake(value);
     setStakeInTokens(
-      Math.floor((totalTokens / wunderPool.usdcBalance) * float)
+      Math.floor(
+        (totalTokens / wunderPool.usdcBalance) *
+          float *
+          10 ** wunderPool.governanceToken.decimals
+      )
     );
     // Validation to only allow bets wiht max amount same as the member with the least amount of stake
     if (float && float > highestStake) {
