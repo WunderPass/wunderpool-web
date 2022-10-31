@@ -3,6 +3,7 @@ import {
   DialogContent,
   DialogContentText,
   Stack,
+  Switch,
   Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
@@ -44,6 +45,10 @@ export default function NewPoolConfigStep(props) {
     setTokenNameTouched,
     tokenSymbolTouched,
     setTokenSymbolTouched,
+    isPublic,
+    setIsPublic,
+    autoLiquidateTs,
+    setAutoLiquidateTs,
   } = props;
   const [poolNameTouched, setPoolNameTouched] = useState(poolName.length > 0);
 
@@ -179,7 +184,7 @@ export default function NewPoolConfigStep(props) {
       </div>
 
       <div>
-        <label className="label pb-2" htmlFor="value">
+        <label className="label pb-2" htmlFor="amount">
           Your Investment *
         </label>
         <div id="amount">
@@ -208,7 +213,7 @@ export default function NewPoolConfigStep(props) {
       <Collapse in={showMoreOptions}>
         <Stack spacing={2}>
           <div>
-            <label className="label pb-2" htmlFor="value">
+            <label className="label pb-2" htmlFor="minAmount">
               Minimum investment to join the Pool
             </label>
             <div id="minAmount">
@@ -222,7 +227,7 @@ export default function NewPoolConfigStep(props) {
           </div>
 
           <div>
-            <label className="label pb-2" htmlFor="value">
+            <label className="label pb-2" htmlFor="maxAmount">
               Maximum investment to join the Pool
             </label>
             <div id="maxAmount">
@@ -236,7 +241,7 @@ export default function NewPoolConfigStep(props) {
           </div>
 
           <div>
-            <label className="label pb-2" htmlFor="value">
+            <label className="label pb-2" htmlFor="maxMembers">
               Maximum members
             </label>
             <input
@@ -255,7 +260,7 @@ export default function NewPoolConfigStep(props) {
           <div>
             <HintLabel
               className="label pb-2"
-              htmlFor="value"
+              htmlFor="governance"
               title="Governance Token Name"
               hint="Your Pool will have a Governance Token which represents Votes in the Pool. The more you invest, the more Governance Tokens you receive. 1 Governance Token = 1 Vote"
             />
@@ -272,12 +277,12 @@ export default function NewPoolConfigStep(props) {
             />
           </div>
           <div>
-            <label className="label pb-2" htmlFor="value">
+            <label className="label pb-2" htmlFor="governanceSym">
               Token Symbol
             </label>
             <input
               className="textfield py-4 mt-2"
-              id="governance"
+              id="governanceSym"
               type="text"
               placeholder="TKN"
               value={tokenSymbol}
@@ -285,6 +290,31 @@ export default function NewPoolConfigStep(props) {
                 setTokenSymbolTouched(e.target.value.length > 0);
                 setTokenSymbol(e.target.value);
               }}
+            />
+          </div>
+          <div>
+            <HintLabel
+              className="label pb-2"
+              htmlFor="publicPool"
+              title="Public Pool"
+              hint="If you decide to create a public Pool, everyone will be able to join, until the Max Member Limit is reached"
+            />
+            <Switch
+              checked={isPublic}
+              onChange={(_, checked) => setIsPublic(checked)}
+            />
+          </div>
+          <div>
+            <label className="label pb-2" htmlFor="autoLiquidateTs">
+              Automatically Close Pool At
+            </label>
+            <input
+              className="textfield py-4 px-3 mt-2"
+              id="autoLiquidateTs"
+              type="datetime-local"
+              onChange={(e) =>
+                setAutoLiquidateTs(Number(new Date(e.target.value)))
+              }
             />
           </div>
         </Stack>

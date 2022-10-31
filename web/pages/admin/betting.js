@@ -25,6 +25,10 @@ const admins = [
   '0x466274eefdd3265e3d8085933e69890f33023048', // Max
 ];
 
+const eventTypeMapping = {
+  SOCCER: 0,
+};
+
 function NewEventDialog({
   open,
   setOpen,
@@ -36,17 +40,25 @@ function NewEventDialog({
   const [name, setName] = useState('');
   const [teamOne, setTeamOne] = useState('');
   const [teamTwo, setTeamTwo] = useState('');
+  const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [eventType, setEventType] = useState(0);
 
   const handleCreate = () => {
     setLoading(true);
-    registerEvent(name, endDate, eventType, { teams: [teamOne, teamTwo] })
+    registerEvent(name, startDate, endDate, eventType, {
+      teams: [teamOne, teamTwo],
+    })
       .then((res) => {
         console.log(res);
         handleSuccess(`Created Event "${name}"`);
+        setName('');
+        setTeamOne('');
+        setTeamTwo('');
+        setStartDate('');
+        setEndDate('');
         setOpen(false);
-        fetchEvents();
+        fetchEvents(false);
       })
       .catch((err) => {
         handleError(err);
@@ -100,6 +112,17 @@ function NewEventDialog({
                 placeholder="WM Finale"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="label" htmlFor="eventStartDate">
+                Start Date
+              </label>
+              <input
+                className="textfield py-4 px-3 mt-2"
+                id="eventStartDate"
+                type="datetime-local"
+                onChange={(e) => setStartDate(Number(new Date(e.target.value)))}
               />
             </div>
             <div>
@@ -173,24 +196,19 @@ function EventCard({
     if (index == 1) setValueTwo(value);
   };
 
-  const settleAllGames = async (eventId) => {
+  const settleAllGames = async () => {
+    setLoading(true);
     axios({ url: '/api/betting/games' }).then(async (res) => {
-      console.log('eventId2', eventId);
-      const openGames = res.data
-        .filter((g) => eventId == g.eventId)
-        .filter((g) => !g.closed);
-      console.log('current open games: ', openGames);
+      const openGames = res.data.filter(
+        (g) => event.id == g.eventId && g.version == event.version && !g.closed
+      );
       var closedGames = await Promise.all(
         openGames.map(async (game) => {
-          console.log('trying to close game:', game.name);
-          return await determineGame(game.id)
+          return await determineGame(game.id, game.version)
             .then((res) => {
-              console.log('then');
-              console.log(res);
               handleSuccess(`Closed Game "${game.name}"`);
             })
             .catch((err) => {
-              console.log('catch');
               handleError(err);
             })
             .then(() => {
@@ -204,11 +222,10 @@ function EventCard({
 
   const handleResolve = () => {
     setLoading(true);
-    resolveEvent(event.id, [valueOne, valueTwo])
+    resolveEvent(event.id, [valueOne, valueTwo], event.version)
       .then((res) => {
-        console.log(res);
         handleSuccess(`Resolved Event "${event.name}"`);
-        fetchEvents();
+        fetchEvents(false);
         fetchGames();
       })
       .catch((err) => {
@@ -216,8 +233,7 @@ function EventCard({
       })
       .then(() => {
         setLoading(false);
-        console.log('eventId', event.id);
-        settleAllGames(event.id);
+        settleAllGames();
       });
   };
 
@@ -225,13 +241,17 @@ function EventCard({
     <Paper className="p-3 my-2 rounded-xl">
       <Stack direction="row" spacing={1} alignItems="center">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <Stack spacing={1} flexGrow="1">
-          <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" justifyContent="space-between" flexGrow="1">
+          <Stack spacing={1}>
             <Typography variant="h6">{event.name}</Typography>
-            <Typography>{new Date(event.endDate).toLocaleString()}</Typography>
+            <Typography>Owner: {event.owner}</Typography>
+            <Typography>Games: {gameCount}</Typography>
           </Stack>
-          <Typography>Owner: {event.owner}</Typography>
-          <Typography>Games: {gameCount}</Typography>
+          <Stack spacing={1} justifyContent="space-between">
+            <Typography>
+              {new Date(event.startDate || event.endDate).toLocaleString()}
+            </Typography>
+          </Stack>
         </Stack>
       </Stack>
       <Divider />
@@ -243,7 +263,7 @@ function EventCard({
         spacing={1}
         rowGap={2}
         flexWrap="wrap"
-        className="relative"
+        className="relative w-full"
       >
         <Stack
           direction="row"
@@ -272,23 +292,23 @@ function EventCard({
           </div>
           <Typography>{event.teams[1]}</Typography>
         </Stack>
-        {!event.resolved ? (
+        {event.resolved ? (
           <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto sm:-translate-x-1/2"
+            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
+            onClick={() => settleAllGames()}
+            // disabled={loading || event.endDate > Number(new Date())}
+            disabled={loading}
+          >
+            Settle All Games
+          </button>
+        ) : (
+          <button
+            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
             onClick={handleResolve}
             // disabled={loading || event.endDate > Number(new Date())}
             disabled={loading}
           >
             Resolve Event and settle all
-          </button>
-        ) : (
-          <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto sm:-translate-x-1/2"
-            onClick={() => settleAllGames(event.id)}
-            // disabled={loading || event.endDate > Number(new Date())}
-            disabled={loading}
-          >
-            Settle All Games
           </button>
         )}
       </Stack>
@@ -296,12 +316,92 @@ function EventCard({
   ) : null;
 }
 
+function RecommendedEventCard({
+  event,
+  fetchEvents,
+  handleSuccess,
+  handleError,
+  removeRecommendedEvent,
+}) {
+  const [loading, setLoading] = useState(false);
+  const [endDate, setEndDate] = useState(
+    Number(new Date(`${event.date} ${event.time}`)) + 7200000
+  );
+
+  const handleCreate = () => {
+    setLoading(true);
+    registerEvent(
+      event.event_name,
+      Number(new Date(`${event.date} ${event.time}`)),
+      endDate,
+      eventTypeMapping[event.event_type],
+      {
+        teams: [event.team_home, event.team_away],
+        extId: event.event_id,
+      }
+    )
+      .then((res) => {
+        console.log(res);
+        handleSuccess(`Created Event "${event.event_name}"`);
+        fetchEvents(false);
+        removeRecommendedEvent(event.event_id);
+      })
+      .catch((err) => {
+        handleError(err);
+      })
+      .then(() => setLoading(false));
+  };
+
+  return (
+    <Paper className="p-3 my-2 rounded-xl">
+      <Stack direction="row" spacing={1} alignItems="center">
+        <MdSportsSoccer className="text-5xl text-casama-blue" />
+        <Stack spacing={1} flexGrow="1">
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="h6">{event.event_name}</Typography>
+            <Typography>
+              {new Date(`${event.date} ${event.time}`).toLocaleString()}
+            </Typography>
+          </Stack>
+          <Typography>
+            {event.team_home} vs. {event.team_away}
+          </Typography>
+        </Stack>
+      </Stack>
+      <Divider />
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-end mt-2">
+        <label
+          className="label w-full sm:w-auto text-center"
+          htmlFor={`eventEndDate-${event.event_id}`}
+        >
+          End Date
+        </label>
+        <input
+          className="textfield py-4 px-3 w-full sm:w-4/12 sm:max-w-[200px]"
+          id={`eventEndDate-${event.event_id}`}
+          type="datetime-local"
+          onChange={(e) => setEndDate(Number(new Date(e.target.value)))}
+        />
+        <button
+          className="btn-casama py-1 px-2 w-full sm:w-3/12 sm:max-w-[200px]"
+          onClick={handleCreate}
+          disabled={
+            loading || endDate < Number(new Date(`${event.date} ${event.time}`))
+          }
+        >
+          Create Event
+        </button>
+      </div>
+    </Paper>
+  );
+}
+
 function GameCard({ game, event, fetchGames, handleSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setLoading(true);
-    determineGame(game.id)
+    determineGame(game.id, game.version)
       .then((res) => {
         console.log(res);
         handleSuccess(`Closed Game "${game.name}"`);
@@ -344,11 +444,23 @@ export default function AdminBettingPage(props) {
   const [open, setOpen] = useState(false);
   const [games, setGames] = useState([]);
   const [events, setEvents] = useState([]);
+  const [recommendedEvents, setRecommendedEvents] = useState([]);
 
-  const fetchEvents = () => {
+  const fetchEvents = (fetchRecommended = false) => {
     axios({ url: '/api/betting/events' }).then((res) => {
       setEvents(res.data);
+      fetchRecommended && fetchRecommendedEvents();
     });
+  };
+
+  const fetchRecommendedEvents = () => {
+    axios({ url: '/api/betting/events/suggestions' }).then((res) => {
+      setRecommendedEvents(res.data);
+    });
+  };
+
+  const removeRecommendedEvent = (id) => {
+    setRecommendedEvents((evs) => evs.filter((ev) => ev.id != id));
   };
 
   const fetchGames = () => {
@@ -363,7 +475,7 @@ export default function AdminBettingPage(props) {
         router.push('/pools');
       } else {
         fetchGames();
-        fetchEvents();
+        fetchEvents(true);
       }
     }
   }, [user.address, router.isReady]);
@@ -380,11 +492,27 @@ export default function AdminBettingPage(props) {
           </button>
         </div>
         <div>
-          <Typography variant="h4">Events</Typography>
+          <Typography variant="h4">Upcoming Events</Typography>
+          {recommendedEvents
+            .filter((e) => !events.map((ev) => ev.extId).includes(e.event_id))
+            .map((event) => {
+              return (
+                <RecommendedEventCard
+                  key={`recommended-event-${event.event_id}`}
+                  event={event}
+                  fetchEvents={fetchEvents}
+                  removeRecommendedEvent={removeRecommendedEvent}
+                  {...props}
+                />
+              );
+            })}
+        </div>
+        <div>
+          <Typography variant="h4">Open Events</Typography>
           {events.map((event) => {
             return (
               <EventCard
-                key={`event-${event.id}`}
+                key={`event-${event.version}-${event.id}`}
                 event={event}
                 gameCount={games.filter((g) => g.eventId == event.id).length}
                 fetchEvents={fetchEvents}
@@ -407,9 +535,8 @@ export default function AdminBettingPage(props) {
           </Stack>
           {games.map((game) => {
             return (
-              <div className="mb-16">
+              <div key={`game-${game.version}-${game.id}`} className="mb-8">
                 <GameCard
-                  key={`game-${game.id}`}
                   game={game}
                   event={events.find((e) => e.id == game.eventId)}
                   fetchGames={fetchGames}

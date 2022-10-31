@@ -21,126 +21,43 @@ export default function AdvancedPoolDialog(props) {
   } = props;
   const [waitingForPool, setWaitingForPool] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
-  const [disabled, setDisabled] = useState(true);
   const [retry, setRetry] = useState(false);
   const router = useRouter();
   const { removeQueryParam } = UseAdvancedRouter();
 
   const [poolName, setPoolName] = useState('');
-  const [poolDescription, setPoolDescription] = useState('');
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [value, setValue] = useState('');
   const [valueErrorMsg, setValueErrorMsg] = useState(null);
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
-  const [tokenNameTouched, setTokenNameTouched] = useState(false);
-  const [tokenSymbolTouched, setTokenSymbolTouched] = useState(false);
-  const [minInvest, setMinInvest] = useState('');
-  const [minInvestErrorMsg, setMinInvestErrorMsg] = useState(null);
-  const [maxInvest, setMaxInvest] = useState('');
-  const [maxInvestErrorMsg, setMaxInvestErrorMsg] = useState(null);
-  const [maxMembers, setMaxMembers] = useState('50');
-
-  const [votingEnabled, setVotingEnabled] = useState(true);
-  const [votingThreshold, setVotingThreshold] = useState('1');
-  const [votingTime, setVotingTime] = useState('0.16');
-  const [minYesVoters, setMinYesVoters] = useState('1');
-  const [showCustomDuration, setShowCustomDuration] = useState(false);
-  const [showCustomPercent, setShowCustomPercent] = useState(false);
-  const [showCustomPerson, setShowCustomPerson] = useState(false);
-
   const [members, setMembers] = useState([]);
 
   const [txHash, setTxHash] = useState(null);
 
   const configProps = {
     user,
+    members,
+    setMembers,
     poolName,
     setPoolName,
-    poolDescription,
-    setPoolDescription,
-    imageUrl,
-    setImageUrl,
-    setImage,
     value,
     setValue,
     valueErrorMsg,
     setValueErrorMsg,
-    minInvest,
-    setMinInvest,
-    minInvestErrorMsg,
-    setMinInvestErrorMsg,
-    maxInvest,
-    setMaxInvest,
-    maxInvestErrorMsg,
-    setMaxInvestErrorMsg,
-    maxMembers,
-    setMaxMembers,
-    tokenName,
     setTokenName,
-    tokenSymbol,
     setTokenSymbol,
-    tokenNameTouched,
-    setTokenNameTouched,
-    tokenSymbolTouched,
-    setTokenSymbolTouched,
-    members,
-    setMembers,
-  };
-
-  const votingProps = {
-    votingEnabled,
-    setVotingEnabled,
-    votingTime,
-    setVotingTime,
-    votingThreshold,
-    setVotingThreshold,
-    minYesVoters,
-    setMinYesVoters,
-    showCustomDuration,
-    setShowCustomDuration,
-    showCustomPercent,
-    setShowCustomPercent,
-    showCustomPerson,
-    setShowCustomPerson,
-  };
-
-  const inviteProps = {
-    members,
-    setMembers,
   };
 
   const handleClose = () => {
     removeQueryParam('quickPool');
     setWaitingForPool(false);
     setLoading(false);
-    setStep(1);
     setRetry(false);
-    setDisabled(true);
     setPoolName('');
-    setPoolDescription('');
-    setImage(null);
-    setImageUrl(null);
     setValue('');
     setValueErrorMsg(null);
     setTokenName('');
     setTokenSymbol('');
-    setTokenNameTouched(false);
-    setTokenSymbolTouched(false);
-    setMinInvest('');
-    setMinInvestErrorMsg(null);
-    setMaxInvest('');
-    setMaxInvestErrorMsg(null);
-    setMaxMembers('50');
-    setVotingEnabled(true);
-    setVotingThreshold('1');
-    setVotingTime('0.16');
-    setMinYesVoters('1');
-    setShowCustomDuration(false);
-    setShowCustomPercent(false);
-    setShowCustomPerson(false);
     setMembers([]);
     setOpen(false);
   };
@@ -148,7 +65,6 @@ export default function AdvancedPoolDialog(props) {
   const handleCloseKeepValues = () => {
     setWaitingForPool(false);
     setLoading(false);
-    setStep(1);
     setOpen(false);
   };
 
@@ -157,22 +73,17 @@ export default function AdvancedPoolDialog(props) {
     setLoading(true);
     setWaitingForPool(true);
     setTimeout(() => {
-      createPool(
-        user.address,
+      createPool({
+        creator: user.address,
         poolName,
-        poolDescription,
         tokenName,
         tokenSymbol,
-        minInvest || value,
-        maxInvest || value,
-        value,
-        members.map((m) => m.address),
-        maxMembers || 50,
-        votingThreshold || 50,
-        (Number(votingTime) || 72) * 3600,
-        minYesVoters || 1,
-        image
-      )
+        amount: value,
+        members: members.map((m) => m.address),
+        votingThreshold: 1,
+        votingTime: 600,
+        minYesVoters: 1,
+      })
         .then((res) => {
           handleClose();
           handleInfo('Waiting for Blockchain Transaction');
@@ -197,14 +108,6 @@ export default function AdvancedPoolDialog(props) {
     }
   }, [txHash, newPoolEvent?.hash]);
 
-  useEffect(() => {
-    setDisabled(false);
-
-    if (!value || poolName.length < 3) {
-      setDisabled(true);
-    }
-  }, [value, poolName]);
-
   return (
     <>
       <ResponsiveDialog
@@ -217,19 +120,16 @@ export default function AdvancedPoolDialog(props) {
           !waitingForPool && (
             <DialogActions className="flex items-center justify-center mx-4">
               <QuickPoolButtons
-                step={step}
-                totalSteps={3}
-                disabled={disabled}
-                setStep={setStep}
                 submit={submit}
                 retry={retry}
+                disabled={!value || valueErrorMsg || poolName.length < 3}
               />
             </DialogActions>
           )
         }
       >
         {!loading ? (
-          <>{step === 1 && <CreatePoolStep {...configProps} />}</>
+          <CreatePoolStep {...configProps} />
         ) : (
           <>
             {waitingForPool && (

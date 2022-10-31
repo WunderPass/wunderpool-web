@@ -44,6 +44,8 @@ export default function AdvancedPoolDialog(props) {
   const [maxInvest, setMaxInvest] = useState('');
   const [maxInvestErrorMsg, setMaxInvestErrorMsg] = useState(null);
   const [maxMembers, setMaxMembers] = useState('50');
+  const [isPublic, setIsPublic] = useState(false);
+  const [autoLiquidateTs, setAutoLiquidateTs] = useState(0);
 
   const [votingEnabled, setVotingEnabled] = useState(true);
   const [votingThreshold, setVotingThreshold] = useState('50');
@@ -88,6 +90,10 @@ export default function AdvancedPoolDialog(props) {
     setTokenNameTouched,
     tokenSymbolTouched,
     setTokenSymbolTouched,
+    isPublic,
+    setIsPublic,
+    autoLiquidateTs,
+    setAutoLiquidateTs,
   };
 
   const votingProps = {
@@ -158,22 +164,24 @@ export default function AdvancedPoolDialog(props) {
     setLoading(true);
     setWaitingForPool(true);
     setTimeout(() => {
-      createPool(
-        user.address,
+      createPool({
+        creator: user.address,
         poolName,
         poolDescription,
         tokenName,
         tokenSymbol,
-        minInvest || value,
-        maxInvest || value,
-        value,
-        members.map((m) => m.address),
-        maxMembers || 50,
-        votingThreshold || 50,
-        (Number(votingTime) || 72) * 3600,
-        minYesVoters || 1,
-        image
-      )
+        minInvest,
+        maxInvest,
+        amount: value,
+        members: members.map((m) => m.address),
+        maxMembers,
+        votingThreshold,
+        votingTime: (Number(votingTime) || 72) * 3600,
+        minYesVoters: minYesVoters || 1,
+        isPublic,
+        autoLiquidateTs,
+        image: image,
+      })
         .then((res) => {
           handleClose();
           handleInfo('Waiting for Blockchain Transaction');

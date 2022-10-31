@@ -119,7 +119,10 @@ export default function GameCard(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  const stake = (game.stake * wunderPool.usdcBalance) / totalTokens;
+  const stake =
+    (game.stake * wunderPool.usdcBalance) /
+    totalTokens /
+    10 ** wunderPool.governanceToken.decimals;
   const usersBet = game.participants.find(
     (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
   )?.prediction;
@@ -127,6 +130,7 @@ export default function GameCard(props) {
   const handleOpenBetNow = (onlyClose = false) => {
     if (onlyClose && !open) return;
     if (open) {
+      setOpen(false);
       goBack(() => removeQueryParam('bet'));
     } else {
       addQueryParam({ bet: game.id }, false);
@@ -167,7 +171,7 @@ export default function GameCard(props) {
           <div className="flex flex-col w-full justify-center items-center mb-5 ">
             <div className="w-full sm:w-2/3 md:w-7/12">
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                <Typography className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
+                <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
                     {game.payoutRule == 0
                       ? 'Winner Takes It All'
@@ -177,26 +181,26 @@ export default function GameCard(props) {
                   <div className="mt-2">
                     <PayoutRuleInfoButton />
                   </div>
-                </Typography>
+                </div>
                 <Divider className="my-1" />
 
-                <Typography className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Participants:</p>
                   <p className="ml-2">{`${game.participants.length}`}</p>
-                </Typography>
+                </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
-                <Typography className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Entry:</p>
                   <p className="ml-2">{`${currency(stake)}`}</p>
-                </Typography>
+                </div>
                 <Divider className="my-1" />
-                <Typography className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
                   <p>Pot:</p>
                   <p className="ml-2">{` ${currency(
                     stake * game.participants.length
                   )} `}</p>
-                </Typography>
+                </div>
               </div>
             </div>
           </div>
@@ -227,7 +231,10 @@ export default function GameCard(props) {
               </div>
             ) : (
               <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
-                <Timer start={Number(new Date())} end={game.event.endDate} />
+                <Timer
+                  start={Number(new Date())}
+                  end={game.event.startDate || game.event.endDate}
+                />
               </div>
             )}
           </div>
@@ -250,16 +257,20 @@ export default function GameCard(props) {
             </>
           )}
 
-          {!usersBet && !game.event.resolved && (
-            <div className="flex justify-center items-center">
-              <button
-                className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
-                onClick={() => handleOpenBetNow()}
-              >
-                Place your Bet
-              </button>
-            </div>
-          )}
+          {!usersBet &&
+            !game.event.resolved &&
+            (game.event.startDate
+              ? game.event.startDate > Number(new Date())
+              : true) && (
+              <div className="flex justify-center items-center">
+                <button
+                  className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
+                  onClick={() => handleOpenBetNow()}
+                >
+                  Place your Bet
+                </button>
+              </div>
+            )}
         </div>
       </div>
       <PlaceBetDialog
