@@ -112,7 +112,10 @@ export default function GameCard(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  const stake = (game.stake * wunderPool.usdcBalance) / totalTokens;
+  const stake =
+    (game.stake * wunderPool.usdcBalance) /
+    totalTokens /
+    10 ** wunderPool.governanceToken.decimals;
   const usersBet = game.participants.find(
     (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
   )?.prediction;
