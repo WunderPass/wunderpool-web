@@ -1,17 +1,5 @@
-import {
-  Collapse,
-  DialogContent,
-  DialogContentText,
-  Stack,
-  Tooltip,
-  Divider,
-  Alert,
-} from '@mui/material';
+import { Stack, Divider, Alert } from '@mui/material';
 import { useState } from 'react';
-import { BsImage } from 'react-icons/bs';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
-import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
-import HintLabel from '../../utils/hintLabel';
 import CurrencyInput from '/components/utils/currencyInput';
 import MemberInput from '/components/members/input';
 
@@ -22,95 +10,31 @@ export default function NewPoolConfigStep(props) {
     setMembers,
     poolName,
     setPoolName,
-    poolDescription,
-    setPoolDescription,
-    imageUrl,
-    setImageUrl,
-    setImage,
     value,
     setValue,
     valueErrorMsg,
     setValueErrorMsg,
-    minInvest,
-    setMinInvest,
-    minInvestErrorMsg,
-    setMinInvestErrorMsg,
-    maxInvest,
-    setMaxInvest,
-    maxInvestErrorMsg,
-    setMaxInvestErrorMsg,
-    maxMembers,
-    setMaxMembers,
-    tokenName,
     setTokenName,
-    tokenSymbol,
     setTokenSymbol,
-    tokenNameTouched,
-    setTokenNameTouched,
-    tokenSymbolTouched,
-    setTokenSymbolTouched,
   } = props;
   const [poolNameTouched, setPoolNameTouched] = useState(poolName.length > 0);
-
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
-
-  const valueAsDollarString = value ? `$ ${value}` : '$ 3.00';
-
-  const uploadToClient = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      const i = event.target.files[0];
-      setImage(i);
-      setImageUrl(URL.createObjectURL(i));
-    }
-  };
 
   const handleValueChange = (val, float) => {
     setValue(val);
     let msg = null;
     if (float < 3) msg = 'Your Invest must be at least $3.00';
     if (float > user.usdBalance) msg = 'Not enough USD';
-    if (minInvest && float <= minInvest)
-      msg = 'Your Invest must at least be the Minimum Invest';
-    if (maxInvest && float >= maxInvest)
-      msg = "Your Invest can't be larger than the Maximum Invest";
     setValueErrorMsg(msg);
-  };
-
-  const handleMinInvest = (val, float) => {
-    setMinInvest(val);
-    let msg = null;
-    if (float < 3) msg = 'Minimum Invest must be at least $3.00';
-    if (maxInvest && float > Number(maxInvest))
-      msg = "Minimum Invest can't be larger than Maximum Invest";
-    if (value && float > Number(value))
-      msg = "Minimum Invest can't be larger than your Invest";
-    setMinInvestErrorMsg(float ? msg : null);
-  };
-
-  const handleMaxInvest = (val, float) => {
-    setMaxInvest(val);
-    let msg = null;
-    if (minInvest && float < Number(minInvest))
-      msg = "Maximum Invest can't be less than Minimum Invest";
-    if (value && float < Number(value))
-      msg = "Maximum Invest can't be less than your Invest";
-    setMaxInvestErrorMsg(float ? msg : null);
   };
 
   const handleNameChange = (e) => {
     let name = e.target.value;
     setPoolName(name);
     setPoolNameTouched(true);
-    if (!tokenNameTouched)
-      setTokenName(
-        `${name.trim()}${
-          name.match(' ') ? ' ' : name.match('-') ? '-' : ''
-        }Token`
-      );
-    if (!tokenSymbolTouched)
-      setTokenSymbol(
-        name.replaceAll(' ', '').slice(0, 3).toUpperCase() || 'PGT'
-      );
+    setTokenName(
+      `${name.trim()}${name.match(' ') ? ' ' : name.match('-') ? '-' : ''}Token`
+    );
+    setTokenSymbol(name.replaceAll(' ', '').slice(0, 3).toUpperCase() || 'PGT');
   };
 
   return (

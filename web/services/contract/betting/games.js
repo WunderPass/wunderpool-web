@@ -10,22 +10,36 @@ export async function registerGame(
   tokenAddress,
   eventId,
   payoutRule,
-  poolAddress
+  poolAddress,
+  version
 ) {
-  const [distributor] = initDistributor();
+  const [distributor] = initDistributor(version);
   const iface = new ethers.utils.Interface([
     'event NewGame(uint256 indexed id, string name, uint256 eventId)',
   ]);
 
   try {
-    const tx = await connectContract(distributor).registerGame(
-      name,
-      stake,
-      tokenAddress,
-      eventId,
-      payoutRule,
-      { gasPrice: await gasPrice() }
-    );
+    let tx;
+    if (version == 'ALPHA') {
+      tx = await connectContract(distributor).registerGame(
+        name,
+        stake,
+        tokenAddress,
+        eventId,
+        payoutRule,
+        { gasPrice: await gasPrice() }
+      );
+    } else if (version == 'BETA') {
+      tx = await connectContract(distributor).registerGame(
+        name,
+        stake,
+        tokenAddress,
+        eventId,
+        payoutRule,
+        false,
+        { gasPrice: await gasPrice() }
+      );
+    }
 
     const receipt = await tx.wait();
     const events = receipt.logs.map((log) => {
@@ -39,6 +53,7 @@ export async function registerGame(
     const { id } = event;
 
     const data = {
+      version,
       id: id.toNumber(),
       name,
       stake,
@@ -64,12 +79,13 @@ export async function registerParticipant(
   gameId,
   prediction,
   participant,
-  wunderId
+  wunderId,
+  version
 ) {
   const { openPopup, sendSignatureRequest } = useWeb3();
   const popup = openPopup('sign');
-  const [distributor] = initDistributor();
   try {
+    const [distributor] = initDistributor(version);
     const { signature } = await sendSignatureRequest(
       ['uint256', 'address', 'uint256[]'],
       [gameId, distributor.address, prediction],
@@ -88,7 +104,13 @@ export async function registerParticipant(
     );
 
     await tx.wait();
-    const data = { gameId, address: participant, prediction, wunderId };
+    const data = {
+      gameId,
+      address: participant,
+      prediction,
+      wunderId,
+      version,
+    };
 
     const res = await axios({
       method: 'POST',
@@ -102,9 +124,9 @@ export async function registerParticipant(
   }
 }
 
-export async function determineGame(gameId) {
-  const [distributor] = initDistributor();
+export async function determineGame(gameId, version) {
   try {
+    const [distributor] = initDistributor(version);
     const tx = await connectContract(distributor).determineGame(gameId, {
       gasPrice: await gasPrice(),
     });
@@ -112,6 +134,7 @@ export async function determineGame(gameId) {
     await tx.wait();
     const data = {
       gameId,
+      version,
     };
 
     const res = await axios({
@@ -125,6 +148,7 @@ export async function determineGame(gameId) {
     if (/game already closed/i.test(error)) {
       const data = {
         gameId,
+        version,
       };
 
       const res = await axios({

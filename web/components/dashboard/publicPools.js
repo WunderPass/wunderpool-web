@@ -3,53 +3,51 @@ import { fetchPoolData, formatPool } from '/services/contract/pools';
 import PublicPoolCard from '../../components/dashboard/publicPoolCard';
 import PoolCard from '../../components/dashboard/poolCard';
 
-import { Paper, Typography } from '@mui/material';
+import { Paper, Skeleton, Typography } from '@mui/material';
 import axios from 'axios';
 
 export default function PublicPools(props) {
-  const { pools } = props;
   const [visiblePools, setVisiblePools] = useState([]);
   const [allPools, setAllPools] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const canShowMore = allPools.length > visiblePools.length;
 
-  const showMore = () => {
-    allPools.slice(visiblePools.length, visiblePools.length + 3).map((pool) => {
-      if (pool) setVisiblePools((prev) => [...prev, pool]);
-    });
+  const showMore = async () => {
+    setLoading(true);
+    await Promise.all(
+      allPools
+        .slice(visiblePools.length, visiblePools.length + 3)
+        .map((pool) => {
+          formatPool(pool).then((p) => {
+            if (p) setVisiblePools((prev) => [...prev, p]);
+          });
+        })
+    );
+    setLoading(false);
   };
 
   const getPublicPoolsAddressesFromJson = async () => {
-    axios({
-      method: 'get',
-      url: '/api/pools/public/getAll',
-    }).then((res) => {
-      getPoolInfoFromBackend([...res.data]);
-    });
-  };
-
-  const getPoolInfoFromBackend = async (addressArray) => {
-    let allpublicPools = await Promise.all(
-      addressArray.map((publicPool) => {
-        return fetchPoolData(publicPool.poolAddress);
-      })
-    );
-
-    const validPools = allpublicPools
-      .filter(({ active, closed }) => active && !closed)
-      .sort(
-        (a, b) => b.pool_treasury.act_balance - a.pool_treasury.act_balance
-      );
-
-    setAllPools([]);
-    setAllPools([...validPools]);
-    setVisiblePools([]);
-    validPools.slice(0, 3).map((pool) => {
-      formatPool(pool).then((p) => {
-        if (p) setVisiblePools((prev) => [...prev, p]);
+    setLoading(true);
+    try {
+      const { data } = await axios({
+        method: 'get',
+        url: '/api/pools/all',
+        params: { public: true },
       });
-    });
+      setAllPools(data);
+      await Promise.all(
+        data.slice(0, 3).map((pool) => {
+          formatPool(pool).then((p) => {
+            if (p) setVisiblePools((prev) => [...prev, p]);
+          });
+        })
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -59,16 +57,16 @@ export default function PublicPools(props) {
   return (
     <>
       <div className="">
-        <Typography className="subheader subheader-sm font-medium my-6 mt-6">
+        <Typography className="subheader subheader-sm font-medium my-6">
           Public Pools
         </Typography>
-        <div className="flex flex-col w-full pb-6 lg:gap-6 md:gap-0.5">
+        <div className="flex flex-col w-full pb-6 lg:gap-4 md:gap-0.5">
           {visiblePools
             .sort((a, b) => b.totalBalance - a.totalBalance)
             .map((pool) => {
               return (
                 <div
-                  key={`public-pool-card-${pool.poolAddress}`}
+                  key={`public-pool-card-${pool.address}`}
                   className="min-w-full sm:min-w-[30%]"
                 >
                   <div className="flex">
@@ -77,6 +75,13 @@ export default function PublicPools(props) {
                 </div>
               );
             })}
+          {loading && (
+            <Skeleton
+              variant="rectangular"
+              height={150}
+              className="rounded-xl"
+            />
+          )}
 
           {canShowMore && (
             <div className="min-w-full sm:min-w-[25%] mb-4 pb-6 sm:p-0 lg:mb-0 sm:mb-6">

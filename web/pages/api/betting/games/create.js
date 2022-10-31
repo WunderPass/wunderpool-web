@@ -8,6 +8,7 @@ export default async function handler(req, res) {
     }
 
     const {
+      version,
       id,
       name,
       stake,
@@ -20,6 +21,7 @@ export default async function handler(req, res) {
     } = req.body;
 
     const game = {
+      version,
       id,
       name,
       stake,

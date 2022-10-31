@@ -335,7 +335,9 @@ export default function usePool(
       setBettingGames(
         games.map((g) => ({
           ...g,
-          event: events.find((e) => e.id == g.eventId),
+          event: events.find(
+            (e) => e.id == g.eventId && e.version == g.version
+          ),
         }))
       );
       updateLoadingState('bets', true);
@@ -443,6 +445,7 @@ export default function usePool(
         address: pool_shares?.governanc_token?.currency_contract_address,
         name: pool_shares?.governanc_token?.currency_name,
         symbol: pool_shares?.governanc_token?.currency_symbol,
+        decimals: pool_shares?.governanc_token?.decimals,
         tokensForDollar: pool_shares?.tokens_for_dollar,
         totalSupply: totalShares,
       });

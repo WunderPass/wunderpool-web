@@ -8,6 +8,7 @@ export default async function handler(req, res) {
     }
 
     const {
+      version,
       id,
       name,
       endDate,
@@ -19,13 +20,14 @@ export default async function handler(req, res) {
     } = req.body;
 
     const event = {
-      id: id,
-      name: name,
-      endDate: endDate,
-      eventType: eventType,
-      owner: owner,
-      resolved: resolved,
-      outcome: outcome,
+      version,
+      id,
+      name,
+      endDate,
+      eventType,
+      owner,
+      resolved,
+      outcome,
       ...other,
     };
     events.push(event);

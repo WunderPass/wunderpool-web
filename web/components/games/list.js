@@ -63,11 +63,13 @@ export default function GameList(props) {
             .filter((bet) => !bet.closed)
             .map((game) => {
               return (
-                <div className="mb-16">
+                <div
+                  key={`game-card-${game.version}-${game.id}`}
+                  className="mb-16"
+                >
                   <GameCard
                     openBet={openBet}
                     setOpenBet={setOpenBet}
-                    key={`game-card-${game.id}`}
                     game={game}
                     totalTokens={totalTokens}
                     {...props}

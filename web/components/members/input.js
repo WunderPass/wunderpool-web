@@ -49,11 +49,7 @@ export default function MemberInput({
         onChange={handleChange}
         onInputChange={handleInput}
         filterOptions={filterOptions}
-        isOptionEqualToValue={
-          inputTrue
-            ? (option, val) => option.address == val.address
-            : (option, val) => option.wallet_address == val.wallet_address
-        }
+        isOptionEqualToValue={(option, val) => option.address == val.address}
         getOptionLabel={(option) => getNameFor(option)}
         renderInput={(params) => (
           <TextField
