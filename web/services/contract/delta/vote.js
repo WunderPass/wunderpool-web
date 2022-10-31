@@ -5,7 +5,7 @@ import { gasPrice } from '/services/contract/init';
 import axios from 'axios';
 import { waitForTransaction } from '../provider';
 import { initProposalDelta } from './init';
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 export function voteDelta(poolAddress, proposalId, mode, userAddress) {
   return new Promise(async (resolve, reject) => {

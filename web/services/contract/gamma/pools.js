@@ -2,7 +2,7 @@ import { usdc } from '/services/formatter';
 import useWunderPass from '/hooks/useWunderPass';
 import { gasPrice } from '/services/contract/init';
 import { initPoolGamma } from './init';
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 export function joinPoolGamma(poolAddress, value) {
   return new Promise(async (resolve, reject) => {
