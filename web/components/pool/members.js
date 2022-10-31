@@ -35,7 +35,7 @@ export default function PoolMembers(props) {
   return loadingState.init ? (
     <div className="w-full">
       <div
-        className={`flex container-white p-5 overflow-clip justify-start md:justify-center`}
+        className={`flex container-white p-5 justify-start md:justify-center`}
       >
         <div className="flex flex-col items-start justify-center grow">
           <div className="flex flex-col w-full">
@@ -48,10 +48,10 @@ export default function PoolMembers(props) {
               </Typography>
             </div>
             {isMember ? (
-              <>
+              <div className="flex flex-col w-full">
                 <CapTable members={members} {...props} />
                 {version?.number > 3 && !closed && (
-                  <div>
+                  <div className="flex flex-col w-full">
                     <button
                       className="btn-casama items-center w-full mb-3 mt-3 py-3 text-md"
                       onClick={() => setInviteMember(true)}
@@ -61,7 +61,7 @@ export default function PoolMembers(props) {
                     <InviteLinkButton {...props} />
                   </div>
                 )}
-              </>
+              </div>
             ) : (
               <>
                 <div className="flex flex-row flex-wrap w-full">

@@ -8,9 +8,11 @@ import {
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
 import { fetchUserFriends } from '../services/memberHelpers';
+import { ethProvider } from '/services/contract/provider';
 
 export default function useUser() {
   const [wunderId, setWunderId] = useState(null);
+  const [ensName, setEnsName] = useState(null);
   const [address, setAddress] = useState(null);
   const [usdBalance, setUsdBalance] = useState(null);
   const [topUpRequired, setTopUpRequired] = useState(null);
@@ -28,6 +30,12 @@ export default function useUser() {
     () => `/api/users/getImage?wunderId=${wunderId}`,
     [wunderId]
   );
+
+  // useEffect(async () => { TODO
+  //   if (!address) return;
+  //   var name = await ethProvider.lookupAddress(address);
+  //   if (name) setEnsName(name);
+  // }, [ethProvider, address]);
 
   const loggedIn = wunderId || address;
 
@@ -209,6 +217,7 @@ export default function useUser() {
 
   return {
     wunderId,
+    ensName,
     image,
     updateWunderId,
     address,

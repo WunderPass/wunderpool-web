@@ -10,6 +10,7 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '../../services/shareLink';
+import { getEnsNameFromAddress } from '/services/memberHelpers';
 
 function ParticipantTable({ game, stake, user }) {
   const { participants, event } = game;
@@ -87,11 +88,15 @@ function ParticipantTable({ game, stake, user }) {
                     i={i}
                   />
                 </div>
+
+                {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
+                  console.log('name', name)
+                )} */}
                 <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
                   {participant.wunderId ? (
                     <div className="truncate ...">{participant.wunderId}</div>
                   ) : (
-                    'External User'
+                    <div className="truncate ...">{participant.address}</div>
                   )}
                 </div>
               </div>

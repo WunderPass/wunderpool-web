@@ -7,6 +7,7 @@ import {
 import { getNameFor } from '../../services/memberHelpers';
 import Avatar from '/components/members/avatar';
 import { currency, polyValueToUsd, toFixed } from '/services/formatter';
+import { getEnsNameFromAddress } from '/services/memberHelpers';
 
 export default function CapTable(props) {
   const { members, wunderPool } = props;
@@ -54,8 +55,17 @@ export default function CapTable(props) {
                       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
                       i={i}
                     />
+
+                    {/* {getEnsNameFromAddress(member.address).then((name) =>
+                      console.log('name', name)
+                    )} TODO */}
+
                     <Typography className="ml-1 md:hidden">
-                      {member.wunderId ? member.wunderId : 'External User'}
+                      {member.wunderId
+                        ? member.wunderId
+                        : // : getEnsNameFromAddress(member.address)
+                          // ? getEnsNameFromAddress(member.address)
+                          'External User'}
                     </Typography>
                   </div>
                 </td>

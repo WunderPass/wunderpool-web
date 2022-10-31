@@ -1,9 +1,16 @@
 import axios from 'axios';
+import { ethProvider } from '/services/contract/provider';
 
 export function getNameFor(member = {}) {
   return member.firstName && member.lastName
     ? `${member.firstName} ${member.lastName}`
     : member.wunder_id || member.wunderId || 'External User';
+}
+
+export async function getEnsNameFromAddress(address) {
+  if (!address) return;
+  var name = await ethProvider.lookupAddress(address);
+  return name;
 }
 
 function formatMember(member) {
