@@ -1,12 +1,12 @@
-import CreateYourWunderPass from '/components/auth/createYourWunderPass';
-import LoginWithWunderPass from '/components/auth/loginWithWunderPass';
+import CreateYourWunderPass from '/components/general/auth/createYourWunderPass';
+import LoginWithWunderPass from '/components/general/auth/loginWithWunderPass';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import LoginWithMetaMask from '../components/auth/loginWithMetaMask';
-import LoginWithWalletConnect from '../components/auth/loginWithWalletConnect';
-import CustomHeader from '../components/utils/customHeader';
+import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
+import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
+import CustomHeader from '/components/general/utils/customHeader';
 ReactGA.initialize(process.env.GA_TRACKING_CODE);
 
 function Home(props) {
@@ -25,7 +25,7 @@ function Home(props) {
 
   useEffect(() => {
     if (user.loggedIn) {
-      router.push('/pools');
+      router.push('/betting/pools');
     }
   }, [user.loggedIn]);
 

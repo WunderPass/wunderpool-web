@@ -7,7 +7,7 @@ import {
 } from '/services/contract/pools';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
-import { fetchUserFriends } from '../services/memberHelpers';
+import { fetchUserFriends } from '/services/memberHelpers';
 import { ethProvider } from '/services/contract/provider';
 
 export default function useUser() {

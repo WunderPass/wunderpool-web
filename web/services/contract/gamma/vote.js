@@ -1,4 +1,4 @@
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 import { initPoolGamma } from '/services/contract/gamma/init';
 import { gasPrice } from '/services/contract/init';
 

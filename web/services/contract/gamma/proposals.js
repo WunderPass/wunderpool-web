@@ -10,7 +10,7 @@ import {
 import { tokenAbi } from '../init';
 import { isLiquidateProposal } from '../proposals';
 import { hasVotedGamma } from './vote';
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 function determineExecutable(
   executed,
