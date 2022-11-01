@@ -1,5 +1,5 @@
 import useUser from '/hooks/useUser';
-import '../styles/globals.css';
+import '/styles/globals.css';
 import useNotification from '/hooks/useNotification';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,14 +8,15 @@ import AlertTemplate from 'react-alert-template-basic';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import muiTheme from '/theme/mui';
-import Navbar from '/components/layout/navbar';
-import TopUpAlert from '../components/dialogs/topUpAlert';
+import Navbar from '/components/general/layout/navbar';
+import TopUpAlert from '/components/general/dialogs/topUpAlert';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
-import SwitchChainAlert from '../components/dialogs/switchChainAlert';
+import SwitchChainAlert from '/components/general/dialogs/switchChainAlert';
 import Head from 'next/head';
+import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredAlert';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -66,13 +67,16 @@ function WunderPool({ Component, pageProps }) {
   useEffect(() => {
     if (user.loggedIn === null && !isFetched) {
       setIsFetched(true);
-
       return;
     }
-    if (user.loggedIn === null) {
+
+    if (
+      user.loggedIn === null &&
+      !['/pools/join/[address]'].includes(router.pathname)
+    ) {
       router.push('/');
     }
-  }, [user.loggedIn, isFetched]);
+  }, [router.pathname, user.loggedIn, isFetched]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -119,6 +123,7 @@ function WunderPool({ Component, pageProps }) {
               user={user}
             />
             <SwitchChainAlert user={user} />
+            <PasswordRequiredAlert user={user} />
           </AlertProvider>
         </ThemeProvider>
       </StyledEngineProvider>

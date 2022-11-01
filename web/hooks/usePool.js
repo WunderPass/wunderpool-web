@@ -28,7 +28,7 @@ import {
 } from '/services/contract/init';
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
 import axios from 'axios';
-import { formatAsset } from '../services/contract/pools';
+import { formatAsset } from '/services/contract/pools';
 
 export default function usePool(
   userAddr,

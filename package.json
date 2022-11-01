@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "bip39": "^3.0.4",
+    "crypto-js": "^4.1.1",
+    "ethereumjs-wallet": "^1.0.2",
+    "ethers": "^5.7.2",
+    "hdkey": "^2.0.1",
+    "web3": "^1.8.0"
+  }
+}

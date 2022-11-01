@@ -12,9 +12,9 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { registerEvent, resolveEvent } from '/services/contract/betting/events';
-import ResponsiveDialog from '/components/utils/responsiveDialog';
+import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import { MdSportsSoccer } from 'react-icons/md';
-import { determineGame } from '../../services/contract/betting/games';
+import { determineGame } from '/services/contract/betting/games';
 import { IoMdRefresh } from 'react-icons/io';
 
 const admins = [

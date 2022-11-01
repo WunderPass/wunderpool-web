@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { tokenAbi, usdcAddress } from '../services/contract/init';
+import { tokenAbi, usdcAddress } from '/services/contract/init';
 
 async function approveUsdc(spender, amount) {
   const usdcAmount = ethers.BigNumber.from(amount);
