@@ -210,7 +210,7 @@ export default function JoinPool(props) {
 
   const loginCallback = () => {
     updateListener(user.pools, address, user.address);
-    router.push(`/pools/${address}`);
+    router.push(`/investing/pools/${address}`);
   };
 
   useEffect(() => {

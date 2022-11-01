@@ -203,7 +203,7 @@ export default function AdvancedPoolDialog(props) {
       if (newPoolEvent?.hash?.toLowerCase() == txHash?.toLowerCase()) {
         handleSuccess(`Created Pool "${newPoolEvent.name}"`);
         user.fetchUsdBalance();
-        router.push(`/pools/${newPoolEvent.address}`);
+        router.push(`/investing/pools/${newPoolEvent.address}`);
       }
     }
   }, [txHash, newPoolEvent?.hash]);
