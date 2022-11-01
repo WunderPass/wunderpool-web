@@ -110,7 +110,12 @@ function InputJoinAmount(props) {
           You will receive Governance Tokens proportionally to your invest
         </Typography>
         <Divider className="mt-2 mb-4 opacity-70" />
-        <Typography>Invest Amount</Typography>
+        <Typography>
+          Invest Amount
+          <span className="text-gray-500 text-xs ml-2">
+            (Fee of 4.9% applies)
+          </span>
+        </Typography>
         <CurrencyInput
           value={amount}
           placeholder={currency(minInvest)}
