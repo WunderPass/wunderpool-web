@@ -26,13 +26,7 @@ export default function PoolCard(props) {
   }, [pool.address]);
 
   return (
-    <Link
-      href={`/betting/pools/${pool.address}?name=${pool.name.replaceAll(
-        '&',
-        '%26'
-      )}`}
-      passHref
-    >
+    <Link href={`/betting/pools/${pool.address}`} passHref>
       <Paper
         className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden w-full"
         elevation={1}

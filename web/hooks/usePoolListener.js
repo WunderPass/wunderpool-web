@@ -49,7 +49,12 @@ export default function usePoolListener(handleInfo) {
   };
 
   const poolLink = (addr) => {
-    return `/pools/${addr}`;
+    const mode = ['betting', 'investing'].includes(
+      location.pathname.split('/')[1]
+    )
+      ? location.pathname.split('/')[1]
+      : 'betting';
+    return `/${mode}/pools/${addr}`;
   };
 
   const resolveUser = (address) => {

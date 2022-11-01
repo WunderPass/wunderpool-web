@@ -43,7 +43,7 @@ export default function PoolMembers(props) {
   return loadingState.init ? (
     <div className="w-full">
       <div
-        className={`flex container-white p-5 justify-start md:justify-center`}
+        className={`flex container-white p-5 justify-start md:justify-center overflow-hidden`}
       >
         <div className="flex flex-col items-start justify-center grow">
           <div className="flex flex-col w-full">
@@ -66,7 +66,7 @@ export default function PoolMembers(props) {
                         onClick={() =>
                           handleShare(
                             location.href,
-                            `Join my Pool at Casama.io`,
+                            `Join my Pool`,
                             handleSuccess
                           )
                         }

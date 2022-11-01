@@ -188,6 +188,9 @@ export default function NewPoolConfigStep(props) {
         <label className="label pb-2" htmlFor="amount">
           Your Investment *
         </label>
+        <span className="text-gray-500 text-xs ml-2">
+          (Fee of 4.9% applies)
+        </span>
         <div id="amount">
           <CurrencyInput
             value={value}

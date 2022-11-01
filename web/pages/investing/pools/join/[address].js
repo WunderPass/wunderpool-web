@@ -114,7 +114,12 @@ function InputJoinAmount(props) {
           You will receive Governance Tokens proportionally to your invest
         </Typography>
         <Divider className="mt-2 mb-4 opacity-70" />
-        <Typography>Invest Amount</Typography>
+        <Typography>
+          Invest Amount
+          <span className="text-gray-500 text-xs ml-2">
+            (Fee of 4.9% applies)
+          </span>
+        </Typography>
         <CurrencyInput
           value={amount}
           placeholder={currency(minInvest)}
@@ -205,7 +210,7 @@ export default function JoinPool(props) {
 
   const loginCallback = () => {
     updateListener(user.pools, address, user.address);
-    router.push(`/pools/${address}?name=${wunderPool.poolName}`);
+    router.push(`/pools/${address}`);
   };
 
   useEffect(() => {

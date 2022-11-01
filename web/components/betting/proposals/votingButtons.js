@@ -31,6 +31,8 @@ export default function VotingButtons(props) {
     setUserHasVoted(proposal.hasVoted);
   }, [proposal.hasVoted]);
 
+  if (!wunderPool.isMember) return null;
+
   if (proposal.executed) {
     return (
       <Tooltip title="Proposal has been Executed">

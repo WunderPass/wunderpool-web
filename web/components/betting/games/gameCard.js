@@ -124,7 +124,7 @@ export default function GameCard(props) {
     totalTokens /
     10 ** wunderPool.governanceToken.decimals;
   const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
+    (p) => p.address.toLowerCase() == wunderPool.userAddress?.toLowerCase()
   )?.prediction;
 
   const handleOpenBetNow = (onlyClose = false) => {
