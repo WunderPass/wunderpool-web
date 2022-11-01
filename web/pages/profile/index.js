@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   CircularProgress,
   Container,
   Divider,
@@ -24,6 +26,7 @@ export default function Profile(props) {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [showPhoneError, setShowPhoneError] = useState(null);
   const [dataHasChanged, setDataHasChanged] = useState(false);
+  const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
   const handleLogout = () => {
     user.logOut();
@@ -373,6 +376,34 @@ export default function Profile(props) {
           </div>
         </div> */}
       </div>
+      {user.loginMethod == 'Casama' && (
+        <div className="container-white my-5">
+          <div className="text-left w-full ">
+            <Typography className="text-lg ml-4 mt-7 p-1 font-semibold ">
+              Seed Phrase
+            </Typography>
+            <Divider className="w-full mt-2 mb-4" />
+            <Alert severity="warning" className="items-center">
+              <AlertTitle>Kepp your Seed Phrase to yourself!</AlertTitle> Anyone
+              with access to this Phrase can login to your Account and steal
+              your funds.
+            </Alert>
+            <div className="bg-gray-100 border-gray-300 border-2 rounded-xl p-3 my-3">
+              {showSeedPhrase
+                ? localStorage.getItem('seedPhrase')
+                : 'XXXXX XXXX XXXXXX XXXXXX XXX XXXXXX XXXXX XXXXX XXXX XXXXXXXXX XXXXX XXXXX'}
+            </div>
+            <div className="w-full">
+              <button
+                onClick={() => setShowSeedPhrase((show) => !show)}
+                className="btn-warning px-5 py-2 block mx-auto"
+              >
+                {showSeedPhrase ? 'Hide' : 'Reveal'} Seed Phrase
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* <div className="flex items-center justify-center  my-4">
         <NextLink href="/feedback/report" passHref>
           <Link textAlign="center">Give us feedback</Link>
