@@ -51,6 +51,7 @@ export default function usePool(
   const [exists, setExists] = useState(null);
   const [closed, setClosed] = useState(null);
   const [liquidated, setLiquidated] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
   const [version, setVersion] = useState(null);
   const [poolMembers, setPoolMembers] = useState([]);
   const [userIsMember, setUserIsMember] = useState(null);
@@ -407,6 +408,7 @@ export default function usePool(
         launcher,
         pool_name,
         pool_description,
+        public: public_pool,
         pool_creator,
         pool_members,
         shareholder_agreement,
@@ -422,6 +424,7 @@ export default function usePool(
       const vers = versionLookup[launcher.launcher_version?.toLowerCase()];
       setVersion(vers);
       setClosed(closed);
+      setIsPublic(public_pool);
 
       setMinInvest(shareholder_agreement?.min_invest);
       setMaxInvest(shareholder_agreement?.max_invest);
@@ -503,10 +506,10 @@ export default function usePool(
   const initialize = async () => {
     if (poolAddress) {
       await determinePoolData(poolAddress)
-        .then(async ({ vers, exists, isMem }) => {
-          if (exists && isMem) {
-            await determinePoolNfts();
+        .then(async ({ vers, exists }) => {
+          if (exists) {
             await determinePoolBettingGames();
+            await determinePoolNfts();
             await determinePoolProposals(vers);
           }
         })
@@ -536,6 +539,7 @@ export default function usePool(
     exists,
     closed,
     liquidated,
+    isPublic,
     poolName,
     poolDescription,
     version,

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { fetchPoolData, formatPool } from '/services/contract/pools';
+import { formatPool } from '/services/contract/pools';
 import PublicPoolCard from '/components/betting/dashboard/publicPoolCard';
-import PoolCard from '/components/betting/dashboard/poolCard';
 
 import { Paper, Skeleton, Typography } from '@mui/material';
 import axios from 'axios';
 
-export default function PublicPools(props) {
+export default function PublicPools({ user }) {
   const [visiblePools, setVisiblePools] = useState([]);
   const [allPools, setAllPools] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,9 +34,13 @@ export default function PublicPools(props) {
         url: '/api/pools/all',
         params: { public: true },
       });
-      setAllPools(data);
+      const userPools = user.pools.map((pool) => pool.address);
+      const filteredPools = data.filter(
+        (pool) => !userPools.includes(pool.pool_address)
+      );
+      setAllPools(filteredPools);
       await Promise.all(
-        data.slice(0, 3).map((pool) => {
+        filteredPools.slice(0, 3).map((pool) => {
           formatPool(pool).then((p) => {
             if (p) setVisiblePools((prev) => [...prev, p]);
           });
@@ -51,8 +54,9 @@ export default function PublicPools(props) {
   };
 
   useEffect(() => {
+    if (!user.isReady) return;
     getPublicPoolsAddressesFromJson();
-  }, []);
+  }, [user.isReady]);
 
   return (
     <>

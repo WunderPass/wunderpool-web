@@ -44,7 +44,7 @@ function Home(props) {
                   Connect with an external wallet, or use our integrated Wallet
                   to save all gas fees and get free credits.
                 </p>
-                <div className="mb-14 w-full max-w-sm">
+                <div className="w-full max-w-sm">
                   <AuthenticateWithCasama onSuccess={handleSuccess} />
                 </div>
                 <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 ">

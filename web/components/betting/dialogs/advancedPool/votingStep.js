@@ -62,6 +62,7 @@ export default function NewPoolVotingStep(props) {
     setShowCustomPercent,
     showCustomPerson,
     setShowCustomPerson,
+    totalSteps,
   } = props;
 
   const VotingDurations = [
@@ -115,7 +116,7 @@ export default function NewPoolVotingStep(props) {
   return (
     <Stack spacing={1}>
       <DialogContentText className="text-sm mb-7 font-graphik w-full">
-        Step 2 of 3 | Voting Rules
+        Step 2 of {totalSteps} | Voting Rules
       </DialogContentText>
 
       <div className="flex flex-row justify-between  items-center pb-4">

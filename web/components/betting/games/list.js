@@ -83,17 +83,21 @@ export default function GameList(props) {
                 <Typography className="mt-3" variant="h5">
                   No Open Bets
                 </Typography>
-                <Typography className="mb-2 mt-3" variant="subtitle1">
-                  Create a new bet below!
-                </Typography>
-                <button
-                  className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-                  onClick={() => {
-                    handleOpenCloseBetting();
-                  }}
-                >
-                  Start Betting Game
-                </button>
+                {wunderPool.isMember && (
+                  <>
+                    <Typography className="mb-2 mt-3" variant="subtitle1">
+                      Create a new bet below!
+                    </Typography>
+                    <button
+                      className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+                      onClick={() => {
+                        handleOpenCloseBetting();
+                      }}
+                    >
+                      Start Betting Game
+                    </button>
+                  </>
+                )}
                 <BettingGameDialog
                   open={openBet}
                   handleOpenClose={handleOpenCloseBetting}
@@ -125,17 +129,21 @@ export default function GameList(props) {
         <Typography className="mt-3" variant="h5">
           No Open Bets
         </Typography>
-        <Typography className="mb-2 mt-3" variant="subtitle1">
-          Create a new bet below!
-        </Typography>
-        <button
-          className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-          onClick={() => {
-            handleOpenCloseBetting();
-          }}
-        >
-          Start Betting Game
-        </button>
+        {wunderPool.isMember && (
+          <>
+            <Typography className="mb-2 mt-3" variant="subtitle1">
+              Create a new bet below!
+            </Typography>
+            <button
+              className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+              onClick={() => {
+                handleOpenCloseBetting();
+              }}
+            >
+              Start Betting Game
+            </button>
+          </>
+        )}
         <BettingGameDialog
           open={openBet}
           handleOpenClose={handleOpenCloseBetting}
