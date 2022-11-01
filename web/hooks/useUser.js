@@ -7,15 +7,17 @@ import {
 } from '/services/contract/pools';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
-import { fetchUserFriends } from '../services/memberHelpers';
+import { fetchUserFriends } from '/services/memberHelpers';
 import { decryptKey, retreiveKey } from '/services/crypto';
 import { signMillis, signMessage } from '/services/sign';
+import { ethProvider } from '/services/contract/provider';
 
 export default function useUser() {
   const [privateKey, setPrivateKey] = useState(null);
   const [passwordRequired, setPasswordRequired] = useState(false);
 
   const [wunderId, setWunderId] = useState(null);
+  const [ensName, setEnsName] = useState(null);
   const [address, setAddress] = useState(null);
   const [userName, setUserName] = useState(null);
   const [email, setEmail] = useState(null);
@@ -38,6 +40,12 @@ export default function useUser() {
     () => `/api/users/getImage?wunderId=${wunderId}`,
     [wunderId]
   );
+
+  // useEffect(async () => { TODO
+  //   if (!address) return;
+  //   var name = await ethProvider.lookupAddress(address);
+  //   if (name) setEnsName(name);
+  // }, [ethProvider, address]);
 
   const loggedIn = wunderId || address;
 
@@ -322,6 +330,7 @@ export default function useUser() {
 
   return {
     wunderId,
+    ensName,
     image,
     updateWunderId,
     address,

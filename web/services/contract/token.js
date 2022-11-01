@@ -6,7 +6,7 @@ import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
 import axios from 'axios';
 import { cacheItemDB, getCachedItemDB } from '../caching';
-import useWeb3 from '../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 export async function fetchErc20TokenData(address, ownerAddress = null) {
   const token = new ethers.Contract(address, tokenAbi, httpProvider);

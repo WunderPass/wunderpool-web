@@ -33,7 +33,7 @@ import {
   isLiquidateProposalZeta,
   proposalExecutableZeta,
 } from './zeta/proposals';
-import useWeb3 from '../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 import {
   fetchTransactionDataEta,
   isLiquidateProposalEta,

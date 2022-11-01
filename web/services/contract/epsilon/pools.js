@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { postAndWaitForTransaction } from '../../backendApi';
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 export function addToWhiteListWithSecretEpsilon(
   poolAddress,

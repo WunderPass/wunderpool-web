@@ -8,7 +8,7 @@ import {
   connectContract,
 } from '/services/contract/init';
 import { hasVotedDelta } from './vote';
-import useWeb3 from '../../../hooks/useWeb3';
+import useWeb3 from '/hooks/useWeb3';
 
 function determineExecutable(
   executed,

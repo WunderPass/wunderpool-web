@@ -1,6 +1,6 @@
-import AuthenticateWithCasama from '/components/auth/authenticateWithCasama';
-import LoginWithMetaMask from '/components/auth/loginWithMetaMask';
-import LoginWithWalletConnect from '/components/auth/loginWithWalletConnect';
+import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
+import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
+import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -24,7 +24,7 @@ function Home(props) {
 
   useEffect(() => {
     if (user.loggedIn) {
-      router.push('/pools');
+      router.push('/betting/pools');
     }
   }, [user.loggedIn]);
 
