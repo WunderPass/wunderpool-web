@@ -57,7 +57,7 @@ function formatProposal(
 ) {
   const userVoting =
     votings.find(
-      (v) => v.user_address.toLowerCase() == userAddress.toLowerCase()
+      (v) => v.user_address.toLowerCase() == userAddress?.toLowerCase()
     ) || {};
   const yesVotes = votings
     .filter((v) => v.vote == 'YES')
