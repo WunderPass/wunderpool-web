@@ -51,6 +51,7 @@ export const tokenAbi = [
   'function price() public view returns(uint)',
   'function allowance(address, address) public view returns(uint)',
   'function approve(address,uint)',
+  'function transfer(address,uint)',
 ];
 export const nftAbi = [
   'function name() public view returns(string)',

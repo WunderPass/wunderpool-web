@@ -8,12 +8,22 @@ import {
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
 import { fetchUserFriends } from '/services/memberHelpers';
+import { decryptKey, retreiveKey } from '/services/crypto';
+import { signMillis, signMessage } from '/services/sign';
 import { ethProvider } from '/services/contract/provider';
 
 export default function useUser() {
+  const [privateKey, setPrivateKey] = useState(null);
+  const [passwordRequired, setPasswordRequired] = useState(false);
+
   const [wunderId, setWunderId] = useState(null);
   const [ensName, setEnsName] = useState(null);
   const [address, setAddress] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [usdBalance, setUsdBalance] = useState(null);
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [unsupportedChain, setUnsupportedChain] = useState(false);
@@ -39,8 +49,14 @@ export default function useUser() {
 
   const loggedIn = wunderId || address;
 
-  const updateWunderId = (id) => {
-    id && localStorage.setItem('wunderId', id);
+  const updateWunderId = (id, forceReplace = false) => {
+    if (forceReplace) {
+      id
+        ? localStorage.setItem('wunderId', id)
+        : localStorage.removeItem('wunderId');
+    } else {
+      id && localStorage.setItem('wunderId', id);
+    }
     setWunderId(id);
   };
 
@@ -57,6 +73,31 @@ export default function useUser() {
   const updateCheckedTopUp = (checked) => {
     localStorage.setItem('checkedTopUp', checked);
     setCheckedTopUp(checked);
+  };
+
+  const updateEmail = (email) => {
+    email && localStorage.setItem('email', email);
+    setEmail(email);
+  };
+
+  const updatePhoneNumber = (phoneNumber) => {
+    phoneNumber && localStorage.setItem('phoneNumber', phoneNumber);
+    setPhoneNumber(phoneNumber);
+  };
+
+  const updateFirstName = (firstName) => {
+    firstName && localStorage.setItem('firstName', firstName);
+    setFirstName(firstName);
+  };
+
+  const updateLastName = (lastName) => {
+    lastName && localStorage.setItem('lastName', lastName);
+    setLastName(lastName);
+  };
+
+  const updateUserName = (userName) => {
+    userName && localStorage.setItem('userName', userName);
+    setUserName(userName);
   };
 
   const fetchPools = () => {
@@ -107,14 +148,71 @@ export default function useUser() {
     });
   };
 
+  const getUserData = async () => {
+    if (firstName && lastName && email && phoneNumber && userName) return;
+    const { signedMessage, signature } = getSignedMillis() || {};
+    if (!signature) return;
+
+    try {
+      const profile = (
+        await axios({
+          method: 'get',
+          url: '/api/users/getProfile',
+          headers: {
+            signature: signature,
+            signed: signedMessage,
+          },
+          params: { wunderId },
+        })
+      ).data;
+
+      updateFirstName(profile?.firstname);
+      updateLastName(profile?.lastname);
+      updateUserName(profile?.handle);
+      updateEmail(profile?.email);
+      updatePhoneNumber(profile?.phone_number);
+    } catch (error) {
+      console.log('Could not Load Profile', error);
+    }
+  };
+
+  const decryptKeyWithPassword = (password) => {
+    const privKey = decryptKey(password, true);
+    if (privKey) {
+      setPasswordRequired(false);
+      setPrivateKey(privKey);
+    } else {
+      throw 'Wrong Password';
+    }
+  };
+
+  const getSignedMillis = () => {
+    const savedKey = retreiveKey();
+    if (savedKey) setPrivateKey(savedKey);
+
+    if (privateKey || savedKey) {
+      const { signedMessage, signature } = signMillis(privateKey || savedKey);
+      return { signedMessage, signature };
+    } else {
+      setPasswordRequired(true);
+      return;
+    }
+  };
+
   const logOut = () => {
     localStorage.clear();
+    setPrivateKey(null);
     setWunderId(null);
     setAddress(null);
+    setFirstName(null);
+    setLastName(null);
+    setEmail(null);
+    setPhoneNumber(null);
     setCheckedTopUp(null);
     setLoginMethod(null);
     setUnsupportedChain(false);
     setPools([]);
+    setPasswordRequired(false);
     if (window.walletConnect?.wc?.connected)
       window.walletConnect?.wc?.killSession();
     window.walletConnect = undefined;
@@ -136,6 +234,7 @@ export default function useUser() {
 
       window.ethereum.on('accountsChanged', function ([newAddress]) {
         if (newAddress) {
+          updateWunderId(null, true);
           updateAddress(newAddress);
         } else {
           logOut();
@@ -175,6 +274,9 @@ export default function useUser() {
           });
         })
         .catch(() => logOut());
+    } else if (loginMethod == 'Casama') {
+      const privKey = retreiveKey();
+      setPasswordRequired(!Boolean(privKey));
     }
   }, [loginMethod]);
 
@@ -192,7 +294,7 @@ export default function useUser() {
           data: { address },
         })
           .then(({ data }) => {
-            updateWunderId(data.wunder_id);
+            updateWunderId(data.wunder_id, true);
           })
           .catch((err) => {
             console.log('No User Found');
@@ -215,6 +317,11 @@ export default function useUser() {
   }, [router.asPath]);
 
   useEffect(() => {
+    setFirstName(localStorage.getItem('firstName'));
+    setLastName(localStorage.getItem('lastName'));
+    setUserName(localStorage.getItem('userName'));
+    setEmail(localStorage.getItem('email'));
+    setPhoneNumber(localStorage.getItem('phoneNumber'));
     setWunderId(localStorage.getItem('wunderId'));
     setAddress(localStorage.getItem('address'));
     setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
@@ -227,6 +334,11 @@ export default function useUser() {
     image,
     updateWunderId,
     address,
+    firstName,
+    lastName,
+    userName,
+    email,
+    phoneNumber,
     updateAddress,
     loginMethod,
     updateLoginMethod,
@@ -247,5 +359,9 @@ export default function useUser() {
     checkedTopUp,
     updateCheckedTopUp,
     isReady,
+    decryptKeyWithPassword,
+    getUserData,
+    getSignedMillis,
+    passwordRequired,
   };
 }

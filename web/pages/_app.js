@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '/components/general/dialogs/switchChainAlert';
 import Head from 'next/head';
+import PasswordRequiredAlert from '../components/dialogs/passwordRequiredAlert';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -66,13 +67,16 @@ function WunderPool({ Component, pageProps }) {
   useEffect(() => {
     if (user.loggedIn === null && !isFetched) {
       setIsFetched(true);
-
       return;
     }
-    if (user.loggedIn === null) {
+
+    if (
+      user.loggedIn === null &&
+      !['/pools/join/[address]'].includes(router.pathname)
+    ) {
       router.push('/');
     }
-  }, [user.loggedIn, isFetched]);
+  }, [router.pathname, user.loggedIn, isFetched]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -119,6 +123,7 @@ function WunderPool({ Component, pageProps }) {
               user={user}
             />
             <SwitchChainAlert user={user} />
+            <PasswordRequiredAlert user={user} />
           </AlertProvider>
         </ThemeProvider>
       </StyledEngineProvider>

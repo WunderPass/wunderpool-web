@@ -87,9 +87,19 @@ export default function NewPoolConfigStep(props) {
 
       <Divider />
 
-      <Alert severity="info">
-        You can invite friends without a WunderPass after creating the Pool!
-      </Alert>
+      <div className="flex justify-between items-center pt-4">
+        <div className="flex flex-col justify-between items-center gap-8">
+          <Alert severity="info" className="w-full">
+            You can invite friends without a WunderPass after creating the Pool!
+          </Alert>
+          <Alert severity="warning">
+            In this pool the voting rules have been reduced to a minimum.
+            Everybody can execute proposals or close the pool at will. Only
+            create this kind of pool with friends or people you trust. If you
+            want to change this voting rule please go to advanced settings.
+          </Alert>
+        </div>
+      </div>
     </Stack>
   );
 }
