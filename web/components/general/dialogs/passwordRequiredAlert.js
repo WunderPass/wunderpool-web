@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { forwardRef } from 'react';
-import PasswordInput from '../utils/passwordInput';
+import PasswordInput from '/components/general/utils/passwordInput';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

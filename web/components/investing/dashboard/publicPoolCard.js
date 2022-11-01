@@ -105,8 +105,8 @@ export default function PoolCard(props) {
                   )}
                 </div>
               </div>
-              <div className="hidden md:flex flex-row items-center justify-center lg:w-2/3 md:w-4/5 ">
-                <div className="flex flex-row items-center container-gray-p-0 p-3 px-5  hover:bg-gray-300">
+              <div className="hidden md:flex flex-row items-center justify-center lg:w-2/3 md:w-4/5">
+                <div className="flex flex-row items-center container-gray-p-0 p-3 px-5 hover:bg-gray-300">
                   <div className="text-base font-medium">
                     {pool.members?.length} /{' '}
                     {pool.shareholderAgreement?.maxMembers} members
@@ -126,7 +126,7 @@ export default function PoolCard(props) {
 
       {/* MOBILE VIEW  */}
       <div className="sm:hidden flex w-full">
-        <Link href={inviteLink} passHref>
+        <Link href={`/investing/pools/${pool.address}`} passHref>
           <Paper
             className="container-white mb-4 pb-6 sm:pb-0 cursor-pointer lg:mb-0 sm:mb-6 relative overflow-hidden w-full"
             elevation={1}
