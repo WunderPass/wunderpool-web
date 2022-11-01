@@ -239,13 +239,6 @@ export default function GameCard(props) {
             )}
           </div>
 
-          {console.log(game.event.resolved)}
-          {console.log(
-            game.participants.find(
-              (participant) => participant.address === user.address
-            )
-          )}
-
           {/* Only Show participants if user has voted */}
           {game.event.resolved ? (
             <ParticipantTable game={game} stake={stake} user={user} />
@@ -257,7 +250,8 @@ export default function GameCard(props) {
             </>
           )}
 
-          {!usersBet &&
+          {wunderPool.isMember &&
+            !usersBet &&
             !game.event.resolved &&
             (game.event.startDate
               ? game.event.startDate > Number(new Date())

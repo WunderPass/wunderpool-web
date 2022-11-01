@@ -55,6 +55,8 @@ export default function PublicPools({ user }) {
 
   useEffect(() => {
     if (!user.isReady) return;
+    setVisiblePools([]);
+    setAllPools([]);
     getPublicPoolsAddressesFromJson();
   }, [user.isReady]);
 
