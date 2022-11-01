@@ -66,7 +66,7 @@ export default function PoolMembers(props) {
                         onClick={() =>
                           handleShare(
                             location.href,
-                            `Join my Pool at Casama.io`,
+                            `Join my Pool`,
                             handleSuccess
                           )
                         }
