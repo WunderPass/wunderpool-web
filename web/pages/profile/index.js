@@ -9,127 +9,102 @@ import NextLink from 'next/link';
 import RevealLoginCode from '/components/profile/revealLoginCode';
 import { BiEdit } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
-const axios = require('axios');
+import axios from 'axios';
+import { validateEmail, validatePhone } from '/services/validator';
+import { WalletBalance } from '../../components/profile/walletBalance';
 
 export default function Profile(props) {
-  const { user, t, handleSuccess, handleError } = props;
+  const { user, handleSuccess, handleError } = props;
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [firstName, setFirstName] = useState('');
-  const [handle, setHandle] = useState('');
   const [lastName, setLastName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState(null);
+  const [showEmailError, setShowEmailError] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
-  const [showEmailError, setShowEmailError] = useState(false);
-  const [showPhoneError, setShowPhoneError] = useState(false);
-
-  useEffect(() => {
-    setPhoneNumber(user?.phoneNumber);
-    setEmail(user?.email);
-    setFirstName(user?.firstName);
-    setLastName(user?.lastName);
-    setHandle(user?.wunderId);
-    console.log(user, 'user in index useffect');
-  }, [
-    user.phoneNumber,
-    user.email,
-    user.firstName,
-    user.lastName,
-    user.wunderId,
-    user.handle,
-  ]);
+  const [showPhoneError, setShowPhoneError] = useState(null);
+  const [dataHasChanged, setDataHasChanged] = useState(false);
 
   const handleLogout = () => {
     user.logOut();
   };
 
-  const uploadToServer = async () => {
-    if (!image) return;
-    const { signedMessage, signature } = user.getSignedMillis();
-    setUploading(true);
-    const formData = new FormData();
-    formData.append('image', image);
-    formData.append('wunderId', user?.wunderId);
+  const uploadToServer = () => {
+    if (!image) {
+      setUploading(false);
+      setDataHasChanged(false);
+    } else {
+      const { signedMessage, signature } = user.getSignedMillis();
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('wunderId', user?.wunderId);
 
-    axios({
-      method: 'post',
-      url: '/api/users/setImage',
-      headers: {
-        signature,
-        signed_message: signedMessage,
-      },
-      data: formData,
-    })
-      .then(() => {
-        setImage(null);
-        handleSuccess('messages.profile.saved');
+      axios({
+        method: 'post',
+        url: '/api/users/setImage',
+        headers: {
+          signature,
+          signed_message: signedMessage,
+        },
+        data: formData,
       })
-      .catch((err) => {
-        handleError(err?.response?.data?.error);
-      })
-      .then(() => {
-        setUploading(false);
-      });
+        .then(() => {
+          setImage(null);
+          handleSuccess('messages.profile.saved');
+        })
+        .catch((err) => {
+          handleError(err?.response?.data?.error);
+        })
+        .then(() => {
+          setUploading(false);
+          setDataHasChanged(false);
+        });
+    }
   };
 
-  const isValidPhone = (email) => {
-    var regex = new RegExp(
-      '^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$'
-    );
-    return regex.test(email);
+  const handleChangeUserName = (event) => {
+    setDataHasChanged(true);
+    setUserName(event.target.value);
   };
 
-  const isValidEmail = (number) => {
-    var regex = new RegExp("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
-    return regex.test(number);
+  const handleChangeFirstName = (event) => {
+    setDataHasChanged(true);
+    setFirstName(event.target.value);
+  };
+
+  const handleChangeLastName = (event) => {
+    setDataHasChanged(true);
+    setLastName(event.target.value);
   };
 
   const handleChangePhone = (event) => {
+    setDataHasChanged(true);
     if (event.target.value == '') {
       setShowPhoneError(false);
       setPhoneNumber(null);
       return;
     }
 
-    if (!isValidPhone(event.target.value)) {
-      setShowPhoneError(true);
-    } else {
-      setShowPhoneError(false);
-    }
-    if (event.target.value == '') setPhoneNumber(null);
+    setShowPhoneError(!validatePhone(event.target.value));
     setPhoneNumber(event.target.value);
-    console.log('phonetargetvlaue', event.target.value);
   };
 
   const handleChangeEmail = (event) => {
-    if (!isValidEmail(event.target.value)) {
-      setShowEmailError(true);
-    } else {
-      setShowEmailError(false);
-    }
+    setDataHasChanged(true);
+    setShowEmailError(!validateEmail(event.target.value));
     setEmail(event.target.value);
   };
 
-  const handleChangeHandle = (event) => {
-    setHandle(event.target.value);
-  };
-
-  const handleChangeFirstName = (event) => {
-    setFirstName(event.target.value);
-  };
-
-  const handleChangeLastName = (event) => {
-    setLastName(event.target.value);
-  };
-
   const updateUserInfo = () => {
+    setUploading(true);
     const { signedMessage, signature } = user.getSignedMillis();
     const number = phoneNumber == '' ? null : phoneNumber;
 
     const reqData = {
       wunderId: user.wunderId,
-      handle: handle,
+      handle: userName,
       firstname: firstName,
       lastname: lastName,
       email: email,
@@ -153,13 +128,12 @@ export default function Profile(props) {
         handleError(err?.response?.data?.error);
       })
       .then(() => {
-        setUploading(false);
+        uploadToServer();
       });
   };
 
   const handleSave = async () => {
     updateUserInfo();
-    uploadToServer();
   };
 
   const uploadToClient = (event) => {
@@ -167,13 +141,32 @@ export default function Profile(props) {
       const i = event.target.files[0];
       setImage(i);
       setImageUrl(URL.createObjectURL(i));
+      setDataHasChanged(true);
     }
   };
 
+  useEffect(() => {
+    setUserName(user.userName);
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+    setPhoneNumber(user.phoneNumber);
+    setEmail(user.email);
+  }, [
+    user.userName,
+    user.firstName,
+    user.lastName,
+    user.phoneNumber,
+    user.email,
+  ]);
+
+  useEffect(() => {
+    user.getUserData();
+  }, []);
+
   return (
-    <Container className="mt-5 " maxWidth="lg">
+    <Container className="mt-5" maxWidth="lg">
       <div className="flex md:flex-row flex-col justify-center font-graphik">
-        <div className="container-white-p-0 flex justify-center m-2 md:m-4 md:w-full">
+        <div className="container-white-p-0 flex justify-center md:w-full">
           <div className="flex flex-col w-full items-center">
             <div>
               <label htmlFor="fileUpload">
@@ -207,85 +200,79 @@ export default function Profile(props) {
               </Typography>
               <Divider className="w-full mt-2 mb-4" />
 
-              <div className="flex flex-col m-4">
+              <div className="flex flex-col m-4 gap-2">
                 <div className="flex flex-row justify-between">
                   {user.wunderId && (
                     <div className="flex flex-row items-center justify-between w-full">
                       <label
                         className={'text-black py-2 px-3 mt-2 font-semibold'}
                       >
-                        Handle
+                        Username
                       </label>
                     </div>
                   )}
                   <div className="flex flex-row justify-between w-full">
                     <input
-                      disabled
-                      className="textfield py-2 px-3 mt-4 mx-2 opacity-70"
+                      className="textfield py-2 px-3 mx-2"
                       type="text"
                       placeholder="Wunder Id"
-                      value={handle}
-                      onChange={handleChangeHandle}
+                      value={userName}
+                      onChange={handleChangeUserName}
                     />
                   </div>
                 </div>
 
-                {/* FIRSTNAME */}
                 <div className="flex flex-row justify-between ">
                   <div className="flex flex-row items-center justify-between w-full">
                     <label
                       className={'text-black py-2 px-3 mt-2 font-semibold'}
                     >
-                      Firstname
+                      First Name
                     </label>
                   </div>
                   <div className="flex flex-row justify-between w-full">
                     <input
-                      disabled
-                      className="textfield py-2 px-3 mt-4 mx-2 opacity-70"
+                      className="textfield py-2 px-3 mx-2"
                       type="name"
                       autoComplete="name"
-                      placeholder={'Firstname'}
+                      placeholder="First Name"
                       value={firstName}
                       onChange={handleChangeFirstName}
                     />
                   </div>
                 </div>
 
-                {/* LASTNAME */}
                 <div className="flex flex-row justify-between ">
                   <div className="flex flex-row items-center justify-between w-full">
                     <label
                       className={'text-black py-2 px-3 mt-2 font-semibold'}
                     >
-                      Lastname
+                      Last Name
                     </label>
                   </div>
                   <div className="flex flex-row justify-between w-full">
                     <input
-                      disabled
-                      className="textfield py-2 px-3 mt-4 mx-2 opacity-70"
+                      className="textfield py-2 px-3 mx-2"
                       type="name"
                       autoComplete="name"
-                      placeholder={'Lastname'}
+                      placeholder="Last Name"
                       value={lastName}
                       onChange={handleChangeLastName}
                     />
                   </div>
                 </div>
 
-                {/* PHONE */}
                 <div className="flex flex-row justify-between ">
                   <div className="flex flex-row items-center justify-between w-full">
                     <label
                       className={'text-black py-2 px-3 mt-2 font-semibold'}
                     >
-                      Phone number{' '}
+                      Phone Number
                     </label>
                   </div>
                   <div className="flex flex-row justify-between w-full">
                     <input
-                      className="textfield py-2 px-3 mt-4 mx-2"
+                      className="textfield py-2 px-3 mx-2"
                       type="tel"
                       autoComplete="tel"
                       placeholder="+1 202-123-4567"
@@ -293,15 +280,13 @@ export default function Profile(props) {
                       onChange={handleChangePhone}
                     />
                   </div>
-                  {showPhoneError && (
-                    <div className="ml-4 mt-1">
-                      <Typography color="red">
-                        Phone number is not valid!
-                      </Typography>
-                    </div>
-                  )}
                 </div>
-                {/* EMAIL */}
+                {showPhoneError && (
+                  <p className="text-red-700 text-right mr-3">
+                    Phone number is not valid!
+                  </p>
+                )}
+
                 <div className="flex flex-row justify-between ">
                   <div className="flex flex-row items-center justify-between w-full">
                     <label
@@ -312,7 +297,7 @@ export default function Profile(props) {
                   </div>
                   <div className="flex flex-row justify-between w-full">
                     <input
-                      className="textfield py-2 px-3 mt-4 mx-2"
+                      className="textfield py-2 px-3 mx-2"
                       type="email"
                       autoComplete="email"
                       placeholder="j.doe@gmail.com"
@@ -320,35 +305,37 @@ export default function Profile(props) {
                       onChange={handleChangeEmail}
                     />
                   </div>
-                  {showEmailError && (
-                    <div className="ml-4 mt-1">
-                      <Typography color="red">Email is not valid!</Typography>
-                    </div>
-                  )}
                 </div>
+                {showEmailError && (
+                  <p className="text-red-700 text-right mr-3">
+                    Email is not valid!
+                  </p>
+                )}
               </div>
             </div>
-            <div className="flex w-full justify-center">
-              <button
-                className="btn-casama p-2 mt-3 mb-4 mx-6 w-full md:w-1/2 flex items-center justify-center"
-                disabled={
-                  uploading ||
-                  !(email || phoneNumber || image) ||
-                  showEmailError ||
-                  showPhoneError
-                }
-                onClick={handleSave}
-              >
-                {uploading ? (
-                  <CircularProgress size="1.5rem" color="inherit" />
-                ) : (
-                  'Save'
-                )}
-              </button>
-            </div>
+            {dataHasChanged && (
+              <div className="flex w-full justify-center">
+                <button
+                  className="btn-casama p-2 mt-3 mb-4 mx-6 w-full md:w-1/2 flex items-center justify-center"
+                  disabled={
+                    uploading ||
+                    !(email || phoneNumber || image) ||
+                    showEmailError ||
+                    showPhoneError
+                  }
+                  onClick={handleSave}
+                >
+                  {uploading ? (
+                    <CircularProgress size="1.5rem" color="inherit" />
+                  ) : (
+                    'Save'
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex w-full">
+        {/* <div className="flex w-full">
           <div className="flex flex-col container-white-p-0 justify-between py-2 m-2 md:m-4 mb-4 w-full">
             <div>
               <div>
@@ -386,13 +373,13 @@ export default function Profile(props) {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
-      <div className="flex items-center justify-center  my-4">
+      {/* <div className="flex items-center justify-center  my-4">
         <NextLink href="/feedback/report" passHref>
           <Link textAlign="center">Give us feedback</Link>
         </NextLink>
-      </div>
+      </div> */}
     </Container>
   );
 }

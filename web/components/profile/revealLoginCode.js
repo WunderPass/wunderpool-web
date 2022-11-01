@@ -1,10 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { useState } from 'react';
 import QrCode from '/components/utils/qrCode';
 import { BiShowAlt } from 'react-icons/bi';

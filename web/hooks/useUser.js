@@ -13,10 +13,11 @@ import { signMillis, signMessage } from '/services/sign';
 
 export default function useUser() {
   const [privateKey, setPrivateKey] = useState(null);
-  const [passwordRequired, setPasswordRequired] = useState(false); //TODO this needs to be checked and implemented properly
+  const [passwordRequired, setPasswordRequired] = useState(false);
 
   const [wunderId, setWunderId] = useState(null);
   const [address, setAddress] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [email, setEmail] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [firstName, setFirstName] = useState('');
@@ -40,8 +41,14 @@ export default function useUser() {
 
   const loggedIn = wunderId || address;
 
-  const updateWunderId = (id) => {
-    id && localStorage.setItem('wunderId', id);
+  const updateWunderId = (id, forceReplace = false) => {
+    if (forceReplace) {
+      id
+        ? localStorage.setItem('wunderId', id)
+        : localStorage.removeItem('wunderId');
+    } else {
+      id && localStorage.setItem('wunderId', id);
+    }
     setWunderId(id);
   };
 
@@ -58,6 +65,31 @@ export default function useUser() {
   const updateCheckedTopUp = (checked) => {
     localStorage.setItem('checkedTopUp', checked);
     setCheckedTopUp(checked);
+  };
+
+  const updateEmail = (email) => {
+    email && localStorage.setItem('email', email);
+    setEmail(email);
+  };
+
+  const updatePhoneNumber = (phoneNumber) => {
+    phoneNumber && localStorage.setItem('phoneNumber', phoneNumber);
+    setPhoneNumber(phoneNumber);
+  };
+
+  const updateFirstName = (firstName) => {
+    firstName && localStorage.setItem('firstName', firstName);
+    setFirstName(firstName);
+  };
+
+  const updateLastName = (lastName) => {
+    lastName && localStorage.setItem('lastName', lastName);
+    setLastName(lastName);
+  };
+
+  const updateUserName = (userName) => {
+    userName && localStorage.setItem('userName', userName);
+    setUserName(userName);
   };
 
   const fetchPools = () => {
@@ -109,13 +141,9 @@ export default function useUser() {
   };
 
   const getUserData = async () => {
+    if (firstName && lastName && email && phoneNumber && userName) return;
     const { signedMessage, signature } = getSignedMillis() || {};
-    console.log('succesfully entered after getSignedMilis');
-    console.log('signature,', signature);
-    console.log('signedMessage,', signedMessage);
-
     if (!signature) return;
-    console.log('succesfully entered after !signature');
 
     try {
       const profile = (
@@ -126,27 +154,22 @@ export default function useUser() {
             signature: signature,
             signed: signedMessage,
           },
-          data: { wunderId },
+          params: { wunderId },
         })
       ).data;
 
-      setEmail(profile?.email);
-      if (profile?.email) localStorage.setItem('email', profile?.email);
-      setPhoneNumber(profile?.phone_number);
-      setFirstName(profile?.firstname);
-      setLastName(profile?.lastname);
-      if (profile?.phone_number)
-        localStorage.setItem('phoneNumber', profile?.phone_number);
-      console.log('profile in useuser getUserdata', profile);
+      updateFirstName(profile?.firstname);
+      updateLastName(profile?.lastname);
+      updateUserName(profile?.handle);
+      updateEmail(profile?.email);
+      updatePhoneNumber(profile?.phone_number);
     } catch (error) {
       console.log('Could not Load Profile', error);
     }
   };
 
-  const decrypt = (password, save = false) => {
-    console.log('succesfully entered in decrypt');
-
-    const privKey = decryptKey(password, save);
+  const decryptKeyWithPassword = (password) => {
+    const privKey = decryptKey(password, true);
     if (privKey) {
       setPasswordRequired(false);
       setPrivateKey(privKey);
@@ -163,17 +186,8 @@ export default function useUser() {
       const { signedMessage, signature } = signMillis(privateKey || savedKey);
       return { signedMessage, signature };
     } else {
-      //setPasswordRequired(true); //TODO
+      setPasswordRequired(true);
       return;
-    }
-  };
-
-  const decryptAndSign = (password, data) => {
-    const privKey = decryptKey(password);
-    if (privKey) {
-      return signMessage(privKey, data);
-    } else {
-      throw 'Wrong Password';
     }
   };
 
@@ -212,6 +226,7 @@ export default function useUser() {
 
       window.ethereum.on('accountsChanged', function ([newAddress]) {
         if (newAddress) {
+          updateWunderId(null, true);
           updateAddress(newAddress);
         } else {
           logOut();
@@ -251,6 +266,9 @@ export default function useUser() {
           });
         })
         .catch(() => logOut());
+    } else if (loginMethod == 'Casama') {
+      const privKey = retreiveKey();
+      setPasswordRequired(!Boolean(privKey));
     }
   }, [loginMethod]);
 
@@ -268,7 +286,7 @@ export default function useUser() {
           data: { address },
         })
           .then(({ data }) => {
-            updateWunderId(data.wunder_id);
+            updateWunderId(data.wunder_id, true);
           })
           .catch((err) => {
             console.log('No User Found');
@@ -291,6 +309,9 @@ export default function useUser() {
   }, [router.asPath]);
 
   useEffect(() => {
+    setFirstName(localStorage.getItem('firstName'));
+    setLastName(localStorage.getItem('lastName'));
+    setUserName(localStorage.getItem('userName'));
     setEmail(localStorage.getItem('email'));
     setPhoneNumber(localStorage.getItem('phoneNumber'));
     setWunderId(localStorage.getItem('wunderId'));
@@ -299,20 +320,6 @@ export default function useUser() {
     setLoginMethod(localStorage.getItem('loginMethod'));
   }, []);
 
-  useEffect(() => {
-    //TO BE TESTED
-    console.log('useffect for  getUserdata passwordRequired', passwordRequired);
-    console.log('useffect for getUserData !wunderId', !wunderId);
-    console.log(
-      'useffect for getUserData phoneNumber && email',
-      phoneNumber && email
-    );
-
-    //if (passwordRequired || !wunderId || (phoneNumber && email)) return;
-    console.log('entered in useffect for getUserData');
-    getUserData();
-  }, [wunderId, passwordRequired]);
-
   return {
     wunderId,
     image,
@@ -320,6 +327,7 @@ export default function useUser() {
     address,
     firstName,
     lastName,
+    userName,
     email,
     phoneNumber,
     updateAddress,
@@ -342,11 +350,9 @@ export default function useUser() {
     checkedTopUp,
     updateCheckedTopUp,
     isReady,
-    decrypt,
+    decryptKeyWithPassword,
     getUserData,
     getSignedMillis,
-    setPasswordRequired,
-    setPrivateKey,
-    decryptAndSign,
+    passwordRequired,
   };
 }

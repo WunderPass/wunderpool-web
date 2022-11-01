@@ -1,5 +1,6 @@
 import { Collapse } from '@mui/material';
 import axios from 'axios';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { signMillis } from '../../services/sign';
 import { encryptKey, generateKeys } from '/services/crypto';
@@ -53,9 +54,9 @@ function validate({
   return [valid, errors];
 }
 
-function createUser(firstName, lastName, email, password) {
+function createUser(firstName, lastName, email, password, givenSeedPhrase) {
   return new Promise((resolve, reject) => {
-    const seedPhrase = BIP39.generateMnemonic();
+    const seedPhrase = givenSeedPhrase || BIP39.generateMnemonic();
     localStorage.setItem('seedPhrase', seedPhrase);
 
     const { privKey, pubKey, address } = generateKeys(seedPhrase.trim());
@@ -100,13 +101,16 @@ function createUser(firstName, lastName, email, password) {
   });
 }
 
-export default function SignUpWithCasama({ onSuccess }) {
-  const [openForm, setOpenForm] = useState(false);
+export default function SignUpWithCasama({
+  onSuccess,
+  seedPhrase = null,
+  pass = '',
+}) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [password, setPassword] = useState(pass);
+  const [passwordConfirmation, setPasswordConfirmation] = useState(pass);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [creationError, setCreationError] = useState(null);
@@ -126,7 +130,7 @@ export default function SignUpWithCasama({ onSuccess }) {
     setErrors(errors);
 
     if (valid) {
-      createUser(firstName, lastName, email, password)
+      createUser(firstName, lastName, email, password, seedPhrase)
         .then(({ wunderId, address }) => {
           onSuccess({ wunderId, address, loginMethod: 'Casama' });
         })
@@ -136,93 +140,88 @@ export default function SignUpWithCasama({ onSuccess }) {
         .then(() => {
           setLoading(false);
         });
+    } else {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    setPassword(pass);
+    setPasswordConfirmation(pass);
+  }, [pass]);
+
   return (
-    <>
-      <Collapse in={!openForm}>
-        <button
-          onClick={() => setOpenForm((open) => !open)}
-          className="w-fit mx-auto flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue rounded-lg px-5 py-2 font-medium text-md"
-        >
-          <p className="pl-2 lg:pl-3 p-1 text-white">Sign Up with Email</p>
-        </button>
-      </Collapse>
-      <Collapse in={openForm}>
-        <form className="w-full" onSubmit={handleSubmit}>
-          <div className="w-full flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div>
-                <input
-                  className="textfield py-4 px-3"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                  }}
-                />
-                <Error msg={errors.firstName} />
-              </div>
-              <div>
-                <input
-                  className="textfield py-4 px-3"
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                  }}
-                />
-                <Error msg={errors.lastName} />
-              </div>
-            </div>
-            <div>
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Email"
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-              <Error msg={errors.email} />
-            </div>
-            <div>
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-              <Error msg={errors.password} />
-            </div>
-            <div>
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Password Confirmation"
-                type="password"
-                value={passwordConfirmation}
-                onChange={(e) => {
-                  setPasswordConfirmation(e.target.value);
-                }}
-              />
-              <Error msg={errors.passwordConfirmation} />
-            </div>
-            <Error msg={creationError} />
-            <button
-              type="submit"
-              disabled={loading || Object.keys(errors).length > 0}
-              className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
-            >
-              {loading ? 'Loading...' : 'Sign Up'}
-            </button>
+    <form className="w-full" onSubmit={handleSubmit}>
+      <div className="w-full flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div>
+            <input
+              className="textfield py-4 px-3"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+              }}
+            />
+            <Error msg={errors.firstName} />
           </div>
-        </form>
-      </Collapse>
-    </>
+          <div>
+            <input
+              className="textfield py-4 px-3"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+              }}
+            />
+            <Error msg={errors.lastName} />
+          </div>
+        </div>
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Email"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+          <Error msg={errors.email} />
+        </div>
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <Error msg={errors.password} />
+        </div>
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Password Confirmation"
+            type="password"
+            value={passwordConfirmation}
+            onChange={(e) => {
+              setPasswordConfirmation(e.target.value);
+            }}
+          />
+          <Error msg={errors.passwordConfirmation} />
+        </div>
+        <Error msg={creationError} />
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
+        >
+          {loading ? 'Loading...' : 'Sign Up'}
+        </button>
+      </div>
+    </form>
   );
 }

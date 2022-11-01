@@ -1,3 +1,4 @@
+import useCasama from './useCasama';
 import useMetaMask from './useMetaMask';
 import useWalletConnect from './useWalletConnect';
 import useWunderPass from './useWunderPass';
@@ -11,6 +12,8 @@ export default function useWeb3() {
       return useMetaMask().sendSignatureRequest(types, values, packed);
     } else if (loginMethod == 'WalletConnect') {
       return useWalletConnect().sendSignatureRequest(types, values, packed);
+    } else if (loginMethod == 'Casama') {
+      return useCasama().sendSignatureRequest(types, values, packed);
     } else {
       return useWunderPass({
         name: 'Casama',
@@ -30,6 +33,8 @@ export default function useWeb3() {
       return useMetaMask().smartContractTransaction(tx, usdc, network);
     } else if (loginMethod == 'WalletConnect') {
       return useWalletConnect().smartContractTransaction(tx, usdc, network);
+    } else if (loginMethod == 'Casama') {
+      return useCasama().smartContractTransaction(tx, usdc, network);
     } else {
       return useWunderPass({
         name: 'Casama',
@@ -43,6 +48,8 @@ export default function useWeb3() {
     if (loginMethod == 'MetaMask') {
       return () => {};
     } else if (loginMethod == 'WalletConnect') {
+      return () => {};
+    } else if (loginMethod == 'Casama') {
       return () => {};
     } else {
       return useWunderPass({

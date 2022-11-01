@@ -34,7 +34,7 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
 
   return (
     <button
-      className="flex p-1 my-3 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
+      className="flex my-2 p-1 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
       onClick={loginWithWalletConnect}
     >
       <div className="pr-2 pl-3 pt-1">

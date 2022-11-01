@@ -63,7 +63,7 @@ export function generateKeys(seedPhrase) {
   return {
     privKey: wallet.getPrivateKey().toString('hex'),
     pubKey: wallet.getPublicKey().toString('hex'),
-    address: wallet.getAddress().toString('hex'),
+    address: '0x' + wallet.getAddress().toString('hex'),
   };
 }
 

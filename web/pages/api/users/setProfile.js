@@ -10,7 +10,6 @@ export default async function handler(req, res) {
       email: req.body.email,
       phone_number: req.body.phone_number,
     };
-    console.log('data in setProfile', data);
 
     const headers = {
       'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import SignUpWithCasama from '/components/auth/signupWithCasama';
+import AuthenticateWithCasama from '/components/auth/authenticateWithCasama';
 import LoginWithMetaMask from '/components/auth/loginWithMetaMask';
 import LoginWithWalletConnect from '/components/auth/loginWithWalletConnect';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
@@ -45,10 +45,7 @@ function Home(props) {
                   to save all gas fees and get free credits.
                 </p>
                 <div className="mb-14 w-full max-w-sm">
-                  <SignUpWithCasama
-                    onSuccess={handleSuccess}
-                    handleError={handleError}
-                  />
+                  <AuthenticateWithCasama onSuccess={handleSuccess} />
                 </div>
                 <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 ">
                   <div className="my-2 w-72 items-centerlg:mt-6 mb-2">
@@ -56,9 +53,8 @@ function Home(props) {
                       Already have a wallet?
                     </p>
                   </div>
+
                   <LoginWithMetaMask
-                    test="test"
-                    customClassName={'bg-black'}
                     onSuccess={handleSuccess}
                     handleError={handleError}
                   />

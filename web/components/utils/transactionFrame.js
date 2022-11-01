@@ -1,8 +1,45 @@
-import { Typography } from '@mui/material';
+import { LinearProgress, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import MetaMaskLogo from './metaMaskLogo';
 import WalletConnectIcon from '/public/images/walletconnect.png';
+
+function CasamaLoading({ open }) {
+  const [step, setStep] = useState(0);
+
+  const steps = [
+    'Writing your Transaction on the Blockchain',
+    'Building the Blocks',
+    'Waiting for Confirmation',
+  ];
+
+  useEffect(() => {
+    if (!open) return;
+    const interval = setInterval(() => {
+      setStep((s) => (s == steps.length - 1 ? s : s + 1));
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [open]);
+
+  return (
+    <div
+      className="w-full flex-grow overflow-hidden pb-3"
+      style={{
+        transition: 'max-height 300ms ease',
+        maxHeight: open ? '500px' : '0px',
+      }}
+    >
+      <div className="m-4">
+        <LinearProgress color="casamaBlue" />
+      </div>
+      <Typography variant="h6" textAlign="center">
+        Processing Transaction...
+      </Typography>
+      <p className="text-casama-blue text-center">{steps[step]}</p>
+    </div>
+  );
+}
 
 export default function TransactionFrame({ open }) {
   const [isSafari, setIsSafari] = useState(false);
@@ -50,6 +87,10 @@ export default function TransactionFrame({ open }) {
         </Typography>
       </div>
     );
+  }
+
+  if (loginMethod == 'Casama') {
+    return <CasamaLoading open={open} />;
   }
 
   return (

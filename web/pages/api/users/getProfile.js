@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default async function handler(req, res) {
   try {
-    const { wunderId } = req.body;
+    const { wunderId } = req.query;
 
     const headers = {
       'Content-Type': 'application/json',

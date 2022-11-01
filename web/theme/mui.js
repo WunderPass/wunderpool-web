@@ -16,6 +16,7 @@ const colors = {
 export default createTheme({
   palette: {
     red: { main: '#ef4444' },
+    casamaBlue: { main: colors.casamaBlue, darker: colors.casamaDarkBlue },
   },
   typography: {
     fontFamily: `"Graphik", sans-serif`,

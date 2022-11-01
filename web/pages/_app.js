@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '../components/dialogs/switchChainAlert';
 import Head from 'next/head';
+import PasswordRequiredAlert from '../components/dialogs/passwordRequiredAlert';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -122,6 +123,7 @@ function WunderPool({ Component, pageProps }) {
               user={user}
             />
             <SwitchChainAlert user={user} />
+            <PasswordRequiredAlert user={user} />
           </AlertProvider>
         </ThemeProvider>
       </StyledEngineProvider>

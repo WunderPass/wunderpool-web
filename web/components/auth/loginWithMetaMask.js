@@ -48,8 +48,7 @@ async function switchChain() {
   }
 }
 
-export default function LoginWithMetaMask({ onSuccess, handleError }, props) {
-  const { customClassName, test } = props;
+export default function LoginWithMetaMask({ onSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
 
   const loginWithWetaMask = async () => {
@@ -77,7 +76,7 @@ export default function LoginWithMetaMask({ onSuccess, handleError }, props) {
 
   return (
     <button
-      className="flex w-full p-1 pt-1.5 my-3 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"
+      className="flex my-2 w-full p-1 pt-1.5 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"
       onClick={loginWithWetaMask}
     >
       <div className="pl-1">
