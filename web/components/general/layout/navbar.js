@@ -70,11 +70,15 @@ export default function Navbar(props) {
                   </div>
                 </div>
               </Link>
-              {user.loggedIn && (
+              {user.loggedIn ? (
                 <>
                   <Navigation open={open} setOpen={setOpen} {...props} />
                   <MobileNavigation open={open} setOpen={setOpen} {...props} />
                 </>
+              ) : (
+                <Link href="/">
+                  <a className="btn-casama-white px-5 py-2">Login</a>
+                </Link>
               )}
             </Stack>
           </Toolbar>

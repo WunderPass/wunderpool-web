@@ -506,10 +506,10 @@ export default function usePool(
   const initialize = async () => {
     if (poolAddress) {
       await determinePoolData(poolAddress)
-        .then(async ({ vers, exists, isMem }) => {
-          if (exists && isMem) {
-            await determinePoolNfts();
+        .then(async ({ vers, exists }) => {
+          if (exists) {
             await determinePoolBettingGames();
+            await determinePoolNfts();
             await determinePoolProposals(vers);
           }
         })

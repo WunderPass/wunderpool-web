@@ -39,44 +39,44 @@ function assetDetails(props) {
   }, [router.query]);
 
   return (
-    <>
-      {wunderPool.isMember ? (
-        <div className="w-full">
-          <div className="flex container-white justify-start sm:justify-center">
-            <div className="flex flex-col items-center justify-start w-full">
-              <Typography className="text-xl w-full">Asset details</Typography>
-              <div className="flex lg:flex-row flex-col lg:justify-between w-full">
-                <div className="w-full">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
-                    Total value of assets
-                  </Typography>
-                  <div className="flex flex-row items-center justify-start ">
-                    {wunderPool.loadingState.tokens ? (
-                      <>
-                        <GrMoney className="text-xl mr-2" />
-                        <Typography className="text-2xl opacity-90 py-1 font-medium">
-                          {currency(wunderPool.assetBalance)}
-                        </Typography>
-                      </>
-                    ) : (
-                      <Skeleton className="w-full lg:w-1/2 text-2xl opacity-90 py-1 font-medium" />
-                    )}
-                  </div>
-                </div>
-                <div className="w-full lg:text-right">
-                  <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
-                    Amount of assets
-                  </Typography>
-                  {wunderPool.loadingState.tokens ? (
+    <div className="w-full">
+      <div className="flex container-white justify-start sm:justify-center">
+        <div className="flex flex-col items-center justify-start w-full">
+          <Typography className="text-xl w-full">Asset details</Typography>
+          <div className="flex lg:flex-row flex-col lg:justify-between w-full">
+            <div className="w-full">
+              <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
+                Total value of assets
+              </Typography>
+              <div className="flex flex-row items-center justify-start ">
+                {wunderPool.loadingState.tokens ? (
+                  <>
+                    <GrMoney className="text-xl mr-2" />
                     <Typography className="text-2xl opacity-90 py-1 font-medium">
-                      {wunderPool.assetCount}
+                      {currency(wunderPool.assetBalance)}
                     </Typography>
-                  ) : (
-                    <Skeleton className="w-full inline-block lg:w-1/2 text-2xl opacity-90 py-1 font-medium" />
-                  )}
-                </div>
+                  </>
+                ) : (
+                  <Skeleton className="w-full lg:w-1/2 text-2xl opacity-90 py-1 font-medium" />
+                )}
               </div>
+            </div>
+            <div className="w-full lg:text-right">
+              <Typography className="text-sm opacity-40 py-1 pt-6 font-medium">
+                Amount of assets
+              </Typography>
+              {wunderPool.loadingState.tokens ? (
+                <Typography className="text-2xl opacity-90 py-1 font-medium">
+                  {wunderPool.assetCount}
+                </Typography>
+              ) : (
+                <Skeleton className="w-full inline-block lg:w-1/2 text-2xl opacity-90 py-1 font-medium" />
+              )}
+            </div>
+          </div>
 
+          {wunderPool.isMember && (
+            <>
               <button
                 className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
                 onClick={() => {
@@ -93,23 +93,21 @@ function assetDetails(props) {
               >
                 Buy Token
               </button>
-            </div>
-          </div>
-          <MakeProposalDialog
-            open={open}
-            handleOpenClose={handleOpenClose}
-            {...props}
-          />
-          <BettingGameDialog
-            open={openBet}
-            handleOpenClose={handleOpenCloseBetting}
-            {...props}
-          />
+            </>
+          )}
         </div>
-      ) : (
-        <></>
-      )}
-    </>
+      </div>
+      <MakeProposalDialog
+        open={open}
+        handleOpenClose={handleOpenClose}
+        {...props}
+      />
+      <BettingGameDialog
+        open={openBet}
+        handleOpenClose={handleOpenCloseBetting}
+        {...props}
+      />
+    </div>
   );
 }
 

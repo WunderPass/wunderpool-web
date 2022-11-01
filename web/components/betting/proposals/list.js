@@ -75,17 +75,22 @@ export default function ProposalList(props) {
         <Typography className="mt-3" variant="h5">
           No Open Proposals
         </Typography>
-        <Typography className="mb-2 mt-3" variant="subtitle1">
-          Decide which tokens to invest in first by making a buy proposal below!
-        </Typography>
-        <button
-          className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-          onClick={() => {
-            handleOpenClose();
-          }}
-        >
-          Make Proposal
-        </button>
+        {wunderPool.isMember && (
+          <>
+            <Typography className="mb-2 mt-3" variant="subtitle1">
+              Decide which tokens to invest in first by making a buy proposal
+              below!
+            </Typography>
+            <button
+              className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+              onClick={() => {
+                handleOpenClose();
+              }}
+            >
+              Make Proposal
+            </button>
+          </>
+        )}
         <MakeProposalDialog
           open={open}
           handleOpenClose={handleOpenClose}

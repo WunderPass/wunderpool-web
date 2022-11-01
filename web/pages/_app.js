@@ -72,7 +72,12 @@ function WunderPool({ Component, pageProps }) {
 
     if (
       user.loggedIn === null &&
-      !['/pools/join/[address]'].includes(router.pathname)
+      ![
+        '/investing/pools/join/[address]',
+        '/investing/pools/[address]',
+        '/betting/pools/join/[address]',
+        '/betting/pools/[address]',
+      ].includes(router.pathname)
     ) {
       router.push('/');
     }
