@@ -10,7 +10,11 @@ import axios from 'axios';
 import { fetchUserFriends } from '/services/memberHelpers';
 import { ethProvider } from '/services/contract/provider';
 
-export default function useBettingService(props, handleError = () => {}) {
+export default function useBettingService(
+  props,
+  userAddress,
+  handleError = () => {}
+) {
   const [games, setGames] = useState(null);
   const [events, setEvents] = useState(null);
   const [bettingGames, setBettingGames] = useState(null);
@@ -26,6 +30,7 @@ export default function useBettingService(props, handleError = () => {}) {
       const games = (
         await axios({
           url: '/api/betting/games/all',
+          params: { address: userAddress },
         })
       ).data;
 
@@ -47,6 +52,7 @@ export default function useBettingService(props, handleError = () => {}) {
       const games = (
         await axios({
           url: '/api/betting/games/all',
+          params: { address: userAddress },
         })
       ).data;
       setGames(games);

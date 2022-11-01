@@ -12,13 +12,13 @@ import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 import usePool from '/hooks/usePool';
 import useBettingService from '/hooks/useBettingService';
 
-export default function PoolList(props) {
+export default function BetsList(props) {
   const { pools, user, handleError } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const [isBets, setIsBets] = useState(false);
   const router = useRouter();
-  const bettingService = useBettingService(handleError);
+  const bettingService = useBettingService(user.address, handleError);
   console.log('betting serivce', bettingService);
 
   const handleOpenClose = () => {

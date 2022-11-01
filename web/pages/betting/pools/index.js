@@ -15,7 +15,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
-import PoolList from '/components/betting/dashboard/poolList';
+import BetsList from '/components/betting/dashboard/betsList';
 import CustomHeader from '/components/general/utils/customHeader';
 import PublicPools from '/components/betting/dashboard/publicPools';
 import QrCode from '/components/general/utils/qrCode';
@@ -180,7 +180,7 @@ export default function Pools(props) {
                 </div>
 
                 {user.isReady ? (
-                  <PoolList
+                  <BetsList
                     className="mx-4"
                     user={user}
                     pools={user.pools
