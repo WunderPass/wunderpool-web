@@ -72,18 +72,20 @@ function ParticipantTable({ game, stake, user }) {
   );
 }
 
-export default function GameCard(props) {
-  const { game, totalTokens, wunderPool, handleSuccess, user } = props;
+export default function DashBoardGameCard(props) {
+  const { game, poolAddress, bettingGame, handleSuccess, user } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
+  const wunderPool = usePool();
 
-  const stake =
-    (game.stake * wunderPool.usdcBalance) /
-    totalTokens /
-    10 ** wunderPool.governanceToken.decimals;
+  // const stake =
+  //   (game.stake * wunderPool.usdcBalance) /
+  //   wunderPool.totalTokens /
+  //   10 ** wunderPool.governanceToken.decimals;
+  const stake = 69;
   const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
+    (p) => p.address.toLowerCase() == user.address.toLowerCase()
   )?.prediction;
 
   const handleOpenBetNow = (onlyClose = false) => {
@@ -122,7 +124,7 @@ export default function GameCard(props) {
             </div>
           </div>
           <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
-            {game.event.name}
+            {game.name} (game name)
           </Typography>
         </div>
 
@@ -164,41 +166,43 @@ export default function GameCard(props) {
             </div>
           </div>
           <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
-            {game.event.resolved ? (
-              <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
-                <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
-                  Result
-                </p>
-                <div className="flex flex-row justify-center items-center w-full mb-3">
-                  <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teams[0]}
+            {
+              //game.event.resolved ? ( TODO
+              false ? (
+                <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
+                  <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
+                    Result
                   </p>
-
-                  <div className="w-2/12 flex flex-row justify-center ">
-                    <p className="font-semibold text-xl sm:text-2xl">
-                      {game.event.outcome[0]}
+                  <div className="flex flex-row justify-center items-center w-full mb-3">
+                    <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
+                      {game.event.teams[0]}
                     </p>
-                    <p className="px-1 text-xl sm:text-2xl">:</p>
-                    <p className="font-semibold text-xl sm:text-2xl">
-                      {game.event.outcome[1]}
+
+                    <div className="w-2/12 flex flex-row justify-center ">
+                      <p className="font-semibold text-xl sm:text-2xl">
+                        {game.event.outcome[0]}
+                      </p>
+                      <p className="px-1 text-xl sm:text-2xl">:</p>
+                      <p className="font-semibold text-xl sm:text-2xl">
+                        {game.event.outcome[1]}
+                      </p>
+                    </div>
+                    <p className="w-5/12 text-center text-base sm:text-xl px-2">
+                      {game.event.teams[1]}
                     </p>
                   </div>
-                  <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teams[1]}
-                  </p>
                 </div>
-              </div>
-            ) : (
-              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
-                <Timer
-                  start={Number(new Date())}
-                  end={game.event.startDate || game.event.endDate}
-                />
-              </div>
-            )}
+              ) : (
+                <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
+                  <Timer
+                    start={Number(new Date())}
+                    //end={game.event.startDate || game.event.endDate} //TODO
+                  />
+                </div>
+              )
+            }
           </div>
 
-          {console.log(game.event.resolved)}
           {console.log(
             game.participants.find(
               (participant) => participant.address === user.address
@@ -206,17 +210,20 @@ export default function GameCard(props) {
           )}
 
           {/* Only Show participants if user has voted */}
-          {game.event.resolved ? (
-            <ParticipantTable game={game} stake={stake} user={user} />
-          ) : (
-            <>
-              {game.participants.find(
-                (participant) => participant.address === user.address
-              ) && <ParticipantTable game={game} stake={stake} user={user} />}
-            </>
-          )}
+          {
+            //game.event.resolved ? ( TODO
+            true ? (
+              <ParticipantTable game={game} stake={stake} user={user} />
+            ) : (
+              <>
+                {game.participants.find(
+                  (participant) => participant.address === user.address
+                ) && <ParticipantTable game={game} stake={stake} user={user} />}
+              </>
+            )
+          }
 
-          {!usersBet &&
+          {/* {!usersBet && TODO
             !game.event.resolved &&
             (game.event.startDate
               ? game.event.startDate > Number(new Date())
@@ -229,7 +236,7 @@ export default function GameCard(props) {
                   Place your Bet
                 </button>
               </div>
-            )}
+            )} */}
         </div>
       </div>
       <PlaceBetDialog

@@ -14,7 +14,7 @@ const myPools = (props) => {
   return (
     <>
       <button onClick={(e) => setPoolListOpen(e.currentTarget)}>
-        My Pools List
+        My Investing pools List
       </button>
       <Menu
         className="mt-4"

@@ -122,7 +122,7 @@ export default function PoolHeader(props) {
     wunderPool
       .createInviteLink(secret, maxMembers)
       .then((res) => {
-        let link = `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`;
+        let link = `${window.location.origin}/investing/pools/join/${wunderPool.poolAddress}?secret=${secret}`;
         setInviteLink(link);
         makePoolPublic(link);
       })

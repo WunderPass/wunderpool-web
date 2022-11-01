@@ -5,12 +5,21 @@ import { Typography } from '@mui/material';
 import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import PoolCard from '/components/betting/dashboard/poolCard';
+import GameCard from '/components/betting/games/gameCard';
+import GameList from '/components/betting/games/list';
+import DashboardGameList from '/components/betting/games/dashboardList';
+import DashboardGameCard from '/components/betting/games/dashboardGameCard';
+import usePool from '/hooks/usePool';
+import useBettingService from '/hooks/useBettingService';
 
 export default function PoolList(props) {
-  const { pools } = props;
+  const { pools, user, handleError } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const [isBets, setIsBets] = useState(false);
   const router = useRouter();
+  const bettingService = useBettingService(handleError);
+  console.log('betting serivce', bettingService);
 
   const handleOpenClose = () => {
     if (open) {
@@ -24,43 +33,57 @@ export default function PoolList(props) {
     setOpen(router.query?.createPool1 ? true : false);
   }, [router.query]);
 
-  return pools.length > 0 ? (
-    <div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full">
-      {pools.map((pool, i) => {
-        return <PoolCard key={`pool-card-${pool.address}`} pool={pool} />;
-      })}
-    </div>
-  ) : (
-    <div className="container-white">
-      <div className="flex flex-col items-center ">
-        <div className="border-solid text-casama-blue rounded-full bg-casama-extra-light-blue p-5 my-2 mt-6 mb-4">
-          <MdGroups className="text-4xl" />
-        </div>
-        <div className="my-2 mb-10">
-          <Typography variant="h7">
-            Get invited to an betting pool or start one and invite others in
-            minutes
-          </Typography>
-          <div className="flex justify-center mt-2 cursor-pointer">
-            <a
-              href={`https://www.youtube.com/watch?v=vz6rXuKOyZ4`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Typography className="text-casama-blue justify-center">
-                (See Demo)
-              </Typography>
-            </a>
-          </div>
-        </div>
-        <button
-          className="btn-casama-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
-          onClick={handleOpenClose}
-        >
-          Create your first pool
-        </button>
+  return bettingService.games ? (
+    bettingService.games.length > 0 ? (
+      <div className="lg:grid lg:grid-cols-1 lg:gap-6 w-full">
+        {bettingService.games.map((game, i) => {
+          return (
+            <DashboardGameCard
+              bettingGame={bettingService.bettingGame}
+              poolAddress={game.poolAddress}
+              game={game}
+              user={user}
+              {...props}
+            />
+          );
+          return null;
+        })}
       </div>
-      <AdvancedPoolDialog open={open} setOpen={handleOpenClose} {...props} />
-    </div>
+    ) : (
+      <div className="container-white">
+        <div className="flex flex-col items-center ">
+          <div className="border-solid text-casama-blue rounded-full bg-casama-extra-light-blue p-5 my-2 mt-6 mb-4">
+            <MdGroups className="text-4xl" />
+            {console.log('bettingserviceGames', bettingService.games.length)}
+          </div>
+          <div className="my-2 mb-10">
+            <Typography variant="h7">
+              Get invited to an betting pool or start one and invite others in
+              minutes
+            </Typography>
+            <div className="flex justify-center mt-2 cursor-pointer">
+              <a
+                href={`https://www.youtube.com/watch?v=vz6rXuKOyZ4`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Typography className="text-casama-blue justify-center">
+                  (See Demo)
+                </Typography>
+              </a>
+            </div>
+          </div>
+          <button
+            className="btn-casama-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
+            onClick={handleOpenClose}
+          >
+            Create your first pool
+          </button>
+        </div>
+        <AdvancedPoolDialog open={open} setOpen={handleOpenClose} {...props} />
+      </div>
+    )
+  ) : (
+    <>MAKE SKELETONS TODO</>
   );
 }

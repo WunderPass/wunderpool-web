@@ -7,11 +7,16 @@ import Avatar from '/components/general/members/avatar';
 import InitialsAvatar from '/components/general/members/initialsAvatar';
 import { cacheImageByURL } from '/services/caching';
 import { getNameFor } from '/services/memberHelpers';
+import usePool from '/hooks/usePool';
 
 export default function PoolCard(props) {
-  const { pool, isPublic } = props;
+  const { pool, user, isPublic, handleError } = props;
   const [imageUrl, setImageUrl] = useState(false);
   const members = pool.members;
+  const wunderPool = usePool(user.address, pool.address, handleError);
+
+  console.log('pool', pool);
+  console.log('wunderpool', wunderPool);
 
   useEffect(async () => {
     setImageUrl(null);

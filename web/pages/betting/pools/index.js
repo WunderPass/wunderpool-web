@@ -1,4 +1,4 @@
-import BalanceBox from '/components/betting/pool/balanceBox';
+import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
@@ -160,13 +160,13 @@ export default function Pools(props) {
                 <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4 font-medium">
                   My Current Bets
                 </Typography>
-                <BalanceBox className="w-10" {...props} />
+                <BettingBox className="w-10" {...props} />
               </div>
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                 <div className="flex flex-row justify-between pb-4 b">
                   <Typography className="subheader subheader-sm font-medium">
-                    My Betting Pools
+                    My Bets
                   </Typography>
                   {user.pools.length > pageSize && (
                     <Pagination
