@@ -109,7 +109,7 @@ export default function InviteLinkButton(props) {
       .createInviteLink(secret, validFor ?? 1)
       .then((res) => {
         setInviteLink(
-          `${window.location.origin}/pools/join/${wunderPool.poolAddress}?secret=${secret}`
+          `${window.location.origin}/investing/pools/join/${wunderPool.poolAddress}?secret=${secret}`
         );
       })
       .catch((err) => handleError(err))
