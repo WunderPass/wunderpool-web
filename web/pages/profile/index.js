@@ -11,7 +11,6 @@ import { BiEdit } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { validateEmail, validatePhone } from '/services/validator';
-import { WalletBalance } from '../../components/profile/walletBalance';
 
 export default function Profile(props) {
   const { user, handleSuccess, handleError } = props;

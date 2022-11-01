@@ -5,7 +5,7 @@ import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import CustomHeader from '/components/utils/customHeader';
+import CustomHeader from '/components/general/utils/customHeader';
 ReactGA.initialize(process.env.GA_TRACKING_CODE);
 
 function Home(props) {

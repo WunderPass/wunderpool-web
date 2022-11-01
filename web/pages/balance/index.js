@@ -1,5 +1,5 @@
 import { Container } from '@mui/material';
-import { WalletBalance } from '/components/profile/walletBalance';
+import WalletBalance from '/components/general/profile/walletBalance';
 
 export default function Balance(props) {
   return (
