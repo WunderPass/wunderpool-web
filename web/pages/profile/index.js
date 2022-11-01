@@ -6,7 +6,6 @@ import {
   Typography,
 } from '@mui/material';
 import NextLink from 'next/link';
-import RevealLoginCode from '/components/profile/revealLoginCode';
 import { BiEdit } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
