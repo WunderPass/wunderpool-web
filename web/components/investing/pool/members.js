@@ -95,6 +95,7 @@ export default function PoolMembers(props) {
                   {members.map((member, i) => {
                     return (
                       <Avatar
+                        shiftRight
                         key={`pool-member-${i}`}
                         wunderId={member.wunderId}
                         tooltip={`${getNameFor(

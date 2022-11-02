@@ -117,6 +117,7 @@ export default function LoginWithCasama({ onSuccess }) {
       loginUser(seedPhrase, password)
         .then(({ wunderId, address }) => {
           if (wunderId && address) {
+            localStorage.setItem('backedUpSeed', true);
             onSuccess({ wunderId, address, loginMethod: 'Casama' });
           } else {
             setAddress(address);

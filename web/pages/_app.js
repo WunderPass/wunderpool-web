@@ -118,7 +118,12 @@ function WunderPool({ Component, pageProps }) {
         <ThemeProvider theme={muiTheme}>
           <AlertProvider template={AlertTemplate} {...options}>
             <Navbar {...appProps} />
-            <Component {...appProps} />
+            <div
+              className="w-full mb-20 sm:mb-0"
+              style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            >
+              <Component {...appProps} />
+            </div>
             <ToastContainer
               position="top-right"
               autoClose={8000}

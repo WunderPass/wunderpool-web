@@ -95,6 +95,7 @@ function ParticipantTable({ user, participants, stake }) {
                 <div className=" flex flex-row justify-start w-5/6">
                   <div className="flex ml-2">
                     <Avatar
+                      shiftRight
                       wunderId={participant.wunderId}
                       tooltip={`${participant.wunderId}`}
                       text={participant.wunderId ? participant.wunderId : '0-X'}
