@@ -69,7 +69,7 @@ export default function Pools(props) {
       <CustomHeader />
       <div className="flex flex-row font-graphik h-full">
         <aside class="container-white-p-0 h-screen w-1/3 sticky top-16">
-          <Typography className=" text-xl pt-16 sm:text-3xl mb-10 font-medium text-gray-500 ml-7">
+          <Typography className=" text-xl pt-16 sm:text-3xl mb-10 font-medium text-gray-500 mx-7">
             Categories
           </Typography>
           <div className="flex flex-col gap-5">
