@@ -222,7 +222,7 @@ export default function JoinPool(props) {
         }
       } else if (wunderPool.exists === false) {
         handleInfo('This Pool does not exist');
-        router.push('/pools');
+        router.push('/investing/pools');
       }
     }
   }, [wunderPool.isReady, wunderPool.isMember]);
@@ -230,7 +230,7 @@ export default function JoinPool(props) {
   useEffect(() => {
     if (wunderPool.liquidated) {
       handleInfo('This Pool was already closed');
-      router.push('/pools');
+      router.push('/investing/pools');
     }
   }, [wunderPool.liquidated]);
 
