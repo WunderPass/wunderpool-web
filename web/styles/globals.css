@@ -185,7 +185,7 @@ button:disabled {
 }
 
 .btn-warning {
-  @apply bg-[#f7b91b] hover:bg-[#dba418] text-black text-opacity-70 cursor-pointer rounded-full;
+  @apply bg-[#f7b91b] hover:bg-[#dba418] text-black text-opacity-70 cursor-pointer rounded-xl;
 }
 
 .btn-casama {
