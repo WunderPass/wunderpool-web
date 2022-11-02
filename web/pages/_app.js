@@ -18,6 +18,8 @@ import SwitchChainAlert from '/components/general/dialogs/switchChainAlert';
 import Head from 'next/head';
 import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredAlert';
 import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
+import UseIOS from '/hooks/useIOS';
+import IOSAuthGuard from '../components/general/dialogs/iOSAuthGuard';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -36,6 +38,9 @@ function WunderPool({ Component, pageProps }) {
     tokenAddedEvent,
     resetEvents,
   } = usePoolListener(handleInfo);
+
+  const { isIOSApp, appConnected, appIsActive, hasBiometry, triggerBiometry } =
+    UseIOS();
 
   const appProps = Object.assign(
     {
@@ -142,6 +147,9 @@ function WunderPool({ Component, pageProps }) {
               user={user}
             />
             <BackupSeedPhraseAlert user={user} />
+            {user.loggedIn && isIOSApp && (
+              <IOSAuthGuard triggerBiometry={triggerBiometry} />
+            )}
           </AlertProvider>
         </ThemeProvider>
       </StyledEngineProvider>
