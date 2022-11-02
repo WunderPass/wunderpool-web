@@ -129,7 +129,10 @@ function WunderPool({ Component, pageProps }) {
               user={user}
             />
             <SwitchChainAlert user={user} />
-            <PasswordRequiredAlert user={user} />
+            <PasswordRequiredAlert
+              passwordRequired={user.passwordRequired}
+              user={user}
+            />
           </AlertProvider>
         </ThemeProvider>
       </StyledEngineProvider>
