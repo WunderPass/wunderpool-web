@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MdGroups } from 'react-icons/md';
-import { Typography } from '@mui/material';
+import { Typography, Skeleton } from '@mui/material';
 import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import PoolCard from '/components/betting/dashboard/poolCard';
@@ -84,6 +84,10 @@ export default function BetsList(props) {
       </div>
     )
   ) : (
-    <>MAKE SKELETONS TODO</>
+    <Skeleton
+      variant="rectangular"
+      width="100%"
+      sx={{ height: '100px', borderRadius: 3 }}
+    />
   );
 }

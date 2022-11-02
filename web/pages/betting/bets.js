@@ -45,16 +45,16 @@ export default function Pool(props) {
               </div>
             </div>
 
-            <div className="sm:flex sm:flex-row">
-              <div className="flex flex-col sm:w-1/2 sm:pr-8">
-                <Typography className="text-xl sm:text-3xl my-4 sm:my-0 sm:pb-4 font-medium">
-                  Category
-                </Typography>
+            <div className="sm:flex sm:flex-row ">
+              <div className="flex flex-col sm:w-1/2 sm:pr-8 ">
+                <div className="flex  items-center h-14 text-xl sm:text-3xl mb-3   font-medium">
+                  Overview
+                </div>
                 <BettingBox className="w-10" {...props} />
               </div>
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
-                <div className="flex flex-row items-center justify-between mb-4 w-full">
+                <div className="flex flex-row items-center justify-between mb-3 h-14 w-full">
                   <Typography className="text-xl sm:text-3xl font-medium ">
                     My Bets
                   </Typography>

@@ -75,37 +75,33 @@ function BettingBox(props) {
               <Typography className="pb-6 text-2xl">Open Bets</Typography>
               <Typography className="text-2xl ">1</Typography>
             </div>
+            <div className="flex flex-row justify-between">
+              <Typography className="pb-6 text-2xl">Total Bets</Typography>
+              <Typography className="text-2xl ">21</Typography>
+            </div>
+            <div className="flex flex-row justify-between">
+              <Typography className="pb-6 text-2xl">
+                Current Money at stake
+              </Typography>
+              <Typography className="text-2xl ">12€</Typography>
+            </div>
 
-            {true > 0 ? ( //TODO
-              <></>
-            ) : (
-              <>
-                <div className="flex flex-col w-full ">
-                  {user.usdBalance == 0 && (
-                    <div>
-                      <div className="flex flex-row items-center">
-                        <Typography className="pt-5 py-1">
-                          No cash yet to create bets, please top up your account
-                          to continue{' '}
-                        </Typography>
-                      </div>
-
-                      <button
-                        className="btn-casama w-full mt-5 py-4 px-3 text-md cursor-pointer transition-colors"
-                        onClick={() => setTopUpOpen(true)}
-                      >
-                        Manage Funds
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <TopUpAlert
-                  open={topUpOpen}
-                  setOpen={setTopUpOpen}
-                  user={user}
-                />
-              </>
-            )}
+            <div className="flex flex-row justify-between">
+              <Typography className="pb-6 text-2xl">Funds Won</Typography>
+              <Typography className="text-2xl text-green-500">
+                + 22€{' '}
+              </Typography>
+            </div>
+            <div className="flex flex-row justify-between">
+              <Typography className="pb-6 text-2xl">Funds Lost</Typography>
+              <Typography className="text-2xl text-red-500">- 17 €</Typography>
+            </div>
+            <div className="flex flex-row justify-between">
+              <Typography className="pb-6 text-2xl">
+                Bet Balance history
+              </Typography>
+              <Typography className="text-2xl text-green-500">+ 5€</Typography>
+            </div>
           </div>
         </div>
       </div>

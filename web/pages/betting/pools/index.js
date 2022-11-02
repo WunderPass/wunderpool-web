@@ -75,7 +75,7 @@ export default function Pools(props) {
               <div className="flex flex-col">
                 <div className="flex flex-row items-center">
                   <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-medium">
-                    Betting Dashboard
+                    Betting
                   </Typography>
                   <Tooltip
                     title={
@@ -85,7 +85,7 @@ export default function Pools(props) {
                     }
                   >
                     <button onClick={() => toggleAddress()}>
-                      {showAddress ? (
+                      {showAddress ? ( //TODO move this to profile
                         <div className="flex flex-row items-center">
                           <AiFillUpCircle className="text-casama-blue sm:text-2xl font-medium text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
                         </div>

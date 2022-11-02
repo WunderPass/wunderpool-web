@@ -3,10 +3,10 @@ import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { AiOutlineClose } from 'react-icons/ai';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { motion } from 'framer-motion';
-import PoolInvites from './navComponents/poolInvites';
-import MyPools from './navComponents/myPools';
-import News from './navComponents/news';
-
+import PoolInvites from '/components/general/layout/navComponents/poolInvites';
+import MyPools from '/components/general/layout/navComponents/myPools';
+import News from '/components/general/layout/navComponents/news';
+import Link from 'next/link';
 const mobileNavigation = (props) => {
   const { user, open, setOpen } = props;
   const animateFrom = { opacity: 0, y: -40 };
@@ -55,7 +55,23 @@ const mobileNavigation = (props) => {
                 animate={animateTo}
                 transition={{ delay: 0.05 }}
               >
-                <MyPools {...props} />
+                <Link href={`/betting/bets`}>My Bets</Link>
+              </motion.li>
+              <motion.li
+                className="px-2 py-1 pt-2"
+                initial={animateFrom}
+                animate={animateTo}
+                transition={{ delay: 0.05 }}
+              >
+                <Link href={`/betting/pools`}>Betting</Link>
+              </motion.li>
+              <motion.li
+                className="px-2 py-1 pt-2"
+                initial={animateFrom}
+                animate={animateTo}
+                transition={{ delay: 0.05 }}
+              >
+                <Link href={`/investing/pools`}>Pools</Link>
               </motion.li>
 
               {user.loginMethod == 'WunderPass' && (
