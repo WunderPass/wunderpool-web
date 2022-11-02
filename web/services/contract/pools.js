@@ -162,7 +162,7 @@ export async function formatAsset(asset) {
   };
 }
 
-async function formatMembers(members, totalSupply) {
+export async function formatMembers(members, totalSupply) {
   const resolvedMembers = (
     await axios({
       method: 'POST',
