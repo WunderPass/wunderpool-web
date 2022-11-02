@@ -15,7 +15,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
-import BetsList from '/components/betting/dashboard/betsList';
+import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
 import QrCode from '/components/general/utils/qrCode';
 
@@ -68,7 +68,7 @@ export default function Pools(props) {
     <>
       <CustomHeader />
       <div className="flex flex-row font-graphik h-full">
-        <aside class="container-white-p-0 h-screen w-1/3  sticky top-16">
+        <aside class="container-white-p-0 h-screen w-1/3 sticky top-16">
           <Typography className=" text-xl pt-16 sm:text-3xl mb-10 font-medium text-gray-500 ml-7">
             Categories
           </Typography>
@@ -99,10 +99,9 @@ export default function Pools(props) {
                       Enter a new betting game
                     </Typography>
                   </div>
-                  {/* <//div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full"> */}
 
                   {user.isReady ? (
-                    <BetsList
+                    <EventsList
                       className="mx-4"
                       user={user}
                       pools={user.pools

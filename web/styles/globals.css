@@ -236,6 +236,10 @@ button:disabled {
   @apply border-solid text-white rounded-xl bg-casama-blue shadow-xl;
 }
 
+.container-casama-light-p-0 {
+  @apply border-solid rounded-xl bg-casama-extra-light-blue;
+}
+
 .container-white {
   @apply border-solid text-black rounded-xl bg-white p-5 shadow-sm;
 }

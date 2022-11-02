@@ -15,9 +15,6 @@ export default function GameList(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const wunderPool = usePool(user.address, pool.address, handleError);
 
-  console.log('wunderPool', wunderPool);
-  console.log('pool', pool);
-
   const totalTokens = useMemo(() => {
     return pool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
   }, [pool.members, pool.usdcBalance]);
