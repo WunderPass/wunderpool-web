@@ -131,6 +131,7 @@ export default function SignUpWithCasama({
     if (valid) {
       createUser(firstName, lastName, email, password, seedPhrase)
         .then(({ wunderId, address }) => {
+          if (seedPhrase) localStorage.setItem('backedUpSeed', true);
           onSuccess({ wunderId, address, loginMethod: 'Casama' });
         })
         .catch((err) => {
