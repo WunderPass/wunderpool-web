@@ -166,6 +166,11 @@ export default function TopBar(props) {
         </AppBar>
       </ClickAwayListener>
       <Toolbar />
+      <div
+        style={{
+          height: 'env(safe-area-inset-top)',
+        }}
+      ></div>
     </>
   );
 }

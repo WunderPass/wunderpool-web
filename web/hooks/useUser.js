@@ -187,6 +187,7 @@ export default function useUser() {
   };
 
   const getSignedMillis = () => {
+    if (loginMethod != 'Casama') return;
     const savedKey = retreiveKey();
     if (savedKey) setPrivateKey(savedKey);
 
