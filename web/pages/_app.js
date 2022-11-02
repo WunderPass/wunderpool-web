@@ -17,6 +17,7 @@ import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '/components/general/dialogs/switchChainAlert';
 import Head from 'next/head';
 import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredAlert';
+import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -133,6 +134,7 @@ function WunderPool({ Component, pageProps }) {
               passwordRequired={user.passwordRequired}
               user={user}
             />
+            <BackupSeedPhraseAlert user={user} />
           </AlertProvider>
         </ThemeProvider>
       </StyledEngineProvider>
