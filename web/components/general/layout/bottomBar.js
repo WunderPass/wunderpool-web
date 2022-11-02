@@ -48,8 +48,12 @@ export default function BottomBar(props) {
       )
     ) {
       setValue('myPools');
-    } else {
+    } else if (
+      ['/betting/pools', '/investing/pools'].includes(router.pathname)
+    ) {
       setValue('home');
+    } else {
+      setValue(null);
     }
   }, [router, showPoolList]);
 
@@ -66,7 +70,10 @@ export default function BottomBar(props) {
         elevation={3}
         className="fixed sm:hidden"
       >
-        <Collapse in={showPoolList}>
+        <Collapse
+          in={showPoolList}
+          sx={{ maxHeight: '70vh', overflowY: 'scroll' }}
+        >
           {user.pools.length > 0 ? (
             user.pools.map((pool, i) => {
               return (
