@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { signMillis } from '/services/sign';
-import { encryptKey, generateKeys } from '/services/crypto';
+import { encryptKey, generateKeys, encryptSeed } from '/services/crypto';
 const BIP39 = require('bip39');
 
 function Error({ msg }) {
@@ -56,7 +56,7 @@ function validate({
 function createUser(firstName, lastName, email, password, givenSeedPhrase) {
   return new Promise((resolve, reject) => {
     const seedPhrase = givenSeedPhrase || BIP39.generateMnemonic();
-    localStorage.setItem('seedPhrase', seedPhrase);
+    encryptSeed(seedPhrase, password);
 
     const { privKey, pubKey, address } = generateKeys(seedPhrase.trim());
     encryptKey(privKey, password, true);

@@ -2,7 +2,7 @@ import { Collapse } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import SignUpWithCasama from './signupWithCasama';
-import { encryptKey, generateKeys } from '/services/crypto';
+import { encryptKey, encryptSeed, generateKeys } from '/services/crypto';
 const BIP39 = require('bip39');
 
 function Error({ msg }) {
@@ -53,7 +53,7 @@ function validate({ seedPhrase, password, passwordConfirmation }) {
 
 function loginUser(seedPhrase, password) {
   return new Promise((resolve, reject) => {
-    localStorage.setItem('seedPhrase', seedPhrase);
+    encryptSeed(seedPhrase, password);
 
     const { privKey, address } = generateKeys(seedPhrase.trim());
     encryptKey(privKey, password, true);

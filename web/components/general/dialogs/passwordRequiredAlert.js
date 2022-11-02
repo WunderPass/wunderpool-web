@@ -13,15 +13,20 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function PasswordRequiredAlert({ user }) {
-  const { passwordRequired } = user;
+export default function PasswordRequiredAlert({
+  user,
+  passwordRequired,
+  onSuccess,
+}) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      user.decryptKeyWithPassword(password);
+      onSuccess ? onSuccess(password) : user.decryptKeyWithPassword(password);
+      setPassword('');
+      setError('');
     } catch (error) {
       setError(error);
     }

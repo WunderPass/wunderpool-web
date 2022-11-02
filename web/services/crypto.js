@@ -42,6 +42,28 @@ export function decryptKey(password, save = false) {
   }
 }
 
+export function encryptSeed(seedPhrase, password) {
+  const encrypted = encrypt(seedPhrase, password);
+  localStorage.setItem('seedPhrase', encrypted);
+}
+
+export function decryptSeed(password) {
+  const seedPhrase = localStorage.getItem('seedPhrase');
+  if (seedPhrase) {
+    // Migration for Users with unencrypted Private Key
+    if (seedPhrase.split(' ').length == 12) {
+      const key = decryptKey(password);
+      if (!key) throw 'Invalid Password';
+      encryptSeed(seedPhrase, password);
+      return seedPhrase;
+    } else {
+      return decrypt(seedPhrase, password);
+    }
+  } else {
+    throw 'Seed Phrase not found';
+  }
+}
+
 export function retreiveKey() {
   if (new Date().getTime() > Number(localStorage.getItem('destroyKeyAt'))) {
     localStorage.removeItem('decrPrivKey');

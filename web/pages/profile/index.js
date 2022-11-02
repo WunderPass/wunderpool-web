@@ -12,6 +12,8 @@ import { BiEdit } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { validateEmail, validatePhone } from '/services/validator';
+import PasswordRequiredAlert from '../../components/general/dialogs/passwordRequiredAlert';
+import { decryptSeed } from '../../services/crypto';
 
 export default function Profile(props) {
   const { user, handleSuccess, handleError } = props;
@@ -26,10 +28,31 @@ export default function Profile(props) {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [showPhoneError, setShowPhoneError] = useState(null);
   const [dataHasChanged, setDataHasChanged] = useState(false);
-  const [showSeedPhrase, setShowSeedPhrase] = useState(false);
+
+  const [seedPhrase, setSeedPhrase] = useState(null);
+  const [passwordRequired, setPasswordRequired] = useState(false);
 
   const handleLogout = () => {
     user.logOut();
+  };
+
+  const toggleShowSeedPhrase = () => {
+    if (seedPhrase) {
+      setSeedPhrase(null);
+    } else {
+      setPasswordRequired(true);
+    }
+  };
+
+  const handlePassword = (password) => {
+    try {
+      const seed = decryptSeed(password);
+      if (!seed) throw 'Invalid Password';
+      setSeedPhrase(seed);
+      setPasswordRequired(false);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const uploadToServer = () => {
@@ -389,21 +412,24 @@ export default function Profile(props) {
               your funds.
             </Alert>
             <div className="bg-gray-100 border-gray-300 border-2 rounded-xl p-3 my-3">
-              {showSeedPhrase
-                ? localStorage.getItem('seedPhrase')
-                : 'XXXXX XXXX XXXXXX XXXXXX XXX XXXXXX XXXXX XXXXX XXXX XXXXXXXXX XXXXX XXXXX'}
+              {seedPhrase ||
+                'XXXXX XXXX XXXXXX XXXXXX XXX XXXXXX XXXXX XXXXX XXXX XXXXXXXXX XXXXX XXXXX'}
             </div>
             <div className="w-full">
               <button
-                onClick={() => setShowSeedPhrase((show) => !show)}
+                onClick={toggleShowSeedPhrase}
                 className="btn-warning px-5 py-2 block mx-auto"
               >
-                {showSeedPhrase ? 'Hide' : 'Reveal'} Seed Phrase
+                {seedPhrase ? 'Hide' : 'Reveal'} Seed Phrase
               </button>
             </div>
           </div>
         </div>
       )}
+      <PasswordRequiredAlert
+        passwordRequired={passwordRequired}
+        onSuccess={handlePassword}
+      />
       {/* <div className="flex items-center justify-center  my-4">
         <NextLink href="/feedback/report" passHref>
           <Link textAlign="center">Give us feedback</Link>
