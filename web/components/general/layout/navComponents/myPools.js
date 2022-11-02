@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Menu, MenuItem, Chip, Divider } from '@mui/material';
+import MenuUnstyled from '@mui/base/MenuUnstyled';
+import MenuItemUnstyled from '@mui/base/MenuItemUnstyled';
+
 import Link from 'next/link';
 
 const myPools = (props) => {

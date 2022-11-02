@@ -35,6 +35,14 @@ module.exports = {
       },
       boxShadow: {
         'shadow-max': 'box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25)',
+        'shadow-around': 'box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25)',
+      },
+      dropShadow: {
+        '3xl': '0 35px 35px rgba(0, 0, 0, 0.25)',
+        around: [
+          '0 25px 25px rgba(0, 0, 0, 0.25)',
+          '0 25px 25px rgba(0, 0, 0, 0.25)',
+        ],
       },
     },
   },
