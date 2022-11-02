@@ -5,6 +5,7 @@ import { cacheImageByURL } from '/services/caching';
 
 export default function Avatar(props) {
   const {
+    shiftRight = false,
     tooltip,
     text,
     separator = '-',
@@ -39,13 +40,18 @@ export default function Avatar(props) {
   }, [wunderId]);
 
   return imageUrl ? (
-    <ImageAvatar imageUrl={imageUrl} tooltip={tooltip} />
+    <ImageAvatar
+      imageUrl={imageUrl}
+      tooltip={tooltip}
+      shiftRight={shiftRight}
+    />
   ) : (
     <InitialsAvatar
       tooltip={tooltip}
       text={text}
       separator={separator}
       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
+      shiftRight={shiftRight}
     />
   );
 }

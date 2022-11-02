@@ -46,6 +46,7 @@ export default function CapTable(props) {
                 <td className="pb-2">
                   <div className="flex flex-row items-center md:ml-2">
                     <Avatar
+                      shiftRight
                       wunderId={member.wunderId}
                       tooltip={`${getNameFor(member)}: ${toFixed(
                         member.share,
