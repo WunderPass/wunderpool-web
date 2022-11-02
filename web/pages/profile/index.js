@@ -430,6 +430,14 @@ export default function Profile(props) {
         passwordRequired={passwordRequired}
         onSuccess={handlePassword}
       />
+      <div className="flex items-center justify-center mt-5">
+        <button
+          className="btn-danger p-2 mx-6 w-full md:w-1/2"
+          onClick={handleLogout}
+        >
+          Log out
+        </button>
+      </div>
       {/* <div className="flex items-center justify-center  my-4">
         <NextLink href="/feedback/report" passHref>
           <Link textAlign="center">Give us feedback</Link>
