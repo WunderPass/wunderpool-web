@@ -39,8 +39,15 @@ function WunderPool({ Component, pageProps }) {
     resetEvents,
   } = usePoolListener(handleInfo);
 
-  const { isIOSApp, appConnected, appIsActive, hasBiometry, triggerBiometry } =
-    UseIOS();
+  const {
+    isIOSApp,
+    appConnected,
+    appIsActive,
+    hasBiometry,
+    triggerBiometry,
+    updateWunderId,
+    updateBackgroundColor,
+  } = UseIOS();
 
   const appProps = Object.assign(
     {
@@ -88,6 +95,18 @@ function WunderPool({ Component, pageProps }) {
       router.push('/');
     }
   }, [router.pathname, user.loggedIn, isFetched]);
+
+  useEffect(() => {
+    if (router.pathname == '/') {
+      updateBackgroundColor('#FFFFFF', '#000000');
+    } else {
+      updateBackgroundColor('#5F45FD', '#FFFFFF');
+    }
+  }, [router.pathname]);
+
+  useEffect(() => {
+    updateWunderId(user.wunderId);
+  }, [user.wunderId]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {

@@ -33,8 +33,8 @@ function Home(props) {
       <CustomHeader />
       <div className="flex flex-col h-screen lg:pt-7">
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center bg-white lg:bg-[#f3f3f3] ">
-          <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3  w-screen lg:mb-7 ">
-            <div className="p-5 bg-white rounded-2xl w-full">
+          <div className="h-screen lg:h-fit lg:flex lg:rounded-2xl lg:shadow-custom lg:w-2/3  w-screen lg:mb-7 ">
+            <div className="p-5 bg-white lg:rounded-2xl w-full">
               <div className="flex justify-center flex-col items-center py-5 lg:py-10 mb-14">
                 <h2 className="text-3xl font-medium text-casama-blue mt-3 mb-6">
                   You need a wallet to use Casama

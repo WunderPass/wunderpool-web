@@ -17,6 +17,32 @@ export default function UseIOS() {
     );
   };
 
+  const updateBackgroundColor = (bgColor, spinnerColor) => {
+    if (!isIOSApp) return;
+    window.webkit.messageHandlers.swiftJsBridgeV1.postMessage(
+      JSON.stringify({ func: 'setBackgroundColor', parameter: bgColor })
+    );
+    window.webkit.messageHandlers.swiftJsBridgeV1.postMessage(
+      JSON.stringify({
+        func: 'setRefreshControlColor',
+        parameter: spinnerColor,
+      })
+    );
+  };
+
+  const updateWunderId = (wunderId) => {
+    if (!isIOSApp) return;
+    if (wunderId) {
+      window.webkit.messageHandlers.swiftJsBridgeV1.postMessage(
+        JSON.stringify({ func: 'setWunderId', parameter: wunderId })
+      );
+    } else {
+      window.webkit.messageHandlers.swiftJsBridgeV1.postMessage(
+        JSON.stringify({ func: 'resetWunderId' })
+      );
+    }
+  };
+
   const triggerBiometry = (reason, callback = () => {}) => {
     if (!isIOSApp) callback(true);
     if (!window.swiftJsBridgeV1.triggerBiometryCallback)
@@ -46,5 +72,7 @@ export default function UseIOS() {
     appIsActive,
     hasBiometry,
     triggerBiometry,
+    updateWunderId,
+    updateBackgroundColor,
   };
 }
