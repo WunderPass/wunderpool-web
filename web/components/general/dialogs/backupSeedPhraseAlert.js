@@ -44,7 +44,10 @@ export default function BackupSeedPhraseAlert(props) {
 
   useEffect(() => {
     if (user.usdBalance > 5 && user.loginMethod == 'Casama') {
-      setOpen(localStorage.getItem('backedUpSeed') != 'true');
+      setOpen(
+        localStorage.getItem('seedPhrase') &&
+          localStorage.getItem('backedUpSeed') != 'true'
+      );
     }
   }, [user.usdBalance]);
 
