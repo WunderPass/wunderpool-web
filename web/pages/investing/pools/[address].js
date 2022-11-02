@@ -40,7 +40,7 @@ export default function Pool(props) {
         if (proposalExecutedEvent.proposal_action == 'LIQUIDATE_POOL') {
           handleInfo('Pool was closed.');
           user.fetchUsdBalance();
-          router.push('/pools');
+          router.push('/investing/pools');
         } else {
           wunderPool.determineProposals();
           wunderPool.determinePoolData();
@@ -60,7 +60,7 @@ export default function Pool(props) {
       } else if (wunderPool.exists === false) {
         handleInfo('Pool was closed');
         user.fetchUsdBalance();
-        router.push('/pools');
+        router.push('/investing/pools');
       }
     }
   }, [wunderPool.isReady, wunderPool.isMember, wunderPool.exists]);
@@ -69,7 +69,7 @@ export default function Pool(props) {
     if (wunderPool.liquidated) {
       handleInfo('Pool was closed.');
       user.fetchUsdBalance();
-      router.push('/pools');
+      router.push('/investing/pools');
     }
   }, [wunderPool.liquidated]);
 

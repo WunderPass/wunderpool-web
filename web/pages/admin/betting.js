@@ -481,7 +481,7 @@ export default function AdminBettingPage(props) {
   useEffect(() => {
     if (router.isReady && user.address) {
       if (!admins.includes(user.address.toLowerCase())) {
-        router.push('/pools');
+        router.push('/betting/pools');
       } else {
         fetchGames();
         fetchEvents(true);
