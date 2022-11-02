@@ -111,6 +111,7 @@ function WunderPool({ Component, pageProps }) {
           name="viewport"
           content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         ></meta>
+        <meta name="apple-itunes-app" content="app-id=6443918043"></meta>
       </Head>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={muiTheme}>
