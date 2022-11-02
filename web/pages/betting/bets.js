@@ -59,11 +59,17 @@ export default function Pool(props) {
                     My Bets
                   </Typography>
                   <button
-                    className="container-white-p-0 p-3 text-lg font-medium border-gray-800 border "
+                    className={
+                      eventListOpen
+                        ? 'container-white-p-0 p-3 border-gray-800 border w-56'
+                        : 'container-white-p-0 p-3 border-gray-300 border w-56'
+                    }
                     onClick={(e) => setEventListOpen(e.currentTarget)}
                   >
-                    <div className="flex flex-row justify-center items-center">
-                      <p className="text-gray-800">All Events</p>
+                    <div className="flex flex-row justify-between items-center">
+                      <p className="text-gray-800 text-lg font-medium ml-2">
+                        All Events
+                      </p>
                       <MdKeyboardArrowDown className="text-2xl text-gray-800" />
                     </div>
                   </button>
@@ -80,14 +86,14 @@ export default function Pool(props) {
                           <MenuItemUnstyled
                             className={
                               i == 0
-                                ? 'shadow-dropdown-b border-b border-gray-200 hover:border-gray-400 hover:drop-shadow-md mt-1'
+                                ? 'shadow-dropdown-b border-b border-gray-200 hover:border-gray-400 hover:drop-shadow-md mt-1 w-56'
                                 : i == user.pools.length - 1
-                                ? 'shadow-dropdown-t border-t border-gray-200 hover:border-gray-400 hover:drop-shadow-md mb-1'
-                                : 'shadow-dropdown-y border-y border-gray-200 hover:border-gray-400 hover:drop-shadow-md'
+                                ? 'shadow-dropdown-t border-t border-gray-200 hover:border-gray-400 hover:drop-shadow-md mb-1 w-56'
+                                : 'shadow-dropdown-y border-y border-gray-200 hover:border-gray-400 hover:drop-shadow-md w-56'
                             }
                           >
                             <div className="flex flex-row items-center justify-between w-full">
-                              <div className="text-lg text-gray-800 w-full p-2 cursor-pointer">
+                              <div className="text-gray-800 text-base font-medium w-full p-3 ml-1 mt-1 cursor-pointer">
                                 {pool.name}
                               </div>
                             </div>
