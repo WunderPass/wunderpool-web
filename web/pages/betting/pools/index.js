@@ -17,7 +17,6 @@ import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
 import BetsList from '/components/betting/dashboard/betsList';
 import CustomHeader from '/components/general/utils/customHeader';
-import PublicPools from '/components/betting/dashboard/publicPools';
 import QrCode from '/components/general/utils/qrCode';
 
 export default function Pools(props) {
@@ -100,6 +99,7 @@ export default function Pools(props) {
                       Enter a new betting game
                     </Typography>
                   </div>
+                  {/* <//div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full"> */}
 
                   {user.isReady ? (
                     <BetsList
