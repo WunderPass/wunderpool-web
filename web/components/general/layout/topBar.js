@@ -28,18 +28,19 @@ export default function TopBar(props) {
     <>
       <ClickAwayListener onClickAway={() => setOpen(false)}>
         <AppBar
-          className="bg-casama-blue hidden sm:block"
+          className="bg-casama-blue"
           position="fixed"
           sx={{
+            paddingTop: 'env(safe-area-inset-top)',
             top: 0,
           }}
         >
           <Toolbar>
-            <Stack className="flex flex-row w-full justify-between items-center mt-1">
+            <Stack className="hidden sm:flex flex-row w-full justify-between items-center mt-1">
               <Link href="/betting/pools">
                 <div className="flex flex-row cursor-pointer items-center">
-                  <div className="hidden pl-1.5 items-center justify-center mr-2 sm:block">
-                    <div className="hidden pb-1.5 w-40 sm:block">
+                  <div className="pl-1.5 items-center justify-center mr-2">
+                    <div className="pb-1.5 w-40">
                       <Image
                         src={CasamaIcon}
                         alt="CasamaIcon"
@@ -50,34 +51,18 @@ export default function TopBar(props) {
                   </div>
                   <div className="mb-1">
                     <Chip
-                      className="items-center hidden sm:flex bg-casama-extra-light-blue text-casama-blue  mr-10"
+                      className="items-center flex bg-casama-extra-light-blue text-casama-blue  mr-10"
                       size="small"
                       label="Beta"
                     />
                   </div>
-
-                  <div className="sm:hidden">
-                    {!loading && (
-                      <Avatar
-                        loginMethod={user.loginMethod}
-                        walletConnectUrl={
-                          user.walletConnectMeta?.icons
-                            ? user.walletConnectMeta?.icons[0]
-                            : null
-                        }
-                        wunderId={user.wunderId}
-                        text={user.wunderId || '0-X'}
-                        i={1}
-                      />
-                    )}
-                  </div>
                 </div>
               </Link>
               {user.loggedIn ? (
-                <div className="hidden sm:block w-full">
+                <div className="w-full">
                   <ul className="flex flex-row justify-between items-center w-full">
                     <div className="flex flex-row justify-start">
-                      <li className="px-2 hidden sm:block">
+                      <li className="px-2">
                         <MyPools setOpen={setOpen} {...props} />
                       </li>
                     </div>
@@ -98,7 +83,7 @@ export default function TopBar(props) {
                       </Link>
 
                       <button
-                        className="hidden sm:block text-2xl pl-4  hover:text-red-500"
+                        className="text-2xl pl-4 hover:text-red-500"
                         onClick={() => setOpen((prev) => !prev)}
                       >
                         {!loading && (
@@ -166,10 +151,21 @@ export default function TopBar(props) {
                 </Link>
               )}
             </Stack>
+            <div className="flex sm:hidden w-full items-center justify-between">
+              <p className="font-bold">{user.wunderId}</p>
+              <Link href="/balance">
+                <a className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer">
+                  <div className="flex flex-row pr-1 text-center items-center text-sm ">
+                    <p className="mx-2">{currency(user?.usdBalance)}</p>
+                    <BsFillPlusCircleFill className="text-xl mr-1" />
+                  </div>
+                </a>
+              </Link>
+            </div>
           </Toolbar>
         </AppBar>
       </ClickAwayListener>
-      <Toolbar className="hidden sm:block" />
+      <Toolbar />
     </>
   );
 }

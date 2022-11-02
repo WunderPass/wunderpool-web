@@ -120,7 +120,9 @@ function WunderPool({ Component, pageProps }) {
             <Navbar {...appProps} />
             <div
               className="w-full mb-20 sm:mb-0"
-              style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+              style={{
+                paddingBottom: 'env(safe-area-inset-bottom)',
+              }}
             >
               <Component {...appProps} />
             </div>
