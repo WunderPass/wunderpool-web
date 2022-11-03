@@ -9,24 +9,59 @@ import usePool from '/hooks/usePool';
 export default function EventCard(props) {
   const { event, handleSuccess, user } = props;
   const [open, setOpen] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const router = useRouter();
+
+  const parseStartDateTime = (dateTime) => {
+    const date = new Date(dateTime);
+    setStartDate(
+      date.toLocaleDateString('en-US', {
+        day: '2-digit',
+        month: 'short',
+      })
+    );
+    setStartTime(
+      date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+    );
+  };
+
+  const parseEndDateTime = (dateTime) => {
+    const date = new Date(dateTime);
+    setEndDate(
+      date.toLocaleDateString('en-US', {
+        day: '2-digit',
+        month: 'short',
+      })
+    );
+    setEndTime(
+      date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+    );
+  };
+
+  useEffect(() => {
+    parseStartDateTime(event.startTime);
+    parseEndDateTime(event.endTime);
+  }, [event.endTime && event.startTime]);
 
   return (
     <div className="container-white pb-16 ">
-      <div className="flex flex-col items-center justify-center mt-2 mb-5">
-        <div className="opacity-50"> Group A</div>
-        <div className="flex flex-row items-center justify-between w-full text-2xl">
-          <div className="flex flex-row lg:flex-col ">
-            <div>Katar</div>
-            <div>Flag</div>
+      <div className="flex flex-col items-center justify-center text-center mt-2 mb-5">
+        <div className="opacity-50">{event.name}</div>
+        <div className="flex flex-row items-center mt-5 justify-between w-full text-2xl ">
+          <div className="flex flex-row w-5/12 lg:flex-col items-center justify-center text-center ">
+            <div>{event.teamHome}</div>
+            <div></div>
           </div>
-          <div className="flex flex-col opacity-70 items-center justify-center ">
-            <div className="text-lg">Oct 21</div>
-            <div className="text-base">21:00</div>
+          <div className="flex flex-col w-2/12 opacity-70 items-center justify-center ">
+            <div className="text-lg">{startDate}</div>
+            <div className="text-base">{startTime}</div>
           </div>
-          <div className="flex flex-row lg:flex-col ">
-            <div>Flag</div>
-            <div>Ecu</div>
+          <div className="flex flex-row w-5/12 lg:flex-col items-center justify-center text-center ">
+            <div>{event.teamAway}</div>
+            <div></div>
           </div>
         </div>
       </div>

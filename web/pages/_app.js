@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import usePoolListener from '/hooks/usePoolListener';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import muiTheme from '/theme/mui';
-import Navbar from '/components/general/layout/navComponents/navbar';
+import Navbar from '/components/general/layout/navbar';
 import TopUpAlert from '/components/general/dialogs/topUpAlert';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
