@@ -30,7 +30,7 @@ export default function useBettingService(
       const games = (
         await axios({
           url: '/api/betting/games',
-          params: { address: userAddress },
+          params: { userAddress: userAddress },
         })
       ).data;
 
