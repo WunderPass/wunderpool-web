@@ -69,33 +69,19 @@ export default function TopBar(props) {
               {user.loggedIn ? (
                 <div className="w-full">
                   <ul className="flex flex-row justify-between items-center w-full">
-<<<<<<< HEAD
-                    <div className="flex flex-row justify-start">
-                      <Link href={`/betting/bets`}>
-                        <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
-=======
                     <div className="flex flex-row justify-start gap-8">
                       <Link href={`/betting/bets`}>
                         <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
->>>>>>> feature/bettingView
                           My Bets
                         </li>
                       </Link>
                       <Link href={`/betting/pools`}>
-<<<<<<< HEAD
-                        <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
-=======
                         <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
->>>>>>> feature/bettingView
                           Betting
                         </li>
                       </Link>
                       <Link href={`/investing/pools`}>
-<<<<<<< HEAD
-                        <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
-=======
                         <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
->>>>>>> feature/bettingView
                           Pools
                         </li>
                       </Link>
