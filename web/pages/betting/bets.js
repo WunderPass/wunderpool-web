@@ -5,16 +5,14 @@ import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import BetsList from '/components/betting/dashboard/betsList';
 import axios from 'axios';
-import useBettingService from '/hooks/useBettingService';
 import DropDown from '/components/general/utils/dropDown';
 
 export default function Bets(props) {
-  const { user, handleInfo, handleError } = props;
+  const { user, bettingService, handleInfo, handleError } = props;
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
-  const bettingService = useBettingService(user.address, handleError);
 
   const determineEventTypes = () => {
     let eventTypes = events.map((event) => event.competitionName);

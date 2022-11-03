@@ -4,16 +4,14 @@ import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
 import DropDown from '/components/general/utils/dropDown';
 import axios from 'axios';
-import useBettingService from '/hooks/useBettingService';
 
 export default function Betting(props) {
-  const { user, handleError } = props;
+  const { user, bettingService, handleError } = props;
   const [showSideBar, setShowSideBar] = useState(true);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
-  const bettingService = useBettingService(user.address, handleError);
 
   const determineEventTypes = () => {
     let eventTypes = events.map((event) => event.competitionName);

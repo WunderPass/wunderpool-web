@@ -24,7 +24,6 @@ function WunderPool({ Component, pageProps }) {
   const router = useRouter();
   const user = useUser();
   const [isFetched, setIsFetched] = useState(false);
-
   const [handleError, handleSuccess, handleInfo, handleWarning, handlePromise] =
     useNotification();
   const {
