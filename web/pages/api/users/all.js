@@ -3,7 +3,6 @@ import axios from 'axios';
 export default async function handler(req, res) {
   try {
     const resp = await axios({
-      method: 'get',
       url: encodeURI(`${process.env.IDENTITY_SERVICE}/v4/contacts/all`),
       headers: {
         Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,

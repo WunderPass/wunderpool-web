@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'put',
-      url: `https://identity-service.wunderpass.org/v4/wunderPasses/${data.wunderId}`,
+      url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/${data.wunderId}`,
       data: data,
       headers: headers,
     });

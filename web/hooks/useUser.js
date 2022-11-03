@@ -31,6 +31,7 @@ export default function useUser() {
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
+  const [confirmedBackup, setConfirmedBackup] = useState(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   const [loginMethod, setLoginMethod] = useState(null);
@@ -278,6 +279,14 @@ export default function useUser() {
     } else if (loginMethod == 'Casama') {
       const privKey = retreiveKey();
       setPasswordRequired(!Boolean(privKey));
+      axios({
+        url: '/api/users/recover/confirmedBackup',
+        params: { identifier: wunderId || localStorage.getItem('wunderId') },
+      })
+        .then(({ data }) => {
+          setConfirmedBackup(data.confirmed);
+        })
+        .catch(console.log);
     }
   }, [loginMethod]);
 
@@ -359,6 +368,7 @@ export default function useUser() {
     unsupportedChain,
     checkedTopUp,
     updateCheckedTopUp,
+    confirmedBackup,
     isReady,
     decryptKeyWithPassword,
     getUserData,

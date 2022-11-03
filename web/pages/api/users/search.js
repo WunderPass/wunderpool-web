@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   try {
     const query = req.query.query;
     const resp = await axios({
-      method: 'get',
       url: encodeURI(
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/${query}`
       ),

@@ -4,7 +4,6 @@ const network = 'POLYGON';
 async function getUserByWunderId(wunderId) {
   try {
     const resp = await axios({
-      method: 'get',
       url: encodeURI(
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/${wunderId}`
       ),

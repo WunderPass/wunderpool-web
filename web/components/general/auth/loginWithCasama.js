@@ -2,7 +2,12 @@ import { Collapse } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import SignUpWithCasama from './signupWithCasama';
-import { encryptKey, encryptSeed, generateKeys } from '/services/crypto';
+import {
+  encryptKey,
+  encryptSeed,
+  decrypt,
+  generateKeys,
+} from '/services/crypto';
 const BIP39 = require('bip39');
 
 function Error({ msg }) {
@@ -11,7 +16,24 @@ function Error({ msg }) {
   ) : null;
 }
 
-function validate({ seedPhrase, password, passwordConfirmation }) {
+function validateCredentials({ userIdentifier, password }) {
+  let valid = true;
+  const errors = {};
+
+  if (userIdentifier.length < 1) {
+    valid = false;
+    errors.userIdentifier = 'Cant be blank';
+  }
+
+  if (password.length < 1) {
+    valid = false;
+    errors.password = 'Cant be blank';
+  }
+
+  return [valid, errors];
+}
+
+function validateSeed({ seedPhrase, password, passwordConfirmation }) {
   let valid = true;
   const errors = {};
 
@@ -51,61 +73,257 @@ function validate({ seedPhrase, password, passwordConfirmation }) {
   return [valid, errors];
 }
 
-function loginUser(seedPhrase, password) {
-  return new Promise((resolve, reject) => {
-    encryptSeed(seedPhrase, password);
+function loginUserWithCredentials(identifier, password) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await axios({
+        method: 'post',
+        url: '/api/users/recover',
+        params: { identifier },
+        data: { password },
+      });
 
-    const { privKey, address } = generateKeys(seedPhrase.trim());
-    encryptKey(privKey, password, true);
+      if (data.encryptedSeedPhrase) {
+        const seedPhrase = decrypt(data.encryptedSeedPhrase, password);
+        encryptSeed(seedPhrase, password);
 
-    axios({
-      method: 'post',
-      url: '/api/users/find',
-      data: { address },
-    })
-      .then((res) => {
-        console.log(res.data);
-        const wunderId = res.data.wunder_id;
-
+        const { privKey, address } = generateKeys(seedPhrase.trim());
+        encryptKey(privKey, password, true);
+        const { data: userData } = await axios({
+          method: 'post',
+          url: '/api/users/find',
+          data: { address },
+        });
+        const wunderId = userData.wunder_id;
         if (wunderId) {
           resolve({
             wunderId,
             address,
           });
         } else {
-          reject('Login failed. Please try again later');
+          reject({
+            status: 500,
+            error: 'Login failed. Please try again later',
+          });
         }
-      })
-      .catch((err) => {
-        if (err?.response?.data == 'User not Found') {
-          resolve({ address });
-        } else {
-          reject(
-            err?.response?.data?.error?.message ||
-              err?.response?.data?.error ||
-              err?.response?.data ||
-              err
-          );
-        }
+      }
+    } catch (loginError) {
+      console.log(loginError, loginError.response);
+      reject({
+        status: loginError?.response?.status || 500,
+        error: loginError?.response?.data?.error || loginError,
       });
+    }
   });
 }
 
-export default function LoginWithCasama({ onSuccess }) {
-  const [seedPhrase, setSeedPhrase] = useState('');
+function loginUserWithSeed(seedPhrase, password) {
+  return new Promise(async (resolve, reject) => {
+    const encryptedSeedPhrase = encryptSeed(seedPhrase, password);
+
+    const { privKey, address } = generateKeys(seedPhrase.trim());
+    encryptKey(privKey, password, true);
+
+    try {
+      const { data } = await axios({
+        method: 'post',
+        url: '/api/users/find',
+        data: { address },
+      });
+      const wunderId = data.wunder_id;
+      if (wunderId) {
+        try {
+          await axios({
+            url: '/api/users/recover/confirmBackup',
+            params: { identifier: wunderId },
+          });
+        } catch (confirmBackupError) {
+          try {
+            await axios({
+              method: 'post',
+              url: '/api/users/recover/migrate',
+              params: { identifier: wunderId },
+              data: { seedPhrase: encryptedSeedPhrase },
+            });
+            await axios({
+              url: '/api/users/recover/confirmBackup',
+              params: { identifier: wunderId },
+            });
+          } catch (migrationError) {
+            console.log('Migration Failed:', migrationError);
+          }
+        }
+
+        resolve({
+          wunderId,
+          address,
+        });
+      } else {
+        reject('Login failed. Please try again later');
+      }
+    } catch (userError) {
+      if (userError?.response?.data == 'User not Found') {
+        resolve({ address });
+      } else {
+        reject(
+          userError?.response?.data?.error?.message ||
+            userError?.response?.data?.error ||
+            userError?.response?.data ||
+            userError
+        );
+      }
+    }
+  });
+}
+
+function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
+  const [userIdentifier, setUserIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  const [createNewUser, setCreateNewUser] = useState(false);
-  const [address, setAddress] = useState('');
+  const [verificationRequired, setVerificationRequired] = useState(false);
+  const [suggestLoginWithSeed, setSuggestLoginWithSeed] = useState(false);
+  const [suggestSignup, setSuggestSignup] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const [valid, errors] = validate({
+    const [valid, errors] = validateCredentials({
+      userIdentifier,
+      password,
+    });
+
+    setErrors(errors);
+
+    if (valid) {
+      loginUserWithCredentials(userIdentifier, password)
+        .then(({ wunderId, address }) => {
+          onSuccess({ wunderId, address, loginMethod: 'Casama' });
+        })
+        .catch((err) => {
+          setVerificationRequired(false);
+          setSuggestLoginWithSeed(false);
+          setSuggestSignup(false);
+          if (err.status == 401) {
+            // Account Limit Reached
+            setVerificationRequired(true);
+            setLoginError(err.error);
+          } else if (err.status == 403) {
+            // Wrong Password
+            setLoginError(err.error);
+          } else if (err.status == 404) {
+            // User does not exist
+            setSuggestSignup(true);
+          } else if (err.status == 412) {
+            // Credentials do not exist
+            setSuggestLoginWithSeed(true);
+          } else if (err.status == 429) {
+            // IP Address Limit Reached
+            setLoginError(err.error);
+          } else {
+            // Unknown
+            setLoginError(err.error);
+          }
+        })
+        .then(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form className="w-full my-2" onSubmit={handleSubmit}>
+      <div className="w-full flex flex-col gap-4">
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Email or Username"
+            value={userIdentifier}
+            onChange={(e) => {
+              setUserIdentifier(e.target.value);
+            }}
+          />
+          <Error msg={errors.userIdentifier} />
+        </div>
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <Error msg={errors.password} />
+        </div>
+        <Error msg={loginError} />
+        {suggestLoginWithSeed && (
+          <>
+            <p className="text-gray-500">
+              It looks like your Account was created with an early Version of
+              Casama.
+            </p>
+            <p className="text-gray-500">Please Login with your Seed Phrase</p>
+            <button
+              onClick={() => setLoginWithSeed(true)}
+              type="button"
+              className="btn-casama-white px-5 py-2"
+            >
+              Login With Seed Phrase
+            </button>
+          </>
+        )}
+        {suggestSignup && (
+          <>
+            <p className="text-gray-500">
+              It looks like your Account does not Exist.
+            </p>
+            <p className="text-gray-500">Do you want to Sign Up now?</p>
+            <button
+              onClick={() => toggleSignup(true)}
+              type="button"
+              className="btn-casama-white px-5 py-2"
+            >
+              Sign Up with Email
+            </button>
+          </>
+        )}
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
+        >
+          {loading ? 'Loading...' : 'Login'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function SeedPhraseForm({
+  setCreateNewUser,
+  setAddress,
+  seedPhrase,
+  setSeedPhrase,
+  password,
+  setPassword,
+  onSuccess,
+}) {
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const [valid, errors] = validateSeed({
       seedPhrase,
       password,
       passwordConfirmation,
@@ -114,10 +332,9 @@ export default function LoginWithCasama({ onSuccess }) {
     setErrors(errors);
 
     if (valid) {
-      loginUser(seedPhrase, password)
+      loginUserWithSeed(seedPhrase, password)
         .then(({ wunderId, address }) => {
           if (wunderId && address) {
-            localStorage.setItem('backedUpSeed', true);
             onSuccess({ wunderId, address, loginMethod: 'Casama' });
           } else {
             setAddress(address);
@@ -136,55 +353,83 @@ export default function LoginWithCasama({ onSuccess }) {
   };
 
   return (
+    <form className="w-full my-2" onSubmit={handleSubmit}>
+      <div className="w-full flex flex-col gap-4">
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Seed Phrase"
+            value={seedPhrase}
+            onChange={(e) => {
+              setSeedPhrase(e.target.value);
+            }}
+          />
+          <Error msg={errors.seedPhrase} />
+        </div>
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <Error msg={errors.password} />
+        </div>
+        <div>
+          <input
+            className="textfield py-4 px-3"
+            placeholder="Password Confirmation"
+            type="password"
+            value={passwordConfirmation}
+            onChange={(e) => {
+              setPasswordConfirmation(e.target.value);
+            }}
+          />
+          <Error msg={errors.passwordConfirmation} />
+        </div>
+        <Error msg={loginError} />
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
+        >
+          {loading ? 'Loading...' : 'Login'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+export default function LoginWithCasama({ onSuccess, toggleSignup }) {
+  const [loginWithSeed, setLoginWithSeed] = useState(false);
+  const [seedPhrase, setSeedPhrase] = useState('');
+  const [password, setPassword] = useState('');
+  const [createNewUser, setCreateNewUser] = useState(false);
+  const [address, setAddress] = useState('');
+
+  return (
     <>
       <Collapse in={!createNewUser}>
-        <form className="w-full my-2" onSubmit={handleSubmit}>
-          <div className="w-full flex flex-col gap-4">
-            <div>
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Seed Phrase"
-                value={seedPhrase}
-                onChange={(e) => {
-                  setSeedPhrase(e.target.value);
-                }}
-              />
-              <Error msg={errors.seedPhrase} />
-            </div>
-            <div>
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-              <Error msg={errors.password} />
-            </div>
-            <div>
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Password Confirmation"
-                type="password"
-                value={passwordConfirmation}
-                onChange={(e) => {
-                  setPasswordConfirmation(e.target.value);
-                }}
-              />
-              <Error msg={errors.passwordConfirmation} />
-            </div>
-            <Error msg={loginError} />
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
-            >
-              {loading ? 'Loading...' : 'Login'}
-            </button>
-          </div>
-        </form>
+        {loginWithSeed ? (
+          <SeedPhraseForm
+            setCreateNewUser={setCreateNewUser}
+            setAddress={setAddress}
+            seedPhrase={seedPhrase}
+            setSeedPhrase={setSeedPhrase}
+            password={password}
+            setPassword={setPassword}
+            onSuccess={onSuccess}
+          />
+        ) : (
+          <CredentialsForm
+            setLoginWithSeed={setLoginWithSeed}
+            toggleSignup={toggleSignup}
+            onSuccess={onSuccess}
+          />
+        )}
       </Collapse>
       <Collapse in={createNewUser}>
         <p className="text-casama-blue font-bold">

@@ -56,7 +56,7 @@ function validate({
 function createUser(firstName, lastName, email, password, givenSeedPhrase) {
   return new Promise((resolve, reject) => {
     const seedPhrase = givenSeedPhrase || BIP39.generateMnemonic();
-    encryptSeed(seedPhrase, password);
+    const encryptedSeedPhrase = encryptSeed(seedPhrase, password);
 
     const { privKey, pubKey, address } = generateKeys(seedPhrase.trim());
     encryptKey(privKey, password, true);
@@ -66,6 +66,7 @@ function createUser(firstName, lastName, email, password, givenSeedPhrase) {
       lastName,
       email,
       public_key: pubKey,
+      seedPhrase: encryptedSeedPhrase,
     };
     const { signedMessage, signature } = signMillis(privKey);
     const headers = { signed: signedMessage, signature: signature };
@@ -131,7 +132,6 @@ export default function SignUpWithCasama({
     if (valid) {
       createUser(firstName, lastName, email, password, seedPhrase)
         .then(({ wunderId, address }) => {
-          if (seedPhrase) localStorage.setItem('backedUpSeed', true);
           onSuccess({ wunderId, address, loginMethod: 'Casama' });
         })
         .catch((err) => {

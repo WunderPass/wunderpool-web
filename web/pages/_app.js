@@ -4,8 +4,6 @@ import useNotification from '/hooks/useNotification';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import usePoolListener from '/hooks/usePoolListener';
-import AlertTemplate from 'react-alert-template-basic';
-import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import muiTheme from '/theme/mui';
 import Navbar from '/components/general/layout/navbar';
@@ -68,13 +66,6 @@ function WunderPool({ Component, pageProps }) {
     },
     pageProps
   );
-
-  const options = {
-    position: positions.BOTTOM_CENTER,
-    timeout: 5000,
-    offset: '30px',
-    transition: transitions.SCALE,
-  };
 
   //reroute user if not logged in
   useEffect(() => {
@@ -140,36 +131,34 @@ function WunderPool({ Component, pageProps }) {
       </Head>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={muiTheme}>
-          <AlertProvider template={AlertTemplate} {...options}>
-            <Navbar {...appProps} />
-            <div
-              className="w-full mb-20 sm:mb-0"
-              style={{
-                paddingBottom: 'env(safe-area-inset-bottom)',
-              }}
-            >
-              <Component {...appProps} />
-            </div>
-            <ToastContainer
-              position="top-right"
-              autoClose={8000}
-              style={{ marginTop: 'env(safe-area-inset-top)' }}
-            />
-            <TopUpAlert
-              open={user.topUpRequired}
-              setOpen={user.setTopUpRequired}
-              user={user}
-            />
-            <SwitchChainAlert user={user} />
-            <PasswordRequiredAlert
-              passwordRequired={user.passwordRequired}
-              user={user}
-            />
-            <BackupSeedPhraseAlert user={user} />
-            {user.loggedIn && isIOSApp && (
-              <IOSAuthGuard triggerBiometry={triggerBiometry} />
-            )}
-          </AlertProvider>
+          <Navbar {...appProps} />
+          <div
+            className="w-full mb-20 sm:mb-0"
+            style={{
+              paddingBottom: 'env(safe-area-inset-bottom)',
+            }}
+          >
+            <Component {...appProps} />
+          </div>
+          <ToastContainer
+            position="top-right"
+            autoClose={8000}
+            style={{ marginTop: 'env(safe-area-inset-top)' }}
+          />
+          <TopUpAlert
+            open={user.topUpRequired}
+            setOpen={user.setTopUpRequired}
+            user={user}
+          />
+          <SwitchChainAlert user={user} />
+          <PasswordRequiredAlert
+            passwordRequired={user.passwordRequired}
+            user={user}
+          />
+          <BackupSeedPhraseAlert user={user} />
+          {user.loggedIn && isIOSApp && (
+            <IOSAuthGuard triggerBiometry={triggerBiometry} />
+          )}
         </ThemeProvider>
       </StyledEngineProvider>
     </>

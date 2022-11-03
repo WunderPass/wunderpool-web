@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default async function handler(req, res) {
   try {
-    const ownersWunderId = req.query.wunderId;
+    const userIdentifier = req.query.identifier;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -10,12 +10,12 @@ export default async function handler(req, res) {
     };
 
     const response = await axios({
-      url: `${process.env.IDENTITY_SERVICE}/v4/contacts/connected/${ownersWunderId}`,
+      url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/recovery/${userIdentifier}`,
       headers: headers,
     });
 
-    res.status(200).json(response.data);
+    res.status(200).json({ confirmed: response.data.confirmed_backup });
   } catch (error) {
-    res.status(500).json({ error: error.toJSON() });
+    res.status(200).json({ confirmed: false });
   }
 }
