@@ -11,14 +11,16 @@ import { fetchUserFriends } from '/services/memberHelpers';
 import { ethProvider } from '/services/contract/provider';
 
 export default function useBettingService(
-  props,
   userAddress,
-  handleError = () => {}
+  handleError = () => {},
+  props
 ) {
   const [games, setGames] = useState(null);
   const [events, setEvents] = useState(null);
   const [bettingGames, setBettingGames] = useState(null);
   const [isReady, setIsReady] = useState(false);
+
+  console.log(userAddress);
 
   const fetchBettingGames = async () => {
     try {
@@ -30,7 +32,7 @@ export default function useBettingService(
       const games = (
         await axios({
           url: '/api/betting/games',
-          params: { userAddress: userAddress },
+          params: { address: userAddress },
         })
       ).data;
 
@@ -43,7 +45,7 @@ export default function useBettingService(
         }))
       );
     } catch (error) {
-      handleError('Could not load Games');
+      handleError('Could not load Betting Games');
     }
   };
 
@@ -52,12 +54,14 @@ export default function useBettingService(
       const games = (
         await axios({
           url: '/api/betting/games',
-          params: { userAddress: userAddress },
+          params: { address: userAddress },
         })
       ).data;
       setGames(games);
     } catch (error) {
-      handleError('Could not load Games');
+      console.log(error);
+
+      handleError('Could not load Events');
     }
   };
 
@@ -65,12 +69,13 @@ export default function useBettingService(
     try {
       const events = (
         await axios({
-          url: '/api/betting/events/all',
+          url: '/api/betting/events',
         })
       ).data;
 
       setEvents(events);
     } catch (error) {
+      console.log(error);
       handleError('Could not load Games');
     }
   };
@@ -86,7 +91,7 @@ export default function useBettingService(
     initialize().then(() => {
       setIsReady(true);
     });
-  }, []);
+  }, [userAddress]);
 
   return { games, events, bettingGames, isReady };
 }

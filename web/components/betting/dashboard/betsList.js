@@ -5,17 +5,13 @@ import { Typography, Skeleton } from '@mui/material';
 import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
-import usePool from '/hooks/usePool';
-import useBettingService from '/hooks/useBettingService';
 
 export default function BetsList(props) {
-  const { pools, user, handleError } = props;
+  const { user, bettingService, handleError } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  const [isBets, setIsBets] = useState(false);
+
   const router = useRouter();
-  const bettingService = useBettingService(user.address, handleError);
-  console.log('betting serivce', bettingService);
 
   const handleOpenClose = () => {
     if (open) {
@@ -34,15 +30,16 @@ export default function BetsList(props) {
       <div className="lg:grid lg:grid-cols-1 lg:gap-6 w-full">
         {bettingService.games.map((game, i) => {
           return (
-            <DashboardGameCard
-              bettingGame={bettingService.bettingGame}
-              poolAddress={game.poolAddress}
-              game={game}
-              user={user}
-              {...props}
-            />
+            <>
+              <DashboardGameCard
+                bettingGame={bettingService.bettingGame}
+                poolAddress={game.poolAddress}
+                game={game}
+                user={user}
+                {...props}
+              />
+            </>
           );
-          return null;
         })}
       </div>
     ) : (
