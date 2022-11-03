@@ -80,6 +80,63 @@ export default function PoolHeader(props) {
     }
   };
 
+  const checkIfAlreadyPublic = async () => {
+    axios({
+      method: 'get',
+      url: `/api/pools/public/find?address=${address}`,
+    }).then((res) => {
+      setIsPublic(res.data.length != 0);
+    });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setLoading(false);
+  };
+
+  const createInviteLinkForPublicPool = async (maxMembers) => {
+    const secret = [...Array(33)]
+      .map(() => (~~(Math.random() * 36)).toString(36))
+      .join('');
+    wunderPool
+      .createInviteLink(secret, maxMembers)
+      .then((res) => {
+        let link = `${window.location.origin}/investing/pools/join/${wunderPool.poolAddress}?secret=${secret}`;
+        setInviteLink(link);
+        makePoolPublic(link);
+      })
+      .catch((err) => {
+        console.log(err);
+        handleError(err);
+        setLoading(false);
+      });
+  };
+
+  const handleMakePublicButton = async () => {
+    setLoading(true);
+    await createInviteLinkForPublicPool(wunderPool.maxMembers);
+  };
+
+  const makePoolPublic = (link) => {
+    setOpen(false);
+    if (link != '') {
+      makePublic(address, link)
+        .then((res) => {
+          console.log(res);
+          handleSuccess('Pool is now Public');
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          handleError(err);
+          setLoading(false);
+        });
+    } else {
+      handleError('Something went wrong, please try again');
+      setLoading(false);
+    }
+  };
+
   const uploadImageToServer = async () => {
     const formData = new FormData();
     formData.append('pool_image', image);

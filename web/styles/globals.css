@@ -164,6 +164,18 @@ button:disabled {
   box-shadow: 0 15px 50px 15px rgba(0, 0, 0, 0.25);
 }
 
+.shadow-dropdown-y:hover {
+  box-shadow: inset 0px 11px 8px -12px #ccc, inset 0px -11px 8px -12px #ccc;
+}
+
+.shadow-dropdown-t:hover {
+  box-shadow: inset 0px 11px 8px -11px #ccc;
+}
+
+.shadow-dropdown-b:hover {
+  box-shadow: inset 0px -11px 8px -11px #ccc;
+}
+
 .btn-default {
   @apply bg-[#ededed] hover:bg-[#d9dbdb] text-black cursor-pointer rounded-xl;
 }
@@ -230,6 +242,10 @@ button:disabled {
 
 .container-casama-p-0 {
   @apply border-solid text-white rounded-xl bg-casama-blue shadow-xl;
+}
+
+.container-casama-light-p-0 {
+  @apply border-solid rounded-xl bg-casama-extra-light-blue;
 }
 
 .container-white {

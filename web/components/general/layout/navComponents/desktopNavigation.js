@@ -1,13 +1,14 @@
 import { currency } from '/services/formatter';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
-import PoolInvites from './navComponents/poolInvites';
-import MyPools from './navComponents/myPools';
-import News from './navComponents/news';
+import PoolInvites from '/components/general/layout/navComponents/poolInvites';
+import MyPools from '/components/general/layout/navComponents/myPools';
+import News from '/components/general/layout/navComponents/news';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Avatar from '/components/general/members/avatar';
+import Link from 'next/link';
 
-const navigation = (props) => {
+const desktopNavigation = (props) => {
   const { user, open, setOpen } = props;
   const animateFrom = { opacity: 0, y: -40 };
   const animateTo = { opacity: 1, y: 0 };
@@ -23,9 +24,21 @@ const navigation = (props) => {
     <div className="hidden sm:block w-full">
       <ul className="flex flex-row justify-between items-center w-full">
         <div className="flex flex-row justify-start">
-          <li className="px-2 hidden sm:block">
-            <MyPools {...props} />
-          </li>
+          <Link href={`/betting/bets`}>
+            <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
+              My Bets
+            </li>
+          </Link>
+          <Link href={`/betting/pools`}>
+            <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
+              Betting
+            </li>
+          </Link>
+          <Link href={`/investing/pools`}>
+            <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
+              Pools
+            </li>
+          </Link>
         </div>
         <div className="flex flex-row items-center justify-end ">
           <div className="flex px-3 ">
@@ -73,8 +86,25 @@ const navigation = (props) => {
               animate={animateTo}
               transition={{ delay: 0.05 }}
             >
-              <MyPools {...props} />
+              <Link href={`/betting/bets`}>My Bets</Link>
             </motion.li>
+            <motion.li
+              className="px-2 py-1 pt-2"
+              initial={animateFrom}
+              animate={animateTo}
+              transition={{ delay: 0.05 }}
+            >
+              <Link href={`/betting/pools`}>Betting</Link>
+            </motion.li>
+            <motion.li
+              className="px-2 py-1 pt-2"
+              initial={animateFrom}
+              animate={animateTo}
+              transition={{ delay: 0.05 }}
+            >
+              <Link href={`/investing/pools`}>Pools</Link>
+            </motion.li>
+
             {user.loginMethod == 'WunderPass' && (
               <motion.li
                 initial={animateFrom}
@@ -111,4 +141,4 @@ const navigation = (props) => {
   );
 };
 
-export default navigation;
+export default desktopNavigation;
