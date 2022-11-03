@@ -456,14 +456,14 @@ export default function AdminBettingPage(props) {
   const [recommendedEvents, setRecommendedEvents] = useState([]);
 
   const fetchEvents = (fetchRecommended = false) => {
-    axios({ url: '/api/betting/events' }).then((res) => {
+    axios({ url: '/api/betting/events/indexLegacy' }).then((res) => {
       setEvents(res.data);
       fetchRecommended && fetchRecommendedEvents();
     });
   };
 
   const fetchRecommendedEvents = () => {
-    axios({ url: '/api/betting/events/suggestions' }).then((res) => {
+    axios({ url: '/api/betting/events/listed' }).then((res) => {
       setRecommendedEvents(res.data);
     });
   };
