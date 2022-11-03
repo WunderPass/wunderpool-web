@@ -24,12 +24,12 @@ export default function useBettingService(
     try {
       const events = (
         await axios({
-          url: '/api/betting/events/all',
+          url: '/api/betting/events',
         })
       ).data;
       const games = (
         await axios({
-          url: '/api/betting/games/all',
+          url: '/api/betting/games',
           params: { address: userAddress },
         })
       ).data;
@@ -51,8 +51,8 @@ export default function useBettingService(
     try {
       const games = (
         await axios({
-          url: '/api/betting/games/all',
-          params: { address: userAddress },
+          url: '/api/betting/games',
+          params: { userAddress: userAddress },
         })
       ).data;
       setGames(games);

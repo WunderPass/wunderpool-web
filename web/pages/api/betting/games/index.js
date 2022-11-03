@@ -2,15 +2,25 @@ const fs = require('fs');
 
 export default async function handler(req, res) {
   try {
+    const { poolAddress, userAddress } = req.query;
+
     if (fs.existsSync('./data/games.json')) {
-      const allPools = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
-      const filteredPools = req.query.address
-        ? allPools.filter(
-            (game) =>
-              game.poolAddress.toLowerCase() == req.query.address.toLowerCase()
+      const allGames = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
+      let filteredGames = allGames;
+
+      if (poolAddress) {
+        filteredGames = allGames.filter(
+          (game) => game.poolAddress.toLowerCase() == poolAddress.toLowerCase()
+        );
+      } else if (userAddress) {
+        filteredGames = allGames.filter((game) =>
+          game.participants.find(
+            (part) => part.address.toLowerCase() == userAddress.toLowerCase()
           )
-        : allPools;
-      res.status(200).json(filteredPools);
+        );
+      }
+
+      res.status(200).json(filteredGames);
     } else {
       res.status(200).json([]);
     }

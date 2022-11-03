@@ -330,7 +330,7 @@ export default function usePool(
       const games = (
         await axios({
           url: '/api/betting/games',
-          params: { address: poolAddress },
+          params: { poolAddress: poolAddress },
         })
       ).data;
 
