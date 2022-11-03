@@ -37,7 +37,7 @@ export default function TopBar(props) {
         >
           <Toolbar>
             <Stack className="hidden sm:flex flex-row w-full justify-between items-center mt-1">
-              <Link href="/investing/pools">
+              <Link href="/betting/pools">
                 <div className="flex flex-row cursor-pointer items-center">
                   <div className="pl-1.5 items-center justify-center mr-2">
                     <div className="pb-1.5 hidden lg:block w-40">
@@ -70,7 +70,7 @@ export default function TopBar(props) {
                 <div className="w-full">
                   <ul className="flex flex-row justify-between items-center w-full">
                     <div className="flex flex-row justify-start">
-                      {/* <Link href={`/betting/bets`}>
+                      <Link href={`/betting/bets`}>
                         <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           My Bets
                         </li>
@@ -79,7 +79,7 @@ export default function TopBar(props) {
                         <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           Betting
                         </li>
-                      </Link> */}
+                      </Link>
                       <Link href={`/investing/pools`}>
                         <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           Pools
@@ -125,7 +125,7 @@ export default function TopBar(props) {
                   {open && (
                     <div>
                       <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-casama-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
-                        {/* <motion.li
+                        <motion.li
                           className="px-2 py-1 pt-2"
                           initial={animateFrom}
                           animate={animateTo}
@@ -140,7 +140,7 @@ export default function TopBar(props) {
                           transition={{ delay: 0.05 }}
                         >
                           <Link href={`/betting/pools`}>Betting</Link>
-                        </motion.li> */}
+                        </motion.li>
                         <motion.li
                           className="px-2 py-1 pt-2"
                           initial={animateFrom}

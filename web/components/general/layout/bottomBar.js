@@ -24,7 +24,7 @@ export default function BottomBar(props) {
     switch (action) {
       case 'home':
         setShowPoolList(false);
-        router.push('/investing/pools');
+        router.push('/betting/pools');
         break;
       case 'myPools':
         setShowPoolList((show) => !show);
@@ -79,7 +79,7 @@ export default function BottomBar(props) {
               return (
                 <Link
                   key={`user-pool-${pool.address}`}
-                  href={`/investing/pools/${pool.address}`}
+                  href={`/betting/pools/${pool.address}`}
                   passHref
                 >
                   <div
