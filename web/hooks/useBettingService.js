@@ -1,14 +1,5 @@
-import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
-import { usdcBalanceOf } from '/services/contract/token';
-import {
-  fetchUserPools,
-  fetchWhitelistedUserPools,
-} from '/services/contract/pools';
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { fetchUserFriends } from '/services/memberHelpers';
-import { ethProvider } from '/services/contract/provider';
 
 export default function useBettingService(
   userAddress,

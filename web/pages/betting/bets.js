@@ -11,8 +11,8 @@ import DropDown from '/components/general/utils/dropDown';
 export default function Bets(props) {
   const { user, handleInfo, handleError } = props;
   const [events, setEvents] = useState([]);
-  const [eventTypes, setEventTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
   const bettingService = useBettingService(user.address, handleError);
 
@@ -30,6 +30,7 @@ export default function Bets(props) {
       method: 'get',
       url: `/api/betting/events`,
     }).then((res) => {
+      console.log(res.data);
       setEvents(res.data);
     });
   };

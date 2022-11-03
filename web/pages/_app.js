@@ -18,6 +18,7 @@ import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredA
 import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
 import UseIOS from '/hooks/useIOS';
 import IOSAuthGuard from '../components/general/dialogs/iOSAuthGuard';
+import useBettingService from '/hooks/useBettingService';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -47,9 +48,12 @@ function WunderPool({ Component, pageProps }) {
     updateBackgroundColor,
   } = UseIOS();
 
+  const bettingService = useBettingService(user.address, handleError);
+
   const appProps = Object.assign(
     {
       user,
+      bettingService,
       handleError,
       handleSuccess,
       handleInfo,

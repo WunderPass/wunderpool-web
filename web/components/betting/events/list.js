@@ -5,24 +5,8 @@ import EventCard from '/components/betting/events/eventCard';
 import axios from 'axios';
 
 export default function EventList(props) {
-  const { user, handleError } = props;
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  const getEvents = async () => {
-    axios({
-      method: 'get',
-      url: `/api/betting/events/listed`,
-    }).then((res) => {
-      console.log(res.data);
-      setEvents(res.data);
-    });
-  };
-
-  useEffect(() => {
-    getEvents().then(() => setLoading(false));
-  }, []);
+  const { user, bettingService, eventTypeSort, events, loading, handleError } =
+    props;
 
   return loading ? (
     <Skeleton
@@ -33,8 +17,13 @@ export default function EventList(props) {
   ) : (
     <Stack style={{ maxWidth: '100%' }}>
       <div className="2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full">
-        {events.map((event) => {
-          return <EventCard user={user} event={event} />;
+        {bettingService.events.map((event) => {
+          if (
+            event.competitionName == eventTypeSort ||
+            eventTypeSort == 'All Events'
+          ) {
+            return <EventCard user={user} event={event} />;
+          }
         })}
       </div>
     </Stack>
