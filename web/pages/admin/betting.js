@@ -1,7 +1,7 @@
 import {
+  Collapse,
   Container,
   DialogActions,
-  Divider,
   MenuItem,
   Paper,
   Select,
@@ -16,6 +16,7 @@ import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import { MdSportsSoccer } from 'react-icons/md';
 import { determineGame } from '/services/contract/betting/games';
 import { IoMdRefresh } from 'react-icons/io';
+import { AiFillUpCircle, AiOutlineDownCircle } from 'react-icons/ai';
 
 const admins = [
   '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
@@ -30,23 +31,20 @@ const eventTypeMapping = {
 };
 
 function TimeFrame({ start, end }) {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-  const startHour = String(startDate.getHours()).padStart(2, '0');
-  const startMinute = String(startDate.getMinutes()).padStart(2, '0');
-  const endHour = String(endDate.getHours()).padStart(2, '0');
-  const endMinute = String(endDate.getMinutes()).padStart(2, '0');
-  const isSameDay =
-    startDate.toLocaleDateString() == endDate.toLocaleDateString();
+  const startHour = String(start.getHours()).padStart(2, '0');
+  const startMinute = String(start.getMinutes()).padStart(2, '0');
+  const endHour = String(end.getHours()).padStart(2, '0');
+  const endMinute = String(end.getMinutes()).padStart(2, '0');
+  const isSameDay = start.toLocaleDateString() == end.toLocaleDateString();
 
   if (isSameDay) {
     return (
-      <Typography>{`${startDate.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}</Typography>
+      <Typography>{`${start.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}</Typography>
     );
   }
   return (
     <Typography>
-      {`${startDate.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}
+      {`${start.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}
       &#8314;&#185;
     </Typography>
   );
@@ -262,109 +260,62 @@ function EventCard({
 
   return !event.resolved || gameCount > 0 ? (
     <Paper className="p-3 my-2 rounded-xl">
-      <Stack direction="row" spacing={1} alignItems="center">
+      <div className="flex flex-col sm:flex-row items-center gap-2">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <Stack direction="row" justifyContent="space-between" flexGrow="1">
-          <Stack spacing={1}>
-            <Typography variant="h6">{event.name}</Typography>
-            <Typography>Owner: {event.owner}</Typography>
-            <Typography>Games: {gameCount}</Typography>
-          </Stack>
-          <Stack spacing={1} justifyContent="space-between">
+        <div className="flex-grow flex flex-col gap-2">
+          <div className="w-full flex items-start justify-between gap-2">
+            <p className="text-lg font-medium">{event.name}</p>
+            {gameCount > 0 && (
+              <p className="text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] h-6 rounded-full bg-red-500 text-white">
+                {gameCount}
+              </p>
+            )}
+          </div>
+          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <Typography>
-              {new Date(event.startDate || event.endDate).toLocaleString()}
+              {new Date(event.startTime || event.endTime).toLocaleString()}
             </Typography>
-          </Stack>
-        </Stack>
-      </Stack>
-      <Divider />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mt={1}
-        spacing={1}
-        rowGap={2}
-        flexWrap="wrap"
-        className="relative w-full"
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={1}
-          justifyContent="center"
-          flexGrow="1"
-        >
-          <Typography>{event.teams[0]}</Typography>
-          <div className="w-12">
-            <input
-              className="textfield text-center py-1 px-3"
-              value={event.resolved ? event.outcome[0] : valueOne}
-              onChange={(e) => handleOutcomeInput(0, e.target.value)}
-              disabled={event.resolved}
-            />
+            <button
+              className="btn-casama py-1 px-2 w-full sm:w-auto"
+              onClick={handleResolve}
+              // disabled={loading || event.endDate > Number(new Date())}
+              disabled={loading}
+            >
+              Resolve
+            </button>
           </div>
-          <Typography>:</Typography>
-          <div className="w-12">
-            <input
-              className="textfield text-center py-1 px-3"
-              value={event.resolved ? event.outcome[1] : valueTwo}
-              onChange={(e) => handleOutcomeInput(1, e.target.value)}
-              disabled={event.resolved}
-            />
-          </div>
-          <Typography>{event.teams[1]}</Typography>
-        </Stack>
-        {event.resolved ? (
-          <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
-            onClick={() => settleAllGames()}
-            // disabled={loading || event.endDate > Number(new Date())}
-            disabled={loading}
-          >
-            Settle All Games
-          </button>
-        ) : (
-          <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
-            onClick={handleResolve}
-            // disabled={loading || event.endDate > Number(new Date())}
-            disabled={loading}
-          >
-            Resolve Event and settle all
-          </button>
-        )}
-      </Stack>
+        </div>
+      </div>
     </Paper>
   ) : null;
 }
 
-function RecommendedEventCard({
+function ListedEventCard({
   event,
   fetchEvents,
   handleSuccess,
   handleError,
-  removeRecommendedEvent,
+  removeListedEvent,
 }) {
   const [loading, setLoading] = useState(false);
 
   const handleCreate = () => {
     setLoading(true);
     registerEvent(
-      event.event_name,
-      Number(new Date(`${event.utc_start_time}Z`)),
-      Number(new Date(`${event.utc_end_time}Z`)),
-      eventTypeMapping[event.event_type],
+      event.name,
+      Number(event.startTime),
+      Number(event.endTime),
+      eventTypeMapping[event.type],
       {
-        teams: [event.team_home, event.team_away],
-        extId: event.event_id,
+        teams: [event.teamHome, event.teamAway],
+        extId: event.id,
       }
     )
       .then((res) => {
         console.log(res);
-        handleSuccess(`Created Event "${event.event_name}"`);
+        handleSuccess(`Created Event "${event.name}"`);
         fetchEvents(false);
-        removeRecommendedEvent(event.event_id);
+        removeListedEvent(event.id);
       })
       .catch((err) => {
         handleError(err);
@@ -377,21 +328,14 @@ function RecommendedEventCard({
       <Stack direction="row" spacing={1} alignItems="center">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
         <Stack spacing={1} flexGrow="1">
-          <Typography variant="h6">{event.event_name}</Typography>
+          <Typography variant="h6">{event.name}</Typography>
           <Typography>
-            {event.team_home} vs. {event.team_away}
+            {event.teamHome} vs. {event.teamAway}
           </Typography>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography>Your Local Time:</Typography>
-            <TimeFrame
-              start={`${event.utc_start_time}Z`}
-              end={`${event.utc_end_time}Z`}
-            />
-          </Stack>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography>UTC Time:</Typography>
-            <TimeFrame start={event.utc_start_time} end={event.utc_end_time} />
-          </Stack>
+          <TimeFrame
+            start={new Date(event.startTime)}
+            end={new Date(event.endTime)}
+          />
           <button
             className="btn-casama py-1 px-2 w-full sm:w-3/12 sm:max-w-[200px]"
             onClick={handleCreate}
@@ -453,23 +397,27 @@ export default function AdminBettingPage(props) {
   const [open, setOpen] = useState(false);
   const [games, setGames] = useState([]);
   const [events, setEvents] = useState([]);
-  const [recommendedEvents, setRecommendedEvents] = useState([]);
+  const [listedEvents, setListedEvents] = useState([]);
 
-  const fetchEvents = (fetchRecommended = false) => {
-    axios({ url: '/api/betting/events/indexLegacy' }).then((res) => {
+  const [showListedEvents, setShowListedEvents] = useState(false);
+  const [showOpenEvents, setShowOpenEvents] = useState(false);
+  const [showGames, setShowGames] = useState(false);
+
+  const fetchEvents = (fetchListed = false) => {
+    axios({ url: '/api/betting/events/registered' }).then((res) => {
       setEvents(res.data);
-      fetchRecommended && fetchRecommendedEvents();
+      fetchListed && fetchListedEvents();
     });
   };
 
-  const fetchRecommendedEvents = () => {
+  const fetchListedEvents = () => {
     axios({ url: '/api/betting/events/listed' }).then((res) => {
-      setRecommendedEvents(res.data);
+      setListedEvents(res.data);
     });
   };
 
-  const removeRecommendedEvent = (id) => {
-    setRecommendedEvents((evs) => evs.filter((ev) => ev.id != id));
+  const removeListedEvent = (id) => {
+    setListedEvents((evs) => evs.filter((ev) => ev.id != id));
   };
 
   const fetchGames = () => {
@@ -501,35 +449,55 @@ export default function AdminBettingPage(props) {
           </button>
         </div>
         <div>
-          <Typography variant="h4">Upcoming Events</Typography>
-          {recommendedEvents
-            .filter((e) => !events.map((ev) => ev.extId).includes(e.event_id))
-            .map((event) => {
+          <div className="flex items-center gap-3">
+            <Typography variant="h4">Upcoming Events</Typography>
+            <button onClick={() => setShowListedEvents((show) => !show)}>
+              {showListedEvents ? (
+                <AiFillUpCircle className="text-casama-blue sm:text-2xl" />
+              ) : (
+                <AiOutlineDownCircle className="text-casama-blue sm:text-2xl" />
+              )}
+            </button>
+          </div>
+          <Collapse in={showListedEvents}>
+            {listedEvents.map((event) => {
               return (
-                <RecommendedEventCard
-                  key={`recommended-event-${event.event_id}`}
+                <ListedEventCard
+                  key={`listed-event-${event.id}`}
                   event={event}
                   fetchEvents={fetchEvents}
-                  removeRecommendedEvent={removeRecommendedEvent}
+                  removeListedEvent={removeListedEvent}
                   {...props}
                 />
               );
             })}
+          </Collapse>
         </div>
         <div>
-          <Typography variant="h4">Open Events</Typography>
-          {events.map((event) => {
-            return (
-              <EventCard
-                key={`event-${event.version}-${event.id}`}
-                event={event}
-                gameCount={games.filter((g) => g.eventId == event.id).length}
-                fetchEvents={fetchEvents}
-                fetchGames={fetchGames}
-                {...props}
-              />
-            );
-          })}
+          <div className="flex items-center gap-3">
+            <Typography variant="h4">Open Events</Typography>
+            <button onClick={() => setShowOpenEvents((show) => !show)}>
+              {showOpenEvents ? (
+                <AiFillUpCircle className="text-casama-blue sm:text-2xl" />
+              ) : (
+                <AiOutlineDownCircle className="text-casama-blue sm:text-2xl" />
+              )}
+            </button>
+          </div>
+          <Collapse in={showOpenEvents}>
+            {events.map((event) => {
+              return (
+                <EventCard
+                  key={`event-${event.version}-${event.id}`}
+                  event={event}
+                  gameCount={games.filter((g) => g.eventId == event.id).length}
+                  fetchEvents={fetchEvents}
+                  fetchGames={fetchGames}
+                  {...props}
+                />
+              );
+            })}
+          </Collapse>
         </div>
         <div>
           <Stack
@@ -537,23 +505,34 @@ export default function AdminBettingPage(props) {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="h4">Games</Typography>
+            <div className="flex items-center gap-3">
+              <Typography variant="h4">Active Games</Typography>
+              <button onClick={() => setShowGames((show) => !show)}>
+                {showGames ? (
+                  <AiFillUpCircle className="text-casama-blue sm:text-2xl" />
+                ) : (
+                  <AiOutlineDownCircle className="text-casama-blue sm:text-2xl" />
+                )}
+              </button>
+            </div>
             <button className="text-3xl text-casama-blue" onClick={fetchGames}>
               <IoMdRefresh />
             </button>
           </Stack>
-          {games.map((game) => {
-            return (
-              <div key={`game-${game.version}-${game.id}`} className="mb-8">
-                <GameCard
-                  game={game}
-                  event={events.find((e) => e.id == game.eventId)}
-                  fetchGames={fetchGames}
-                  {...props}
-                />
-              </div>
-            );
-          })}
+          <Collapse in={showGames}>
+            {games.map((game) => {
+              return (
+                <div key={`game-${game.version}-${game.id}`} className="mb-8">
+                  <GameCard
+                    game={game}
+                    event={events.find((e) => e.id == game.eventId)}
+                    fetchGames={fetchGames}
+                    {...props}
+                  />
+                </div>
+              );
+            })}
+          </Collapse>
         </div>
       </Stack>
       <NewEventDialog
