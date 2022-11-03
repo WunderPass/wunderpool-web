@@ -269,10 +269,20 @@ export default function GameCard(props) {
                 </div>
               </div>
             ) : (
-              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
+              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                {new Date(game.event.startTime) < new Date() && (
+                  <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
+                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                    <div className="text-sm">LIVE</div>
+                  </div>
+                )}
                 <Timer
                   start={Number(new Date())}
-                  end={game.event.startTime || game.event.endTime}
+                  end={
+                    new Date(game.event.startTime) > new Date()
+                      ? game.event.startTime
+                      : game.event.endTime
+                  }
                 />
               </div>
             )}
