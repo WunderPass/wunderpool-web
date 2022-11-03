@@ -20,8 +20,6 @@ export default function useBettingService(
   const [bettingGames, setBettingGames] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
-  console.log(userAddress);
-
   const fetchBettingGames = async () => {
     try {
       const events = (
@@ -35,10 +33,6 @@ export default function useBettingService(
           params: { address: userAddress },
         })
       ).data;
-
-      console.log('events', events);
-      console.log('games', games);
-
       setBettingGames(
         games.map((g) => ({
           ...g,

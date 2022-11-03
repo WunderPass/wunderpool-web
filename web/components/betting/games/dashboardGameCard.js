@@ -78,7 +78,6 @@ export default function DashBoardGameCard(props) {
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
-  console.log(bettingGame);
   const stake = bettingGame.stake / 951000; //TODO
   const usersBet = bettingGame.participants.find(
     (p) => p.address.toLowerCase() == user.address.toLowerCase()
@@ -166,32 +165,12 @@ export default function DashBoardGameCard(props) {
               <Timer
                 start={Number(new Date())}
                 end={bettingGame.event.startTime || bettingGame.event.endTime}
+                w
               />
             </div>
           </div>
 
-          {console.log(
-            bettingGame.participants.find(
-              (participant) => participant.address === user.address
-            )
-          )}
-
           {<ParticipantTable game={bettingGame} stake={stake} user={user} />}
-
-          {/* {!usersBet && TODO
-            !game.event.resolved &&
-            (game.event.startDate
-              ? game.event.startDate > Number(new Date())
-              : true) && (
-              <div className="flex justify-center items-center">
-                <button
-                  className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
-                  onClick={() => handleOpenBetNow()}
-                >
-                  Place your Bet
-                </button>
-              </div>
-            )} */}
         </div>
       </div>
     </div>

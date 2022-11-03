@@ -7,7 +7,7 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 
 export default function BetsList(props) {
-  const { user, bettingService, handleError } = props;
+  const { user, bettingService, eventTypeSort, handleError } = props;
   const [open, setOpen] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
@@ -29,15 +29,20 @@ export default function BetsList(props) {
     bettingService.bettingGames.length > 0 ? (
       <div className="lg:grid lg:grid-cols-1 lg:gap-6 w-full">
         {bettingService.bettingGames.map((bettingGame, i) => {
-          return (
-            <>
-              <DashboardGameCard
-                bettingGame={bettingGame}
-                user={user}
-                {...props}
-              />
-            </>
-          );
+          if (
+            bettingGame.event.competitionName == eventTypeSort ||
+            eventTypeSort == 'All Events'
+          ) {
+            return (
+              <>
+                <DashboardGameCard
+                  bettingGame={bettingGame}
+                  user={user}
+                  {...props}
+                />
+              </>
+            );
+          }
         })}
       </div>
     ) : (
