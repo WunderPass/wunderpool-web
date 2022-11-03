@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import GameCard from './gameCard';
 import TabBar from '/components/general/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import BettingGameDialog from '/components/betting/dialogs/bettingGame';
+import BettingGameDialog from '../dialogs/bettingGame';
+import usePool from '/hooks/usePool';
 
 function NoOpenBets(props) {
   const { wunderPool, handleOpenCloseBetting, openBet } = props;
@@ -41,15 +42,16 @@ function NoOpenBets(props) {
 }
 
 export default function GameList(props) {
-  const { wunderPool } = props;
+  const { pool, user, handleError } = props;
   const router = useRouter();
   const [openBet, setOpenBet] = useState(false);
   const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const wunderPool = usePool(user.address, pool.address, handleError);
 
   const totalTokens = useMemo(() => {
-    return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
-  }, [wunderPool.members, wunderPool.usdcBalance]);
+    return pool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
+  }, [pool.members, pool.usdcBalance]);
 
   useEffect(() => {
     setGamesTab(Number(router.query?.gameTab || 0));
@@ -85,7 +87,7 @@ export default function GameList(props) {
           tabs={['Open', 'History']}
           tab={gamesTab}
           handleClick={handleClick}
-          proposals={wunderPool.proposals}
+          proposals={pool.proposals}
           parent="list"
         />
         <Divider className="mb-6 mt-1 opacity-70" />
@@ -106,6 +108,7 @@ export default function GameList(props) {
                     setOpenBet={setOpenBet}
                     game={game}
                     totalTokens={totalTokens}
+                    wunderPool={wunderPool}
                     {...props}
                   />
                 </div>
@@ -131,6 +134,7 @@ export default function GameList(props) {
                   openBet={openBet}
                   game={game}
                   totalTokens={totalTokens}
+                  wunderPool={wunderPool}
                   {...props}
                 />
               </div>

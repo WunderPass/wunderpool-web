@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Menu, MenuItem, Chip, Divider } from '@mui/material';
+import MenuUnstyled from '@mui/base/MenuUnstyled';
+import MenuItemUnstyled from '@mui/base/MenuItemUnstyled';
+
 import Link from 'next/link';
 
 const myPools = (props) => {
@@ -14,7 +17,7 @@ const myPools = (props) => {
   return (
     <>
       <button onClick={(e) => setPoolListOpen(e.currentTarget)}>
-        My Pools List
+        My Investing pools List
       </button>
       <Menu
         className="mt-4"

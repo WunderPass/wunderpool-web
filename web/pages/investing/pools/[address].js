@@ -161,7 +161,7 @@ export default function Pool(props) {
             </Grid>
           </Grid>
           <Grid item xs={12} md={8}>
-            <PoolBody address={address} wunderPool={wunderPool} {...props} />
+            <Pool address={address} wunderPool={wunderPool} {...props} />
           </Grid>
         </Grid>
       </Container>

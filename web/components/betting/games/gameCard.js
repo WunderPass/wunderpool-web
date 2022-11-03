@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
+import usePool from '/hooks/usePool';
 
 function calculatePoints(eventType, prediction, result) {
   // SOCCER
