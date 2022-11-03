@@ -19,14 +19,14 @@ export default function BetsList(props) {
 
   const handleOpenClose = () => {
     if (open) {
-      goBack(() => removeQueryParam('createPool1'));
+      goBack(() => removeQueryParam('betsList'));
     } else {
-      addQueryParam({ createPool1: 'createPool1' }, false);
+      addQueryParam({ betsList: 'betsList' }, false);
     }
   };
 
   useEffect(() => {
-    setOpen(router.query?.createPool1 ? true : false);
+    setOpen(router.query?.betsList ? true : false);
   }, [router.query]);
 
   return bettingService.games ? (
