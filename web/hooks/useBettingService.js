@@ -36,11 +36,14 @@ export default function useBettingService(
         })
       ).data;
 
+      console.log('events', events);
+      console.log('games', games);
+
       setBettingGames(
         games.map((g) => ({
           ...g,
           event: events.find(
-            (e) => e.id == g.eventId && e.version == g.version
+            (e) => e.blockchainId == g.id && e.version == g.version
           ),
         }))
       );
