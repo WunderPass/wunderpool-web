@@ -25,16 +25,14 @@ export default function BetsList(props) {
     setOpen(router.query?.betsList ? true : false);
   }, [router.query]);
 
-  return bettingService.games ? (
-    bettingService.games.length > 0 ? (
+  return bettingService.bettingGames ? (
+    bettingService.bettingGames.length > 0 ? (
       <div className="lg:grid lg:grid-cols-1 lg:gap-6 w-full">
-        {bettingService.games.map((game, i) => {
+        {bettingService.bettingGames.map((bettingGame, i) => {
           return (
             <>
               <DashboardGameCard
-                bettingGame={bettingService.bettingGame}
-                poolAddress={game.poolAddress}
-                game={game}
+                bettingGame={bettingGame}
                 user={user}
                 {...props}
               />
@@ -47,7 +45,6 @@ export default function BetsList(props) {
         <div className="flex flex-col items-center ">
           <div className="border-solid text-casama-blue rounded-full bg-casama-extra-light-blue p-5 my-2 mt-6 mb-4">
             <MdGroups className="text-4xl" />
-            {console.log('bettingserviceGames', bettingService.games.length)}
           </div>
           <div className="my-2 mb-10">
             <Typography variant="h7">
