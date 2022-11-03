@@ -5,7 +5,6 @@ import GameCard from './gameCard';
 import TabBar from '/components/general/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import BettingGameDialog from '../dialogs/bettingGame';
-import usePool from '/hooks/usePool';
 
 function NoOpenBets(props) {
   const { wunderPool, handleOpenCloseBetting, openBet } = props;
@@ -42,16 +41,23 @@ function NoOpenBets(props) {
 }
 
 export default function GameList(props) {
-  const { pool, user, handleError } = props;
+  const { wunderPool } = props;
   const router = useRouter();
   const [openBet, setOpenBet] = useState(false);
   const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  const wunderPool = usePool(user.address, pool.address, handleError);
 
   const totalTokens = useMemo(() => {
-    return pool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
-  }, [pool.members, pool.usdcBalance]);
+    return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
+  }, [wunderPool.members, wunderPool.usdcBalance]);
+
+  const [allGames, openGames, closedGames] = useMemo(() => {
+    return [
+      wunderPool.bettingGames,
+      wunderPool.bettingGames.filter((bet) => !bet.closed),
+      wunderPool.bettingGames.filter((bet) => bet.closed),
+    ];
+  }, [wunderPool.loadingState.bets]);
 
   useEffect(() => {
     setGamesTab(Number(router.query?.gameTab || 0));
@@ -74,46 +80,46 @@ export default function GameList(props) {
     }
   };
 
-  return !wunderPool.loadingState.bets ? (
-    <Skeleton
-      variant="rectangular"
-      width="100%"
-      sx={{ height: '100px', borderRadius: 3 }}
-    />
-  ) : wunderPool.bettingGames.length > 0 ? (
+  if (!wunderPool.loadingState.bets)
+    return (
+      <Skeleton
+        variant="rectangular"
+        width="100%"
+        sx={{ height: '100px', borderRadius: 3 }}
+      />
+    );
+
+  return allGames.length > 0 ? (
     <Stack style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Open', 'History']}
           tab={gamesTab}
           handleClick={handleClick}
-          proposals={pool.proposals}
+          proposals={wunderPool.proposals}
           parent="list"
         />
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
 
-      {gamesTab == 0 &&
-      wunderPool.bettingGames.filter((bet) => !bet.closed).length > 0
-        ? wunderPool.bettingGames
-            .filter((bet) => !bet.closed)
-            .map((game) => {
-              return (
-                <div
-                  key={`game-card-${game.version}-${game.id}`}
-                  className="mb-16"
-                >
-                  <GameCard
-                    openBet={openBet}
-                    setOpenBet={setOpenBet}
-                    game={game}
-                    totalTokens={totalTokens}
-                    wunderPool={wunderPool}
-                    {...props}
-                  />
-                </div>
-              );
-            })
+      {gamesTab == 0 && openGames.length > 0
+        ? openGames.map((game) => {
+            return (
+              <div
+                key={`game-card-${game.version}-${game.id}`}
+                className="mb-16"
+              >
+                <GameCard
+                  openBet={openBet}
+                  setOpenBet={setOpenBet}
+                  game={game}
+                  totalTokens={totalTokens}
+                  wunderPool={wunderPool}
+                  {...props}
+                />
+              </div>
+            );
+          })
         : gamesTab == 0 && (
             <NoOpenBets
               handleOpenCloseBetting={handleOpenCloseBetting}
@@ -122,24 +128,22 @@ export default function GameList(props) {
             />
           )}
       {gamesTab == 1 &&
-        wunderPool.bettingGames
-          .filter((p) => p.closed)
-          .map((game) => {
-            return (
-              <div
-                className="mb-16"
-                key={`game-card-history-${game.version}-${game.id}`}
-              >
-                <GameCard
-                  openBet={openBet}
-                  game={game}
-                  totalTokens={totalTokens}
-                  wunderPool={wunderPool}
-                  {...props}
-                />
-              </div>
-            );
-          })}
+        closedGames.map((game) => {
+          return (
+            <div
+              className="mb-16"
+              key={`game-card-history-${game.version}-${game.id}`}
+            >
+              <GameCard
+                openBet={openBet}
+                game={game}
+                totalTokens={totalTokens}
+                wunderPool={wunderPool}
+                {...props}
+              />
+            </div>
+          );
+        })}
     </Stack>
   ) : (
     <NoOpenBets

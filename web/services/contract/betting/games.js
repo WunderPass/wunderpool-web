@@ -8,33 +8,32 @@ export async function registerGame(
   name,
   stake,
   tokenAddress,
-  eventId,
+  event,
   payoutRule,
-  poolAddress,
-  version
+  poolAddress
 ) {
-  const [distributor] = initDistributor(version);
+  const [distributor] = initDistributor(event.version);
   const iface = new ethers.utils.Interface([
     'event NewGame(uint256 indexed id, string name, uint256 eventId)',
   ]);
 
   try {
     let tx;
-    if (version == 'ALPHA') {
+    if (event.version == 'ALPHA') {
       tx = await connectContract(distributor).registerGame(
         name,
         stake,
         tokenAddress,
-        eventId,
+        event.blockchainId,
         payoutRule,
         { gasPrice: await gasPrice() }
       );
-    } else if (version == 'BETA') {
+    } else if (event.version == 'BETA') {
       tx = await connectContract(distributor).registerGame(
         name,
         stake,
         tokenAddress,
-        eventId,
+        event.blockchainId,
         payoutRule,
         false,
         { gasPrice: await gasPrice() }
@@ -49,16 +48,15 @@ export async function registerGame(
         return null;
       }
     });
-    const event = events.filter((e) => e)[0];
-    const { id } = event;
+    const { id } = events.filter((e) => e)[0];
 
     const data = {
-      version,
+      version: event.version,
       id: id.toNumber(),
       name,
       stake,
       tokenAddress,
-      eventId,
+      event,
       payoutRule,
       poolAddress,
     };
