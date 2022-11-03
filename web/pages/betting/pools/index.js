@@ -64,7 +64,7 @@ export default function Pools(props) {
 
       <div className="flex sm:flex-row flex-col font-graphik h-full">
         {/* MOBILE */}
-        <div className="flex flex-col  sticky top-14 w-full sm:w-auto z-10">
+        {/* <div className="flex flex-col  sticky top-14 w-full sm:w-auto z-10">
           <div
             className={
               showSideBar
@@ -106,7 +106,7 @@ export default function Pools(props) {
             </div>
           </button>
         </div>
-        {/* DESKTOP*/}
+        // {/* DESKTOP
         <aside className="hidden sm:block container-white-p-0 h-screen w-1/3 sticky top-16">
           <Typography className=" text-xl pt-16 sm:text-3xl mb-10 font-medium text-gray-500 mx-7">
             Categories
@@ -117,7 +117,7 @@ export default function Pools(props) {
             <div className="container-gray-p-0 mx-6 py-14"></div>
             <div className="container-gray-p-0 mx-6 py-14"></div>
           </div>
-        </aside>
+        </aside> */}
         <Container>
           <div className="flex flex-row w-full justify-start ">
             <div className="flex flex-col w-full">
@@ -135,7 +135,7 @@ export default function Pools(props) {
                 <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                   <div className="flex flex-row items-center justify-between mb-3 h-14 w-full">
                     <Typography className="text-xl sm:text-3xl font-medium ">
-                      Enter a new betting game
+                      Join a betting game
                     </Typography>
                   </div>
 
