@@ -162,7 +162,7 @@ export async function formatAsset(asset) {
   };
 }
 
-async function formatMembers(members, totalSupply) {
+export async function formatMembers(members, totalSupply) {
   const resolvedMembers = (
     await axios({
       method: 'POST',
@@ -279,7 +279,6 @@ export function fetchUserPools(userAddress) {
     axios({ url: `/api/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
         const pools = await Promise.all(
-          // .filter((pool) => pool.active) => As of 29.07.2022 All Pools are {active: false} :(
           res.data
             .filter((pool) => pool.active)
             .map(

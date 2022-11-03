@@ -38,7 +38,11 @@ export default function ResponsiveDialog(props) {
       open={Boolean(open)}
       onClose={onCloseDialog || onClose}
       PaperProps={{
-        style: { borderRadius: fullScreen ? 0 : 12 },
+        style: {
+          borderRadius: fullScreen ? 0 : 12,
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        },
       }}
     >
       <DialogContent

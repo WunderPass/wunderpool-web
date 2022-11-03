@@ -10,8 +10,7 @@ export default async function handler(req, res) {
     };
 
     const response = await axios({
-      method: 'get',
-      url: `https://identity-service.wunderpass.org/v4/contacts/connected/${ownersWunderId}`,
+      url: `${process.env.IDENTITY_SERVICE}/v4/contacts/connected/${ownersWunderId}`,
       headers: headers,
     });
 

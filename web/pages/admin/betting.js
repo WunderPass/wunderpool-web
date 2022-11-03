@@ -29,6 +29,29 @@ const eventTypeMapping = {
   SOCCER: 0,
 };
 
+function TimeFrame({ start, end }) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const startHour = String(startDate.getHours()).padStart(2, '0');
+  const startMinute = String(startDate.getMinutes()).padStart(2, '0');
+  const endHour = String(endDate.getHours()).padStart(2, '0');
+  const endMinute = String(endDate.getMinutes()).padStart(2, '0');
+  const isSameDay =
+    startDate.toLocaleDateString() == endDate.toLocaleDateString();
+
+  if (isSameDay) {
+    return (
+      <Typography>{`${startDate.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}</Typography>
+    );
+  }
+  return (
+    <Typography>
+      {`${startDate.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}
+      &#8314;&#185;
+    </Typography>
+  );
+}
+
 function NewEventDialog({
   open,
   setOpen,
@@ -324,16 +347,13 @@ function RecommendedEventCard({
   removeRecommendedEvent,
 }) {
   const [loading, setLoading] = useState(false);
-  const [endDate, setEndDate] = useState(
-    Number(new Date(`${event.date} ${event.time}`)) + 7200000
-  );
 
   const handleCreate = () => {
     setLoading(true);
     registerEvent(
       event.event_name,
-      Number(new Date(`${event.date} ${event.time}`)),
-      endDate,
+      Number(new Date(`${event.utc_start_time}Z`)),
+      Number(new Date(`${event.utc_end_time}Z`)),
       eventTypeMapping[event.event_type],
       {
         teams: [event.team_home, event.team_away],
@@ -357,41 +377,30 @@ function RecommendedEventCard({
       <Stack direction="row" spacing={1} alignItems="center">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
         <Stack spacing={1} flexGrow="1">
-          <Stack direction="row" justifyContent="space-between">
-            <Typography variant="h6">{event.event_name}</Typography>
-            <Typography>
-              {new Date(`${event.date} ${event.time}`).toLocaleString()}
-            </Typography>
-          </Stack>
+          <Typography variant="h6">{event.event_name}</Typography>
           <Typography>
             {event.team_home} vs. {event.team_away}
           </Typography>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography>Your Local Time:</Typography>
+            <TimeFrame
+              start={`${event.utc_start_time}Z`}
+              end={`${event.utc_end_time}Z`}
+            />
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography>UTC Time:</Typography>
+            <TimeFrame start={event.utc_start_time} end={event.utc_end_time} />
+          </Stack>
+          <button
+            className="btn-casama py-1 px-2 w-full sm:w-3/12 sm:max-w-[200px]"
+            onClick={handleCreate}
+            disabled={loading}
+          >
+            Create Event
+          </button>
         </Stack>
       </Stack>
-      <Divider />
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-end mt-2">
-        <label
-          className="label w-full sm:w-auto text-center"
-          htmlFor={`eventEndDate-${event.event_id}`}
-        >
-          End Date
-        </label>
-        <input
-          className="textfield py-4 px-3 w-full sm:w-4/12 sm:max-w-[200px]"
-          id={`eventEndDate-${event.event_id}`}
-          type="datetime-local"
-          onChange={(e) => setEndDate(Number(new Date(e.target.value)))}
-        />
-        <button
-          className="btn-casama py-1 px-2 w-full sm:w-3/12 sm:max-w-[200px]"
-          onClick={handleCreate}
-          disabled={
-            loading || endDate < Number(new Date(`${event.date} ${event.time}`))
-          }
-        >
-          Create Event
-        </button>
-      </div>
     </Paper>
   );
 }
@@ -447,14 +456,14 @@ export default function AdminBettingPage(props) {
   const [recommendedEvents, setRecommendedEvents] = useState([]);
 
   const fetchEvents = (fetchRecommended = false) => {
-    axios({ url: '/api/betting/events' }).then((res) => {
+    axios({ url: '/api/betting/events/indexLegacy' }).then((res) => {
       setEvents(res.data);
       fetchRecommended && fetchRecommendedEvents();
     });
   };
 
   const fetchRecommendedEvents = () => {
-    axios({ url: '/api/betting/events/suggestions' }).then((res) => {
+    axios({ url: '/api/betting/events/listed' }).then((res) => {
       setRecommendedEvents(res.data);
     });
   };
@@ -472,7 +481,7 @@ export default function AdminBettingPage(props) {
   useEffect(() => {
     if (router.isReady && user.address) {
       if (!admins.includes(user.address.toLowerCase())) {
-        router.push('/pools');
+        router.push('/betting/pools');
       } else {
         fetchGames();
         fetchEvents(true);

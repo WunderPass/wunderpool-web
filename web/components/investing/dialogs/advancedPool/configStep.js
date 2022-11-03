@@ -49,6 +49,7 @@ export default function NewPoolConfigStep(props) {
     setIsPublic,
     autoLiquidateTs,
     setAutoLiquidateTs,
+    totalSteps,
   } = props;
   const [poolNameTouched, setPoolNameTouched] = useState(poolName.length > 0);
 
@@ -116,7 +117,7 @@ export default function NewPoolConfigStep(props) {
   return (
     <Stack spacing={1}>
       <DialogContentText className="text-sm mb-7 font-graphik ">
-        Step 1 of 3 | Pool Details
+        Step 1 of {totalSteps} | Pool Details
       </DialogContentText>
 
       <div>
@@ -187,6 +188,9 @@ export default function NewPoolConfigStep(props) {
         <label className="label pb-2" htmlFor="amount">
           Your Investment *
         </label>
+        <span className="text-gray-500 text-xs ml-2">
+          (Fee of 4.9% applies)
+        </span>
         <div id="amount">
           <CurrencyInput
             value={value}

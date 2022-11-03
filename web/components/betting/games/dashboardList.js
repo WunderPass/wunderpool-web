@@ -10,27 +10,15 @@ export default function GameList(props) {
   const { pool, wunderPool, user, handleError } = props;
   const router = useRouter();
   const [openBet, setOpenBet] = useState(false);
-  const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-
-  console.log('wunderPool', wunderPool);
-  console.log('pool', pool);
 
   const totalTokens = useMemo(() => {
     return pool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
   }, [pool.members, pool.usdcBalance]);
 
   useEffect(() => {
-    setGamesTab(Number(router.query?.gameTab || 0));
     setOpenBet(router.query?.bet ? Number(router.query.bet) : null);
   }, [router.query]);
-
-  const handleClick = (index) => {
-    if (gamesTab == index) return;
-    index === 0
-      ? removeQueryParam('gameTab')
-      : addQueryParam({ gameTab: index });
-  };
 
   const handleOpenCloseBetting = (onlyClose = false) => {
     if (onlyClose && !openBet) return;

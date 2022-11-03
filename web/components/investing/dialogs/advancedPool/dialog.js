@@ -1,5 +1,5 @@
 import { DialogActions, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPool } from '/services/contract/pools';
 import { useRouter } from 'next/router';
 import NewPoolConfigStep from './configStep';
@@ -58,6 +58,8 @@ export default function AdvancedPoolDialog(props) {
   const [members, setMembers] = useState([]);
 
   const [txHash, setTxHash] = useState(null);
+
+  const totalSteps = useMemo(() => (isPublic ? 2 : 3), [isPublic]);
 
   const configProps = {
     user,
@@ -201,7 +203,7 @@ export default function AdvancedPoolDialog(props) {
       if (newPoolEvent?.hash?.toLowerCase() == txHash?.toLowerCase()) {
         handleSuccess(`Created Pool "${newPoolEvent.name}"`);
         user.fetchUsdBalance();
-        router.push(`/pools/${newPoolEvent.address}`);
+        router.push(`/investing/pools/${newPoolEvent.address}`);
       }
     }
   }, [txHash, newPoolEvent?.hash]);
@@ -246,7 +248,7 @@ export default function AdvancedPoolDialog(props) {
           <DialogActions className="flex items-center justify-center mx-4">
             <NewPoolButtons
               step={step}
-              totalSteps={3}
+              totalSteps={totalSteps}
               disabled={disabled}
               setStep={setStep}
               submit={submit}
@@ -256,8 +258,12 @@ export default function AdvancedPoolDialog(props) {
         )
       }
     >
-      {step === 1 && <NewPoolConfigStep {...configProps} />}
-      {step === 2 && <NewPoolVotingStep {...votingProps} />}
+      {step === 1 && (
+        <NewPoolConfigStep totalSteps={totalSteps} {...configProps} />
+      )}
+      {step === 2 && (
+        <NewPoolVotingStep totalSteps={totalSteps} {...votingProps} />
+      )}
       {step === 3 && <NewPoolInviteStep user={user} {...inviteProps} />}
       {waitingForPool && (
         <div className="flex flex-row justify-between items-center gap-1 w-full px-6">

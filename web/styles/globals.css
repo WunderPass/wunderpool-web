@@ -197,7 +197,7 @@ button:disabled {
 }
 
 .btn-warning {
-  @apply bg-[#f7b91b] hover:bg-[#dba418] text-black text-opacity-70 cursor-pointer rounded-full;
+  @apply bg-[#f7b91b] hover:bg-[#dba418] text-black text-opacity-70 cursor-pointer rounded-xl;
 }
 
 .btn-casama {
@@ -220,12 +220,20 @@ button:disabled {
   @apply bg-white hover:bg-[#ededed] text-gray-500 cursor-pointer rounded-xl border-2 border-gray-200;
 }
 
+.btn-processing {
+  @apply rounded-xl px-5 font-semibold text-gray-400 bg-gray-300 border-gray-300  cursor-not-allowed;
+}
+
 .btn-vote {
   @apply hover:bg-casama-blue hover:text-white bg-gray-200 text-black text-opacity-70 cursor-pointer rounded-full p-1 px-4 mx-2 border border-casama-blue;
 }
 
 .btn-vote-filled {
   @apply hover:text-white bg-casama-blue text-white cursor-not-allowed rounded-full p-1 px-4 mx-2 border border-casama-blue;
+}
+
+.btn-circle-light {
+  @apply rounded-full border border-violet-300 text-casama-blue p-3 flex items-center justify-center hover:bg-gray-100;
 }
 
 .container-casama {
@@ -296,13 +304,17 @@ button:disabled {
 }
 
 .initials-avatar {
-  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white pt-0.5;
+  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 items-center justify-center border-2 border-white pt-0.5;
 }
 
 .avatar {
-  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 -ml-2 items-center justify-center border-2 border-white overflow-hidden;
+  @apply flex border-solid text-black rounded-full uppercase w-10 h-10 items-center justify-center border-2 border-white overflow-hidden;
 }
 
 .loading-circle {
   @apply w-24 h-24 text-gray-200 animate-spin dark:text-gray-400 fill-casama-blue;
+}
+
+.loading-circle-button {
+  @apply w-5 h-5 text-gray-200 animate-spin dark:text-gray-400 fill-white;
 }

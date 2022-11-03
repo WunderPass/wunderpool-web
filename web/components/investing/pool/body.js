@@ -81,42 +81,41 @@ export default function body(props) {
 
   return (
     <div className="">
-      {wunderPool.isMember &&
-        (!wunderPool.loadingState.init ? (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            sx={{ height: '100px', borderRadius: 3 }}
-          />
-        ) : (
-          <div className="flex container-white ">
-            <div className="flex flex-col w-full">
-              <TabBar
-                tabs={tabOptions}
-                tab={tab}
-                setTab={setTab}
-                parent="body"
-                handleClick={handleClick}
-              />
-              <Divider className="mb-1 mt-1 opacity-70" />
+      {!wunderPool.loadingState.init ? (
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          sx={{ height: '100px', borderRadius: 3 }}
+        />
+      ) : (
+        <div className="flex container-white ">
+          <div className="flex flex-col w-full">
+            <TabBar
+              tabs={tabOptions}
+              tab={tab}
+              setTab={setTab}
+              parent="body"
+              handleClick={handleClick}
+            />
+            <Divider className="mb-1 mt-1 opacity-70" />
 
-              {tabOptions[tab].title == 'Betting' && <GameList {...props} />}
+            {tabOptions[tab].title == 'Betting' && <GameList {...props} />}
 
-              {tabOptions[tab].title == 'Investing' && (
-                <ProposalList {...props} />
-              )}
-              {tabOptions[tab].title == 'Assets' && (
-                <TokenList tokens={wunderPool.tokens} {...props} />
-              )}
-              {tabOptions[tab].title == 'NFTs' && (
-                <NftList nfts={wunderPool.nfts} {...props} />
-              )}
-              {tabOptions[tab].title == 'Transactions' && (
-                <TransactionsList {...props} />
-              )}
-            </div>
+            {tabOptions[tab].title == 'Investing' && (
+              <ProposalList {...props} />
+            )}
+            {tabOptions[tab].title == 'Assets' && (
+              <TokenList tokens={wunderPool.tokens} {...props} />
+            )}
+            {tabOptions[tab].title == 'NFTs' && (
+              <NftList nfts={wunderPool.nfts} {...props} />
+            )}
+            {tabOptions[tab].title == 'Transactions' && (
+              <TransactionsList {...props} />
+            )}
           </div>
-        ))}
+        </div>
+      )}
     </div>
   );
 }

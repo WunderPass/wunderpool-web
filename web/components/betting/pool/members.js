@@ -10,11 +10,19 @@ import InviteLinkButton from './inviteLinkButton';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 import { getNameFor } from '/services/memberHelpers';
+import { handleShare } from '/services/shareLink';
 
 export default function PoolMembers(props) {
-  const { user, wunderPool, loginCallback } = props;
-  const { loadingState, isMember, closed, governanceToken, members, version } =
-    wunderPool;
+  const { user, wunderPool, loginCallback, handleSuccess } = props;
+  const {
+    loadingState,
+    isMember,
+    isPublic,
+    closed,
+    governanceToken,
+    members,
+    version,
+  } = wunderPool;
   const [open, setOpen] = useState(false);
   const [inviteMember, setInviteMember] = useState(false);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
@@ -35,7 +43,7 @@ export default function PoolMembers(props) {
   return loadingState.init ? (
     <div className="w-full">
       <div
-        className={`flex container-white p-5 justify-start md:justify-center`}
+        className={`flex container-white p-5 justify-start md:justify-center overflow-hidden`}
       >
         <div className="flex flex-col items-start justify-center grow">
           <div className="flex flex-col w-full">
@@ -52,13 +60,32 @@ export default function PoolMembers(props) {
                 <CapTable members={members} {...props} />
                 {version?.number > 3 && !closed && (
                   <div className="flex flex-col w-full">
-                    <button
-                      className="btn-casama items-center w-full mb-3 mt-3 py-3 text-md"
-                      onClick={() => setInviteMember(true)}
-                    >
-                      <Typography className="text-lg">Invite Member</Typography>
-                    </button>
-                    <InviteLinkButton {...props} />
+                    {isPublic ? (
+                      <button
+                        className="btn-casama items-center w-full mb-3 mt-3 py-3 text-md"
+                        onClick={() =>
+                          handleShare(
+                            location.href,
+                            `Join my Pool`,
+                            handleSuccess
+                          )
+                        }
+                      >
+                        Share Invite Link
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className="btn-casama items-center w-full mb-3 mt-3 py-3 text-md"
+                          onClick={() => setInviteMember(true)}
+                        >
+                          <Typography className="text-lg">
+                            Invite Member
+                          </Typography>
+                        </button>
+                        <InviteLinkButton {...props} />
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -68,6 +95,7 @@ export default function PoolMembers(props) {
                   {members.map((member, i) => {
                     return (
                       <Avatar
+                        shiftRight
                         key={`pool-member-${i}`}
                         wunderId={member.wunderId}
                         tooltip={`${getNameFor(

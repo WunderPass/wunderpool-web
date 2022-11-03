@@ -7,6 +7,40 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import BettingGameDialog from '../dialogs/bettingGame';
 import usePool from '/hooks/usePool';
 
+function NoOpenBets(props) {
+  const { wunderPool, handleOpenCloseBetting, openBet } = props;
+
+  return (
+    <div className="container-gray border-2 mt-4">
+      <Stack sx={{ textAlign: 'center' }}>
+        <Typography className="mt-3" variant="h5">
+          No Open Bets
+        </Typography>
+        {wunderPool.isMember && (
+          <>
+            <Typography className="mb-2 mt-3" variant="subtitle1">
+              Create a new bet below!
+            </Typography>
+            <button
+              className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
+              onClick={() => {
+                handleOpenCloseBetting();
+              }}
+            >
+              Start Betting Game
+            </button>
+          </>
+        )}
+        <BettingGameDialog
+          open={openBet}
+          handleOpenClose={handleOpenCloseBetting}
+          {...props}
+        />
+      </Stack>
+    </div>
+  );
+}
+
 export default function GameList(props) {
   const { pool, user, handleError } = props;
   const router = useRouter();
@@ -81,39 +115,23 @@ export default function GameList(props) {
               );
             })
         : gamesTab == 0 && (
-            <div className="container-gray border-2 mt-4">
-              <Stack sx={{ textAlign: 'center' }}>
-                <Typography className="mt-3" variant="h5">
-                  No Open Bets
-                </Typography>
-                <Typography className="mb-2 mt-3" variant="subtitle1">
-                  Create a new bet below!
-                </Typography>
-                <button
-                  className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-                  onClick={() => {
-                    handleOpenCloseBetting();
-                  }}
-                >
-                  Start Betting Game
-                </button>
-                <BettingGameDialog
-                  open={openBet}
-                  handleOpenClose={handleOpenCloseBetting}
-                  {...props}
-                />
-              </Stack>
-            </div>
+            <NoOpenBets
+              handleOpenCloseBetting={handleOpenCloseBetting}
+              openBet={openBet}
+              {...props}
+            />
           )}
       {gamesTab == 1 &&
         wunderPool.bettingGames
           .filter((p) => p.closed)
           .map((game) => {
             return (
-              <div className="mb-16">
+              <div
+                className="mb-16"
+                key={`game-card-history-${game.version}-${game.id}`}
+              >
                 <GameCard
                   openBet={openBet}
-                  key={`game-card-${game.id}`}
                   game={game}
                   totalTokens={totalTokens}
                   wunderPool={wunderPool}
@@ -124,28 +142,10 @@ export default function GameList(props) {
           })}
     </Stack>
   ) : (
-    <div className="container-gray border-2 mt-4">
-      <Stack sx={{ textAlign: 'center' }}>
-        <Typography className="mt-3" variant="h5">
-          No Open Bets
-        </Typography>
-        <Typography className="mb-2 mt-3" variant="subtitle1">
-          Create a new bet below!
-        </Typography>
-        <button
-          className="btn-casama items-center w-full mb-2 mt-6 py-3 px-3 text-lg"
-          onClick={() => {
-            handleOpenCloseBetting();
-          }}
-        >
-          Start Betting Game
-        </button>
-        <BettingGameDialog
-          open={openBet}
-          handleOpenClose={handleOpenCloseBetting}
-          {...props}
-        />
-      </Stack>
-    </div>
+    <NoOpenBets
+      handleOpenCloseBetting={handleOpenCloseBetting}
+      openBet={openBet}
+      {...props}
+    />
   );
 }

@@ -4,8 +4,6 @@ import useNotification from '/hooks/useNotification';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import usePoolListener from '/hooks/usePoolListener';
-import AlertTemplate from 'react-alert-template-basic';
-import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import muiTheme from '/theme/mui';
 import Navbar from '/components/general/layout/navComponents/navbar';
@@ -16,6 +14,10 @@ import { useRouter } from 'next/router';
 import * as ga from '../lib/google-analytics';
 import SwitchChainAlert from '/components/general/dialogs/switchChainAlert';
 import Head from 'next/head';
+import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredAlert';
+import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
+import UseIOS from '/hooks/useIOS';
+import IOSAuthGuard from '../components/general/dialogs/iOSAuthGuard';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -34,6 +36,16 @@ function WunderPool({ Component, pageProps }) {
     tokenAddedEvent,
     resetEvents,
   } = usePoolListener(handleInfo);
+
+  const {
+    isIOSApp,
+    appConnected,
+    appIsActive,
+    hasBiometry,
+    triggerBiometry,
+    updateWunderId,
+    updateBackgroundColor,
+  } = UseIOS();
 
   const appProps = Object.assign(
     {
@@ -55,24 +67,37 @@ function WunderPool({ Component, pageProps }) {
     pageProps
   );
 
-  const options = {
-    position: positions.BOTTOM_CENTER,
-    timeout: 5000,
-    offset: '30px',
-    transition: transitions.SCALE,
-  };
-
   //reroute user if not logged in
   useEffect(() => {
     if (user.loggedIn === null && !isFetched) {
       setIsFetched(true);
-
       return;
     }
-    if (user.loggedIn === null) {
+
+    if (
+      user.loggedIn === null &&
+      ![
+        '/investing/pools/join/[address]',
+        '/investing/pools/[address]',
+        '/betting/pools/join/[address]',
+        '/betting/pools/[address]',
+      ].includes(router.pathname)
+    ) {
       router.push('/');
     }
-  }, [user.loggedIn, isFetched]);
+  }, [router.pathname, user.loggedIn, isFetched]);
+
+  useEffect(() => {
+    if (router.pathname == '/') {
+      updateBackgroundColor('#FFFFFF', '#000000');
+    } else {
+      updateBackgroundColor('#5F45FD', '#FFFFFF');
+    }
+  }, [router.pathname]);
+
+  useEffect(() => {
+    updateWunderId(user.wunderId);
+  }, [user.wunderId]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -102,24 +127,38 @@ function WunderPool({ Component, pageProps }) {
           name="viewport"
           content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         ></meta>
+        <meta name="apple-itunes-app" content="app-id=6443918043"></meta>
       </Head>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={muiTheme}>
-          <AlertProvider template={AlertTemplate} {...options}>
-            <Navbar {...appProps} />
+          <Navbar {...appProps} />
+          <div
+            className="w-full mb-20 sm:mb-0"
+            style={{
+              paddingBottom: 'env(safe-area-inset-bottom)',
+            }}
+          >
             <Component {...appProps} />
-            <ToastContainer
-              position="top-right"
-              autoClose={8000}
-              style={{ marginTop: 'env(safe-area-inset-top)' }}
-            />
-            <TopUpAlert
-              open={user.topUpRequired}
-              setOpen={user.setTopUpRequired}
-              user={user}
-            />
-            <SwitchChainAlert user={user} />
-          </AlertProvider>
+          </div>
+          <ToastContainer
+            position="top-right"
+            autoClose={8000}
+            style={{ marginTop: 'env(safe-area-inset-top)' }}
+          />
+          <TopUpAlert
+            open={user.topUpRequired}
+            setOpen={user.setTopUpRequired}
+            user={user}
+          />
+          <SwitchChainAlert user={user} />
+          <PasswordRequiredAlert
+            passwordRequired={user.passwordRequired}
+            user={user}
+          />
+          <BackupSeedPhraseAlert user={user} />
+          {user.loggedIn && isIOSApp && (
+            <IOSAuthGuard triggerBiometry={triggerBiometry} />
+          )}
         </ThemeProvider>
       </StyledEngineProvider>
     </>

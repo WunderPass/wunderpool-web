@@ -88,7 +88,7 @@ export default function CreateYourWunderPass(props) {
             padding: 0,
             width: '100vw',
             height: '100vh',
-            background: '#000C',
+            background: '#f3f3f3',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

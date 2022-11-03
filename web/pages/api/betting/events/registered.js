@@ -7,7 +7,7 @@ export default async function handler(req, res) {
       authorization: `Bearer ${process.env.BETTING_SERVICE_TOKEN}`,
     };
     const { data } = await axios({
-      url: `${process.env.BETTING_SERVICE}/adminConsole/listedEvents`,
+      url: `${process.env.BETTING_SERVICE}/admin/settledEvents`,
       headers,
     });
     res.status(200).json(data);

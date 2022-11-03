@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Container, Grid, Stack } from '@mui/material';
-import FundPoolDialog from '/components/general/dialogs/fundPoolDialog';
+import { Container, Grid } from '@mui/material';
 import PoolHeader from '/components/investing/pool/header';
 import PoolBody from '/components/investing/pool/body';
 import usePool from '/hooks/usePool';
@@ -41,7 +40,7 @@ export default function Pool(props) {
         if (proposalExecutedEvent.proposal_action == 'LIQUIDATE_POOL') {
           handleInfo('Pool was closed.');
           user.fetchUsdBalance();
-          router.push('/pools');
+          router.push('/investing/pools');
         } else {
           wunderPool.determineProposals();
           wunderPool.determinePoolData();
@@ -61,7 +60,7 @@ export default function Pool(props) {
       } else if (wunderPool.exists === false) {
         handleInfo('Pool was closed');
         user.fetchUsdBalance();
-        router.push('/pools');
+        router.push('/investing/pools');
       }
     }
   }, [wunderPool.isReady, wunderPool.isMember, wunderPool.exists]);
@@ -70,12 +69,12 @@ export default function Pool(props) {
     if (wunderPool.liquidated) {
       handleInfo('Pool was closed.');
       user.fetchUsdBalance();
-      router.push('/pools');
+      router.push('/investing/pools');
     }
   }, [wunderPool.liquidated]);
 
   useEffect(() => {
-    if (router.isReady && router.query.address && user.address) {
+    if (router.isReady && router.query.address) {
       setAddress(router.query.address);
       wunderPool.setPoolAddress(router.query.address);
       wunderPool.setUserAddress(user.address);

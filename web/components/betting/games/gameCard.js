@@ -13,9 +13,63 @@ import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
 import usePool from '/hooks/usePool';
 
-function ParticipantTable({ game, stake, user }) {
-  const { participants, event } = game;
+function calculatePoints(eventType, prediction, result) {
+  // SOCCER
+  if (eventType == 0) {
+    const winner = result[0] > result[1] ? 0 : result[1] > result[0] ? 1 : 2;
+    const predictedWinner =
+      prediction[0] > prediction[1] ? 0 : prediction[1] > prediction[0] ? 1 : 2;
+    if (prediction[0] == result[0] && prediction[1] == result[1]) return 3;
+    if (prediction[0] - prediction[1] == result[0] - result[1]) return 2;
+    if (winner == predictedWinner) return 1;
+    return 0;
+  }
+}
 
+function calculatePayout(payoutRule, results, stake) {
+  const totalPot = stake * results.length;
+
+  // Winner Takes It All
+  if (payoutRule == 0) {
+    const maxPoints = Math.max(...results.map(({ points }) => points));
+    const winnerCount = results.filter(
+      ({ points }) => points == maxPoints
+    ).length;
+    return results.map((participant) => {
+      return {
+        ...participant,
+        winnings: participant.points == maxPoints ? totalPot / winnerCount : 0,
+      };
+    });
+    // Proportional
+  } else if (payoutRule == 1) {
+    const totalPoints = results.reduce((a, b) => a + b.points, 0);
+    const winningsPerPoint = totalPot / totalPoints;
+    return results.map((participant) => {
+      return {
+        ...participant,
+        winnings:
+          totalPoints == 0 ? stake : participant.points * winningsPerPoint,
+      };
+    });
+  }
+}
+
+function calculateWinnings(game, stake, result) {
+  const { participants, payoutRule, event } = game;
+
+  const results = participants.map((participant) => {
+    const points = calculatePoints(
+      event.eventType,
+      participant.prediction,
+      result
+    );
+    return { ...participant, points };
+  });
+  return calculatePayout(payoutRule, results, stake);
+}
+
+function ParticipantTable({ user, participants, stake }) {
   return (
     <div className="">
       {participants.length > 0 && (
@@ -24,50 +78,66 @@ function ParticipantTable({ game, stake, user }) {
         </div>
       )}
 
-      {participants.map((participant, i) => {
-        return (
-          <div
-            key={`participant-${participant.address}`}
-            className="flex flex-row w-full "
-          >
+      {participants
+        .sort((a, b) => b.winnings || 0 - a.winnings || 0)
+        .map((participant, i) => {
+          return (
             <div
-              className={
-                participant.address === user.address
-                  ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
-                  : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
-              }
+              key={`participant-${participant.address}`}
+              className="flex flex-row w-full "
             >
-              <div className=" flex flex-row justify-start w-5/6">
-                <div className="flex ml-2">
-                  <Avatar
-                    wunderId={participant.wunderId}
-                    tooltip={`${participant.wunderId}`}
-                    text={participant.wunderId ? participant.wunderId : '0-X'}
-                    color={['green', 'blue', 'red'][i % 3]}
-                    i={i}
-                  />
-                </div>
+              <div
+                className={
+                  participant.address === user.address
+                    ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
+                    : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
+                }
+              >
+                <div className=" flex flex-row justify-start w-5/6">
+                  <div className="flex ml-2">
+                    <Avatar
+                      shiftRight
+                      wunderId={participant.wunderId}
+                      tooltip={`${participant.wunderId}`}
+                      text={participant.wunderId ? participant.wunderId : '0-X'}
+                      color={['green', 'blue', 'red'][i % 3]}
+                      i={i}
+                    />
+                  </div>
 
-                {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
+                  {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
                   console.log('name', name)
                 )} */}
-                <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
-                  {participant.wunderId ? (
-                    <div className="truncate ...">{participant.wunderId}</div>
-                  ) : (
-                    <div className="truncate ...">{participant.address}</div>
-                  )}
+                  <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
+                    {participant.wunderId ? (
+                      <div className="truncate ...">{participant.wunderId}</div>
+                    ) : (
+                      <div className="truncate ...">{participant.address}</div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
-                <p>{participant.prediction[0]}</p>
-                <p className="px-1">:</p>
-                <p>{participant.prediction[1]}</p>
+                <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
+                  <p>{participant.prediction[0]}</p>
+                  <p className="px-1">:</p>
+                  <p>{participant.prediction[1]}</p>
+                </div>
+                {participant.winnings != undefined && (
+                  <div className="py-3 ml-4">
+                    {participant.winnings >= stake ? (
+                      <p className="text-green-500 text-xl">
+                        {currency(participant.winnings - stake)}
+                      </p>
+                    ) : (
+                      <p className="text-red-500 text-xl">
+                        {currency(stake - participant.winnings)}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }
@@ -75,6 +145,7 @@ function ParticipantTable({ game, stake, user }) {
 export default function GameCard(props) {
   const { game, totalTokens, wunderPool, handleSuccess, user } = props;
   const [open, setOpen] = useState(false);
+  const [gameResultTable, setGameResultTable] = useState([]);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
@@ -82,8 +153,9 @@ export default function GameCard(props) {
     (game.stake * wunderPool.usdcBalance) /
     totalTokens /
     10 ** wunderPool.governanceToken.decimals;
+
   const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == wunderPool.userAddress.toLowerCase()
+    (p) => p.address.toLowerCase() == wunderPool.userAddress?.toLowerCase()
   )?.prediction;
 
   const handleOpenBetNow = (onlyClose = false) => {
@@ -95,6 +167,14 @@ export default function GameCard(props) {
       addQueryParam({ bet: game.id }, false);
     }
   };
+
+  useEffect(() => {
+    if (game.event.outcome.length == 0) {
+      setGameResultTable(game.participants);
+    } else {
+      setGameResultTable(calculateWinnings(game, stake, game.event.outcome));
+    }
+  }, [game.event.outcome]);
 
   useEffect(() => {
     setOpen(router.query.bet == game.id);
@@ -198,25 +278,29 @@ export default function GameCard(props) {
             )}
           </div>
 
-          {console.log(game.event.resolved)}
-          {console.log(
-            game.participants.find(
-              (participant) => participant.address === user.address
-            )
-          )}
-
           {/* Only Show participants if user has voted */}
           {game.event.resolved ? (
-            <ParticipantTable game={game} stake={stake} user={user} />
+            <ParticipantTable
+              user={user}
+              participants={gameResultTable}
+              stake={stake}
+            />
           ) : (
             <>
               {game.participants.find(
                 (participant) => participant.address === user.address
-              ) && <ParticipantTable game={game} stake={stake} user={user} />}
+              ) && (
+                <ParticipantTable
+                  user={user}
+                  participants={gameResultTable}
+                  stake={stake}
+                />
+              )}
             </>
           )}
 
-          {!usersBet &&
+          {wunderPool.isMember &&
+            !usersBet &&
             !game.event.resolved &&
             (game.event.startDate
               ? game.event.startDate > Number(new Date())

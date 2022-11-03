@@ -5,13 +5,14 @@ import { currency } from '/services/formatter';
 import CurrencyInput from '/components/general/utils/currencyInput';
 import usePool from '/hooks/usePool';
 import { toFixed } from '/services/formatter';
-import LoginWithWunderPass from '/components/general/loginWithWunderPass';
-import Link from 'next/link';
 import TransactionDialog from '/components/general/utils/transactionDialog';
 import CustomHeader from '/components/general/utils/customHeader';
 import { fetchPoolData } from '/services/contract/pools';
 import Avatar from '/components/general/members/avatar';
 import { getNameFor } from '/services/memberHelpers';
+import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
+import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
+import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
 
 function InfoBlock({ label, value }) {
   return (
@@ -45,21 +46,24 @@ function PoolStats({
   );
 }
 
-function NotLoggedIn({ handleLogin }) {
+function NotLoggedIn({ handleLogin, handleError }) {
   return (
     <>
       <Typography className="text-sm mt-3">
-        To join this Pool, you need a WunderPass Account
+        Create an Account to join this Pool
       </Typography>
       <Divider className="mt-2 mb-4 opacity-70" />
-      <LoginWithWunderPass
-        disablePopup
-        className="text-xs"
-        name="Casama"
-        redirect={'pools'}
-        intent={['wunderId', 'address']}
-        onSuccess={handleLogin}
-      />
+      <AuthenticateWithCasama onSuccess={handleLogin} />
+      <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-8">
+        Already have a wallet?
+      </p>
+      <div className="max-w-sm">
+        <LoginWithMetaMask onSuccess={handleLogin} handleError={handleError} />
+        <LoginWithWalletConnect
+          onSuccess={handleLogin}
+          handleError={handleError}
+        />
+      </div>
     </>
   );
 }
@@ -110,7 +114,12 @@ function InputJoinAmount(props) {
           You will receive Governance Tokens proportionally to your invest
         </Typography>
         <Divider className="mt-2 mb-4 opacity-70" />
-        <Typography>Invest Amount</Typography>
+        <Typography>
+          Invest Amount
+          <span className="text-gray-500 text-xs ml-2">
+            (Fee of 4.9% applies)
+          </span>
+        </Typography>
         <CurrencyInput
           value={amount}
           placeholder={currency(minInvest)}
@@ -173,6 +182,7 @@ export default function JoinPool(props) {
   };
 
   const handleLogin = (data) => {
+    user.updateLoginMethod(data.loginMethod);
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
     wunderPool.updateUserAddress(data.address);
@@ -200,7 +210,7 @@ export default function JoinPool(props) {
 
   const loginCallback = () => {
     updateListener(user.pools, address, user.address);
-    router.push(`/pools/${address}?name=${wunderPool.poolName}`);
+    router.push(`/investing/pools/${address}`);
   };
 
   useEffect(() => {
@@ -212,7 +222,7 @@ export default function JoinPool(props) {
         }
       } else if (wunderPool.exists === false) {
         handleInfo('This Pool does not exist');
-        router.push('/pools');
+        router.push('/investing/pools');
       }
     }
   }, [wunderPool.isReady, wunderPool.isMember]);
@@ -220,7 +230,7 @@ export default function JoinPool(props) {
   useEffect(() => {
     if (wunderPool.liquidated) {
       handleInfo('This Pool was already closed');
-      router.push('/pools');
+      router.push('/investing/pools');
     }
   }, [wunderPool.liquidated]);
 
@@ -301,7 +311,7 @@ export default function JoinPool(props) {
               />
             )
           ) : (
-            <NotLoggedIn handleLogin={handleLogin} />
+            <NotLoggedIn handleLogin={handleLogin} handleError={handleError} />
           )}
         </div>
         <TransactionDialog

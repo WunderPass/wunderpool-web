@@ -4,7 +4,6 @@ const network = 'POLYGON';
 async function getUserByWunderId(wunderId) {
   try {
     const resp = await axios({
-      method: 'get',
       url: encodeURI(
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/${wunderId}`
       ),
@@ -13,6 +12,29 @@ async function getUserByWunderId(wunderId) {
       },
     });
     return [200, resp.data.find((u) => u.wunder_id == wunderId)];
+  } catch (error) {
+    console.log(error);
+    return [500, error];
+  }
+}
+
+async function getUsersByAddress(address) {
+  try {
+    const resp = await axios({
+      method: 'post',
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/by_network/${network}`
+      ),
+      headers: {
+        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+      },
+      data: [address.toLowerCase()],
+    });
+    if (resp.data.length == 1) {
+      return [200, resp.data];
+    } else {
+      return [404, 'User not Found'];
+    }
   } catch (error) {
     console.log(error);
     return [500, error];
@@ -44,7 +66,7 @@ export default async function handler(req, res) {
   if (wunderId) {
     [status, data] = await getUserByWunderId(wunderId);
   } else if (address) {
-    [status, data] = await getUsersByAddresses([address]);
+    [status, data] = await getUsersByAddress(address);
     data = status == 200 ? data[0] : data;
   } else if (addresses) {
     [status, data] = await getUsersByAddresses(addresses);

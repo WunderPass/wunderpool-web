@@ -41,7 +41,7 @@ export default function Pool(props) {
         if (proposalExecutedEvent.proposal_action == 'LIQUIDATE_POOL') {
           handleInfo('Pool was closed.');
           user.fetchUsdBalance();
-          router.push('/pools');
+          router.push('/betting/pools');
         } else {
           wunderPool.determineProposals();
           wunderPool.determinePoolData();
@@ -70,12 +70,12 @@ export default function Pool(props) {
     if (wunderPool.liquidated) {
       handleInfo('Pool was closed.');
       user.fetchUsdBalance();
-      router.push('/pools');
+      router.push('/betting/pools');
     }
   }, [wunderPool.liquidated]);
 
   useEffect(() => {
-    if (router.isReady && router.query.address && user.address) {
+    if (router.isReady && router.query.address) {
       setAddress(router.query.address);
       wunderPool.setPoolAddress(router.query.address);
       wunderPool.setUserAddress(user.address);
