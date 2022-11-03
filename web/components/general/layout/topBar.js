@@ -76,12 +76,12 @@ export default function TopBar(props) {
                         </li>
                       </Link>
                       <Link href={`/betting/pools`}>
-                        <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
+                        <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           Betting
                         </li>
                       </Link> */}
                       <Link href={`/investing/pools`}>
-                        <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
+                        <li className="px-5 p-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           Pools
                         </li>
                       </Link>

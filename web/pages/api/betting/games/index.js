@@ -5,22 +5,9 @@ export default async function handler(req, res) {
     const { poolAddress, userAddress } = req.query;
 
     if (fs.existsSync('./data/games.json')) {
-      const allGames = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
-      let filteredGames = allGames;
-
-      if (poolAddress) {
-        filteredGames = allGames.filter(
-          (game) => game.poolAddress.toLowerCase() == poolAddress.toLowerCase()
-        );
-      } else if (userAddress) {
-        filteredGames = allGames.filter((game) =>
-          game.participants.find(
-            (part) => part.address.toLowerCase() == userAddress.toLowerCase()
-          )
-        );
-      }
-
-      res.status(200).json(filteredGames);
+      const json = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
+      //var games = json.filter((game) => game.participants.map();
+      res.status(200).json(json);
     } else {
       res.status(200).json([]);
     }
