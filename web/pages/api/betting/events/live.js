@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { formatEvent } from '/services/eventHelpers';
 
 export default async function handler(req, res) {
   try {
@@ -10,7 +11,7 @@ export default async function handler(req, res) {
       url: `${process.env.BETTING_SERVICE}/admin/liveEvents`,
       headers,
     });
-    res.status(200).json(data);
+    res.status(200).json(data.map(formatEvent));
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
