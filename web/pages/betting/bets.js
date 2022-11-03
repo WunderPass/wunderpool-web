@@ -28,7 +28,6 @@ export default function Bets(props) {
       method: 'get',
       url: `/api/betting/events`,
     }).then((res) => {
-      console.log(res.data);
       setEvents(res.data);
     });
   };

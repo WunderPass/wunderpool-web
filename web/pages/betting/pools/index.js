@@ -145,7 +145,7 @@ export default function Betting(props) {
                   )}
                 </div>
               </div>
-            </div>{' '}
+            </div>
           </div>
         </Container>
       </div>

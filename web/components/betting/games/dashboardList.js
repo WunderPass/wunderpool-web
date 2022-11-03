@@ -5,6 +5,7 @@ import GameCard from './gameCard';
 import TabBar from '/components/general/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import BettingGameDialog from '../dialogs/bettingGame';
+import CiMoneyCheck1 from 'react-icons/ci';
 
 export default function GameList(props) {
   const { pool, wunderPool, user, handleError } = props;

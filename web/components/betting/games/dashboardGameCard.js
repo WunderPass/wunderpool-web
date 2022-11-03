@@ -1,17 +1,14 @@
-import { Stack, Typography, IconButton, Divider } from '@mui/material';
+import { Typography, IconButton, Divider } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
-import PlaceBetDialog from '/components/betting/dialogs/placeBet';
 import Avatar from '/components/general/members/avatar';
 import Timer from '/components/betting/proposals/timer';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
-import usePool from '/hooks/usePool';
 
 function ParticipantTable({ game, stake, user }) {
   const { participants, event } = game;
@@ -74,28 +71,13 @@ function ParticipantTable({ game, stake, user }) {
 
 export default function DashBoardGameCard(props) {
   const { bettingGame, handleSuccess, user } = props;
-  const [open, setOpen] = useState(false);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
 
   const stake = bettingGame.stake / 951000; //TODO
+
   const usersBet = bettingGame.participants.find(
     (p) => p.address.toLowerCase() == user.address.toLowerCase()
   )?.prediction;
-
-  const handleOpenBetNow = (onlyClose = false) => {
-    if (onlyClose && !open) return;
-    if (open) {
-      setOpen(false);
-      goBack(() => removeQueryParam('bet'));
-    } else {
-      addQueryParam({ bet: bettingGame.id }, false);
-    }
-  };
-
-  useEffect(() => {
-    setOpen(router.query.bet == bettingGame.id);
-  }, [router.query]);
 
   return (
     <div className="container-gray pb-16 ">
