@@ -1,4 +1,4 @@
-import BalanceBox from '/components/betting/pool/balanceBox';
+import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
@@ -7,6 +7,7 @@ import {
   Skeleton,
   Typography,
   Tooltip,
+  Collapse,
 } from '@mui/material';
 import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
 import QuickPoolDialog from '/components/betting/dialogs/quickPool/dialog';
@@ -15,10 +16,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { MdContentCopy } from 'react-icons/md';
 import { AiFillUpCircle } from 'react-icons/ai';
 import { AiOutlineDownCircle } from 'react-icons/ai';
-import PoolList from '/components/betting/dashboard/poolList';
+import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
-import PublicPools from '/components/betting/dashboard/publicPools';
 import QrCode from '/components/general/utils/qrCode';
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
+import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 
 export default function Pools(props) {
   const { user, handleSuccess, updateListener, isMobile } = props;
@@ -26,19 +28,10 @@ export default function Pools(props) {
   const [openQuick, setOpenQuick] = useState(false);
   const [page, setPage] = useState(1);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  const [showAddress, setShowAddress] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(true);
   const router = useRouter();
 
   const pageSize = 4;
-
-  const toggleAddress = () => {
-    setShowAddress(!showAddress);
-  };
-
-  const formatAddress = (str) => {
-    if (!str) return '';
-    return `${str.slice(0, 4)}...${str.slice(-4)}`;
-  };
 
   const handleOpenCloseAdvanced = () => {
     if (openAdvanced) {
@@ -68,139 +61,106 @@ export default function Pools(props) {
   return (
     <>
       <CustomHeader />
-      <div className="font-graphik">
-        <Container>
-          <div className="flex flex-col w-full justify-start">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
-              <div className="flex flex-col">
-                <div className="flex flex-row items-center">
-                  <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-medium">
-                    Betting Dashboard
-                  </Typography>
-                  <Tooltip
-                    title={
-                      showAddress
-                        ? 'Hide your wallet address'
-                        : 'Show your wallet address'
-                    }
-                  >
-                    <button onClick={() => toggleAddress()}>
-                      {showAddress ? (
-                        <div className="flex flex-row items-center">
-                          <AiFillUpCircle className="text-casama-blue sm:text-2xl font-medium text-xl mt-3 sm:mt-4 ml-2 sm:ml-4" />
-                        </div>
-                      ) : (
-                        <div className="flex flex-row items-center">
-                          <AiOutlineDownCircle className="text-casama-blue sm:text-2xl text-xl font-medium mt-3 sm:mt-4 ml-2 sm:ml-4" />
-                        </div>
-                      )}
-                    </button>
-                  </Tooltip>
-                </div>
-                {showAddress && (
-                  <div className="flex flex-row">
-                    <div
-                      className={
-                        showAddress
-                          ? 'border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 '
-                          : 'border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3 hidden'
-                      }
-                    >
-                      <CopyToClipboard
-                        text={user?.address}
-                        onCopy={() => handleSuccess('address copied!')}
-                      >
-                        <span className=" cursor-pointer text-md">
-                          <div className="flex flex-row items-center">
-                            <div className="truncate ...">{user?.address}</div>
-                            <MdContentCopy className="text-gray-500 ml-4 text-2xl sm:text-base" />
-                          </div>
-                        </span>
-                      </CopyToClipboard>
-                    </div>
-                    <div className="ml-6 -mt-9 sm:-mt-16 border-solid text-casama-blue truncate rounded-lg bg-gray-300 p-3">
-                      <div className="hidden sm:flex ">
-                        <QrCode
-                          text={user?.address || 'https://casama.io'}
-                          dark={false}
-                          size="3"
-                          {...props}
-                        />
-                      </div>
-                      <div className="sm:hidden flex ">
-                        <QrCode
-                          text={user?.address || 'https://casama.io'}
-                          dark={false}
-                          size="4"
-                          {...props}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col items-center justify-between ">
-                <button
-                  className="btn-casama w-full mx-1  mt-5 py-4 px-3 text-md cursor-pointer transition-colors sm:w-40 sm:my-0 sm:h-14 sm:py-0 "
-                  onClick={handleOpenCloseQuick}
-                >
-                  Launch Pool
-                </button>
-                <button
-                  className="w-full mx-1 mt-3 sm:mt-4 mb-2 px-3 underline text-casama-blue text-base cursor-pointer  "
-                  onClick={handleOpenCloseAdvanced}
-                >
-                  Advanced Settings
-                </button>
+
+      <div className="flex sm:flex-row flex-col font-graphik h-full">
+        {/* MOBILE */}
+        <div className="flex flex-col  sticky top-14 w-full sm:w-auto z-10">
+          <div
+            className={
+              showSideBar
+                ? 'flex flex-col sm:hidden h-12 bg-white drop-shadow-lg '
+                : ' rounded-b-xl flex flex-col sm:hidden h-12 bg-white drop-shadow-lg '
+            }
+          >
+            <Typography className=" text-xl pt-3 sm:text-3xl font-medium text-gray-500 mx-3">
+              Categories
+            </Typography>
+          </div>{' '}
+          <Collapse in={showSideBar}>
+            <div className="flex flex-col sm:hidden bg-white rounded-b-xl drop-shadow-lg h-28 z-10 sticky top-14 ">
+              <div className="flex flex-row gap-2 overflow-x-scroll ">
+                <div className="container-gray-p-0 px-6 py-8">dwad</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">adwa</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
               </div>
             </div>
-
-            <div className="sm:flex sm:flex-row">
-              <div className="flex flex-col sm:w-1/2 sm:pr-8">
-                <Typography className="subheader subheader-sm my-4 sm:my-0 sm:pb-4 font-medium">
-                  My Current Bets
-                </Typography>
-                <BalanceBox className="w-10" {...props} />
+          </Collapse>
+          <button
+            className="text-black text-sm font-medium mt-2 z-1 top-16"
+            onClick={() => setShowSideBar((val) => !val)}
+          >
+            <div
+              id="advanced"
+              className="sm:hidden flex flex-row  items-center justify-end mr-6 text-lg -mt-6 top-16"
+            >
+              {showSideBar ? (
+                <MdOutlineKeyboardArrowUp className="ml-3 text-xl container-round-transparent bg-white z-20 border border-gray-300" />
+              ) : (
+                <MdOutlineKeyboardArrowDown className="ml-3 text-xl container-round-transparent bg-white z-20 border border-gray-300" />
+              )}
+            </div>
+          </button>
+        </div>
+        {/* DESKTOP*/}
+        <aside className="hidden sm:block container-white-p-0 h-screen w-1/3 sticky top-16">
+          <Typography className=" text-xl pt-16 sm:text-3xl mb-10 font-medium text-gray-500 mx-7">
+            Categories
+          </Typography>
+          <div className="flex flex-col gap-5">
+            <div className="container-gray-p-0 mx-6 py-14"></div>
+            <div className="container-gray-p-0 mx-6 py-14"></div>
+            <div className="container-gray-p-0 mx-6 py-14"></div>
+            <div className="container-gray-p-0 mx-6 py-14"></div>
+          </div>
+        </aside>
+        <Container>
+          <div className="flex flex-row w-full justify-start ">
+            <div className="flex flex-col w-full">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:pt-10 sm:pb-10">
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center ">
+                    <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-medium">
+                      Betting
+                    </Typography>
+                  </div>
+                </div>
               </div>
 
-              <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
-                <div className="flex flex-row justify-between pb-4 b">
-                  <Typography className="subheader subheader-sm font-medium">
-                    My Betting Pools
-                  </Typography>
-                  {user.pools.length > pageSize && (
-                    <Pagination
-                      count={Math.ceil(user.pools.length / pageSize)}
-                      page={page}
-                      onChange={(_, val) => {
-                        setPage(val);
-                      }}
+              <div className="sm:flex sm:flex-row">
+                <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
+                  <div className="flex flex-row items-center justify-between mb-3 h-14 w-full">
+                    <Typography className="text-xl sm:text-3xl font-medium ">
+                      Enter a new betting game
+                    </Typography>
+                  </div>
+
+                  {user.isReady ? (
+                    <EventsList
+                      className="mx-4"
+                      user={user}
+                      pools={user.pools
+                        .sort((a, b) => b.totalBalance - a.totalBalance)
+                        .slice(
+                          (page - 1) * pageSize,
+                          (page - 1) * pageSize + pageSize
+                        )}
+                      {...props}
+                    />
+                  ) : (
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      sx={{ height: '100px', borderRadius: 3 }}
                     />
                   )}
                 </div>
-
-                {user.isReady ? (
-                  <PoolList
-                    className="mx-4"
-                    user={user}
-                    pools={user.pools
-                      .sort((a, b) => b.totalBalance - a.totalBalance)
-                      .slice(
-                        (page - 1) * pageSize,
-                        (page - 1) * pageSize + pageSize
-                      )}
-                    {...props}
-                  />
-                ) : (
-                  <Skeleton
-                    variant="rectangular"
-                    width="100%"
-                    sx={{ height: '100px', borderRadius: 3 }}
-                  />
-                )}
               </div>
-            </div>
-            <PublicPools pools={user.pools} {...props} />
+            </div>{' '}
           </div>
 
           <QuickPoolDialog

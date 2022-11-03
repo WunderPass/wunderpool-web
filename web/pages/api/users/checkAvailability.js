@@ -7,9 +7,7 @@ export default async function handler(req, res) {
     let reason = null;
 
     const isResponse = await axios({
-      url: encodeURI(
-        `https://identity-service.wunderpass.org/v4/exists/${wunderId}`
-      ),
+      url: encodeURI(`${process.env.IDENTITY_SERVICE}/v4/exists/${wunderId}`),
       headers: {
         authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
       },

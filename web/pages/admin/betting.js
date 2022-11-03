@@ -1,4 +1,5 @@
 import {
+  Collapse,
   Container,
   DialogActions,
   Divider,
@@ -16,6 +17,9 @@ import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import { MdSportsSoccer } from 'react-icons/md';
 import { determineGame } from '/services/contract/betting/games';
 import { IoMdRefresh } from 'react-icons/io';
+import { AiFillUpCircle, AiOutlineDownCircle } from 'react-icons/ai';
+import { toFixed } from '../../services/formatter';
+import Link from 'next/link';
 
 const admins = [
   '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
@@ -25,180 +29,23 @@ const admins = [
   '0x466274eefdd3265e3d8085933e69890f33023048', // Max
 ];
 
-const eventTypeMapping = {
-  SOCCER: 0,
-};
-
 function TimeFrame({ start, end }) {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-  const startHour = String(startDate.getHours()).padStart(2, '0');
-  const startMinute = String(startDate.getMinutes()).padStart(2, '0');
-  const endHour = String(endDate.getHours()).padStart(2, '0');
-  const endMinute = String(endDate.getMinutes()).padStart(2, '0');
-  const isSameDay =
-    startDate.toLocaleDateString() == endDate.toLocaleDateString();
+  const startHour = String(start.getHours()).padStart(2, '0');
+  const startMinute = String(start.getMinutes()).padStart(2, '0');
+  const endHour = String(end.getHours()).padStart(2, '0');
+  const endMinute = String(end.getMinutes()).padStart(2, '0');
+  const isSameDay = start.toLocaleDateString() == end.toLocaleDateString();
 
   if (isSameDay) {
     return (
-      <Typography>{`${startDate.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}</Typography>
+      <Typography>{`${start.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}</Typography>
     );
   }
   return (
     <Typography>
-      {`${startDate.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}
+      {`${start.toLocaleDateString()} ${startHour}:${startMinute} - ${endHour}:${endMinute}`}
       &#8314;&#185;
     </Typography>
-  );
-}
-
-function NewEventDialog({
-  open,
-  setOpen,
-  fetchEvents,
-  handleSuccess,
-  handleError,
-}) {
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [teamOne, setTeamOne] = useState('');
-  const [teamTwo, setTeamTwo] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [eventType, setEventType] = useState(0);
-
-  const handleCreate = () => {
-    setLoading(true);
-    registerEvent(name, startDate, endDate, eventType, {
-      teams: [teamOne, teamTwo],
-    })
-      .then((res) => {
-        console.log(res);
-        handleSuccess(`Created Event "${name}"`);
-        setName('');
-        setTeamOne('');
-        setTeamTwo('');
-        setStartDate('');
-        setEndDate('');
-        setOpen(false);
-        fetchEvents(false);
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => setLoading(false));
-  };
-
-  return (
-    <ResponsiveDialog
-      maxWidth="md"
-      open={open}
-      onClose={() => setOpen(false)}
-      title="New Event"
-      actions={
-        <DialogActions className="flex items-center justify-center mx-4">
-          <div className="flex flex-col items-center justify-center w-full">
-            <button
-              className="btn-neutral w-full py-3"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn-casama w-full py-3 mt-2"
-              onClick={handleCreate}
-              disabled={loading}
-            >
-              Continue
-            </button>
-          </div>
-        </DialogActions>
-      }
-    >
-      {loading ? (
-        <div className="px-6 pb-1">
-          <Typography className="text-md text-center" color="GrayText">
-            Creating {name}...
-          </Typography>
-        </div>
-      ) : (
-        <>
-          <Stack spacing={2}>
-            <div>
-              <label className="label" htmlFor="eventName">
-                Event Name
-              </label>
-              <input
-                className="textfield py-4 px-3 mt-2"
-                id="eventName"
-                placeholder="WM Finale"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="label" htmlFor="eventStartDate">
-                Start Date
-              </label>
-              <input
-                className="textfield py-4 px-3 mt-2"
-                id="eventStartDate"
-                type="datetime-local"
-                onChange={(e) => setStartDate(Number(new Date(e.target.value)))}
-              />
-            </div>
-            <div>
-              <label className="label" htmlFor="eventEndDate">
-                End Date
-              </label>
-              <input
-                className="textfield py-4 px-3 mt-2"
-                id="eventEndDate"
-                type="datetime-local"
-                onChange={(e) => setEndDate(Number(new Date(e.target.value)))}
-              />
-            </div>
-            <div>
-              <label className="label" htmlFor="eventEndDate">
-                Event Type
-              </label>
-              <Select
-                className="textfield mt-2 outline-none"
-                value={eventType}
-                onChange={(e) => setEventType(e.target.value)}
-              >
-                <MenuItem value={0}>Soccer</MenuItem>
-              </Select>
-            </div>
-            <div>
-              <label className="label" htmlFor="teamOne">
-                Team One
-              </label>
-              <input
-                className="textfield py-4 px-3 mt-2"
-                id="teamOne"
-                placeholder="Team One"
-                value={teamOne}
-                onChange={(e) => setTeamOne(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="label" htmlFor="TeamTwo">
-                Team Two
-              </label>
-              <input
-                className="textfield py-4 px-3 mt-2"
-                id="TeamTwo"
-                placeholder="Team Two"
-                value={teamTwo}
-                onChange={(e) => setTeamTwo(e.target.value)}
-              />
-            </div>
-          </Stack>
-        </>
-      )}
-    </ResponsiveDialog>
   );
 }
 
@@ -211,13 +58,6 @@ function EventCard({
   handleError,
 }) {
   const [loading, setLoading] = useState(false);
-  const [valueOne, setValueOne] = useState('');
-  const [valueTwo, setValueTwo] = useState('');
-
-  const handleOutcomeInput = (index, value) => {
-    if (index == 0) setValueOne(value);
-    if (index == 1) setValueTwo(value);
-  };
 
   const settleAllGames = async () => {
     setLoading(true);
@@ -245,7 +85,7 @@ function EventCard({
 
   const handleResolve = () => {
     setLoading(true);
-    resolveEvent(event.id, [valueOne, valueTwo], event.version)
+    resolveEvent(event.id)
       .then((res) => {
         handleSuccess(`Resolved Event "${event.name}"`);
         fetchEvents(false);
@@ -260,152 +100,88 @@ function EventCard({
       });
   };
 
-  return !event.resolved || gameCount > 0 ? (
-    <Paper className="p-3 my-2 rounded-xl">
-      <Stack direction="row" spacing={1} alignItems="center">
+  return (
+    <Paper className="p-3 my-2 rounded-xl relative">
+      {gameCount > 0 && (
+        <p className="absolute top-3 right-3 text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] h-6 rounded-full bg-red-500 text-white">
+          {gameCount}
+        </p>
+      )}
+      <div className="flex flex-col sm:flex-row items-center gap-2">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <Stack direction="row" justifyContent="space-between" flexGrow="1">
-          <Stack spacing={1}>
-            <Typography variant="h6">{event.name}</Typography>
-            <Typography>Owner: {event.owner}</Typography>
-            <Typography>Games: {gameCount}</Typography>
-          </Stack>
-          <Stack spacing={1} justifyContent="space-between">
-            <Typography>
-              {new Date(event.startDate || event.endDate).toLocaleString()}
-            </Typography>
-          </Stack>
-        </Stack>
-      </Stack>
-      <Divider />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mt={1}
-        spacing={1}
-        rowGap={2}
-        flexWrap="wrap"
-        className="relative w-full"
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={1}
-          justifyContent="center"
-          flexGrow="1"
-        >
-          <Typography>{event.teams[0]}</Typography>
-          <div className="w-12">
-            <input
-              className="textfield text-center py-1 px-3"
-              value={event.resolved ? event.outcome[0] : valueOne}
-              onChange={(e) => handleOutcomeInput(0, e.target.value)}
-              disabled={event.resolved}
+        <div className="flex-grow flex flex-col gap-2 w-full">
+          <p className="text-lg font-medium sm:mr-10">{event.name}</p>
+          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <TimeFrame
+              start={new Date(event.startTime)}
+              end={new Date(event.endTime)}
             />
+            <button
+              className="btn-casama py-1 px-2 w-full sm:w-auto"
+              onClick={handleResolve}
+              disabled={loading || event.endDate > Number(new Date())}
+            >
+              Resolve
+            </button>
           </div>
-          <Typography>:</Typography>
-          <div className="w-12">
-            <input
-              className="textfield text-center py-1 px-3"
-              value={event.resolved ? event.outcome[1] : valueTwo}
-              onChange={(e) => handleOutcomeInput(1, e.target.value)}
-              disabled={event.resolved}
-            />
-          </div>
-          <Typography>{event.teams[1]}</Typography>
-        </Stack>
-        {event.resolved ? (
-          <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
-            onClick={() => settleAllGames()}
-            // disabled={loading || event.endDate > Number(new Date())}
-            disabled={loading}
-          >
-            Settle All Games
-          </button>
-        ) : (
-          <button
-            className="btn-casama py-1 px-2 sm:absolute right-0 w-full sm:w-auto"
-            onClick={handleResolve}
-            // disabled={loading || event.endDate > Number(new Date())}
-            disabled={loading}
-          >
-            Resolve Event and settle all
-          </button>
-        )}
-      </Stack>
+        </div>
+      </div>
     </Paper>
-  ) : null;
+  );
 }
 
-function RecommendedEventCard({
+function ListedEventCard({
   event,
   fetchEvents,
   handleSuccess,
   handleError,
-  removeRecommendedEvent,
+  removeListedEvent,
 }) {
   const [loading, setLoading] = useState(false);
 
   const handleCreate = () => {
     setLoading(true);
-    registerEvent(
-      event.event_name,
-      Number(new Date(`${event.utc_start_time}Z`)),
-      Number(new Date(`${event.utc_end_time}Z`)),
-      eventTypeMapping[event.event_type],
-      {
-        teams: [event.team_home, event.team_away],
-        extId: event.event_id,
-      }
-    )
+    registerEvent(event.id)
       .then((res) => {
-        console.log(res);
-        handleSuccess(`Created Event "${event.event_name}"`);
+        handleSuccess(`Created Event "${event.name}"`);
         fetchEvents(false);
-        removeRecommendedEvent(event.event_id);
+        setLoading(false);
+        removeListedEvent(event.id);
       })
       .catch((err) => {
         handleError(err);
-      })
-      .then(() => setLoading(false));
+        setLoading(false);
+      });
   };
 
   return (
     <Paper className="p-3 my-2 rounded-xl">
-      <Stack direction="row" spacing={1} alignItems="center">
+      <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <Stack spacing={1} flexGrow="1">
-          <Typography variant="h6">{event.event_name}</Typography>
-          <Typography>
-            {event.team_home} vs. {event.team_away}
-          </Typography>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography>Your Local Time:</Typography>
+        <div className="flex-grow flex flex-col gap-2 w-full">
+          <div className="w-full flex items-start justify-between gap-2">
+            <p className="text-lg font-medium">{event.name}</p>
+          </div>
+          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <TimeFrame
-              start={`${event.utc_start_time}Z`}
-              end={`${event.utc_end_time}Z`}
+              start={new Date(event.startTime)}
+              end={new Date(event.endTime)}
             />
-          </Stack>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography>UTC Time:</Typography>
-            <TimeFrame start={event.utc_start_time} end={event.utc_end_time} />
-          </Stack>
-          <button
-            className="btn-casama py-1 px-2 w-full sm:w-3/12 sm:max-w-[200px]"
-            onClick={handleCreate}
-            disabled={loading}
-          >
-            Create Event
-          </button>
-        </Stack>
-      </Stack>
+            <button
+              className="btn-casama py-1 px-2 w-full sm:w-auto"
+              onClick={handleCreate}
+              disabled={loading}
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
     </Paper>
   );
 }
 
-function GameCard({ game, event, fetchGames, handleSuccess, handleError }) {
+function GameCard({ game, fetchGames, handleSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -422,54 +198,68 @@ function GameCard({ game, event, fetchGames, handleSuccess, handleError }) {
       .then(() => setLoading(false));
   };
 
-  return (
-    <Paper className="p-3 my-2 rounded-xl">
-      <Stack direction="row" spacing={1} alignItems="center">
+  return game.event ? (
+    <Paper className="p-3 my-2 rounded-xl relative">
+      {game.participants.length > 0 && (
+        <p className="absolute top-3 right-3 text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] h-6 rounded-full bg-red-500 text-white">
+          {game.participants.length}
+        </p>
+      )}
+      <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
         <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <Stack spacing={1} flexGrow="1">
-          <Stack direction="row" justifyContent="space-between">
-            <Typography variant="h6">{game.name}</Typography>
+        <div className="flex-grow flex flex-col w-full">
+          <div className="sm:mr-10">
+            <p className="text-casama-blue">{game.event?.name}</p>
+            <Link href={`/betting/pools/${game.poolAddress}`}>
+              <a className="text-lg font-medium">{game.name}</a>
+            </Link>
+          </div>
+          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <p>Stake: {toFixed((game.stake / 1000000) * 0.951, 2)} $</p>
             <button
-              className="btn-casama py-1 px-2"
+              className="btn-casama py-1 px-2 w-full sm:w-auto"
               onClick={handleClose}
-              disabled={loading || !event?.resolved}
+              disabled={loading || !game.event?.resolved}
             >
-              Settle
+              Close
             </button>
-          </Stack>
-          <Typography>Event: {event?.name}</Typography>
-          <Typography>Pool: {game.poolAddress}</Typography>
-          <Typography>Participants: {game.participants.length}</Typography>
-          <Typography>Stake: {game.stake}</Typography>
-        </Stack>
-      </Stack>
+          </div>
+        </div>
+      </div>
     </Paper>
-  );
+  ) : null;
 }
 
 export default function AdminBettingPage(props) {
   const { user } = props;
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const [games, setGames] = useState([]);
   const [events, setEvents] = useState([]);
-  const [recommendedEvents, setRecommendedEvents] = useState([]);
+  const [listedEvents, setListedEvents] = useState([]);
 
-  const fetchEvents = (fetchRecommended = false) => {
-    axios({ url: '/api/betting/events' }).then((res) => {
-      setEvents(res.data);
-      fetchRecommended && fetchRecommendedEvents();
+  const [showListedEvents, setShowListedEvents] = useState(false);
+  const [showOpenEvents, setShowOpenEvents] = useState(false);
+  const [showGames, setShowGames] = useState(false);
+
+  const fetchEvents = (fetchListed = false) => {
+    axios({ url: '/api/betting/events/registered' }).then((res) => {
+      setEvents(
+        res.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+      );
+      fetchListed && fetchListedEvents();
     });
   };
 
-  const fetchRecommendedEvents = () => {
-    axios({ url: '/api/betting/events/suggestions' }).then((res) => {
-      setRecommendedEvents(res.data);
+  const fetchListedEvents = () => {
+    axios({ url: '/api/betting/events/listed' }).then((res) => {
+      setListedEvents(
+        res.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+      );
     });
   };
 
-  const removeRecommendedEvent = (id) => {
-    setRecommendedEvents((evs) => evs.filter((ev) => ev.id != id));
+  const removeListedEvent = (id) => {
+    setListedEvents((evs) => evs.filter((ev) => ev.id != id));
   };
 
   const fetchGames = () => {
@@ -491,77 +281,85 @@ export default function AdminBettingPage(props) {
 
   return (
     <Container maxWidth="xl">
-      <Stack spacing={1}>
-        <div className="flex justify-end">
-          <button
-            onClick={() => setOpen(true)}
-            className="btn-casama items-center mb-2 mt-3 py-3 px-3 text-lg"
-          >
-            New Event
+      <Stack spacing={1} my={3}>
+        <div className="flex items-center gap-3">
+          <p className="text-2xl">Upcoming Events</p>
+          <button onClick={() => setShowListedEvents((show) => !show)}>
+            {showListedEvents ? (
+              <AiFillUpCircle className="text-casama-blue text-2xl" />
+            ) : (
+              <AiOutlineDownCircle className="text-casama-blue text-2xl" />
+            )}
           </button>
         </div>
-        <div>
-          <Typography variant="h4">Upcoming Events</Typography>
-          {recommendedEvents
-            .filter((e) => !events.map((ev) => ev.extId).includes(e.event_id))
-            .map((event) => {
-              return (
-                <RecommendedEventCard
-                  key={`recommended-event-${event.event_id}`}
-                  event={event}
-                  fetchEvents={fetchEvents}
-                  removeRecommendedEvent={removeRecommendedEvent}
-                  {...props}
-                />
-              );
-            })}
+        <Collapse in={showListedEvents}>
+          {listedEvents.map((event) => {
+            return (
+              <ListedEventCard
+                key={`listed-event-${event.id}`}
+                event={event}
+                fetchEvents={fetchEvents}
+                removeListedEvent={removeListedEvent}
+                {...props}
+              />
+            );
+          })}
+        </Collapse>
+        <Divider />
+        <div className="flex items-center gap-3">
+          <p className="text-2xl">Open Events</p>
+          <button onClick={() => setShowOpenEvents((show) => !show)}>
+            {showOpenEvents ? (
+              <AiFillUpCircle className="text-casama-blue text-2xl" />
+            ) : (
+              <AiOutlineDownCircle className="text-casama-blue text-2xl" />
+            )}
+          </button>
         </div>
-        <div>
-          <Typography variant="h4">Open Events</Typography>
+        <Collapse in={showOpenEvents}>
           {events.map((event) => {
             return (
               <EventCard
                 key={`event-${event.version}-${event.id}`}
                 event={event}
-                gameCount={games.filter((g) => g.eventId == event.id).length}
+                gameCount={games.filter((g) => g.event.id == event.id).length}
                 fetchEvents={fetchEvents}
                 fetchGames={fetchGames}
                 {...props}
               />
             );
           })}
-        </div>
-        <div>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography variant="h4">Games</Typography>
-            <button className="text-3xl text-casama-blue" onClick={fetchGames}>
-              <IoMdRefresh />
+        </Collapse>
+        <Divider />
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <div className="flex items-center gap-3">
+            <p className="text-2xl">Active Games</p>
+            <button onClick={() => setShowGames((show) => !show)}>
+              {showGames ? (
+                <AiFillUpCircle className="text-casama-blue text-2xl" />
+              ) : (
+                <AiOutlineDownCircle className="text-casama-blue text-2xl" />
+              )}
             </button>
-          </Stack>
+          </div>
+          <button className="text-3xl text-casama-blue" onClick={fetchGames}>
+            <IoMdRefresh />
+          </button>
+        </Stack>
+        <Collapse in={showGames}>
           {games.map((game) => {
             return (
               <div key={`game-${game.version}-${game.id}`} className="mb-8">
-                <GameCard
-                  game={game}
-                  event={events.find((e) => e.id == game.eventId)}
-                  fetchGames={fetchGames}
-                  {...props}
-                />
+                <GameCard game={game} fetchGames={fetchGames} {...props} />
               </div>
             );
           })}
-        </div>
+        </Collapse>
       </Stack>
-      <NewEventDialog
-        open={open}
-        setOpen={setOpen}
-        fetchEvents={fetchEvents}
-        {...props}
-      />
     </Container>
   );
 }

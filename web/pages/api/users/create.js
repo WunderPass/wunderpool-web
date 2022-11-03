@@ -13,6 +13,7 @@ export default async function handler(req, res) {
         handle: req.body.handle,
         email: req.body.email,
         phone_number: req.body.phoneNumber,
+        encrypted_seed_phrase: req.body.seedPhrase,
       }),
       { contentType: 'application/json' }
     );
@@ -26,7 +27,7 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'post',
-      url: 'https://identity-service.wunderpass.org/v4/wunderPasses',
+      url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses`,
       data: data,
       headers: headers,
     });

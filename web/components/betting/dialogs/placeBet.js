@@ -127,7 +127,7 @@ export default function PlaceBetDialog({
           mt={1}
           spacing={1}
         >
-          <Typography>{game.event.teams[0]}</Typography>
+          <Typography>{game.event.teamHome}</Typography>
           <div className="w-12">
             <input
               inputMode="numeric"
@@ -145,7 +145,7 @@ export default function PlaceBetDialog({
               onChange={(e) => setGuessTwo(e.target.value)}
             />
           </div>
-          <Typography>{game.event.teams[1]}</Typography>
+          <Typography>{game.event.teamAway}</Typography>
         </Stack>
       )}
       <TransactionFrame open={loading} />

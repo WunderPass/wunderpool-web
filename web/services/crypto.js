@@ -45,6 +45,7 @@ export function decryptKey(password, save = false) {
 export function encryptSeed(seedPhrase, password) {
   const encrypted = encrypt(seedPhrase, password);
   localStorage.setItem('seedPhrase', encrypted);
+  return encrypted;
 }
 
 export function decryptSeed(password) {

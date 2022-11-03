@@ -7,15 +7,11 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json',
       authorization: `Bearer ${process.env.BETTING_SERVICE_TOKEN}`,
     };
-    const { data: liveEvents } = await axios({
-      url: `${process.env.BETTING_SERVICE}/admin/liveEvents`,
-      headers,
-    });
-    const { data: registeredEvents } = await axios({
+    const { data } = await axios({
       url: `${process.env.BETTING_SERVICE}/admin/settledEvents`,
       headers,
     });
-    res.status(200).json([...liveEvents, ...registeredEvents].map(formatEvent));
+    res.status(200).json(data.map(formatEvent));
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

@@ -8,11 +8,11 @@ import {
   Stack,
 } from '@mui/material';
 import { forwardRef, useState, useEffect } from 'react';
-import Link from 'next/link';
 import PasswordInput from '/components/general/utils/passwordInput';
-import { decryptSeed } from '../../../services/crypto';
+import { decryptSeed, encryptSeed } from '/services/crypto';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { MdCheck, MdContentCopy } from 'react-icons/md';
+import axios from 'axios';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -21,11 +21,17 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function BackupSeedPhraseAlert(props) {
   const { user } = props;
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [seedPhrase, setSeedPhrase] = useState(null);
   const [copied, setCopied] = useState(false);
   const [checked, setChecked] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+    setLoading(false);
+  };
 
   const handleSubmit = () => {
     try {
@@ -37,19 +43,43 @@ export default function BackupSeedPhraseAlert(props) {
     }
   };
 
-  const handleConfirm = () => {
-    localStorage.setItem('backedUpSeed', true);
-    setOpen(false);
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await axios({
+        url: '/api/users/recover/confirmBackup',
+        params: { identifier: user.wunderId },
+      });
+      handleClose();
+    } catch (error) {
+      try {
+        await axios({
+          method: 'post',
+          url: '/api/users/recover/migrate',
+          params: { identifier: user.wunderId },
+          data: { seedPhrase: encryptSeed(seedPhrase, password) },
+        });
+        await axios({
+          url: '/api/users/recover/confirmBackup',
+          params: { identifier: user.wunderId },
+        });
+        handleClose();
+      } catch (err) {
+        handleClose();
+      }
+      handleClose();
+    }
   };
 
   useEffect(() => {
-    if (user.usdBalance > 5 && user.loginMethod == 'Casama') {
-      setOpen(
-        localStorage.getItem('seedPhrase') &&
-          localStorage.getItem('backedUpSeed') != 'true'
-      );
+    if (
+      user.usdBalance &&
+      user.usdBalance > 5 &&
+      user.confirmedBackup == false
+    ) {
+      setOpen(Boolean(localStorage.getItem('seedPhrase')));
     }
-  }, [user.usdBalance]);
+  }, [user.usdBalance, user.confirmedBackup]);
 
   return (
     <Dialog
@@ -135,11 +165,11 @@ export default function BackupSeedPhraseAlert(props) {
           Not now
         </button>
         <button
-          disabled={!checked}
+          disabled={!checked || loading}
           className="w-full btn-casama px-5 py-2"
           onClick={handleConfirm}
         >
-          Confirm
+          {loading ? 'Loading...' : 'Confirm'}
         </button>
       </div>
     </Dialog>

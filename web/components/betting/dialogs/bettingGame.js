@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import CurrencyInput from '/components/general/utils/currencyInput';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '/components/general/utils/responsiveDialog';
-import EventInput from '/components/general/events/input';
+import EventInput from '/components/betting/events/input';
 import { registerGame } from '/services/contract/betting/games';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 
@@ -65,10 +65,9 @@ export default function BettingGameDialog(props) {
       wunderPool.poolName,
       stakeInTokens,
       wunderPool.governanceToken.address,
-      event.id,
+      event,
       payoutRule,
-      wunderPool.poolAddress,
-      event.version
+      wunderPool.poolAddress
     )
       .then((res) => {
         console.log(res);
@@ -84,7 +83,6 @@ export default function BettingGameDialog(props) {
   };
 
   const handleInput = (value, float) => {
-    //currently not able to use bets below 0.1€
     setStake(value);
     setStakeInTokens(
       Math.floor(

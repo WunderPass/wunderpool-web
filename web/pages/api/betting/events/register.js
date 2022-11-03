@@ -3,19 +3,19 @@ import { formatEvent } from '/services/eventHelpers';
 
 export default async function handler(req, res) {
   try {
+    const eventId = req.body.eventId;
+
     const headers = {
       'Content-Type': 'application/json',
       authorization: `Bearer ${process.env.BETTING_SERVICE_TOKEN}`,
     };
-    const { data: liveEvents } = await axios({
-      url: `${process.env.BETTING_SERVICE}/admin/liveEvents`,
+
+    const { data } = await axios({
+      method: 'post',
+      url: `${process.env.BETTING_SERVICE}/admin/settleEvent/${eventId}`,
       headers,
     });
-    const { data: registeredEvents } = await axios({
-      url: `${process.env.BETTING_SERVICE}/admin/settledEvents`,
-      headers,
-    });
-    res.status(200).json([...liveEvents, ...registeredEvents].map(formatEvent));
+    res.status(200).json(formatEvent(data));
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

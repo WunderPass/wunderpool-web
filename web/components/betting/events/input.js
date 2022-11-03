@@ -25,8 +25,12 @@ export default function EventInput(props) {
   };
 
   useEffect(() => {
-    axios({ url: '/api/betting/events' }).then((res) => {
-      setOptions(res.data.filter((e) => !e.resolved));
+    axios({ url: '/api/betting/events/registered' }).then((res) => {
+      setOptions(
+        res.data
+          .filter((e) => new Date(e.startTime) > new Date())
+          .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+      );
       setLoading(false);
     });
   }, []);
@@ -75,7 +79,7 @@ export default function EventInput(props) {
                   textOverflow="ellipsis"
                   overflow="hidden"
                 >
-                  {new Date(option.endDate).toLocaleString()}
+                  {new Date(option.startTime).toLocaleString()}
                 </Typography>
               </Stack>
             </Stack>

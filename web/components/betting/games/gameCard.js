@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
+import usePool from '/hooks/usePool';
 
 function calculatePoints(eventType, prediction, result) {
   // SOCCER
@@ -168,7 +169,7 @@ export default function GameCard(props) {
   };
 
   useEffect(() => {
-    if (game.event.outcome.length == 0) {
+    if (!game.event.outcome || game.event.outcome.length == 0) {
       setGameResultTable(game.participants);
     } else {
       setGameResultTable(calculateWinnings(game, stake, game.event.outcome));
@@ -243,67 +244,67 @@ export default function GameCard(props) {
             </div>
           </div>
           <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
-            {game.event.resolved ? (
+            {game.event.state == 'RESOLVED' ? (
               <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
                 <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
                   Result
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teams[0]}
+                    {game.event.teamHome}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
                     <p className="font-semibold text-xl sm:text-2xl">
-                      {game.event.outcome[0]}
+                      {game.event?.outcome[0] || 0}
                     </p>
                     <p className="px-1 text-xl sm:text-2xl">:</p>
                     <p className="font-semibold text-xl sm:text-2xl">
-                      {game.event.outcome[1]}
+                      {game.event?.outcome[1] || 0}
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teams[1]}
+                    {game.event.teamAway}
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
+              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                {new Date(game.event.startTime) < new Date() && (
+                  <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
+                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                    <div className="text-sm">LIVE</div>
+                  </div>
+                )}
                 <Timer
                   start={Number(new Date())}
-                  end={game.event.startDate || game.event.endDate}
+                  end={
+                    new Date(game.event.startTime) > new Date()
+                      ? game.event.startTime
+                      : game.event.endTime
+                  }
                 />
               </div>
             )}
           </div>
 
           {/* Only Show participants if user has voted */}
-          {game.event.resolved ? (
-            <ParticipantTable
-              user={user}
-              participants={gameResultTable}
-              stake={stake}
-            />
-          ) : (
-            <>
-              {game.participants.find(
-                (participant) => participant.address === user.address
-              ) && (
-                <ParticipantTable
-                  user={user}
-                  participants={gameResultTable}
-                  stake={stake}
-                />
-              )}
-            </>
-          )}
-
+          {game.event.state == 'RESOLVED' ||
+            (game.participants.find(
+              (participant) =>
+                participant.address?.toLowerCase() ===
+                user.address?.toLowerCase()
+            ) && (
+              <ParticipantTable
+                user={user}
+                participants={gameResultTable}
+                stake={stake}
+              />
+            ))}
           {wunderPool.isMember &&
             !usersBet &&
-            !game.event.resolved &&
-            (game.event.startDate
-              ? game.event.startDate > Number(new Date())
-              : true) && (
+            game.event.state != 'RESOLVED' &&
+            new Date(game.event.startTime) > new Date() && (
               <div className="flex justify-center items-center">
                 <button
                   className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
