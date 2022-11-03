@@ -17,17 +17,35 @@ import BetsList from '/components/betting/dashboard/betsList';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import MenuUnstyled from '@mui/base/MenuUnstyled';
 import MenuItemUnstyled from '@mui/base/MenuItemUnstyled';
+import axios from 'axios';
+import useBettingService from '/hooks/useBettingService';
 
-export default function Pool(props) {
-  const router = useRouter();
+export default function Bets(props) {
   const { user, handleInfo, handleError } = props;
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [eventListOpen, setEventListOpen] = useState(null);
   const [open, setOpen] = useState(false);
+  const bettingService = useBettingService(user.address, handleError);
 
   const handleMenuClose = () => {
     setOpen(false);
     setEventListOpen(null);
   };
+
+  const getEvents = async () => {
+    axios({
+      method: 'get',
+      url: `/api/betting/games`,
+    }).then((res) => {
+      console.log(res.data);
+      setGames(res.data);
+    });
+  };
+
+  useEffect(() => {
+    getEvents().then(() => setLoading(false));
+  }, []);
 
   return (
     <>
@@ -50,7 +68,11 @@ export default function Pool(props) {
                 <div className="flex  items-center h-14 text-xl sm:text-3xl mb-3   font-medium">
                   Overview
                 </div>
-                <BettingBox className="w-10" {...props} />
+                <BettingBox
+                  className="w-10"
+                  bettingService={bettingService}
+                  {...props}
+                />
               </div>
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
@@ -103,8 +125,13 @@ export default function Pool(props) {
                   </MenuUnstyled>
                 </div>
 
-                {user.isReady ? (
-                  <BetsList className="mx-4" user={user} {...props} />
+                {!loading ? (
+                  <BetsList
+                    className="mx-4"
+                    bettingService={bettingService}
+                    user={user}
+                    {...props}
+                  />
                 ) : (
                   <Skeleton
                     variant="rectangular"

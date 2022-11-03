@@ -7,6 +7,7 @@ import {
   Skeleton,
   Typography,
   Tooltip,
+  Collapse,
 } from '@mui/material';
 import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
 import QuickPoolDialog from '/components/betting/dialogs/quickPool/dialog';
@@ -18,6 +19,8 @@ import { AiOutlineDownCircle } from 'react-icons/ai';
 import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
 import QrCode from '/components/general/utils/qrCode';
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
+import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 
 export default function Pools(props) {
   const { user, handleSuccess, updateListener, isMobile } = props;
@@ -25,19 +28,10 @@ export default function Pools(props) {
   const [openQuick, setOpenQuick] = useState(false);
   const [page, setPage] = useState(1);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  const [showAddress, setShowAddress] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(true);
   const router = useRouter();
 
   const pageSize = 4;
-
-  const toggleAddress = () => {
-    setShowAddress(!showAddress);
-  };
-
-  const formatAddress = (str) => {
-    if (!str) return '';
-    return `${str.slice(0, 4)}...${str.slice(-4)}`;
-  };
 
   const handleOpenCloseAdvanced = () => {
     if (openAdvanced) {
@@ -67,8 +61,53 @@ export default function Pools(props) {
   return (
     <>
       <CustomHeader />
-      <div className="flex flex-row font-graphik h-full">
-        <aside class="container-white-p-0 h-screen w-1/3 sticky top-16">
+
+      <div className="flex sm:flex-row flex-col font-graphik h-full">
+        {/* MOBILE */}
+        <div className="flex flex-col  sticky top-14 w-full sm:w-auto z-10">
+          <div
+            className={
+              showSideBar
+                ? 'flex flex-col sm:hidden h-12 bg-white drop-shadow-lg '
+                : ' rounded-b-xl flex flex-col sm:hidden h-12 bg-white drop-shadow-lg '
+            }
+          >
+            <Typography className=" text-xl pt-3 sm:text-3xl font-medium text-gray-500 mx-3">
+              Categories
+            </Typography>
+          </div>{' '}
+          <Collapse in={showSideBar}>
+            <div className="flex flex-col sm:hidden bg-white rounded-b-xl drop-shadow-lg h-28 z-10 sticky top-14 ">
+              <div className="flex flex-row gap-2 overflow-x-scroll ">
+                <div className="container-gray-p-0 px-6 py-8">dwad</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">adwa</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+                <div className="container-gray-p-0 px-6 py-8">daw</div>
+              </div>
+            </div>
+          </Collapse>
+          <button
+            className="text-black text-sm font-medium mt-2 z-1 top-16"
+            onClick={() => setShowSideBar((val) => !val)}
+          >
+            <div
+              id="advanced"
+              className="sm:hidden flex flex-row  items-center justify-end mr-6 text-lg -mt-6 top-16"
+            >
+              {showSideBar ? (
+                <MdOutlineKeyboardArrowUp className="ml-3 text-xl container-round-transparent bg-white z-20 border border-gray-300" />
+              ) : (
+                <MdOutlineKeyboardArrowDown className="ml-3 text-xl container-round-transparent bg-white z-20 border border-gray-300" />
+              )}
+            </div>
+          </button>
+        </div>
+        {/* DESKTOP*/}
+        <aside className="hidden sm:block container-white-p-0 h-screen w-1/3 sticky top-16">
           <Typography className=" text-xl pt-16 sm:text-3xl mb-10 font-medium text-gray-500 mx-7">
             Categories
           </Typography>
