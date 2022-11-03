@@ -25,7 +25,7 @@ export default function PoolCard(props) {
   }, [pool.address]);
 
   return (
-    <Link href={`/betting/pools/${pool.address}`} passHref>
+    <Link href={`/investing/pools/${pool.address}`} passHref>
       <div className="container-white w-full flex flex-col sm:flex-row justify-between p-3 gap-3 cursor-pointer">
         <div className="flex flex-row-reverse sm:flex-row w-full sm:max-w-[40%] items-center justify-between sm:justify-start gap-3">
           <div

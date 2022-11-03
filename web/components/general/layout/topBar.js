@@ -37,7 +37,7 @@ export default function TopBar(props) {
         >
           <Toolbar>
             <Stack className="hidden sm:flex flex-row w-full justify-between items-center mt-1">
-              <Link href="/betting/pools">
+              <Link href="/investing/pools">
                 <div className="flex flex-row cursor-pointer items-center">
                   <div className="pl-1.5 items-center justify-center mr-2">
                     <div className="pb-1.5 hidden lg:block w-40">
@@ -70,7 +70,7 @@ export default function TopBar(props) {
                 <div className="w-full">
                   <ul className="flex flex-row justify-between items-center w-full">
                     <div className="flex flex-row justify-start">
-                      <Link href={`/betting/bets`}>
+                      {/* <Link href={`/betting/bets`}>
                         <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           My Bets
                         </li>
@@ -79,7 +79,7 @@ export default function TopBar(props) {
                         <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           Betting
                         </li>
-                      </Link>
+                      </Link> */}
                       <Link href={`/investing/pools`}>
                         <li className="px-5 py-2 hidden sm:block hover:bg-casama-light-blue rounded-lg cursor-pointer">
                           Pools

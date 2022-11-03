@@ -27,7 +27,9 @@ export default function EventInput(props) {
   useEffect(() => {
     axios({ url: '/api/betting/events/registered' }).then((res) => {
       setOptions(
-        res.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+        res.data
+          .filter((e) => new Date(e.startTime) > new Date())
+          .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
       );
       setLoading(false);
     });
