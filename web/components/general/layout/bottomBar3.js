@@ -41,7 +41,6 @@ export default function BottomBar(props) {
       <div
         className="fixed sm:hidden bottom-0 left-0 z-50 w-full"
         style={{
-          paddingBottom: 'env(safe-area-inset-bottom)',
           pointerEvents: showMenu ? 'all' : 'none',
         }}
       >
@@ -87,7 +86,12 @@ export default function BottomBar(props) {
             </div>
           </div>
         </div>
-        <div className="flex flex-row h-full w-full justify-between items-center text-white bg-casama-blue rounded-t-3xl border-t py-1 pointer-events-auto">
+        <div
+          className="flex flex-row h-full w-full justify-between items-center text-white bg-casama-blue rounded-t-3xl py-1 pointer-events-auto"
+          style={{
+            paddingBottom: 'env(safe-area-inset-bottom)',
+          }}
+        >
           <Link href="/betting/bets">
             <div className="flex flex-col items-center justify-center w-1/3 mt-1 ml-8 cursor-pointer">
               <AiOutlineInsertRowBelow className="text-3xl" />
