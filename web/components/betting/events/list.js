@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import EventCard from '/components/betting/events/eventCard';
 import axios from 'axios';
 import useBettingService from '../../../hooks/useBettingService';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function EventList(props) {
-  const { eventTypeSort, bettingService } = props;
+  const { eventTypeSort, bettingService, sortId, isSortById } = props;
   const [events, setEvents] = useState([]);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,9 +60,26 @@ export default function EventList(props) {
     />
   ) : (
     <Stack style={{ maxWidth: '100%' }}>
-      <div className="2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full">
+      <div
+        className={
+          isSortById
+            ? ' grid grid-cols-1 gap-5 w-full'
+            : '2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full'
+        }
+      >
         {events.map((event) => {
-          if (
+          if (isSortById) {
+            if (event.id == sortId) {
+              return (
+                <EventCard
+                  key={`event-card-${event.id}`}
+                  event={event}
+                  games={games}
+                  {...props}
+                />
+              );
+            }
+          } else if (
             event.competitionName == eventTypeSort ||
             eventTypeSort == 'All Events'
           ) {

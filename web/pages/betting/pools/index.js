@@ -4,6 +4,8 @@ import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
 import DropDown from '/components/general/utils/dropDown';
 import axios from 'axios';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function Betting(props) {
   const { user } = props;
@@ -12,6 +14,16 @@ export default function Betting(props) {
   const [events, setEvents] = useState([]);
   const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
+  const [isSortById, setIsSortById] = useState(false);
+  const [sortId, setSortId] = useState(null);
+  const { removeQueryParam } = UseAdvancedRouter();
+  const router = useRouter();
+
+  const pickFilter = (value) => {
+    setEventTypeSort(value);
+    setIsSortById(false);
+    removeQueryParam('sortId');
+  };
 
   const determineEventTypes = () => {
     let eventTypes = events.map((event) => event.competitionName);
@@ -41,6 +53,13 @@ export default function Betting(props) {
     if (events.length == 0) return;
     determineEventTypes();
   }, [events]);
+
+  useEffect(() => {
+    if (!router.query.sortId) return;
+    setSortId(router.query.sortId);
+    setEventTypeSort('Event ID: ' + router.query.sortId);
+    setIsSortById(true);
+  }, [router.query]);
 
   return (
     <>
@@ -123,7 +142,7 @@ export default function Betting(props) {
                     <DropDown
                       list={eventTypes}
                       value={eventTypeSort}
-                      setValue={setEventTypeSort}
+                      setValue={(item) => pickFilter(item)}
                     />
                   </div>
 
@@ -131,6 +150,8 @@ export default function Betting(props) {
                     <EventsList
                       className="mx-4"
                       eventTypeSort={eventTypeSort}
+                      sortId={sortId}
+                      isSortById={isSortById}
                       {...props}
                     />
                   ) : (

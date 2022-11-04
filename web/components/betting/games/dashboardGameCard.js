@@ -90,7 +90,8 @@ export default function DashBoardGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    location.href,
+                    'https://app.casama.io/betting/pools?sortId=' +
+                      game.event.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
