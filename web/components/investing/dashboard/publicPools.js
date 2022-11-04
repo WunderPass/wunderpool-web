@@ -38,7 +38,6 @@ export default function PublicPools({ user }) {
       const filteredPools = data.filter(
         (pool) => !userPools.includes(pool.pool_address)
       );
-      console.log(filteredPools);
       setAllPools(filteredPools);
       await Promise.all(
         filteredPools.slice(0, 3).map((pool) => {
