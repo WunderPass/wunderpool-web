@@ -73,7 +73,7 @@ export default function DashBoardGameCard(props) {
   const { game, handleSuccess, user } = props;
   const router = useRouter();
 
-  const stake = game.stake / 951000; //TODO
+  const stake = game.stake / 1000000; //TODO
 
   const usersBet = game.participants.find(
     (p) => p.address.toLowerCase() == user.address.toLowerCase()

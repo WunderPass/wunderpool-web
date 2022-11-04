@@ -115,6 +115,7 @@ export default function BottomBar(props) {
             label="Menu"
             icon={<AppsIcon />}
           />
+
           <BottomNavigationAction
             label="Profile"
             value="profile"

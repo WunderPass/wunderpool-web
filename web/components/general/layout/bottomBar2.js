@@ -40,6 +40,7 @@ export default function BottomBar(props) {
       <div
         className="flex items-center justify-center w-full bg-black"
         style={{
+          pointerEvents: showMenu ? 'all' : 'none',
           opacity: showMenu ? '100' : '0',
           transition: 'visibility 0s, opacity 0.2s linear',
         }}

@@ -13,7 +13,7 @@ function BettingBox(props) {
       (accum, game) => accum + game.stake,
       0
     );
-    let formatedValue = total / 951000; //TODO
+    let formatedValue = total / 1000000; //TODO
     setTotalMoneyStake(currency(formatedValue));
   };
 
@@ -22,7 +22,7 @@ function BettingBox(props) {
       (accum, game) => accum + game.stake * game.participants.length,
       0
     );
-    let formatedValue = total / 951000; //TODO
+    let formatedValue = total / 1000000; //TODO
     setTotalPotSize(currency(formatedValue));
   };
 
