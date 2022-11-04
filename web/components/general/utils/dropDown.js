@@ -40,7 +40,7 @@ export default function DropDown(props) {
                 className={
                   i == 0
                     ? 'shadow-dropdown-b border-b border-gray-200 hover:border-gray-400 hover:drop-shadow-md mt-1 w-56'
-                    : i == item.length - 1
+                    : i == list.length - 1
                     ? 'shadow-dropdown-t border-t border-gray-200 hover:border-gray-400 hover:drop-shadow-md mb-1 w-56'
                     : 'shadow-dropdown-y border-y border-gray-200 hover:border-gray-400 hover:drop-shadow-md w-56'
                 }

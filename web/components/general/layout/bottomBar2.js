@@ -49,9 +49,9 @@ export default function BottomBar(props) {
         {/* Big white center background */}
         <div className="fixed sm:hidden bottom-0  w-10/12 z-30 bg-white h-40 rounded-full" />
         {/* White left circled */}
-        <div className="fixed sm:hidden bottom-16 left-0 w-14 ml-32 z-40 bg-white h-8 rounded-t-full " />
+        <div className="fixed sm:hidden bottom-16 w-14 ml-24 z-40 bg-white h-8 rounded-t-full " />
         {/* White right circled */}
-        <div className="fixed sm:hidden bottom-16 right-0 w-14 mr-32 z-40 bg-white h-8 rounded-t-full " />
+        <div className="fixed sm:hidden bottom-16 w-14 mr-24 z-40 bg-white h-8 rounded-t-full " />
         {/* Casama inverted cirlces */}
         <div className="fixed sm:hidden bottom-20 w-24 z-30 bg-casama-blue h-6  " />
         {/* Put stuff in this div below */}
