@@ -1,11 +1,4 @@
-import {
-  Collapse,
-  DialogContent,
-  DialogContentText,
-  Stack,
-  Switch,
-  Tooltip,
-} from '@mui/material';
+import { Collapse, DialogContentText, Stack, Switch } from '@mui/material';
 import { useState } from 'react';
 import { BsImage } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';

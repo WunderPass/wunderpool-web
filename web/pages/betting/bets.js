@@ -1,18 +1,7 @@
-import { useRouter } from 'next/router';
 import CustomHeader from '/components/general/utils/customHeader';
 import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';
-import {
-  Container,
-  Menu,
-  MenuItem,
-  Skeleton,
-  Typography,
-  Chip,
-  Divider,
-} from '@mui/material';
-import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
-import QuickPoolDialog from '/components/betting/dialogs/quickPool/dialog';
+import { Container, Skeleton, Typography } from '@mui/material';
 import BetsList from '/components/betting/dashboard/betsList';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import MenuUnstyled from '@mui/base/MenuUnstyled';

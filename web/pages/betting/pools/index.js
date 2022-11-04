@@ -1,58 +1,14 @@
-import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import {
-  Container,
-  Pagination,
-  Skeleton,
-  Typography,
-  Tooltip,
-  Collapse,
-} from '@mui/material';
-import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
-import QuickPoolDialog from '/components/betting/dialogs/quickPool/dialog';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { MdContentCopy } from 'react-icons/md';
-import { AiFillUpCircle } from 'react-icons/ai';
-import { AiOutlineDownCircle } from 'react-icons/ai';
+import { Container, Skeleton, Typography } from '@mui/material';
 import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
-import QrCode from '/components/general/utils/qrCode';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
-import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
 
 export default function Pools(props) {
-  const { user, handleSuccess, updateListener, isMobile } = props;
-  const [openAdvanced, setOpenAdvanced] = useState(false);
-  const [openQuick, setOpenQuick] = useState(false);
+  const { user, updateListener } = props;
   const [page, setPage] = useState(1);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const [showSideBar, setShowSideBar] = useState(true);
-  const router = useRouter();
 
   const pageSize = 4;
-
-  const handleOpenCloseAdvanced = () => {
-    if (openAdvanced) {
-      goBack(() => removeQueryParam('advancedPool'));
-    } else {
-      addQueryParam({ advancedPool: 'advancedPool' }, false);
-    }
-  };
-
-  const handleOpenCloseQuick = () => {
-    if (openQuick) {
-      goBack(() => removeQueryParam('quickPool'));
-    } else {
-      addQueryParam({ quickPool: 'quickPool' }, false);
-    }
-  };
-
-  useEffect(() => {
-    setOpenAdvanced(router.query?.advancedPool ? true : false);
-    setOpenQuick(router.query?.quickPool ? true : false);
-  }, [router.query]);
 
   useEffect(() => {
     if (user.pools.length > 0) updateListener(user.pools, null, user.address);
@@ -140,17 +96,7 @@ export default function Pools(props) {
                   </div>
 
                   {user.isReady ? (
-                    <EventsList
-                      className="mx-4"
-                      user={user}
-                      pools={user.pools
-                        .sort((a, b) => b.totalBalance - a.totalBalance)
-                        .slice(
-                          (page - 1) * pageSize,
-                          (page - 1) * pageSize + pageSize
-                        )}
-                      {...props}
-                    />
+                    <EventsList {...props} />
                   ) : (
                     <Skeleton
                       variant="rectangular"
@@ -160,21 +106,8 @@ export default function Pools(props) {
                   )}
                 </div>
               </div>
-            </div>{' '}
+            </div>
           </div>
-
-          <QuickPoolDialog
-            openQuick={openQuick}
-            setOpen={handleOpenCloseQuick}
-            fetchPools={user.fetchPools}
-            {...props}
-          />
-          <AdvancedPoolDialog
-            openAdvanced={openAdvanced}
-            setOpen={handleOpenCloseAdvanced}
-            fetchPools={user.fetchPools}
-            {...props}
-          />
         </Container>
       </div>
     </>

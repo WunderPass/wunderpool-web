@@ -40,7 +40,7 @@ export const versionLookup = {
   eta: { name: 'ETA', number: 7 },
 };
 
-export const latestVersion = { name: 'ZETA', number: 6 };
+export const latestVersion = { name: 'ETA', number: 7 };
 
 export const tokenAbi = [
   'function name() public view returns(string)',

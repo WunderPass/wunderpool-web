@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MdGroups } from 'react-icons/md';
 import { Typography, Skeleton } from '@mui/material';
-import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
+import AdvancedPoolDialog from '/components/investing/dialogs/advancedPool/dialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 
