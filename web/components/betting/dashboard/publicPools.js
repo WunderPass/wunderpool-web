@@ -66,7 +66,7 @@ export default function PublicPools({ user }) {
         <Typography className="subheader subheader-sm font-medium my-6">
           Public Pools
         </Typography>
-        <div className="flex flex-col w-full pb-6 lg:gap-4 md:gap-0.5">
+        <div className="flex flex-col w-full pb-6 gap-4">
           {visiblePools
             .sort((a, b) => b.totalBalance - a.totalBalance)
             .map((pool) => {
