@@ -47,7 +47,7 @@ function BettingBox(props) {
               <div className="flex flex-row justify-between items-center ">
                 <Typography className=" text-xl">Open Bets</Typography>
                 <Typography className="text-2xl font-semibold">
-                  {bettingService.games.length}
+                  {bettingService.games?.length}
                 </Typography>
               </div>
             </div>

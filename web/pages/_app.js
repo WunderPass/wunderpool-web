@@ -136,7 +136,7 @@ function WunderPool({ Component, pageProps }) {
         <ThemeProvider theme={muiTheme}>
           <Navbar {...appProps} />
           <div
-            className="w-full mb-20 sm:mb-0"
+            className="w-full mb-20 sm:mb-5"
             style={{
               paddingBottom: 'env(safe-area-inset-bottom)',
             }}

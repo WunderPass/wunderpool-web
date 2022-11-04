@@ -143,31 +143,6 @@ export default function TopBar(props) {
                   {open && (
                     <div>
                       <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-casama-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
-                        <motion.li
-                          className="px-2 py-1 pt-2"
-                          initial={animateFrom}
-                          animate={animateTo}
-                          transition={{ delay: 0.05 }}
-                        >
-                          <Link href={`/betting/bets`}>My Bets</Link>
-                        </motion.li>
-                        <motion.li
-                          className="px-2 py-1 pt-2"
-                          initial={animateFrom}
-                          animate={animateTo}
-                          transition={{ delay: 0.05 }}
-                        >
-                          <Link href={`/betting/pools`}>Betting</Link>
-                        </motion.li>
-                        <motion.li
-                          className="px-2 py-1 pt-2"
-                          initial={animateFrom}
-                          animate={animateTo}
-                          transition={{ delay: 0.05 }}
-                        >
-                          <Link href={`/investing/pools`}>Pools</Link>
-                        </motion.li>
-
                         {user.loginMethod == 'Casama' && (
                           <motion.li
                             initial={animateFrom}
@@ -175,12 +150,7 @@ export default function TopBar(props) {
                             transition={{ delay: 0.1 }}
                           >
                             <div className="px-2 py-1">
-                              <a
-                                target="_blank"
-                                href={`${process.env.WUNDERPASS_URL}/profile`}
-                              >
-                                Profile
-                              </a>
+                              <Link href={`/profile`}>Profile</Link>
                             </div>
                           </motion.li>
                         )}
