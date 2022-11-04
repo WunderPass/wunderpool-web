@@ -2,9 +2,10 @@ import { Stack, Skeleton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import EventCard from '/components/betting/events/eventCard';
 import axios from 'axios';
+import useBettingService from '../../../hooks/useBettingService';
 
 export default function EventList(props) {
-  const { eventTypeSort } = props;
+  const { eventTypeSort, bettingService } = props;
   const [events, setEvents] = useState([]);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -70,12 +70,12 @@ function ParticipantTable({ game, stake, user }) {
 }
 
 export default function DashBoardGameCard(props) {
-  const { bettingGame, handleSuccess, user } = props;
+  const { game, handleSuccess, user } = props;
   const router = useRouter();
 
-  const stake = bettingGame.stake / 951000; //TODO
+  const stake = game.stake / 951000; //TODO
 
-  const usersBet = bettingGame.participants.find(
+  const usersBet = game.participants.find(
     (p) => p.address.toLowerCase() == user.address.toLowerCase()
   )?.prediction;
 
@@ -101,7 +101,7 @@ export default function DashBoardGameCard(props) {
             </div>
           </div>
           <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
-            {bettingGame.name}
+            {game.name}
           </Typography>
         </div>
 
@@ -111,7 +111,7 @@ export default function DashBoardGameCard(props) {
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
-                    {bettingGame.payoutRule == 0
+                    {game.payoutRule == 0
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>
@@ -124,7 +124,7 @@ export default function DashBoardGameCard(props) {
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Participants:</p>
-                  <p className="ml-2">{`${bettingGame.participants.length}`}</p>
+                  <p className="ml-2">{`${game.participants.length}`}</p>
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
@@ -136,23 +136,65 @@ export default function DashBoardGameCard(props) {
                 <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
                   <p>Pot:</p>
                   <p className="ml-2">{` ${currency(
-                    stake * bettingGame.participants.length
+                    stake * game.participants.length
                   )} `}</p>
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
-            <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
-              <Timer
-                start={Number(new Date())}
-                end={bettingGame.event.startTime || bettingGame.event.endTime}
-                w
-              />
-            </div>
+            {game.event.state == 'RESOLVED' ? (
+              <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
+                <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
+                  Result
+                </p>
+                <div className="flex flex-row justify-center items-center w-full mb-3">
+                  <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
+                    {game.event.teamHome}
+                  </p>
+
+                  <div className="w-2/12 flex flex-row justify-center ">
+                    <p className="font-semibold text-xl sm:text-2xl">
+                      {game.event?.outcome[0] || 0}
+                    </p>
+                    <p className="px-1 text-xl sm:text-2xl">:</p>
+                    <p className="font-semibold text-xl sm:text-2xl">
+                      {game.event?.outcome[1] || 0}
+                    </p>
+                  </div>
+                  <p className="w-5/12 text-center text-base sm:text-xl px-2">
+                    {game.event.teamAway}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                {new Date(game.event.startTime) < new Date() && (
+                  <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
+                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                    <div className="text-sm">LIVE</div>
+                  </div>
+                )}
+                <Timer
+                  start={Number(new Date())}
+                  end={
+                    new Date(game.event.startTime) > new Date()
+                      ? game.event.startTime
+                      : game.event.endTime
+                  }
+                />
+              </div>
+            )}
           </div>
 
-          {<ParticipantTable game={bettingGame} stake={stake} user={user} />}
+          {/* Only Show participants if user has voted */}
+          {user &&
+            (game.event.state == 'RESOLVED' ||
+              (game.participants.find(
+                (participant) =>
+                  participant.address?.toLowerCase() ===
+                  user.address?.toLowerCase()
+              ) && <ParticipantTable game={game} stake={stake} user={user} />))}
         </div>
       </div>
     </div>

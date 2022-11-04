@@ -8,78 +8,117 @@ export default function useBettingService(
 ) {
   const [games, setGames] = useState(null);
   const [events, setEvents] = useState(null);
-  const [bettingGames, setBettingGames] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
-  const fetchBettingGames = async () => {
-    try {
-      const events = (
-        await axios({
-          url: '/api/betting/events',
+  // const fetchBettingGames = async () => {
+  // try {
+  // const events = (
+  //   await axios({
+  //     url: '/api/betting/events',
+  //   })
+  // ).data;
+  // const games = (
+  //   await axios({
+  //     url: '/api/betting/games',
+  //     params: { userAddress: userAddress },
+  //   })
+  // ).data;
+  //     setBettingGames(
+  //       games.map((g) => ({
+  //         ...g,
+  //         event: events.find(
+  //           (e) => e.blockchainId == g.id && e.version == g.version
+  //         ),
+  //       }))
+  //     );
+  //   } catch (error) {
+  //     handleError('Could not load Betting Games');
+  //   }
+  // };
+
+  // const fetchAllGames = async () => {
+  //   try {
+  //     const games = (
+  //       await axios({
+  //         url: '/api/betting/games',
+  //         params: { userAddress: userAddress },
+  //       })
+  //     ).data;
+  //     setGames(games);
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     handleError('Could not load Events');
+  //   }
+  // };
+
+  const getGames = async () => {
+    await axios({
+      method: 'get',
+      url: `/api/betting/games`,
+    }).then(async (res) => {
+      const { data: pools } = await axios({
+        method: 'get',
+        url: `/api/pools/all`,
+        params: { public: true },
+      });
+      const resolvedGames = res.data
+        .map((game) => {
+          const pool = pools.find(
+            (p) =>
+              p.pool_address.toLowerCase() == game.poolAddress.toLowerCase()
+          );
+          return pool ? { ...game, pool } : null;
         })
-      ).data;
-      const games = (
-        await axios({
-          url: '/api/betting/games',
-          params: { userAddress: userAddress },
-        })
-      ).data;
-      setBettingGames(
-        games.map((g) => ({
-          ...g,
-          event: events.find(
-            (e) => e.blockchainId == g.id && e.version == g.version
-          ),
-        }))
-      );
-    } catch (error) {
-      handleError('Could not load Betting Games');
-    }
+        .filter((g) => g);
+      setGames(resolvedGames);
+    });
   };
 
-  const fetchAllGames = async () => {
-    try {
-      const games = (
-        await axios({
-          url: '/api/betting/games',
-          params: { userAddress: userAddress },
-        })
-      ).data;
-      setGames(games);
-    } catch (error) {
-      console.log(error);
+  // const fetchAllEvents = async () => {
+  //   try {
+  //     const events = (
+  //       await axios({
+  //         url: '/api/betting/events',
+  //       })
+  //     ).data;
 
-      handleError('Could not load Events');
-    }
+  //     setEvents(events);
+  //   } catch (error) {
+  //     console.log(error);
+  //     handleError('Could not load Games');
+  //   }
+  // };
+
+  const getEvents = async () => {
+    await axios({
+      method: 'get',
+      url: `/api/betting/events/registered`,
+    }).then((res) => {
+      setEvents(res.data.filter((e) => new Date(e.startTime) > new Date()));
+    });
   };
 
-  const fetchAllEvents = async () => {
-    try {
-      const events = (
-        await axios({
-          url: '/api/betting/events',
-        })
-      ).data;
+  // const initialize = async () => {
+  //   await getGames();
+  //   await getEvents();
+  //   await fetchBettingGames();
+  // };
 
-      setEvents(events);
-    } catch (error) {
-      console.log(error);
-      handleError('Could not load Games');
-    }
-  };
-
-  const initialize = async () => {
-    await fetchBettingGames();
-    await fetchAllGames();
-    await fetchAllEvents();
-  };
+  // useEffect(() => {
+  //   setIsReady(false);
+  //   initialize().then(() => {
+  //     setIsReady(true);
+  //   });
+  // }, [userAddress]);
 
   useEffect(() => {
-    setIsReady(false);
-    initialize().then(() => {
-      setIsReady(true);
+    getEvents().then(() => {
+      getGames().then(() => {
+        setIsReady(true);
+      });
     });
-  }, [userAddress]);
+  }, []);
 
-  return { games, events, bettingGames, isReady };
+  return { games, events, isReady };
 }
