@@ -86,12 +86,7 @@ export default function BottomBar(props) {
             </div>
           </div>
         </div>
-        <div
-          className="flex flex-row h-full w-full justify-between items-center text-white bg-casama-blue rounded-t-3xl py-1 pointer-events-auto"
-          style={{
-            paddingBottom: 'env(safe-area-inset-bottom)',
-          }}
-        >
+        <div className="flex flex-row h-full w-full justify-between items-center text-white bg-casama-blue rounded-t-3xl py-1 pointer-events-auto">
           <Link href="/betting/bets">
             <div className="flex flex-col items-center justify-center w-1/3 mt-1 ml-8 cursor-pointer">
               <AiOutlineInsertRowBelow className="text-3xl" />
@@ -124,6 +119,12 @@ export default function BottomBar(props) {
             </div>
           </Link>
         </div>
+        <div
+          className="bg-casama-blue w-full"
+          style={{
+            height: 'env(safe-area-inset-bottom)',
+          }}
+        />
       </div>
     </ClickAwayListener>
   );
