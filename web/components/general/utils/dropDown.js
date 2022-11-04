@@ -37,6 +37,7 @@ export default function DropDown(props) {
           list.map((item, i) => {
             return (
               <MenuItemUnstyled
+                key={`menu-item-${item}`}
                 className={
                   i == 0
                     ? 'shadow-dropdown-b border-b border-gray-200 hover:border-gray-400 hover:drop-shadow-md mt-1 w-56'
