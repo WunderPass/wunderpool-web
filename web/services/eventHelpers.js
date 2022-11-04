@@ -22,7 +22,8 @@ export function formatEvent(event) {
 
   return {
     id: event_id,
-    name: shortName || event_name,
+    shortName: shortName || event_name,
+    name: event_name,
     type: event_type,
     startTime: new Date(`${utc_start_time}Z`) || null,
     endTime: new Date(`${utc_end_time}Z`) || null,
