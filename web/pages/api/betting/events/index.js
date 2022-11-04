@@ -30,7 +30,6 @@ export default async function handler(req, res) {
         ? 1
         : 0;
     });
-
     res.status(200).json([...liveEvents, ...registeredEvents].map(formatEvent));
   } catch (error) {
     console.log(error);

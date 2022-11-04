@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
@@ -6,10 +6,10 @@ import DropDown from '/components/general/utils/dropDown';
 import axios from 'axios';
 
 export default function Betting(props) {
-  const { user, bettingService, handleError } = props;
+  const { user } = props;
   const [showSideBar, setShowSideBar] = useState(true);
+  const [loading, setLoading] = useState([]);
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
 
@@ -23,7 +23,7 @@ export default function Betting(props) {
   };
 
   const getEvents = async () => {
-    axios({
+    await axios({
       method: 'get',
       url: `/api/betting/events`,
     }).then((res) => {
@@ -38,6 +38,7 @@ export default function Betting(props) {
   }, []);
 
   useEffect(() => {
+    if (events.length == 0) return;
     determineEventTypes();
   }, [events]);
 
@@ -129,11 +130,7 @@ export default function Betting(props) {
                   {user.isReady ? (
                     <EventsList
                       className="mx-4"
-                      bettingService={bettingService}
                       eventTypeSort={eventTypeSort}
-                      events={events}
-                      loading={loading}
-                      user={user}
                       {...props}
                     />
                   ) : (

@@ -1,12 +1,53 @@
 import { Stack, Skeleton } from '@mui/material';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import EventCard from '/components/betting/events/eventCard';
 import axios from 'axios';
 
 export default function EventList(props) {
-  const { user, bettingService, eventTypeSort, events, loading, handleError } =
-    props;
+  const { eventTypeSort } = props;
+  const [events, setEvents] = useState([]);
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getEvents = async () => {
+    await axios({
+      method: 'get',
+      url: `/api/betting/events/registered`,
+    }).then((res) => {
+      setEvents(res.data);
+    });
+  };
+
+  const getGames = async () => {
+    await axios({
+      method: 'get',
+      url: `/api/betting/games`,
+    }).then(async (res) => {
+      const { data: pools } = await axios({
+        method: 'get',
+        url: `/api/pools/all`,
+        params: { public: true },
+      });
+      const resolvedGames = res.data
+        .map((game) => {
+          const pool = pools.find(
+            (p) =>
+              p.pool_address.toLowerCase() == game.poolAddress.toLowerCase()
+          );
+          return pool ? { ...game, pool } : null;
+        })
+        .filter((g) => g);
+      setGames(resolvedGames);
+    });
+  };
+
+  useEffect(() => {
+    getEvents().then(() => {
+      getGames().then(() => {
+        setLoading(false);
+      });
+    });
+  }, []);
 
   return loading ? (
     <Skeleton
@@ -17,12 +58,19 @@ export default function EventList(props) {
   ) : (
     <Stack style={{ maxWidth: '100%' }}>
       <div className="2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full">
-        {bettingService.events.map((event) => {
+        {events.map((event) => {
           if (
             event.competitionName == eventTypeSort ||
             eventTypeSort == 'All Events'
           ) {
-            return <EventCard user={user} event={event} />;
+            return (
+              <EventCard
+                key={`event-card-${event.id}`}
+                event={event}
+                games={games}
+                {...props}
+              />
+            );
           }
         })}
       </div>

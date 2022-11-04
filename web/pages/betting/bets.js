@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import CustomHeader from '/components/general/utils/customHeader';
 import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';

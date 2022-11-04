@@ -1,30 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { FaMoneyCheck } from 'react-icons/fa';
 import { Typography, Skeleton } from '@mui/material';
-import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 import Link from 'next/link';
 
 export default function BetsList(props) {
-  const { user, bettingService, eventTypeSort, handleError } = props;
-  const [open, setOpen] = useState(false);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-
-  const router = useRouter();
-
-  const handleOpenClose = () => {
-    if (open) {
-      goBack(() => removeQueryParam('betsList'));
-    } else {
-      addQueryParam({ betsList: 'betsList' }, false);
-    }
-  };
-
-  useEffect(() => {
-    setOpen(router.query?.betsList ? true : false);
-  }, [router.query]);
+  const { user, bettingService, eventTypeSort } = props;
 
   return bettingService.bettingGames ? (
     bettingService.bettingGames.length > 0 ? (
@@ -35,13 +15,12 @@ export default function BetsList(props) {
             eventTypeSort == 'All Events'
           ) {
             return (
-              <>
-                <DashboardGameCard
-                  bettingGame={bettingGame}
-                  user={user}
-                  {...props}
-                />
-              </>
+              <DashboardGameCard
+                key={`dashboard-game-card-${bettingGame.id}`}
+                bettingGame={bettingGame}
+                user={user}
+                {...props}
+              />
             );
           }
         })}
@@ -64,7 +43,6 @@ export default function BetsList(props) {
             </button>
           </Link>
         </div>
-        <AdvancedPoolDialog open={open} setOpen={handleOpenClose} {...props} />
       </div>
     )
   ) : (
