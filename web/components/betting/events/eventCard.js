@@ -6,8 +6,8 @@ import TransactionFrame from '/components/general/utils/transactionFrame';
 import {
   createSingleCompetition,
   joinSingleCompetition,
-} from '../../../services/contract/betting/competitions';
-import { currency } from '../../../services/formatter';
+} from '/services/contract/betting/competitions';
+import { currency } from '/services/formatter';
 
 export default function EventCard(props) {
   const { event, games, user } = props;
