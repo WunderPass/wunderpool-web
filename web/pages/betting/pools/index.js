@@ -1,67 +1,50 @@
-import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import {
-  Container,
-  Pagination,
-  Skeleton,
-  Typography,
-  Tooltip,
-  Collapse,
-} from '@mui/material';
-import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
-import QuickPoolDialog from '/components/betting/dialogs/quickPool/dialog';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { MdContentCopy } from 'react-icons/md';
-import { AiFillUpCircle } from 'react-icons/ai';
-import { AiOutlineDownCircle } from 'react-icons/ai';
+import { Container, Skeleton, Typography } from '@mui/material';
 import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
-import QrCode from '/components/general/utils/qrCode';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
-import { MdOutlineKeyboardArrowUp } from 'react-icons/md';
+import DropDown from '/components/general/utils/dropDown';
+import axios from 'axios';
 
-export default function Pools(props) {
-  const { user, handleSuccess, updateListener, isMobile } = props;
-  const [openAdvanced, setOpenAdvanced] = useState(false);
-  const [openQuick, setOpenQuick] = useState(false);
-  const [page, setPage] = useState(1);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+export default function Betting(props) {
+  const { user } = props;
   const [showSideBar, setShowSideBar] = useState(true);
-  const router = useRouter();
+  const [loading, setLoading] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [eventTypes, setEventTypes] = useState([]);
+  const [eventTypeSort, setEventTypeSort] = useState('All Events');
 
-  const pageSize = 4;
-
-  const handleOpenCloseAdvanced = () => {
-    if (openAdvanced) {
-      goBack(() => removeQueryParam('advancedPool'));
-    } else {
-      addQueryParam({ advancedPool: 'advancedPool' }, false);
-    }
+  const determineEventTypes = () => {
+    let eventTypes = events.map((event) => event.competitionName);
+    let uniqueEventTypes = eventTypes.filter((c, index) => {
+      return eventTypes.indexOf(c) === index;
+    });
+    uniqueEventTypes.unshift('All Events');
+    setEventTypes(uniqueEventTypes);
   };
 
-  const handleOpenCloseQuick = () => {
-    if (openQuick) {
-      goBack(() => removeQueryParam('quickPool'));
-    } else {
-      addQueryParam({ quickPool: 'quickPool' }, false);
-    }
+  const getEvents = async () => {
+    await axios({
+      method: 'get',
+      url: `/api/betting/events`,
+    }).then((res) => {
+      setEvents(res.data);
+    });
   };
 
   useEffect(() => {
-    setOpenAdvanced(router.query?.advancedPool ? true : false);
-    setOpenQuick(router.query?.quickPool ? true : false);
-  }, [router.query]);
+    getEvents().then(() => {
+      setLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
-    if (user.pools.length > 0) updateListener(user.pools, null, user.address);
-  }, [user.pools]);
+    if (events.length == 0) return;
+    determineEventTypes();
+  }, [events]);
 
   return (
     <>
       <CustomHeader />
-
       <div className="flex sm:flex-row flex-col font-graphik h-full">
         {/* MOBILE */}
         {/* <div className="flex flex-col  sticky top-14 w-full sm:w-auto z-10">
@@ -137,18 +120,17 @@ export default function Pools(props) {
                     <Typography className="text-xl sm:text-3xl font-medium ">
                       Join a betting game
                     </Typography>
+                    <DropDown
+                      list={eventTypes}
+                      value={eventTypeSort}
+                      setValue={setEventTypeSort}
+                    />
                   </div>
 
                   {user.isReady ? (
                     <EventsList
                       className="mx-4"
-                      user={user}
-                      pools={user.pools
-                        .sort((a, b) => b.totalBalance - a.totalBalance)
-                        .slice(
-                          (page - 1) * pageSize,
-                          (page - 1) * pageSize + pageSize
-                        )}
+                      eventTypeSort={eventTypeSort}
                       {...props}
                     />
                   ) : (
@@ -160,21 +142,8 @@ export default function Pools(props) {
                   )}
                 </div>
               </div>
-            </div>{' '}
+            </div>
           </div>
-
-          <QuickPoolDialog
-            openQuick={openQuick}
-            setOpen={handleOpenCloseQuick}
-            fetchPools={user.fetchPools}
-            {...props}
-          />
-          <AdvancedPoolDialog
-            openAdvanced={openAdvanced}
-            setOpen={handleOpenCloseAdvanced}
-            fetchPools={user.fetchPools}
-            {...props}
-          />
         </Container>
       </div>
     </>

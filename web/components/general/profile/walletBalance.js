@@ -66,7 +66,7 @@ export default function WalletBalance(props) {
             </div>
           </button>
           <a
-            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&productsAvailed=BUY&network=polygon&cryptoCurrencyCode=USDC&walletAddress=${user.address}&defaultCryptoAmount=60&isAutoFillUserData=true&userData=${userData}&redirectURL=https://app.wunderpass.org/balance`}
+            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&productsAvailed=BUY&network=polygon&cryptoCurrencyCode=USDC&walletAddress=${user.address}&defaultCryptoAmount=60&isAutoFillUserData=true&userData=${userData}&redirectURL=https://app.casama.io/balance`}
             target="_blank"
             className="w-1/2 sm:w-1/4"
           >
@@ -78,7 +78,7 @@ export default function WalletBalance(props) {
             </div>
           </a>
           <a
-            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=polygon&productsAvailed=SELL&&walletAddress=${user.address}&defaultCryptoAmount=52&isAutoFillUserData=true&userData=${userData}redirectURL=https://app.wunderpass.org/balance`}
+            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=polygon&productsAvailed=SELL&&walletAddress=${user.address}&defaultCryptoAmount=52&isAutoFillUserData=true&userData=${userData}redirectURL=https://app.casama.io/balance`}
             target="_blank"
             className="w-1/2 sm:w-1/4"
           >

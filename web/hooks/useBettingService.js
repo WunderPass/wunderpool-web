@@ -1,14 +1,5 @@
-import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
-import { usdcBalanceOf } from '/services/contract/token';
-import {
-  fetchUserPools,
-  fetchWhitelistedUserPools,
-} from '/services/contract/pools';
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { fetchUserFriends } from '/services/memberHelpers';
-import { ethProvider } from '/services/contract/provider';
 
 export default function useBettingService(
   userAddress,
@@ -20,8 +11,6 @@ export default function useBettingService(
   const [bettingGames, setBettingGames] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
-  console.log(userAddress);
-
   const fetchBettingGames = async () => {
     try {
       const events = (
@@ -32,13 +21,9 @@ export default function useBettingService(
       const games = (
         await axios({
           url: '/api/betting/games',
-          params: { address: userAddress },
+          params: { userAddress: userAddress },
         })
       ).data;
-
-      console.log('events', events);
-      console.log('games', games);
-
       setBettingGames(
         games.map((g) => ({
           ...g,
@@ -57,7 +42,7 @@ export default function useBettingService(
       const games = (
         await axios({
           url: '/api/betting/games',
-          params: { address: userAddress },
+          params: { userAddress: userAddress },
         })
       ).data;
       setGames(games);

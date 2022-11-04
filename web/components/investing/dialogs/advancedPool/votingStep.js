@@ -1,5 +1,5 @@
 import { DialogContentText, Stack, Typography, Switch } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import CustomInput from '/components/general/utils/customInputButton';
 
 function OptionButton({ option, value, onClick, hidden }) {
   const wrapperClass =
@@ -16,32 +16,6 @@ function OptionButton({ option, value, onClick, hidden }) {
       <button className={buttonClass} onClick={() => onClick(option.value)}>
         {option.label}
       </button>
-    </div>
-  );
-}
-
-function CustomInput({ show, value, placeholder, onChange }) {
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    if (show) {
-      inputRef.current.value = '';
-      inputRef.current.focus();
-    }
-  }, [show]);
-
-  return (
-    <div
-      className={show ? 'flex items-center justify-center w-full' : 'hidden'}
-    >
-      <input
-        ref={inputRef}
-        value={value}
-        className="bg-gray-200 text-black text-sm px-2 rounded-lg w-full py-2 text-center"
-        type="text"
-        placeholder={placeholder}
-        onChange={onChange}
-      />
     </div>
   );
 }
