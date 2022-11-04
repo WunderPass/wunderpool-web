@@ -4,6 +4,7 @@ export default function CustomInput({
   show,
   value,
   placeholder,
+  className,
   onChange,
   onClickAway,
 }) {
@@ -23,7 +24,9 @@ export default function CustomInput({
       <input
         ref={inputRef}
         value={value}
-        className="bg-gray-200 text-black text-sm px-2 rounded-lg w-full py-2 text-center"
+        className={`${
+          className || 'bg-gray-200 text-black'
+        } text-sm px-2 rounded-lg w-full py-2 text-center`}
         type="text"
         placeholder={placeholder}
         onChange={onChange}
