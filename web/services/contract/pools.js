@@ -98,24 +98,43 @@ export function getPoolAddressFromTx(txHash, version = null) {
     'event PoolLaunched(address indexed poolAddress, string name, address governanceTokenAddress)',
   ]);
   return new Promise((resolve, reject) => {
-    httpProvider
-      .getTransactionReceipt(txHash)
-      .then((receipt) => {
-        const events = receipt.logs.map((log) => {
-          try {
-            return iface.decodeEventLog('PoolLaunched', log.data, log.topics);
-          } catch {
-            return null;
-          }
-        });
-        const event = events.filter((e) => e)[0];
-        const { name, poolAddress } = event;
-        resolve({ name: name, address: poolAddress });
-      })
-      .catch((err) => {
-        console.log(err);
+    let retries = 3;
+    setInterval(() => {
+      if (retries == 0) {
         reject(false);
-      });
+        return;
+      }
+      httpProvider
+        .getTransactionReceipt(txHash)
+        .then((receipt) => {
+          if (receipt) {
+            const events = receipt.logs.map((log) => {
+              try {
+                return iface.decodeEventLog(
+                  'PoolLaunched',
+                  log.data,
+                  log.topics
+                );
+              } catch {
+                return null;
+              }
+            });
+            const event = events.filter((e) => e)[0];
+            const { name, poolAddress, governanceTokenAddress } = event;
+            resolve({
+              name: name,
+              address: poolAddress,
+              governanceToken: governanceTokenAddress,
+            });
+          } else {
+            retries -= 1;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(false);
+        });
+    }, 2000);
   });
 }
 

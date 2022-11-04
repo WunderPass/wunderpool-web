@@ -12,6 +12,7 @@ import { useState } from 'react';
 import Avatar from '/components/general/members/avatar';
 import HomeIcon from '@mui/icons-material/Home';
 import AppsIcon from '@mui/icons-material/Apps';
+import { AiFillDatabase } from 'react-icons/ai';
 import Link from 'next/link';
 
 export default function BottomBar(props) {
@@ -22,11 +23,11 @@ export default function BottomBar(props) {
 
   const determineAction = (action) => {
     switch (action) {
-      case 'home':
+      case 'myBets':
         setShowPoolList(false);
-        router.push('/investing/pools');
+        router.push('/betting/pools');
         break;
-      case 'myPools':
+      case 'menu':
         setShowPoolList((show) => !show);
         break;
       case 'profile':
@@ -47,11 +48,11 @@ export default function BottomBar(props) {
         router.pathname
       )
     ) {
-      setValue('myPools');
+      setValue('menu');
     } else if (
       ['/betting/pools', '/investing/pools'].includes(router.pathname)
     ) {
-      setValue('home');
+      setValue('myBets');
     } else {
       setValue(null);
     }
@@ -79,7 +80,7 @@ export default function BottomBar(props) {
               return (
                 <Link
                   key={`user-pool-${pool.address}`}
-                  href={`/investing/pools/${pool.address}`}
+                  href={`/betting/pools/${pool.address}`}
                   passHref
                 >
                   <div
@@ -105,13 +106,13 @@ export default function BottomBar(props) {
           }}
         >
           <BottomNavigationAction
-            value="home"
-            label="Home"
-            icon={<HomeIcon />}
+            value="myBets"
+            label="My Bets"
+            icon={<AiFillDatabase className="text-xl mb-0.5" />}
           />
           <BottomNavigationAction
-            value="myPools"
-            label="My Pools"
+            value="menu"
+            label="Menu"
             icon={<AppsIcon />}
           />
           <BottomNavigationAction

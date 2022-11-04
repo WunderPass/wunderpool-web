@@ -78,7 +78,6 @@ function createUser(firstName, lastName, email, password, givenSeedPhrase) {
       headers: headers,
     })
       .then((res) => {
-        console.log(res.data);
         const wunderId = res.data.wunder_id;
 
         if (wunderId) {

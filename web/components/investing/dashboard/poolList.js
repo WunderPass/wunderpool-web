@@ -25,7 +25,7 @@ export default function PoolList(props) {
   }, [router.query]);
 
   return pools.length > 0 ? (
-    <div className="lg:grid lg:grid-cols-2 lg:gap-6 w-full">
+    <div className="lg:grid lg:grid-cols-2 gap-6 w-full">
       {pools.map((pool, i) => {
         return <PoolCard key={`pool-card-${pool.address}`} pool={pool} />;
       })}

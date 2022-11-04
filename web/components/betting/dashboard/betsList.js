@@ -1,79 +1,48 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { MdGroups } from 'react-icons/md';
+import { FaMoneyCheck } from 'react-icons/fa';
 import { Typography, Skeleton } from '@mui/material';
-import AdvancedPoolDialog from '/components/betting/dialogs/advancedPool/dialog';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
+import Link from 'next/link';
 
 export default function BetsList(props) {
-  const { user, bettingService, handleError } = props;
-  const [open, setOpen] = useState(false);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const { user, bettingService, eventTypeSort } = props;
 
-  const router = useRouter();
-
-  const handleOpenClose = () => {
-    if (open) {
-      goBack(() => removeQueryParam('betsList'));
-    } else {
-      addQueryParam({ betsList: 'betsList' }, false);
-    }
-  };
-
-  useEffect(() => {
-    setOpen(router.query?.betsList ? true : false);
-  }, [router.query]);
-
-  return bettingService.games ? (
-    bettingService.games.length > 0 ? (
-      <div className="lg:grid lg:grid-cols-1 lg:gap-6 w-full">
-        {bettingService.games.map((game, i) => {
-          return (
-            <>
+  return bettingService.bettingGames ? (
+    bettingService.bettingGames.length > 0 ? (
+      <div className="grid grid-cols-1 gap-6 w-full">
+        {bettingService.bettingGames.map((bettingGame, i) => {
+          if (
+            bettingGame.event.competitionName == eventTypeSort ||
+            eventTypeSort == 'All Events'
+          ) {
+            return (
               <DashboardGameCard
-                bettingGame={bettingService.bettingGame}
-                poolAddress={game.poolAddress}
-                game={game}
+                key={`dashboard-game-card-${bettingGame.id}`}
+                bettingGame={bettingGame}
                 user={user}
                 {...props}
               />
-            </>
-          );
+            );
+          }
         })}
       </div>
     ) : (
       <div className="container-white">
         <div className="flex flex-col items-center ">
           <div className="border-solid text-casama-blue rounded-full bg-casama-extra-light-blue p-5 my-2 mt-6 mb-4">
-            <MdGroups className="text-4xl" />
-            {console.log('bettingserviceGames', bettingService.games.length)}
+            <FaMoneyCheck className="text-4xl" />
           </div>
-          <div className="my-2 mb-10">
+          <div className="my-4 mb-10 text-lg text-center">
             <Typography variant="h7">
-              Get invited to an betting pool or start one and invite others in
-              minutes
+              You have no open Bets currently. Go to the betting site to join or
+              create new bets.
             </Typography>
-            <div className="flex justify-center mt-2 cursor-pointer">
-              <a
-                href={`https://www.youtube.com/watch?v=vz6rXuKOyZ4`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Typography className="text-casama-blue justify-center">
-                  (See Demo)
-                </Typography>
-              </a>
-            </div>
           </div>
-          <button
-            className="btn-casama-white items-center w-full my-5 py-3.5 px-3 mb-0 text-md "
-            onClick={handleOpenClose}
-          >
-            Create your first pool
-          </button>
+          <Link href="/betting/pools">
+            <button className="btn-casama-white justify-center items-center w-full my-5 py-3.5 px-3 mb-0 text-lg font-semibold ">
+              Check possible Bets
+            </button>
+          </Link>
         </div>
-        <AdvancedPoolDialog open={open} setOpen={handleOpenClose} {...props} />
       </div>
     )
   ) : (

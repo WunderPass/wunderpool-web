@@ -316,11 +316,6 @@ export default function GameCard(props) {
             )}
         </div>
       </div>
-      <PlaceBetDialog
-        open={open}
-        handleOpenBetNow={handleOpenBetNow}
-        {...props}
-      />
     </div>
   );
 }

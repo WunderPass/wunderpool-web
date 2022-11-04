@@ -1,17 +1,14 @@
-import { Stack, Typography, IconButton, Divider } from '@mui/material';
+import { Typography, IconButton, Divider } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
-import PlaceBetDialog from '/components/betting/dialogs/placeBet';
 import Avatar from '/components/general/members/avatar';
 import Timer from '/components/betting/proposals/timer';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
-import usePool from '/hooks/usePool';
 
 function ParticipantTable({ game, stake, user }) {
   const { participants, event } = game;
@@ -73,34 +70,14 @@ function ParticipantTable({ game, stake, user }) {
 }
 
 export default function DashBoardGameCard(props) {
-  const { game, poolAddress, bettingGame, handleSuccess, user } = props;
-  const [open, setOpen] = useState(false);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
+  const { bettingGame, handleSuccess, user } = props;
   const router = useRouter();
-  const wunderPool = usePool();
 
-  // const stake =
-  //   (game.stake * wunderPool.usdcBalance) /
-  //   wunderPool.totalTokens /
-  //   10 ** wunderPool.governanceToken.decimals;
-  const stake = 69;
-  const usersBet = game.participants.find(
+  const stake = bettingGame.stake / 951000; //TODO
+
+  const usersBet = bettingGame.participants.find(
     (p) => p.address.toLowerCase() == user.address.toLowerCase()
   )?.prediction;
-
-  const handleOpenBetNow = (onlyClose = false) => {
-    if (onlyClose && !open) return;
-    if (open) {
-      setOpen(false);
-      goBack(() => removeQueryParam('bet'));
-    } else {
-      addQueryParam({ bet: game.id }, false);
-    }
-  };
-
-  useEffect(() => {
-    setOpen(router.query.bet == game.id);
-  }, [router.query]);
 
   return (
     <div className="container-gray pb-16 ">
@@ -124,7 +101,7 @@ export default function DashBoardGameCard(props) {
             </div>
           </div>
           <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
-            {game.name} (game name)
+            {bettingGame.name}
           </Typography>
         </div>
 
@@ -134,7 +111,7 @@ export default function DashBoardGameCard(props) {
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
-                    {game.payoutRule == 0
+                    {bettingGame.payoutRule == 0
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>
@@ -147,7 +124,7 @@ export default function DashBoardGameCard(props) {
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Participants:</p>
-                  <p className="ml-2">{`${game.participants.length}`}</p>
+                  <p className="ml-2">{`${bettingGame.participants.length}`}</p>
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
@@ -159,91 +136,25 @@ export default function DashBoardGameCard(props) {
                 <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
                   <p>Pot:</p>
                   <p className="ml-2">{` ${currency(
-                    stake * game.participants.length
+                    stake * bettingGame.participants.length
                   )} `}</p>
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
-            {
-              //game.event.resolved ? ( TODO
-              false ? (
-                <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
-                  <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
-                    Result
-                  </p>
-                  <div className="flex flex-row justify-center items-center w-full mb-3">
-                    <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                      {game.event.teams[0]}
-                    </p>
-
-                    <div className="w-2/12 flex flex-row justify-center ">
-                      <p className="font-semibold text-xl sm:text-2xl">
-                        {game.event.outcome[0]}
-                      </p>
-                      <p className="px-1 text-xl sm:text-2xl">:</p>
-                      <p className="font-semibold text-xl sm:text-2xl">
-                        {game.event.outcome[1]}
-                      </p>
-                    </div>
-                    <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                      {game.event.teams[1]}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
-                  <Timer
-                    start={Number(new Date())}
-                    //end={game.event.startDate || game.event.endDate} //TODO
-                  />
-                </div>
-              )
-            }
+            <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center">
+              <Timer
+                start={Number(new Date())}
+                end={bettingGame.event.startTime || bettingGame.event.endTime}
+                w
+              />
+            </div>
           </div>
 
-          {console.log(
-            game.participants.find(
-              (participant) => participant.address === user.address
-            )
-          )}
-
-          {/* Only Show participants if user has voted */}
-          {
-            //game.event.resolved ? ( TODO
-            true ? (
-              <ParticipantTable game={game} stake={stake} user={user} />
-            ) : (
-              <>
-                {game.participants.find(
-                  (participant) => participant.address === user.address
-                ) && <ParticipantTable game={game} stake={stake} user={user} />}
-              </>
-            )
-          }
-
-          {/* {!usersBet && TODO
-            !game.event.resolved &&
-            (game.event.startDate
-              ? game.event.startDate > Number(new Date())
-              : true) && (
-              <div className="flex justify-center items-center">
-                <button
-                  className="btn-casama py-3 sm:mt-4 mt-2 sm:w-2/3 w-full "
-                  onClick={() => handleOpenBetNow()}
-                >
-                  Place your Bet
-                </button>
-              </div>
-            )} */}
+          {<ParticipantTable game={bettingGame} stake={stake} user={user} />}
         </div>
       </div>
-      <PlaceBetDialog
-        open={open}
-        handleOpenBetNow={handleOpenBetNow}
-        {...props}
-      />
     </div>
   );
 }

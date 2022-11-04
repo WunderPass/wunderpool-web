@@ -11,7 +11,15 @@ export default async function handler(req, res) {
       url: `${process.env.BETTING_SERVICE}/admin/settledEvents`,
       headers,
     });
-    res.status(200).json(data.map(formatEvent));
+    res
+      .status(200)
+      .json(
+        data
+          .sort(
+            (a, b) => new Date(a.utc_start_time) - new Date(b.utc_start_time)
+          )
+          .map(formatEvent)
+      );
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
