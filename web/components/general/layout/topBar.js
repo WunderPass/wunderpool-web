@@ -150,7 +150,7 @@ export default function TopBar(props) {
                           <Link href={`/investing/pools`}>Pools</Link>
                         </motion.li>
 
-                        {user.loginMethod == 'WunderPass' && (
+                        {user.loginMethod == 'Casama' && (
                           <motion.li
                             initial={animateFrom}
                             animate={animateTo}
