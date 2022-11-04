@@ -121,10 +121,12 @@ export default function EventCard(props) {
     <>
       <div className="container-white pb-16 ">
         <div className="flex flex-col items-center justify-center text-center mt-2 mb-5">
-          <div className="opacity-50 text-base">{event.name}</div>
-          <div className="flex flex-row items-center mt-5 justify-between w-full sm:text-2xl text-lg ">
+          <div className="opacity-50 text-base h-auto sm:h-14">
+            {event.name}
+          </div>
+          <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full sm:text-2xl text-lg ">
             <div className="flex flex-row w-5/12 lg:flex-col items-center justify-start sm:justify-center  text-left sm:text-center ">
-              <div>{event.teamHome}</div>
+              <div className="font-semibold">{event.teamHome}</div>
               <div></div>
             </div>
             <div className="flex flex-col w-2/12 opacity-70 items-center justify-center ">
@@ -132,7 +134,7 @@ export default function EventCard(props) {
               <div className="text-sm sm:text-base">{startTime}</div>
             </div>
             <div className="flex flex-row w-5/12 lg:flex-col items-center justify-end sm:justify-center text-right sm:text-center ">
-              <div>{event.teamAway}</div>
+              <div className="font-semibold">{event.teamAway}</div>
               <div></div>
             </div>
           </div>

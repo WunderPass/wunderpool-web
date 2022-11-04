@@ -1,64 +1,36 @@
-import { Typography, Skeleton, Tooltip, Link } from '@mui/material';
+import { Typography, Skeleton, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import { useRouter } from 'next/router';
-import TopUpAlert from '/components/general/dialogs/topUpAlert';
 
 function BettingBox(props) {
-  const { user } = props;
+  const { user, bettingService } = props;
   const [loading, setLoading] = useState(true);
-  const [redirectUrl, setRedirectUrl] = useState(null);
-  const [totalBalance, setTotalBalance] = useState(0);
-  const [open, setOpen] = useState(false);
-  const [topUpOpen, setTopUpOpen] = useState(false);
-  const [remainingPoolsBalance, setRemainingPoolsBalance] = useState(0);
-  const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
-  const router = useRouter();
-  let pools = user.pools;
-  const topThree = pools
-    .sort((a, b) => b.userBalance - a.userBalance)
-    .slice(0, 4);
-  const cashInPools = pools
-    .map((p) => p.userBalance)
-    .reduce((a, b) => a + b, 0);
+  const [totalMoneyStake, setTotalMoneyStake] = useState(0);
+  const [totalPotSize, setTotalPotSize] = useState(0);
 
-  useEffect(() => {
-    pools = user.pools;
-  }, [user.pools]);
+  const calculateTotalStake = () => {
+    var total = bettingService.games.reduce(
+      (accum, game) => accum + game.stake,
+      0
+    );
+    let formatedValue = total / 951000; //TODO
+    setTotalMoneyStake(currency(formatedValue));
+  };
 
-  useEffect(() => {
-    const topThreeTogether = topThree
-      .map((p) => p.userBalance)
-      .slice(0, 3)
-      .reduce((a, b) => a + b, 0);
-    setRemainingPoolsBalance(cashInPools - topThreeTogether);
-  }, [cashInPools, user.usdBalance]);
-
-  function percentage(partialValue, totalValue) {
-    return (100 * partialValue) / totalValue;
-  }
-  const handleOpenClose = () => {
-    if (open) {
-      goBack(() => removeQueryParam('dialog'));
-    } else {
-      addQueryParam({ dialog: 'createPool' }, false);
-    }
+  const calculateTotalPot = () => {
+    var total = bettingService.games.reduce(
+      (accum, game) => accum + game.stake * game.participants.length,
+      0
+    );
+    let formatedValue = total / 951000; //TODO
+    setTotalPotSize(currency(formatedValue));
   };
 
   useEffect(() => {
-    if (open) setRedirectUrl(new URL(document.URL));
-  }, [open]);
-
-  useEffect(() => {
-    setOpen(router.query?.dialog ? true : false);
-  }, [router.query]);
-
-  useEffect(() => {
-    if (user.usdBalance) {
-      setTotalBalance(cashInPools);
-    }
-  }, [user.usdBalance, cashInPools]);
+    if (!bettingService.games) return;
+    calculateTotalStake();
+    calculateTotalPot();
+  }, [bettingService.games]);
 
   useEffect(() => {
     if (user.isReady) {
@@ -68,39 +40,33 @@ function BettingBox(props) {
 
   return !loading ? (
     <>
-      <div className="sm:h-full sm:max-h-96 ">
-        <div className="flex sm:h-full flex-col justify-between container-white mb-1 m:mr-8 w-full ">
+      <div className="  ">
+        <div className="flex sm:h-full flex-col justify-between container-transparent-clean bg-casama-light p-5 mb-1 m:mr-8 w-full ">
           <div>
-            <div className="flex flex-row justify-between">
-              <Typography className="pb-6 text-2xl">Open Bets</Typography>
-              <Typography className="text-2xl ">1</Typography>
-            </div>
-            <div className="flex flex-row justify-between">
-              <Typography className="pb-6 text-2xl">Total Bets</Typography>
-              <Typography className="text-2xl ">21</Typography>
-            </div>
-            <div className="flex flex-row justify-between">
-              <Typography className="pb-6 text-2xl">
-                Current Money at stake
-              </Typography>
-              <Typography className="text-2xl ">12€</Typography>
+            <div className="flex flex-col container-white-p-0 p-5  mb-4">
+              <div className="flex flex-row justify-between items-center ">
+                <Typography className=" text-xl">Open Bets</Typography>
+                <Typography className="text-2xl font-semibold">
+                  {bettingService.games.length}
+                </Typography>
+              </div>
             </div>
 
-            <div className="flex flex-row justify-between">
-              <Typography className="pb-6 text-2xl">Funds Won</Typography>
-              <Typography className="text-2xl text-green-500">
-                + 22€{' '}
-              </Typography>
-            </div>
-            <div className="flex flex-row justify-between">
-              <Typography className="pb-6 text-2xl">Funds Lost</Typography>
-              <Typography className="text-2xl text-red-500">- 17 €</Typography>
-            </div>
-            <div className="flex flex-row justify-between">
-              <Typography className="pb-6 text-2xl">
-                Bet Balance history
-              </Typography>
-              <Typography className="text-2xl text-green-500">+ 5€</Typography>
+            <div className="flex flex-col container-white-p-0 p-5 ">
+              <div className="flex  flex-row justify-between  items-center">
+                <Typography className=" text-xl">Money at Stake</Typography>
+                <Typography className="text-2xl font-semibold">
+                  {totalMoneyStake}
+                </Typography>
+              </div>
+              <Divider className="opacity-80 my-4" />
+
+              <div className="flex flex-row justify-between  items-center">
+                <Typography className=" text-xl">Possible Profit</Typography>
+                <Typography className="text-2xl text-green-600 font-semibold">
+                  + {totalPotSize}
+                </Typography>
+              </div>
             </div>
           </div>
         </div>

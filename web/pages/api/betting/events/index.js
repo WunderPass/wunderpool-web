@@ -15,6 +15,21 @@ export default async function handler(req, res) {
       url: `${process.env.BETTING_SERVICE}/admin/settledEvents`,
       headers,
     });
+    registeredEvents.sort(function (a, b) {
+      return a.utc_start_time < b.utc_start_time
+        ? -1
+        : a.utc_start_time > b.utc_start_time
+        ? 1
+        : 0;
+    });
+
+    liveEvents.sort(function (a, b) {
+      return a.utc_start_time < b.utc_start_time
+        ? -1
+        : a.utc_start_time > b.utc_start_time
+        ? 1
+        : 0;
+    });
     res.status(200).json([...liveEvents, ...registeredEvents].map(formatEvent));
   } catch (error) {
     console.log(error);

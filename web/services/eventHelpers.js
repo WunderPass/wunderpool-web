@@ -9,6 +9,7 @@ export function formatEvent(event) {
     event_icon_url,
     event_state,
     network_event_id,
+    event_competition,
     event_competition_name,
     team_home,
     team_away,
@@ -24,7 +25,8 @@ export function formatEvent(event) {
     state: event_state,
     blockchainId: network_event_id?.event_id || null,
     version: network_event_id?.contract_version || null,
-    competitionName: event_competition_name,
+    competitionName: event_competition_name || event_competition?.name,
+    competitionId: event_competition?.id,
     teamHome: team_home,
     teamAway: team_away,
   };

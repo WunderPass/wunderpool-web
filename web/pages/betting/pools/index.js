@@ -2,22 +2,49 @@ import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
+import DropDown from '/components/general/utils/dropDown';
+import axios from 'axios';
 
-export default function Pools(props) {
-  const { user, updateListener } = props;
-  const [page, setPage] = useState(1);
+export default function Betting(props) {
+  const { user } = props;
   const [showSideBar, setShowSideBar] = useState(true);
+  const [loading, setLoading] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [eventTypes, setEventTypes] = useState([]);
+  const [eventTypeSort, setEventTypeSort] = useState('All Events');
 
-  const pageSize = 4;
+  const determineEventTypes = () => {
+    let eventTypes = events.map((event) => event.competitionName);
+    let uniqueEventTypes = eventTypes.filter((c, index) => {
+      return eventTypes.indexOf(c) === index;
+    });
+    uniqueEventTypes.unshift('All Events');
+    setEventTypes(uniqueEventTypes);
+  };
+
+  const getEvents = async () => {
+    await axios({
+      method: 'get',
+      url: `/api/betting/events`,
+    }).then((res) => {
+      setEvents(res.data);
+    });
+  };
 
   useEffect(() => {
-    if (user.pools.length > 0) updateListener(user.pools, null, user.address);
-  }, [user.pools]);
+    getEvents().then(() => {
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (events.length == 0) return;
+    determineEventTypes();
+  }, [events]);
 
   return (
     <>
       <CustomHeader />
-
       <div className="flex sm:flex-row flex-col font-graphik h-full">
         {/* MOBILE */}
         {/* <div className="flex flex-col  sticky top-14 w-full sm:w-auto z-10">
@@ -93,10 +120,19 @@ export default function Pools(props) {
                     <Typography className="text-xl sm:text-3xl font-medium ">
                       Join a betting game
                     </Typography>
+                    <DropDown
+                      list={eventTypes}
+                      value={eventTypeSort}
+                      setValue={setEventTypeSort}
+                    />
                   </div>
 
                   {user.isReady ? (
-                    <EventsList {...props} />
+                    <EventsList
+                      className="mx-4"
+                      eventTypeSort={eventTypeSort}
+                      {...props}
+                    />
                   ) : (
                     <Skeleton
                       variant="rectangular"

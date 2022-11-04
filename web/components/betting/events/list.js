@@ -4,6 +4,7 @@ import EventCard from '/components/betting/events/eventCard';
 import axios from 'axios';
 
 export default function EventList(props) {
+  const { eventTypeSort } = props;
   const [events, setEvents] = useState([]);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,14 +59,19 @@ export default function EventList(props) {
     <Stack style={{ maxWidth: '100%' }}>
       <div className="2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full">
         {events.map((event) => {
-          return (
-            <EventCard
-              key={`event-card-${event.id}`}
-              event={event}
-              games={games}
-              {...props}
-            />
-          );
+          if (
+            event.competitionName == eventTypeSort ||
+            eventTypeSort == 'All Events'
+          ) {
+            return (
+              <EventCard
+                key={`event-card-${event.id}`}
+                event={event}
+                games={games}
+                {...props}
+              />
+            );
+          }
         })}
       </div>
     </Stack>
