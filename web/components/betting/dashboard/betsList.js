@@ -1,23 +1,30 @@
 import { FaMoneyCheck } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
 import { Typography, Skeleton } from '@mui/material';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 import Link from 'next/link';
 
 export default function BetsList(props) {
   const { user, bettingService, eventTypeSort } = props;
+  const [loading, setLoading] = useState(true);
 
-  return bettingService.bettingGames ? (
-    bettingService.bettingGames.length > 0 ? (
+  useEffect(() => {
+    if (!bettingService.isReady) return;
+    setLoading(false);
+  }, [bettingService.isReady]);
+
+  return !loading ? (
+    bettingService.games.length > 0 ? (
       <div className="grid grid-cols-1 gap-6 w-full">
-        {bettingService.bettingGames.map((bettingGame, i) => {
+        {bettingService.games.map((game, i) => {
           if (
-            bettingGame.event.competitionName == eventTypeSort ||
+            game.event.competitionName == eventTypeSort ||
             eventTypeSort == 'All Events'
           ) {
             return (
               <DashboardGameCard
-                key={`dashboard-game-card-${bettingGame.id}`}
-                bettingGame={bettingGame}
+                key={`dashboard-game-card-${game.id}`}
+                game={game}
                 user={user}
                 {...props}
               />
