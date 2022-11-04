@@ -8,7 +8,7 @@ export default function BetsList(props) {
 
   return bettingService.bettingGames ? (
     bettingService.bettingGames.length > 0 ? (
-      <div className="lg:grid lg:grid-cols-1 lg:gap-6 w-full">
+      <div className="grid grid-cols-1 gap-6 w-full">
         {bettingService.bettingGames.map((bettingGame, i) => {
           if (
             bettingGame.event.competitionName == eventTypeSort ||

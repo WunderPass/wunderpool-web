@@ -14,7 +14,7 @@ export default function EventList(props) {
       method: 'get',
       url: `/api/betting/events/registered`,
     }).then((res) => {
-      setEvents(res.data);
+      setEvents(res.data.filter((e) => new Date(e.startTime) > new Date()));
     });
   };
 
