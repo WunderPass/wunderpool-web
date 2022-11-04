@@ -186,7 +186,7 @@ export default function EventCard(props) {
           <>
             <Divider />
             <div className="my-5">
-              <div className="flex justify-center items-center text-semibold sm:text-lg">
+              <div className="flex justify-center items-center text-semibold sm:text-lg mb-4">
                 Public Betting Games
               </div>
               <div>
@@ -257,12 +257,14 @@ export default function EventCard(props) {
             </div>
             <Divider />
             <div className="flex flex-col justify-center items-center mt-5">
-              <div className="text-semibold sm:text-lg mb-4">
-                Create a private Betting Game
+              <div className=" flex-col text-semibold sm:text-lg text-center mb-4">
+                <p>Create a private Betting Game </p>
+                <p>(Currently not available)</p>
               </div>
 
               <div className="flex flex-row w-full gap-3">
                 <button
+                  disabled
                   className={`btn-casama w-full p-2 ${
                     selectedCompetition.stake == undefined ||
                     (!selectedCompetition.public &&
@@ -278,6 +280,7 @@ export default function EventCard(props) {
                   $ 5
                 </button>
                 <button
+                  disabled
                   className={`btn-casama w-full p-2 ${
                     selectedCompetition.stake == undefined ||
                     (!selectedCompetition.public &&
@@ -311,6 +314,7 @@ export default function EventCard(props) {
                 />
                 {!showCustomInput && (
                   <button
+                    disabled
                     className={`btn-casama w-full p-2 ${
                       selectedCompetition.stake == undefined
                         ? 'opacity-100'
