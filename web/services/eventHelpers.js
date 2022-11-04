@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 export function formatEvent(event) {
   if (!event) return null;
   const {
@@ -15,8 +17,12 @@ export function formatEvent(event) {
     team_away,
   } = event;
 
+  var splitted = event_name.split('Spieltag');
+  var shortName = splitted[0] + 'Spieltag';
+
   return {
     id: event_id,
+    shortName: shortName || event_name,
     name: event_name,
     type: event_type,
     startTime: new Date(`${utc_start_time}Z`) || null,

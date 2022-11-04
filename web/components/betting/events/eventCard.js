@@ -123,7 +123,7 @@ export default function EventCard(props) {
       <div className="container-white pb-16 ">
         <div className="flex flex-col items-center justify-center text-center mt-2 mb-5">
           <div className="opacity-50 text-base h-auto sm:h-14">
-            {event.name}
+            {event.shortName}
           </div>
           <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full sm:text-2xl text-lg ">
             <div className="flex flex-row w-5/12 lg:flex-col items-center justify-start sm:justify-center  text-left sm:text-center ">

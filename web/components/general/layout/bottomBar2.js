@@ -88,7 +88,7 @@ export default function BottomBar(props) {
       </div>
 
       <div
-        className="fixed sm:hidden bottom-0 left-0 right-0 z-30 bg-casama-blue h-16 rounded-t-full border-t"
+        className="fixed sm:hidden bottom-0 left-0 right-0 z-30 bg-casama-blue h-16 rounded-t-3xl border-t"
         sx={{
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}
