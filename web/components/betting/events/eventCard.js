@@ -199,7 +199,8 @@ export default function EventCard(props) {
                       <div
                         key={`public-competition-${event.id}-${stake}`}
                         className={`flex flex-col container-casama-light-p-0 items-between p-3 w-full ${
-                          selectedCompetition.stake == undefined ||
+                          (selectedCompetition.stake == undefined &&
+                            user.usdBalance >= stake) ||
                           (selectedCompetition.public &&
                             selectedCompetition.stake == stake &&
                             !showCustomInput)
@@ -237,6 +238,7 @@ export default function EventCard(props) {
                           </button>
                         ) : (
                           <button
+                            disabled={user.usdBalance < stake}
                             onClick={() =>
                               toggleSelectedCompetition({
                                 stake,
@@ -246,7 +248,9 @@ export default function EventCard(props) {
                             }
                             className="btn-casama mt-2 sm:mt-0 px-4 sm:px-6 p-1"
                           >
-                            Join
+                            {user.usdBalance < stake
+                              ? 'Insufficient Balance'
+                              : 'Join'}
                           </button>
                         )}
                       </div>
@@ -266,7 +270,8 @@ export default function EventCard(props) {
                 <button
                   disabled
                   className={`btn-casama w-full p-2 ${
-                    selectedCompetition.stake == undefined ||
+                    (selectedCompetition.stake == undefined &&
+                      user.usdBalance >= 5) ||
                     (!selectedCompetition.public &&
                       selectedCompetition.stake == 5 &&
                       !showCustomInput)
@@ -282,7 +287,8 @@ export default function EventCard(props) {
                 <button
                   disabled
                   className={`btn-casama w-full p-2 ${
-                    selectedCompetition.stake == undefined ||
+                    (selectedCompetition.stake == undefined &&
+                      user.usdBalance >= 10) ||
                     (!selectedCompetition.public &&
                       selectedCompetition.stake == 10 &&
                       !showCustomInput)
