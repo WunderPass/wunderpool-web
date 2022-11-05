@@ -56,6 +56,7 @@ export default function useBettingService(
     await axios({
       method: 'get',
       url: `/api/betting/games`,
+      params: { userAddress: userAddress },
     }).then(async (res) => {
       const { data: pools } = await axios({
         method: 'get',
@@ -99,26 +100,18 @@ export default function useBettingService(
     });
   };
 
-  // const initialize = async () => {
-  //   await getGames();
-  //   await getEvents();
-  //   await fetchBettingGames();
-  // };
-
-  // useEffect(() => {
-  //   setIsReady(false);
-  //   initialize().then(() => {
-  //     setIsReady(true);
-  //   });
-  // }, [userAddress]);
+  const initialize = async () => {
+    await getGames();
+    await getEvents();
+  };
 
   useEffect(() => {
-    getEvents().then(() => {
-      getGames().then(() => {
-        setIsReady(true);
-      });
+    if (!userAddress) return;
+    setIsReady(false);
+    initialize().then(() => {
+      setIsReady(true);
     });
-  }, []);
+  }, [userAddress]);
 
   return { games, events, isReady };
 }
