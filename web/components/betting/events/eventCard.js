@@ -268,12 +268,10 @@ export default function EventCard(props) {
             <div className="flex flex-col justify-center items-center mt-5">
               <div className=" flex-col text-semibold sm:text-lg text-center mb-4">
                 <p>Create a private Betting Game </p>
-                <p>(Currently not available)</p>
               </div>
 
               <div className="flex flex-row w-full gap-3">
                 <button
-                  disabled
                   className={`btn-casama w-full p-2 ${
                     (selectedCompetition.stake == undefined &&
                       user.usdBalance >= 5) ||
@@ -290,7 +288,6 @@ export default function EventCard(props) {
                   $ 5
                 </button>
                 <button
-                  disabled
                   className={`btn-casama w-full p-2 ${
                     (selectedCompetition.stake == undefined &&
                       user.usdBalance >= 10) ||
@@ -325,7 +322,6 @@ export default function EventCard(props) {
                 />
                 {!showCustomInput && (
                   <button
-                    disabled
                     className={`btn-casama w-full p-2 ${
                       selectedCompetition.stake == undefined
                         ? 'opacity-100'

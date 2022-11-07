@@ -74,15 +74,12 @@ export default function DashBoardGameCard(props) {
   const { game, handleSuccess, user } = props;
   const router = useRouter();
 
+  console.log('game in dashBoard', game);
   const stake = game.stake / 1000000; //TODO
 
-  const usersBet = game.participants.find((p) =>
-    compAddr(p.address, user.address)
-  )?.prediction;
-
   return (
-    <div className="container-gray pb-16 ">
-      <div className="flex flex-col items-start gap-2  ">
+    <div className="container-gray pb-16 w-full">
+      <div className="flex flex-col items-start gap-2  w-full">
         <div className="flex flex-row justify-center items-start w-full mb-4">
           <div className="flex flex-col justify-start items-start">
             <div className="flex flex-col justify-start items-start ">
@@ -91,8 +88,7 @@ export default function DashBoardGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/pools?sortId=' +
-                      game.event.id,
+                    'https://app.casama.io/betting/pools/join/' + game.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )

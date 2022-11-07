@@ -236,9 +236,9 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
   };
 
   return (
-    <form className="w-full my-2" onSubmit={handleSubmit}>
-      <div className="w-full flex flex-col gap-4">
-        <div>
+    <form className="flex w-full my-2" onSubmit={handleSubmit}>
+      <div className="flex  items-center justify-center w-full flex-col gap-4">
+        <div className="flex  w-full">
           <input
             className="textfield py-4 px-3"
             placeholder="Email or Username"
@@ -249,7 +249,7 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
           />
           <Error msg={errors.userIdentifier} />
         </div>
-        <div>
+        <div className="flex  w-full">
           <input
             className="textfield py-4 px-3"
             placeholder="Password"
@@ -296,7 +296,7 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
         <button
           type="submit"
           disabled={loading}
-          className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
+          className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md w-full"
         >
           {loading ? 'Loading...' : 'Login'}
         </button>
@@ -412,7 +412,7 @@ export default function LoginWithCasama({ onSuccess, toggleSignup }) {
 
   return (
     <>
-      <Collapse in={!createNewUser}>
+      <Collapse in={!createNewUser} className="w-full sm:w-1/2">
         {loginWithSeed ? (
           <SeedPhraseForm
             setCreateNewUser={setCreateNewUser}

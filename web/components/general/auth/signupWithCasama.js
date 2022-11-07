@@ -150,12 +150,12 @@ export default function SignUpWithCasama({
   }, [pass]);
 
   return (
-    <form className="w-full" onSubmit={handleSubmit}>
-      <div className="w-full flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div>
+    <form className="flex justify-center items-center+" onSubmit={handleSubmit}>
+      <div className=" flex flex-col justify-center items-center gap-4 sm:w-1/2 w-full">
+        <div className="flex flex-row gap-4 ">
+          <div className="w-full">
             <input
-              className="textfield py-4 px-3"
+              className="textfield py-4 px-3 "
               placeholder="First Name"
               value={firstName}
               onChange={(e) => {
@@ -164,7 +164,7 @@ export default function SignUpWithCasama({
             />
             <Error msg={errors.firstName} />
           </div>
-          <div>
+          <div className="w-full">
             <input
               className="textfield py-4 px-3"
               placeholder="Last Name"
@@ -176,7 +176,7 @@ export default function SignUpWithCasama({
             <Error msg={errors.lastName} />
           </div>
         </div>
-        <div>
+        <div className="w-full">
           <input
             className="textfield py-4 px-3"
             placeholder="Email"
@@ -188,7 +188,7 @@ export default function SignUpWithCasama({
           />
           <Error msg={errors.email} />
         </div>
-        <div>
+        <div className="w-full">
           <input
             className="textfield py-4 px-3"
             placeholder="Password"
@@ -200,7 +200,7 @@ export default function SignUpWithCasama({
           />
           <Error msg={errors.password} />
         </div>
-        <div>
+        <div className="w-full">
           <input
             className="textfield py-4 px-3"
             placeholder="Password Confirmation"
@@ -216,7 +216,7 @@ export default function SignUpWithCasama({
         <button
           type="submit"
           disabled={loading}
-          className="flex text-center items-center justify-center bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
+          className="flex text-center items-center justify-center w-full bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
         >
           {loading ? 'Loading...' : 'Sign Up'}
         </button>

@@ -26,7 +26,6 @@ export default function Betting(props) {
     if (!router.query.sortId) return;
     setSortId(router.query.sortId);
     setEventTypeSort('Event ID: ' + router.query.sortId);
-    setIsSortById(true);
   }, [router.query]);
 
   return (

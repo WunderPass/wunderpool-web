@@ -4,7 +4,7 @@ const fs = require('fs');
 
 export default async function handler(req, res) {
   try {
-    const { poolAddress, userAddress } = req.query;
+    const { poolAddress, userAddress, gameId } = req.query;
 
     if (fs.existsSync('./data/games.json')) {
       const allGames = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
@@ -18,6 +18,8 @@ export default async function handler(req, res) {
         filteredGames = allGames.filter((game) =>
           game.participants.find((part) => compAddr(part.address, userAddress))
         );
+      } else if (gameId) {
+        filteredGames = allGames.filter((game) => game.id == gameId);
       }
       const sortedGames = filteredGames.sort(
         (a, b) =>
