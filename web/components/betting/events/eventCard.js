@@ -8,6 +8,7 @@ import {
   joinSingleCompetition,
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
+import { calculateOdds } from '../../../services/eventHelpers';
 
 function toDate(str) {
   return str
@@ -54,8 +55,12 @@ export default function EventCard(props) {
     if (selectedCompetition.matchingGame) {
       joinSingleCompetition({
         gameId: selectedCompetition.matchingGame.id,
+        poolAddress: selectedCompetition.matchingGame.poolAddress,
         prediction: [guessOne, guessTwo],
-        creator: user.address,
+        userAddress: user.address,
+        stake: selectedCompetition.matchingGame.stake,
+        poolVersion:
+          selectedCompetition.matchingGame.pool.launcher.launcher_version,
         wunderId: user.wunderId,
         event: event,
       })
@@ -190,69 +195,70 @@ export default function EventCard(props) {
                 Public Betting Games
               </div>
               <div>
-                <div className="flex flex-row w-full gap-3">
+                <div className="flex flex-row w-full gap-3 flex-wrap sm:flex-nowrap">
                   {[5, 10, 50].map((stake) => {
+                    const selected =
+                      selectedCompetition.public &&
+                      selectedCompetition.stake == stake &&
+                      !showCustomInput;
                     const matchingGame = eventGames.find(
                       (g) => g.pool.shareholder_agreement.min_invest == stake
                     );
+                    const odds = calculateOdds(matchingGame?.participants);
                     return (
                       <div
                         key={`public-competition-${event.id}-${stake}`}
-                        className={`flex flex-col container-casama-light-p-0 items-between p-3 w-full ${
+                        className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
                           (selectedCompetition.stake == undefined &&
                             user.usdBalance >= stake) ||
-                          (selectedCompetition.public &&
-                            selectedCompetition.stake == stake &&
-                            !showCustomInput)
+                          selected
                             ? 'opacity-100'
                             : 'opacity-40'
                         }`}
                       >
-                        <div className="flex flex-col sm:flex-row justify-between items-center sm:p-2 p-0">
-                          <div className="text-casama-blue font-semibold">
-                            {currency(stake)}
+                        <div className="flex flex-col items-center p-2 gap-2">
+                          {matchingGame?.pool?.pool_members?.find(
+                            (mem) =>
+                              mem.members_address.toLowerCase() ==
+                              user.address.toLowerCase()
+                          ) ? (
+                            <button
+                              disabled
+                              className="btn-casama px-4 sm:px-6 p-1 w-full"
+                            >
+                              {currency(stake)} (Joined)
+                            </button>
+                          ) : (
+                            <button
+                              disabled={user.usdBalance < stake}
+                              onClick={() =>
+                                toggleSelectedCompetition({
+                                  stake,
+                                  public: true,
+                                  matchingGame,
+                                })
+                              }
+                              className="btn-casama px-4 sm:px-6 p-1 w-full"
+                            >
+                              {currency(stake)}
+                            </button>
+                          )}
+                        </div>
+                        <Divider />
+                        <div className="w-full flex justify-around p-1">
+                          <div className="w-full text-center">
+                            <p>Home</p>
+                            <p>{odds[0] * 100}%</p>
                           </div>
-                          <div className="opacity-50 mt-1 sm:mt-0 text-sm">
-                            {matchingGame
-                              ? matchingGame.pool.shareholder_agreement
-                                  .max_members -
-                                matchingGame.pool.pool_members.length
-                              : 50}
-                            /
-                            {matchingGame
-                              ? matchingGame.pool.shareholder_agreement
-                                  .max_members
-                              : 50}
+                          <div className="w-full text-center">
+                            <p>Tie</p>
+                            <p>{odds[1] * 100}%</p>
+                          </div>
+                          <div className="w-full text-center">
+                            <p>Away</p>
+                            <p>{odds[2] * 100}%</p>
                           </div>
                         </div>
-                        {matchingGame?.pool?.pool_members?.find(
-                          (mem) =>
-                            mem.members_address.toLowerCase() ==
-                            user.address.toLowerCase()
-                        ) ? (
-                          <button
-                            disabled
-                            className="btn-casama mt-2 sm:mt-0 px-4 sm:px-6 p-1"
-                          >
-                            Joined
-                          </button>
-                        ) : (
-                          <button
-                            disabled={user.usdBalance < stake}
-                            onClick={() =>
-                              toggleSelectedCompetition({
-                                stake,
-                                public: true,
-                                matchingGame,
-                              })
-                            }
-                            className="btn-casama mt-2 sm:mt-0 px-4 sm:px-6 p-1"
-                          >
-                            {user.usdBalance < stake
-                              ? 'Insufficient Balance'
-                              : 'Join'}
-                          </button>
-                        )}
                       </div>
                     );
                   })}

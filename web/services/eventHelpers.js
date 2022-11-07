@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 export function formatEvent(event) {
   if (!event) return null;
   const {
@@ -36,4 +34,20 @@ export function formatEvent(event) {
     teamHome: team_home,
     teamAway: team_away,
   };
+}
+
+export function calculateOdds(participants) {
+  const winnerPredictions = [0, 0, 0];
+  if (!participants || participants.length == 0) return [0, 0, 0];
+  participants.forEach((p) => {
+    if (Number(p.prediction[0]) > Number(p.prediction[1])) {
+      winnerPredictions[0]++;
+    } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
+      winnerPredictions[1]++;
+    } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
+      winnerPredictions[2]++;
+    }
+  });
+
+  return winnerPredictions.map((p) => p / participants.length);
 }

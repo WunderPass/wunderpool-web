@@ -102,6 +102,7 @@ export default function PoolCard(props) {
                     .map((member, i) => {
                       return (
                         <Avatar
+                          shiftRight
                           key={`avatar-${pool.address}-${member.address}`}
                           wunderId={member.wunderId}
                           tooltip={`${getNameFor(
@@ -117,6 +118,7 @@ export default function PoolCard(props) {
               {members && members.length > 3 && (
                 <div className="flex flex-row">
                   <InitialsAvatar
+                    shiftRight
                     text={`+${members.length - 3}`}
                     color={'powder'}
                   />
