@@ -178,7 +178,10 @@ export default function TopBar(props) {
               )}
             </Stack>
             <div className="flex sm:hidden w-full items-center justify-between">
-              <p className="font-bold flex-grow">{user.wunderId}</p>
+              <p className="font-bold flex-grow">
+                {user.wunderId ||
+                  `${user.address.slice(0, 4)}...${user.address.slice(-4)}`}
+              </p>
               <div className="flex px-3 ">
                 <News {...props} />
               </div>
