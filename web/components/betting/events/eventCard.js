@@ -218,8 +218,8 @@ export default function EventCard(props) {
                         }`}
                       >
                         <div className="flex flex-col items-center p-2 gap-2">
-                          {matchingGame?.pool?.pool_members?.find((mem) =>
-                            compAddr(mem.members_address, user.address)
+                          {matchingGame?.participants?.find((part) =>
+                            compAddr(part.address, user.address)
                           ) ? (
                             <button
                               disabled
@@ -247,15 +247,15 @@ export default function EventCard(props) {
                         <div className="w-full flex justify-around p-1">
                           <div className="w-full text-center">
                             <p>Home</p>
-                            <p>{odds[0] * 100}%</p>
+                            <p>{parseInt(odds[0] * 100)}%</p>
                           </div>
                           <div className="w-full text-center">
                             <p>Tie</p>
-                            <p>{odds[1] * 100}%</p>
+                            <p>{parseInt(odds[1] * 100)}%</p>
                           </div>
                           <div className="w-full text-center">
                             <p>Away</p>
-                            <p>{odds[2] * 100}%</p>
+                            <p>{parseInt(odds[2] * 100)}%</p>
                           </div>
                         </div>
                       </div>

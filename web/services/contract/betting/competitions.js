@@ -102,13 +102,19 @@ export async function joinSingleCompetition({
   poolVersion,
 }) {
   try {
-    await joinPool(
-      poolAddress,
-      userAddress,
-      stake / 1000000,
-      '',
-      versionLookup[poolVersion.toLowerCase()].number
-    );
+    try {
+      await joinPool(
+        poolAddress,
+        userAddress,
+        stake / 1000000,
+        '',
+        versionLookup[poolVersion.toLowerCase()].number
+      );
+    } catch (error) {
+      if (error != '204: Already Member') {
+        throw error;
+      }
+    }
     await registerParticipant(
       gameId,
       prediction,
