@@ -2,6 +2,7 @@ import { Stack, Skeleton } from '@mui/material';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { compAddr } from '../../../services/memberHelpers';
 import EventCard from '/components/betting/events/eventCard';
 
 export default function EventList(props) {
@@ -21,9 +22,8 @@ export default function EventList(props) {
       });
       const resolvedGames = res.data
         .map((game) => {
-          const pool = pools.find(
-            (p) =>
-              p.pool_address.toLowerCase() == game.poolAddress.toLowerCase()
+          const pool = pools.find((p) =>
+            compAddr(p.pool_address, game.poolAddress)
           );
           return pool ? { ...game, pool } : null;
         })

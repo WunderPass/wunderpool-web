@@ -10,6 +10,9 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
+import { getEnsNameFromAddress } from '/services/memberHelpers';
+import usePool from '/hooks/usePool';
+import { compAddr } from '../../../services/memberHelpers';
 
 function calculatePoints(eventType, prediction, result) {
   // SOCCER
@@ -86,7 +89,7 @@ function ParticipantTable({ user, participants, stake }) {
             >
               <div
                 className={
-                  participant.address === user.address
+                  compAddr(participant.address, user.address)
                     ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
                     : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
                 }
@@ -152,8 +155,8 @@ export default function GameCard(props) {
     totalTokens /
     10 ** wunderPool.governanceToken.decimals;
 
-  const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == wunderPool.userAddress?.toLowerCase()
+  const usersBet = game.participants.find((p) =>
+    compAddr(p.address, wunderPool.userAddress)
   )?.prediction;
 
   const handleOpenBetNow = (onlyClose = false) => {
@@ -288,10 +291,8 @@ export default function GameCard(props) {
 
           {/* Only Show participants if user has voted */}
           {game.event.state == 'RESOLVED' ||
-            (game.participants.find(
-              (participant) =>
-                participant.address?.toLowerCase() ===
-                user.address?.toLowerCase()
+            (game.participants.find((participant) =>
+              compAddr(participant.address, user.address)
             ) && (
               <ParticipantTable
                 user={user}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { compAddr } from '../services/memberHelpers';
 
 export default function useBettingService(
   userAddress,
@@ -25,14 +26,12 @@ export default function useBettingService(
       });
       const resolvedGames = res.data
         .map((game) => {
-          const pool = pools.find(
-            (p) =>
-              p.pool_address.toLowerCase() == game.poolAddress.toLowerCase()
+          const pool = pools.find((p) =>
+            compAddr(p.pool_address, game.poolAddress)
           );
           return pool ? { ...game, pool } : null;
         })
         .filter((g) => g);
-      console.log(resolvedGames);
       setGames(resolvedGames);
     });
   };

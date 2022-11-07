@@ -12,6 +12,7 @@ import axios from 'axios';
 import { httpProvider } from './provider';
 import { approveUSDC } from './token';
 import { cacheItemDB, getCachedItemDB } from '../caching';
+import { compAddr } from '../memberHelpers';
 
 export function createPool({
   creator,
@@ -261,7 +262,7 @@ export async function formatPool(pool, user = null) {
     );
 
     const userShare = user
-      ? members.find((member) => member.address.toLowerCase() == user)?.share
+      ? members.find((member) => compAddr(member.address, user))?.share
       : 0;
     const userBalance = (totalBalance * userShare) / 100;
 
