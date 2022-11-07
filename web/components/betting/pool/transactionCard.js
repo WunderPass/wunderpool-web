@@ -16,6 +16,7 @@ import { MdHowToVote } from 'react-icons/md';
 import { ImEnter } from 'react-icons/im';
 import { HiLockClosed } from 'react-icons/hi';
 import Avatar from '/components/general/members/avatar';
+import { compAddr } from '../../../services/memberHelpers';
 
 const unixTimeToDate = (unixTime) => {
   const date = new Date(unixTime * 1000);
@@ -98,7 +99,7 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
     gasPrice,
     timeStamp,
   } = transaction;
-  const sentToken = from.toLowerCase() == wunderPool.poolAddress.toLowerCase();
+  const sentToken = compAddr(from, wunderPool.poolAddress);
   const formattedAmount = value / 10 ** tokenDecimal;
   const [expand, setExpand] = useState(false);
   const [tokenData, setTokenData] = useState({});
@@ -106,11 +107,11 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
   const senderName = wunderPool.resolveMember(from);
   const receiverName = wunderPool.resolveMember(to);
 
-  const isDeposit = wunderPool.members.find(
-    (mem) => mem?.address?.toLowerCase() == from.toLowerCase()
+  const isDeposit = wunderPool.members.find((mem) =>
+    compAddr(mem?.address, from)
   );
-  const isWithdrawl = wunderPool.members.find(
-    (mem) => mem?.address?.toLowerCase() == to.toLowerCase()
+  const isWithdrawl = wunderPool.members.find((mem) =>
+    compAddr(mem?.address, to)
   );
 
   useEffect(() => {

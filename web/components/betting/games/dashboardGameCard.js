@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
+import { compAddr } from '../../../services/memberHelpers';
 
 function ParticipantTable({ game, stake, user }) {
   const { participants, event } = game;
@@ -29,7 +30,7 @@ function ParticipantTable({ game, stake, user }) {
           >
             <div
               className={
-                participant.address === user.address
+                compAddr(participant.address, user.address)
                   ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
                   : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
               }
@@ -75,8 +76,8 @@ export default function DashBoardGameCard(props) {
 
   const stake = game.stake / 1000000; //TODO
 
-  const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == user.address.toLowerCase()
+  const usersBet = game.participants.find((p) =>
+    compAddr(p.address, user.address)
   )?.prediction;
 
   return (
@@ -191,10 +192,8 @@ export default function DashBoardGameCard(props) {
           {/* Only Show participants if user has voted */}
           {user &&
             (game.event.state == 'RESOLVED' ||
-              (game.participants.find(
-                (participant) =>
-                  participant.address?.toLowerCase() ===
-                  user.address?.toLowerCase()
+              (game.participants.find((participant) =>
+                compAddr(participant.address, user.address)
               ) && <ParticipantTable game={game} stake={stake} user={user} />))}
         </div>
       </div>

@@ -29,6 +29,7 @@ import {
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
 import axios from 'axios';
 import { formatAsset } from '/services/contract/pools';
+import { compAddr } from '../services/memberHelpers';
 
 export default function usePool(
   userAddr,
@@ -75,9 +76,7 @@ export default function usePool(
   const userShare = useMemo(() => {
     if (!poolMembers || poolMembers.length <= 0) return 0;
     return (
-      poolMembers.find(
-        (m) => m.address.toLowerCase() == userAddress?.toLowerCase()
-      )?.share || 0
+      poolMembers.find((m) => compAddr(m.address, userAddress))?.share || 0
     );
   }, [poolMembers]);
 
@@ -88,17 +87,16 @@ export default function usePool(
   };
 
   const resolveMember = (address) => {
-    if (address.toLowerCase() == poolAddress) return poolName;
+    if (compAddr(address, poolAddress)) return poolName;
     return (
-      poolMembers.find((m) => m.address.toLowerCase() == address?.toLowerCase())
-        ?.wunderId || address
+      poolMembers.find((m) => compAddr(m.address, address))?.wunderId || address
     );
   };
 
   //IMPLEMENT THIS BENEATH IN THE FUTURE
 
   // const resolveMember = async (address) => {
-  //   if (address.toLowerCase() == poolAddress) return poolName;
+  //   if (compAddr(address, poolAddress)) return poolName;
   //   return new Promise(async (resolve, reject) => {
   //     try {
   //       const user =
@@ -436,9 +434,8 @@ export default function usePool(
       setUsdcBalance(pool_treasury.act_balance);
 
       const isMem =
-        pool_members.filter(
-          (m) => m.members_address.toLowerCase() == userAddress?.toLowerCase()
-        ).length > 0;
+        pool_members.filter((m) => compAddr(m.members_address, userAddress))
+          .length > 0;
 
       setUserIsMember(isMem);
 

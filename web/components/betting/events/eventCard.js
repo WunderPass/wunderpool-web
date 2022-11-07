@@ -9,6 +9,7 @@ import {
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
 import { calculateOdds } from '../../../services/eventHelpers';
+import { compAddr } from '../../../services/memberHelpers';
 
 function toDate(str) {
   return str
@@ -217,10 +218,8 @@ export default function EventCard(props) {
                         }`}
                       >
                         <div className="flex flex-col items-center p-2 gap-2">
-                          {matchingGame?.pool?.pool_members?.find(
-                            (mem) =>
-                              mem.members_address.toLowerCase() ==
-                              user.address.toLowerCase()
+                          {matchingGame?.pool?.pool_members?.find((mem) =>
+                            compAddr(mem.members_address, user.address)
                           ) ? (
                             <button
                               disabled
