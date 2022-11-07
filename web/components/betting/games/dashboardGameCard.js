@@ -73,6 +73,7 @@ export default function DashBoardGameCard(props) {
   const { game, handleSuccess, user } = props;
   const router = useRouter();
 
+  console.log('game in dashBoard', game);
   const stake = game.stake / 1000000; //TODO
 
   return (
@@ -86,8 +87,7 @@ export default function DashBoardGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/pools?sortId=' +
-                      game.event.id,
+                    'https://app.casama.io/betting/pools/join/' + game.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
