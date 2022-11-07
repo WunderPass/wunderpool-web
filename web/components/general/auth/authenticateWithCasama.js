@@ -39,42 +39,53 @@ export default function AuthenticateWithCasama({ onSuccess }) {
 
   return (
     <>
-      <Collapse in={!isLogin}>
+      <Collapse in={!isLogin} className="w-full">
         <Collapse in={isSignup}>
-          <button
-            onClick={() => setIsSignup(false)}
-            className="float-right mb-2"
-          >
-            <AiOutlineClose className="text-2xl text-gray-400" />
-          </button>
+          <div className="flex justify-center items-center ">
+            <button
+              onClick={() => setIsSignup(false)}
+              className="float-right mb-2"
+            >
+              <AiOutlineClose className="text-2xl text-gray-400" />
+            </button>
+          </div>
           <SignUpWithCasama onSuccess={onSuccess} />
         </Collapse>
         <Collapse in={!isSignup}>
-          <button
-            onClick={() => setIsSignup(true)}
-            className="btn-casama px-5 py-2 mb-5 font-medium max-w-xs w-full"
-          >
-            Sign Up with Email
-          </button>
+          <div className="flex justify-center items-center ">
+            <button
+              onClick={() => setIsSignup(true)}
+              className="btn-casama px-5 py-2 mb-5 font-medium max-w-xs w-full"
+            >
+              Sign Up with Email
+            </button>{' '}
+          </div>
         </Collapse>
       </Collapse>
-      <Collapse in={!isSignup}>
+      <Collapse in={!isSignup} className="w-full">
         <Collapse in={isLogin}>
-          <button
-            onClick={() => setIsLogin(false)}
-            className="float-right mb-2"
-          >
-            <AiOutlineClose className="text-2xl text-gray-400" />
-          </button>
-          <LoginWithCasama onSuccess={onSuccess} toggleSignup={toggleSignup} />
+          <div className="flex justify-center items-center bg-green-200">
+            <button
+              onClick={() => setIsLogin(false)}
+              className="float-right mb-2"
+            >
+              <AiOutlineClose className="text-2xl text-gray-400" />
+            </button>
+            <LoginWithCasama
+              onSuccess={onSuccess}
+              toggleSignup={toggleSignup}
+            />
+          </div>
         </Collapse>
         <Collapse in={!isLogin}>
-          <button
-            onClick={() => setIsLogin(true)}
-            className="btn-casama-white px-5 py-2 max-w-xs w-full"
-          >
-            Login
-          </button>
+          <div className="flex justify-center items-center ">
+            <button
+              onClick={() => setIsLogin(true)}
+              className="btn-casama-white items-center px-5 py-2 max-w-xs w-full"
+            >
+              Login
+            </button>
+          </div>
         </Collapse>
       </Collapse>
     </>

@@ -2,7 +2,7 @@ const fs = require('fs');
 
 export default async function handler(req, res) {
   try {
-    const { poolAddress, userAddress } = req.query;
+    const { poolAddress, userAddress, gameId } = req.query;
 
     if (fs.existsSync('./data/games.json')) {
       const allGames = JSON.parse(fs.readFileSync('./data/games.json', 'utf8'));
@@ -18,6 +18,8 @@ export default async function handler(req, res) {
             (part) => part.address.toLowerCase() == userAddress.toLowerCase()
           )
         );
+      } else if (gameId) {
+        filteredGames = allGames.filter((game) => game.id == gameId);
       }
 
       res.status(200).json(filteredGames);

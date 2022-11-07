@@ -4,14 +4,172 @@ import { useEffect, useState } from 'react';
 import { currency } from '/services/formatter';
 import CurrencyInput from '/components/general/utils/currencyInput';
 import usePool from '/hooks/usePool';
+import useGame from '/hooks/useGame';
 import { toFixed } from '/services/formatter';
-import LoginWithWunderPass from '/components/general/auth/loginWithWunderPass';
-import Link from 'next/link';
 import TransactionDialog from '/components/general/utils/transactionDialog';
 import CustomHeader from '/components/general/utils/customHeader';
 import { fetchPoolData } from '/services/contract/pools';
 import Avatar from '/components/general/members/avatar';
 import { getNameFor } from '/services/memberHelpers';
+import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
+import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
+import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
+import DashboardGameCard from '/components/betting/games/dashboardGameCard';
+
+export default function JoinPool(props) {
+  const router = useRouter();
+  const {
+    updateListener,
+    user,
+    metaTagInfo,
+    handleSuccess,
+    handleInfo,
+    handleError,
+    bettingService,
+  } = props;
+  const [address, setAddress] = useState(null);
+  const [amount, setAmount] = useState('');
+  const [secret, setSecret] = useState(null);
+  const [signing, setSigning] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [invalidLink, setInvalidLink] = useState(false);
+  const wunderPool = usePool(user.address, address, handleError);
+  const game = useGame(27, user); //TODO
+
+  const handleInput = (value, float) => {
+    setAmount(value);
+    if (float && minInvest > float) {
+      setErrorMsg(`Minimum of ${currency(minInvest)} required for the Pool`);
+    } else if (float && float > maxInvest) {
+      setErrorMsg(`Maximum Invest of ${currency(maxInvest)} surpassed`);
+    } else if (user.usdBalance < float) {
+      setErrorMsg(`Not enough balance`);
+    } else {
+      setErrorMsg(null);
+    }
+  };
+
+  console.log('betting', bettingService);
+  console.log('game', game);
+
+  const handleLogin = (data) => {
+    user.updateLoginMethod(data.loginMethod);
+    user.updateWunderId(data.wunderId);
+    user.updateAddress(data.address);
+    wunderPool.updateUserAddress(data.address);
+  };
+
+  const handleSubmit = () => {
+    setSigning(true);
+    setTimeout(() => {
+      wunderPool
+        .join(amount, secret)
+        .then(() => {
+          user.fetchUsdBalance();
+          handleSuccess(`Joined Pool with ${currency(amount)}`);
+          loginCallback();
+        })
+        .catch((err) => {
+          setSigning(false);
+          if (err == 'Not On Whitelist') setInvalidLink(true);
+          handleError(
+            `Could not join the Pool${typeof err == 'string' ? `: ${err}` : ''}`
+          );
+        });
+    }, 10);
+  };
+
+  const loginCallback = () => {
+    router.push(`/betting/bets?sortId=${game.game.id}`); //ad sortId in for bets (check /pools?sortId=27)
+  };
+
+  console.log('game', game);
+  console.log('game is partiicpant', game.isParticipant);
+
+  useEffect(() => {
+    if (game.isReady) {
+      if (game.exists) {
+        if (game.isParticipant) {
+          handleInfo('You already placed a bet for this game');
+          loginCallback();
+        }
+      } else {
+        handleInfo('This Bet does not exist');
+        router.push('/betting/pools');
+      }
+    }
+  }, [game.isReady, game.isParticipant]);
+
+  // TODO ADD IF BET IS ALREDY FINISHED AN NOT AVAILABLE FOR VOTES
+  // useEffect(() => {
+  //   if (wunderPool.liquidated) {
+  //     handleInfo('This Bet is already resolved');
+  //     router.push('/betting/pools');
+  //   }
+  // }, [wunderPool.liquidated]);
+
+  return (
+    <>
+      <CustomHeader
+        title={metaTagInfo.title}
+        description={metaTagInfo.description}
+        imageUrl={metaTagInfo.imageUrl}
+      />
+      <Container
+        className="flex flex-col justify-center items-center gap-3"
+        maxWidth="xl"
+      >
+        <div className="flex flex-col justify-center items-center  w-full container-gray mt-7">
+          {wunderPool.closed && (
+            <Alert severity="warning" className="w-full items-center my-1">
+              This Pool is already closed
+            </Alert>
+          )}
+          {invalidLink && (
+            <Alert severity="error" className="w-full items-center my-1">
+              This Link has most likely expired. Please ask the Pool Members for
+              a new Link
+            </Alert>
+          )}
+          {user?.loggedIn ? (
+            user?.usdBalance < 3 ? (
+              <TopUpRequired {...props} />
+            ) : (
+              <InputJoinAmount
+                amount={amount}
+                minInvest={minInvest}
+                handleInput={handleInput}
+                errorMsg={errorMsg}
+                shareOfPool={shareOfPool}
+                handleSubmit={handleSubmit}
+              />
+            )
+          ) : (
+            <NotLoggedIn handleLogin={handleLogin} handleError={handleError} />
+          )}
+        </div>
+        {game.isReady && (
+          <div className="flex flex-col my-8 w-full ">
+            <DashboardGameCard
+              key={`dashboard-game-card-${game.game.id}`}
+              game={game.game}
+              user={user}
+              {...props}
+            />
+            <div className="flex container-gray w-full">dadaw</div>
+          </div>
+        )}
+
+        {/* <TransactionDialog
+          open={signing}
+          onClose={() => {
+            setSigning(false);
+          }}
+        /> */}
+      </Container>
+    </>
+  );
+}
 
 function InfoBlock({ label, value }) {
   return (
@@ -45,21 +203,24 @@ function PoolStats({
   );
 }
 
-function NotLoggedIn({ handleLogin }) {
+function NotLoggedIn({ handleLogin, handleError }) {
   return (
     <>
-      <Typography className="text-sm mt-3">
-        To join this Pool, you need a WunderPass Account
+      <Typography className="text-sm">
+        Create an Account to join this Pool
       </Typography>
       <Divider className="mt-2 mb-4 opacity-70" />
-      <LoginWithWunderPass
-        disablePopup
-        className="text-xs"
-        name="Casama"
-        redirect={'pools'}
-        intent={['wunderId', 'address']}
-        onSuccess={handleLogin}
-      />
+      <AuthenticateWithCasama onSuccess={handleLogin} />
+      <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-8">
+        Already have a wallet?
+      </p>
+      <div className="max-w-sm">
+        <LoginWithMetaMask onSuccess={handleLogin} handleError={handleError} />
+        <LoginWithWalletConnect
+          onSuccess={handleLogin}
+          handleError={handleError}
+        />
+      </div>
     </>
   );
 }
@@ -133,189 +294,6 @@ function InputJoinAmount(props) {
       >
         Join
       </button>
-    </>
-  );
-}
-
-export default function JoinPool(props) {
-  const router = useRouter();
-  const {
-    updateListener,
-    user,
-    metaTagInfo,
-    handleSuccess,
-    handleInfo,
-    handleError,
-  } = props;
-  const [address, setAddress] = useState(null);
-  const [amount, setAmount] = useState('');
-  const [secret, setSecret] = useState(null);
-  const [signing, setSigning] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [invalidLink, setInvalidLink] = useState(false);
-  const wunderPool = usePool(user.address, address, handleError);
-  const { minInvest, maxInvest } = wunderPool;
-  const tokensForDollar = wunderPool.governanceToken?.tokensForDollar;
-  const totalSupply = wunderPool.governanceToken?.totalSupply || 0;
-
-  const receivedTokens = tokensForDollar ? amount * tokensForDollar : 100;
-  const shareOfPool =
-    totalSupply > 0
-      ? (receivedTokens * 100) / (totalSupply + receivedTokens)
-      : 100;
-
-  const handleInput = (value, float) => {
-    setAmount(value);
-    if (float && minInvest > float) {
-      setErrorMsg(`Minimum of ${currency(minInvest)} required for the Pool`);
-    } else if (float && float > maxInvest) {
-      setErrorMsg(`Maximum Invest of ${currency(maxInvest)} surpassed`);
-    } else if (user.usdBalance < float) {
-      setErrorMsg(`Not enough balance`);
-    } else {
-      setErrorMsg(null);
-    }
-  };
-
-  const handleLogin = (data) => {
-    user.updateWunderId(data.wunderId);
-    user.updateAddress(data.address);
-    wunderPool.updateUserAddress(data.address);
-  };
-
-  const handleSubmit = () => {
-    setSigning(true);
-    setTimeout(() => {
-      wunderPool
-        .join(amount, secret)
-        .then(() => {
-          user.fetchUsdBalance();
-          handleSuccess(`Joined Pool with ${currency(amount)}`);
-          loginCallback();
-        })
-        .catch((err) => {
-          setSigning(false);
-          if (err == 'Not On Whitelist') setInvalidLink(true);
-          handleError(
-            `Could not join the Pool${typeof err == 'string' ? `: ${err}` : ''}`
-          );
-        });
-    }, 10);
-  };
-
-  const loginCallback = () => {
-    updateListener(user.pools, address, user.address);
-    router.push(`/betting/pools/${address}`);
-  };
-
-  useEffect(() => {
-    if (wunderPool.isReady && wunderPool.poolAddress) {
-      if (wunderPool.exists) {
-        if (wunderPool.isMember) {
-          handleInfo('You already joined the Pool');
-          loginCallback();
-        }
-      } else if (wunderPool.exists === false) {
-        handleInfo('This Pool does not exist');
-        router.push('/betting/pools');
-      }
-    }
-  }, [wunderPool.isReady, wunderPool.isMember]);
-
-  useEffect(() => {
-    if (wunderPool.liquidated) {
-      handleInfo('This Pool was already closed');
-      router.push('/betting/pools');
-    }
-  }, [wunderPool.liquidated]);
-
-  useEffect(() => {
-    if (router.isReady) {
-      setAddress(router.query.address);
-      setSecret(router.query.secret);
-      wunderPool.setPoolAddress(router.query.address);
-      wunderPool.setUserAddress(user.address);
-    }
-  }, [router.isReady, router.query.address, user.address]);
-
-  useEffect(() => {
-    // For Debugging - Access wunderPool in your console
-    if (wunderPool.isReady && process.env.NODE_ENV == 'development')
-      window.wunderPool = wunderPool;
-  }, [wunderPool.isReady]);
-
-  return (
-    <>
-      <CustomHeader
-        title={metaTagInfo.title}
-        description={metaTagInfo.description}
-        imageUrl={metaTagInfo.imageUrl}
-      />
-      <Container className="flex justify-center items-center" maxWidth="xl">
-        <div className="flex flex-col container-white items-center justify-center mt-6">
-          <Typography className="text-md">Join Pool</Typography>
-          <Typography className="text-2xl text-casama-blue">
-            {wunderPool.poolName}
-          </Typography>
-          <PoolStats
-            minInvest={minInvest}
-            maxInvest={maxInvest}
-            members={wunderPool.members?.length}
-            maxMembers={wunderPool.maxMembers}
-            totalBalance={wunderPool.totalBalance}
-          />
-          <div className="flex flex-row">
-            {wunderPool.members &&
-              wunderPool.members.slice(0, 10).map((member, i) => {
-                return (
-                  <Avatar
-                    key={`avatar-${member.address}`}
-                    wunderId={member.wunderId}
-                    tooltip={`${getNameFor(member)}: ${member.share.toFixed(
-                      0
-                    )}%`}
-                    text={member.wunderId ? member.wunderId : '0-X'}
-                    color={['green', 'blue', 'red'][i % 3]}
-                    i={i}
-                  />
-                );
-              })}
-          </div>
-          {wunderPool.closed && (
-            <Alert severity="warning" className="w-full items-center my-1">
-              This Pool is already closed
-            </Alert>
-          )}
-          {invalidLink && (
-            <Alert severity="error" className="w-full items-center my-1">
-              This Link has most likely expired. Please ask the Pool Members for
-              a new Link
-            </Alert>
-          )}
-          {user?.loggedIn ? (
-            user?.usdBalance < 3 ? (
-              <TopUpRequired {...props} />
-            ) : (
-              <InputJoinAmount
-                amount={amount}
-                minInvest={minInvest}
-                handleInput={handleInput}
-                errorMsg={errorMsg}
-                shareOfPool={shareOfPool}
-                handleSubmit={handleSubmit}
-              />
-            )
-          ) : (
-            <NotLoggedIn handleLogin={handleLogin} />
-          )}
-        </div>
-        <TransactionDialog
-          open={signing}
-          onClose={() => {
-            setSigning(false);
-          }}
-        />
-      </Container>
     </>
   );
 }

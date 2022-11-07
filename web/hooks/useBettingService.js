@@ -10,48 +10,6 @@ export default function useBettingService(
   const [events, setEvents] = useState([]);
   const [isReady, setIsReady] = useState(false);
 
-  // const fetchBettingGames = async () => {
-  // try {
-  // const events = (
-  //   await axios({
-  //     url: '/api/betting/events',
-  //   })
-  // ).data;
-  // const games = (
-  //   await axios({
-  //     url: '/api/betting/games',
-  //     params: { userAddress: userAddress },
-  //   })
-  // ).data;
-  //     setBettingGames(
-  //       games.map((g) => ({
-  //         ...g,
-  //         event: events.find(
-  //           (e) => e.blockchainId == g.id && e.version == g.version
-  //         ),
-  //       }))
-  //     );
-  //   } catch (error) {
-  //     handleError('Could not load Betting Games');
-  //   }
-  // };
-
-  // const fetchAllGames = async () => {
-  //   try {
-  //     const games = (
-  //       await axios({
-  //         url: '/api/betting/games',
-  //         params: { userAddress: userAddress },
-  //       })
-  //     ).data;
-  //     setGames(games);
-  //   } catch (error) {
-  //     console.log(error);
-
-  //     handleError('Could not load Events');
-  //   }
-  // };
-
   const getGames = async () => {
     await axios({
       method: 'get',
@@ -75,21 +33,6 @@ export default function useBettingService(
       setGames(resolvedGames);
     });
   };
-
-  // const fetchAllEvents = async () => {
-  //   try {
-  //     const events = (
-  //       await axios({
-  //         url: '/api/betting/events',
-  //       })
-  //     ).data;
-
-  //     setEvents(events);
-  //   } catch (error) {
-  //     console.log(error);
-  //     handleError('Could not load Games');
-  //   }
-  // };
 
   const getEvents = async () => {
     await axios({

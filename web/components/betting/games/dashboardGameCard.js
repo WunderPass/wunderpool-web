@@ -75,13 +75,9 @@ export default function DashBoardGameCard(props) {
 
   const stake = game.stake / 1000000; //TODO
 
-  const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == user.address.toLowerCase()
-  )?.prediction;
-
   return (
-    <div className="container-gray pb-16 ">
-      <div className="flex flex-col items-start gap-2  ">
+    <div className="container-gray pb-16 w-full">
+      <div className="flex flex-col items-start gap-2  w-full">
         <div className="flex flex-row justify-center items-start w-full mb-4">
           <div className="flex flex-col justify-start items-start">
             <div className="flex flex-col justify-start items-start ">
