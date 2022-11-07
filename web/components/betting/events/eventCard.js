@@ -8,6 +8,7 @@ import {
   joinSingleCompetition,
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
+import { calculateOdds } from '../../../services/eventHelpers';
 
 function toDate(str) {
   return str
@@ -203,10 +204,11 @@ export default function EventCard(props) {
                     const matchingGame = eventGames.find(
                       (g) => g.pool.shareholder_agreement.min_invest == stake
                     );
+                    const odds = calculateOdds(matchingGame?.participants);
                     return (
                       <div
                         key={`public-competition-${event.id}-${stake}`}
-                        className={`flex flex-col container-casama-light-p-0 items-between p-3 w-full ${
+                        className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
                           (selectedCompetition.stake == undefined &&
                             user.usdBalance >= stake) ||
                           selected
@@ -214,13 +216,7 @@ export default function EventCard(props) {
                             : 'opacity-40'
                         }`}
                       >
-                        <div className="flex flex-col items-center p-1 gap-2">
-                          {matchingGame
-                            ? matchingGame.pool.shareholder_agreement
-                                .max_members -
-                              matchingGame.pool.pool_members.length
-                            : 50}{' '}
-                          Spots Left
+                        <div className="flex flex-col items-center p-2 gap-2">
                           {matchingGame?.pool?.pool_members?.find(
                             (mem) =>
                               mem.members_address.toLowerCase() ==
@@ -247,6 +243,21 @@ export default function EventCard(props) {
                               {currency(stake)}
                             </button>
                           )}
+                        </div>
+                        <Divider />
+                        <div className="w-full flex justify-around p-1">
+                          <div className="w-full text-center">
+                            <p>Home</p>
+                            <p>{odds[0] * 100}%</p>
+                          </div>
+                          <div className="w-full text-center">
+                            <p>Tie</p>
+                            <p>{odds[1] * 100}%</p>
+                          </div>
+                          <div className="w-full text-center">
+                            <p>Away</p>
+                            <p>{odds[2] * 100}%</p>
+                          </div>
                         </div>
                       </div>
                     );
