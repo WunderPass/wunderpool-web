@@ -3,43 +3,16 @@ import BettingBox from '/components/betting/pool/bettingBox';
 import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import BetsList from '/components/betting/dashboard/betsList';
-import axios from 'axios';
 import DropDown from '/components/general/utils/dropDown';
 
 export default function Bets(props) {
   const { user, bettingService, handleInfo, handleError } = props;
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
 
-  const determineEventTypes = () => {
-    let eventTypes = events.map((event) => event.competitionName);
-    let uniqueEventTypes = eventTypes.filter((c, index) => {
-      return eventTypes.indexOf(c) === index;
-    });
-    uniqueEventTypes.unshift('All Events');
-    setEventTypes(uniqueEventTypes);
-  };
-
-  const getEvents = async () => {
-    axios({
-      method: 'get',
-      url: `/api/betting/events`,
-    }).then((res) => {
-      setEvents(res.data);
-    });
-  };
-
   useEffect(() => {
-    getEvents().then(() => {
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    determineEventTypes();
-  }, [events]);
+    setLoading(!bettingService.isReady);
+  }, [bettingService.isReady]);
 
   return (
     <>
@@ -86,7 +59,12 @@ export default function Bets(props) {
                   </Typography>
 
                   <DropDown
-                    list={eventTypes}
+                    list={[
+                      'All Events',
+                      ...bettingService.events.map(
+                        (event) => event.competitionName
+                      ),
+                    ]}
                     value={eventTypeSort}
                     setValue={setEventTypeSort}
                   />

@@ -152,7 +152,7 @@ export default function BettingGameDialog(props) {
         </div>
       ) : (
         <Stack spacing={2}>
-          <EventInput setEvent={setEvent} />
+          <EventInput setEvent={setEvent} {...props} />
           <Typography>Entry price</Typography>
           <CurrencyInput
             value={stake}

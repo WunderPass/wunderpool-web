@@ -6,8 +6,8 @@ export default function useBettingService(
   handleError = () => {},
   props
 ) {
-  const [games, setGames] = useState(null);
-  const [events, setEvents] = useState(null);
+  const [games, setGames] = useState([]);
+  const [events, setEvents] = useState([]);
   const [isReady, setIsReady] = useState(false);
 
   // const fetchBettingGames = async () => {

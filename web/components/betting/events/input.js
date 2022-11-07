@@ -2,15 +2,11 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Stack } from '@mui/material';
 import { MdSportsSoccer } from 'react-icons/md';
 
 export default function EventInput(props) {
-  const { setEvent } = props;
-  const [options, setOptions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { setEvent, bettingService } = props;
 
   const filterOptions = createFilterOptions({
     stringify: (option) => `${option.name}`,
@@ -24,22 +20,11 @@ export default function EventInput(props) {
     }
   };
 
-  useEffect(() => {
-    axios({ url: '/api/betting/events/registered' }).then((res) => {
-      setOptions(
-        res.data
-          .filter((e) => new Date(e.startTime) > new Date())
-          .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
-      );
-      setLoading(false);
-    });
-  }, []);
-
   return (
     <Autocomplete
       className=" w-full text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-casama-extra-light-blue"
-      options={options}
-      loading={loading}
+      options={bettingService.events}
+      loading={!bettingService.isReady}
       isOptionEqualToValue={(option, val) => option.id == val.id}
       getOptionLabel={(option) => {
         return option.name;

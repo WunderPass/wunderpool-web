@@ -34,7 +34,7 @@ export default function DropDown(props) {
         anchorEl={eventListOpen}
       >
         {list &&
-          list.map((item, i) => {
+          [...new Set(list)].map((item, i) => {
             return (
               <MenuItemUnstyled
                 key={`menu-item-${item}`}

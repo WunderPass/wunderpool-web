@@ -8,11 +8,8 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 
 export default function Betting(props) {
-  const { user } = props;
+  const { user, bettingService } = props;
   const [showSideBar, setShowSideBar] = useState(true);
-  const [loading, setLoading] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [eventTypes, setEventTypes] = useState([]);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
   const [isSortById, setIsSortById] = useState(false);
   const [sortId, setSortId] = useState(null);
@@ -24,35 +21,6 @@ export default function Betting(props) {
     setIsSortById(false);
     removeQueryParam('sortId');
   };
-
-  const determineEventTypes = () => {
-    let eventTypes = events.map((event) => event.competitionName);
-    let uniqueEventTypes = eventTypes.filter((c, index) => {
-      return eventTypes.indexOf(c) === index;
-    });
-    uniqueEventTypes.unshift('All Events');
-    setEventTypes(uniqueEventTypes);
-  };
-
-  const getEvents = async () => {
-    await axios({
-      method: 'get',
-      url: `/api/betting/events`,
-    }).then((res) => {
-      setEvents(res.data);
-    });
-  };
-
-  useEffect(() => {
-    getEvents().then(() => {
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (events.length == 0) return;
-    determineEventTypes();
-  }, [events]);
 
   useEffect(() => {
     if (!router.query.sortId) return;
@@ -140,7 +108,12 @@ export default function Betting(props) {
                       Join a betting game
                     </Typography>
                     <DropDown
-                      list={eventTypes}
+                      list={[
+                        'All Events',
+                        ...bettingService.events.map(
+                          (event) => event.competitionName
+                        ),
+                      ]}
                       value={eventTypeSort}
                       setValue={(item) => pickFilter(item)}
                     />
