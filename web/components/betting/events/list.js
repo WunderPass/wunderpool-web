@@ -1,10 +1,45 @@
 import { Stack, Skeleton } from '@mui/material';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useState } from 'react';
 import EventCard from '/components/betting/events/eventCard';
 
 export default function EventList(props) {
   const { eventTypeSort, bettingService, sortId, isSortById } = props;
+  const [publicGames, setPublicGames] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  return bettingService.isReady ? (
+  const getPublicGames = async () => {
+    return await axios({
+      method: 'get',
+      url: `/api/betting/games`,
+    }).then(async (res) => {
+      const { data: pools } = await axios({
+        method: 'get',
+        url: `/api/pools/all`,
+        params: { public: true },
+      });
+      const resolvedGames = res.data
+        .map((game) => {
+          const pool = pools.find(
+            (p) =>
+              p.pool_address.toLowerCase() == game.poolAddress.toLowerCase()
+          );
+          return pool ? { ...game, pool } : null;
+        })
+        .filter((g) => g);
+      setPublicGames(resolvedGames);
+    });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    getPublicGames().then(() => {
+      setLoading(false);
+    });
+  }, []);
+
+  return !loading || bettingService.isReady ? (
     <Stack style={{ maxWidth: '100%' }}>
       <div
         className={
@@ -20,7 +55,7 @@ export default function EventList(props) {
                 <EventCard
                   key={`event-card-${event.id}`}
                   event={event}
-                  games={bettingService.games}
+                  games={publicGames}
                   {...props}
                 />
               );
@@ -33,7 +68,7 @@ export default function EventList(props) {
               <EventCard
                 key={`event-card-${event.id}`}
                 event={event}
-                games={bettingService.games}
+                games={publicGames}
                 {...props}
               />
             );

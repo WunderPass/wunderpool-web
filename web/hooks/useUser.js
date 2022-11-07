@@ -320,7 +320,7 @@ export default function useUser() {
   }, [wunderId]);
 
   useEffect(() => {
-    if (router.asPath == '/pools') {
+    if (router.asPath == '/investing/pools') {
       fetchPools();
       fetchWhitelistedPools();
     }
