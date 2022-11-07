@@ -8,8 +8,8 @@ import {
   joinSingleCompetition,
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
-import { calculateOdds } from '../../../services/eventHelpers';
-import { compAddr } from '../../../services/memberHelpers';
+import { calculateOdds } from '/services/eventHelpers';
+import { compAddr } from '/services/memberHelpers';
 
 function toDate(str) {
   return str
