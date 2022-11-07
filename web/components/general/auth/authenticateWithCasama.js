@@ -64,7 +64,7 @@ export default function AuthenticateWithCasama({ onSuccess }) {
       </Collapse>
       <Collapse in={!isSignup} className="w-full">
         <Collapse in={isLogin}>
-          <div className="flex justify-center items-center bg-green-200">
+          <div className="flex flex-col justify-center items-center w-full">
             <button
               onClick={() => setIsLogin(false)}
               className="float-right mb-2"
