@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export default function useBettingService(
   userAddress,
   handleError = () => {},
   props
 ) {
-  const [games, setGames] = useState(null);
-  const [events, setEvents] = useState(null);
+  const [games, setGames] = useState([]);
+  const [events, setEvents] = useState([]);
   const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
 
   // const fetchBettingGames = async () => {
   // try {
@@ -72,6 +74,7 @@ export default function useBettingService(
           return pool ? { ...game, pool } : null;
         })
         .filter((g) => g);
+      console.log(resolvedGames);
       setGames(resolvedGames);
     });
   };
@@ -106,12 +109,13 @@ export default function useBettingService(
   };
 
   useEffect(() => {
-    if (!userAddress) return;
-    setIsReady(false);
-    initialize().then(() => {
-      setIsReady(true);
-    });
-  }, [userAddress]);
+    if (userAddress || router.asPath == '/betting/events') {
+      setIsReady(false);
+      initialize().then(() => {
+        setIsReady(true);
+      });
+    }
+  }, [userAddress, router.asPath]);
 
   return { games, events, isReady };
 }

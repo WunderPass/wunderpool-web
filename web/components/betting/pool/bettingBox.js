@@ -40,7 +40,7 @@ function BettingBox(props) {
 
   return !loading ? (
     <>
-      <div className="  ">
+      <div className="">
         <div className="flex sm:h-full flex-col justify-between container-transparent-clean bg-casama-light p-5 mb-1 m:mr-8 w-full ">
           <div>
             <div className="flex flex-col container-white-p-0 p-5  mb-4">
@@ -64,7 +64,7 @@ function BettingBox(props) {
               <div className="flex flex-row justify-between  items-center">
                 <Typography className=" text-xl">Possible Profit</Typography>
                 <Typography className="text-2xl text-green-600 font-semibold">
-                  + {totalPotSize}
+                  {totalPotSize}
                 </Typography>
               </div>
             </div>

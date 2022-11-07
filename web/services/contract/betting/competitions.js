@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { createPool, getPoolAddressFromTx } from '../pools';
+import { versionLookup } from '../init';
+import { createPool, getPoolAddressFromTx, joinPool } from '../pools';
 import { registerGame, registerParticipant } from './games';
 
 // export async function createCompetition({
@@ -93,15 +94,25 @@ export async function createSingleCompetition({
 export async function joinSingleCompetition({
   gameId,
   prediction,
-  creator,
+  userAddress,
   wunderId,
   event,
+  stake,
+  poolAddress,
+  poolVersion,
 }) {
   try {
+    await joinPool(
+      poolAddress,
+      userAddress,
+      stake / 1000000,
+      '',
+      versionLookup[poolVersion.toLowerCase()].number
+    );
     await registerParticipant(
       gameId,
       prediction,
-      creator,
+      userAddress,
       wunderId,
       event.version
     );

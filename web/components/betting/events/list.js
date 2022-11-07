@@ -1,28 +1,16 @@
 import { Stack, Skeleton } from '@mui/material';
-import { useEffect, useState } from 'react';
-import EventCard from '/components/betting/events/eventCard';
 import axios from 'axios';
-import useBettingService from '../../../hooks/useBettingService';
-import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import EventCard from '/components/betting/events/eventCard';
 
 export default function EventList(props) {
   const { eventTypeSort, bettingService, sortId, isSortById } = props;
-  const [events, setEvents] = useState([]);
-  const [games, setGames] = useState([]);
+  const [publicGames, setPublicGames] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getEvents = async () => {
-    await axios({
-      method: 'get',
-      url: `/api/betting/events/registered`,
-    }).then((res) => {
-      setEvents(res.data.filter((e) => new Date(e.startTime) > new Date()));
-    });
-  };
-
-  const getGames = async () => {
-    await axios({
+  const getPublicGames = async () => {
+    return await axios({
       method: 'get',
       url: `/api/betting/games`,
     }).then(async (res) => {
@@ -40,25 +28,18 @@ export default function EventList(props) {
           return pool ? { ...game, pool } : null;
         })
         .filter((g) => g);
-      setGames(resolvedGames);
+      setPublicGames(resolvedGames);
     });
   };
 
   useEffect(() => {
-    getEvents().then(() => {
-      getGames().then(() => {
-        setLoading(false);
-      });
+    setLoading(true);
+    getPublicGames().then(() => {
+      setLoading(false);
     });
   }, []);
 
-  return loading ? (
-    <Skeleton
-      variant="rectangular"
-      width="100%"
-      sx={{ height: '100px', borderRadius: 3 }}
-    />
-  ) : (
+  return !loading || bettingService.isReady ? (
     <Stack style={{ maxWidth: '100%' }}>
       <div
         className={
@@ -67,14 +48,14 @@ export default function EventList(props) {
             : '2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full'
         }
       >
-        {events.map((event) => {
+        {bettingService.events.map((event) => {
           if (isSortById) {
             if (event.id == sortId) {
               return (
                 <EventCard
                   key={`event-card-${event.id}`}
                   event={event}
-                  games={games}
+                  games={publicGames}
                   {...props}
                 />
               );
@@ -87,7 +68,7 @@ export default function EventList(props) {
               <EventCard
                 key={`event-card-${event.id}`}
                 event={event}
-                games={games}
+                games={publicGames}
                 {...props}
               />
             );
@@ -95,5 +76,11 @@ export default function EventList(props) {
         })}
       </div>
     </Stack>
+  ) : (
+    <Skeleton
+      variant="rectangular"
+      width="100%"
+      sx={{ height: '100px', borderRadius: 3 }}
+    />
   );
 }
