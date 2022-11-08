@@ -43,9 +43,8 @@ export default function EventList(props) {
     <Stack style={{ maxWidth: '100%' }}>
       <div
         className={
-          isSortById
-            ? ' grid grid-cols-1 gap-5 w-full'
-            : '2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full'
+          ' grid grid-cols-1 gap-5 w-full'
+          //: '2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full'
         }
       >
         {bettingService.events.map((event) => {

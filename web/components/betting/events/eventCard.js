@@ -9,7 +9,7 @@ import {
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
 import { calculateOdds } from '/services/eventHelpers';
-import { compAddr } from '/services/memberHelpers';
+import { compAddr, showWunderIdsAsIcons } from '/services/memberHelpers';
 
 function toDate(str) {
   return str
@@ -43,6 +43,24 @@ export default function EventCard(props) {
 
   const [customAmount, setCustomAmount] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
+
+  const sortMembersOnVotes = (participants) => {
+    let votes = null;
+    if (!participants) return votes;
+    if (participants.length > 0) {
+      votes = [[], [], []];
+      participants.forEach((p) => {
+        if (Number(p.prediction[0]) > Number(p.prediction[1])) {
+          votes[0].push(p.wunderId);
+        } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
+          votes[1].push(p.wunderId);
+        } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
+          votes[2].push(p.wunderId);
+        }
+      });
+    }
+    return votes;
+  };
 
   const placeBet = () => {
     if (selectedCompetition.public) {
@@ -238,6 +256,10 @@ export default function EventCard(props) {
                       (g) => g.pool.shareholder_agreement.min_invest == stake
                     );
                     const odds = calculateOdds(matchingGame?.participants);
+                    const votes = sortMembersOnVotes(
+                      matchingGame?.participants
+                    );
+
                     return (
                       <div
                         key={`public-competition-${event.id}-${stake}`}
@@ -250,6 +272,32 @@ export default function EventCard(props) {
                         }`}
                       >
                         <div className="flex flex-col items-center p-2 gap-2">
+                          <div className="flex flex-row justify-between items-center w-full px-3  mt-2 sm:px-2">
+                            <div className="flex flex-row">
+                              <p>Pot:</p>
+                              <p className="font-semibold ml-2 ">
+                                {matchingGame
+                                  ? matchingGame?.participants?.length < 1
+                                    ? '$0'
+                                    : currency(
+                                        (matchingGame?.stake / 1000000) *
+                                          matchingGame?.participants?.length
+                                      )
+                                  : '$0'}{' '}
+                              </p>
+                            </div>
+                            <div className="flex flex-row">
+                              <p className="font-semibold ml-1.5">
+                                {matchingGame
+                                  ? 10 -
+                                    matchingGame?.participants?.length +
+                                    ' / ' +
+                                    '10'
+                                  : '10 / 10'}
+                              </p>
+                            </div>
+                          </div>
+
                           {matchingGame?.participants?.find((part) =>
                             compAddr(part.address, user.address)
                           ) ? (
@@ -257,7 +305,7 @@ export default function EventCard(props) {
                               disabled
                               className="btn-casama px-4 sm:px-6 p-1 w-full"
                             >
-                              {currency(stake)} (Joined)
+                              $ {stake} (Joined)
                             </button>
                           ) : (
                             <button
@@ -271,25 +319,36 @@ export default function EventCard(props) {
                               }
                               className="btn-casama px-4 sm:px-6 p-1 w-full"
                             >
-                              {currency(stake)}
+                              $ {stake}
                             </button>
                           )}
                         </div>
-                        <Divider />
-                        <div className="w-full flex justify-around p-1">
-                          <div className="w-full text-center">
-                            <p>Home</p>
-                            <p>{parseInt(odds[0] * 100)}%</p>
-                          </div>
-                          <div className="w-full text-center">
-                            <p>Tie</p>
-                            <p>{parseInt(odds[1] * 100)}%</p>
-                          </div>
-                          <div className="w-full text-center">
-                            <p>Away</p>
-                            <p>{parseInt(odds[2] * 100)}%</p>
-                          </div>
-                        </div>
+                        {votes != null && (
+                          <>
+                            <Divider />
+                            <div className="w-full flex justify-around p-1 ">
+                              <div className="w-full text-center">
+                                <p>Home</p>
+                                <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                  {showWunderIdsAsIcons(votes[0], 2)}
+                                </div>
+                              </div>
+                              <div className="w-full text-center">
+                                <p>Tie</p>
+                                <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                  {showWunderIdsAsIcons(votes[1], 2)}
+                                </div>
+                              </div>
+
+                              <div className="w-full text-center">
+                                <p>Away</p>
+                                <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                  {showWunderIdsAsIcons(votes[2], 2)}
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
                     );
                   })}
