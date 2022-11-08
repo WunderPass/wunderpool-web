@@ -73,8 +73,6 @@ function ParticipantTable({ game, stake, user }) {
 export default function DashBoardGameCard(props) {
   const { game, handleSuccess, user } = props;
   const router = useRouter();
-
-  console.log('game in dashBoard', game);
   const stake = game.stake / 1000000; //TODO
 
   return (

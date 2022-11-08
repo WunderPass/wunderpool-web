@@ -25,6 +25,7 @@ export default function Betting(props) {
   useEffect(() => {
     if (!router.query.sortId) return;
     setSortId(router.query.sortId);
+    setIsSortById(true);
     setEventTypeSort('Event ID: ' + router.query.sortId);
   }, [router.query]);
 
