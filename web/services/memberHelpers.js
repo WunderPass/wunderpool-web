@@ -1,10 +1,41 @@
 import axios from 'axios';
 import { ethProvider } from '/services/contract/provider';
+import Avatar from '/components/general/members/avatar';
+import InitialsAvatar from '/components/general/members/initialsAvatar';
 
 export function getNameFor(member = {}) {
   return member.firstName && member.lastName
     ? `${member.firstName} ${member.lastName}`
     : member.wunder_id || member.wunderId || 'External User';
+}
+
+export function showWunderIdsAsIcons(arr, amount) {
+  if (arr.length < 1)
+    return (
+      <>
+        <InitialsAvatar shiftRight text={`+${0}`} color={'powder'} />
+      </>
+    );
+  return (
+    <>
+      {arr.slice(0, amount).map((wunderId, i) => (
+        <Avatar
+          shiftRight
+          wunderId={wunderId}
+          text={wunderId ? wunderId : '0-X'}
+          color={['green', 'blue', 'red'][i % 3]}
+          i={i}
+        />
+      ))}
+      {arr && arr.length > amount && (
+        <InitialsAvatar
+          shiftRight
+          text={`+${arr.length - amount}`}
+          color={'powder'}
+        />
+      )}
+    </>
+  );
 }
 
 export async function getEnsNameFromAddress(address) {

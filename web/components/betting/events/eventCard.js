@@ -9,9 +9,7 @@ import {
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
 import { calculateOdds } from '/services/eventHelpers';
-import { compAddr } from '/services/memberHelpers';
-import Avatar from '/components/general/members/avatar';
-import InitialsAvatar from '/components/general/members/initialsAvatar';
+import { compAddr, showWunderIdsAsIcons } from '/services/memberHelpers';
 
 function toDate(str) {
   return str
@@ -45,35 +43,6 @@ export default function EventCard(props) {
 
   const [customAmount, setCustomAmount] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
-
-  const showParticipantsWithIcons = (arr) => {
-    if (arr.length < 1)
-      return (
-        <>
-          <InitialsAvatar shiftRight text={`+${0}`} color={'powder'} />
-        </>
-      );
-    return (
-      <>
-        {arr.slice(0, 2).map((wunderId, i) => (
-          <Avatar
-            shiftRight
-            wunderId={wunderId}
-            text={wunderId ? wunderId : '0-X'}
-            color={['green', 'blue', 'red'][i % 3]}
-            i={i}
-          />
-        ))}
-        {arr && arr.length > 2 && (
-          <InitialsAvatar
-            shiftRight
-            text={`+${arr.length - 2}`}
-            color={'powder'}
-          />
-        )}
-      </>
-    );
-  };
 
   const sortMembersOnVotes = (participants) => {
     let votes = null;
@@ -336,7 +305,7 @@ export default function EventCard(props) {
                               disabled
                               className="btn-casama px-4 sm:px-6 p-1 w-full"
                             >
-                              {currency(stake)} (Joined)
+                              $ {stake} (Joined)
                             </button>
                           ) : (
                             <button
@@ -350,11 +319,10 @@ export default function EventCard(props) {
                               }
                               className="btn-casama px-4 sm:px-6 p-1 w-full"
                             >
-                              {currency(stake)}
+                              $ {stake}
                             </button>
                           )}
                         </div>
-
                         {votes != null && (
                           <>
                             <Divider />
@@ -362,20 +330,20 @@ export default function EventCard(props) {
                               <div className="w-full text-center">
                                 <p>Home</p>
                                 <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                  {showParticipantsWithIcons(votes[0])}
+                                  {showWunderIdsAsIcons(votes[0], 2)}
                                 </div>
                               </div>
                               <div className="w-full text-center">
                                 <p>Tie</p>
                                 <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                  {showParticipantsWithIcons(votes[1])}
+                                  {showWunderIdsAsIcons(votes[1], 2)}
                                 </div>
                               </div>
 
                               <div className="w-full text-center">
                                 <p>Away</p>
                                 <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                  {showParticipantsWithIcons(votes[2])}
+                                  {showWunderIdsAsIcons(votes[2], 2)}
                                 </div>
                               </div>
                             </div>
