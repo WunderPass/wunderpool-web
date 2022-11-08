@@ -8,6 +8,7 @@ import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConn
 import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
 import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 import { joinSingleCompetition } from '/services/contract/betting/competitions';
+import CustomHeader from '/components/general/utils/customHeader';
 
 export default function JoinPool(props) {
   const router = useRouter();
@@ -234,10 +235,10 @@ export async function getServerSideProps(context) {
   const id = context.query.id;
 
   try {
-    const { event } = await (
+    const data = await (
       await fetch(`https://app.casama.io/api/betting/games?gameId=${id}`)
     ).json();
-
+    const event = data[0]?.event;
     if (
       event.teamHome?.name &&
       event.teamAway?.name &&
