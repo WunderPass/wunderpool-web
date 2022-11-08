@@ -52,3 +52,54 @@ export function calculateOdds(participants) {
 
   return winnerPredictions.map((p) => p / participants.length);
 }
+
+export function formatParticipant(participant) {
+  if (!participant) return null;
+  const { user_address, home_score, away_score } = participant;
+
+  return {
+    address: user_address,
+    prediction: [home_score, away_score],
+  };
+}
+
+export function formatGame(game) {
+  if (!game) return null;
+  const { state, game_id, name, event, participants } = game;
+
+  return {
+    id: game_id,
+    state,
+    name,
+    event: formatEvent(event),
+    participants: participants.map(formatParticipant).filter((p) => p),
+  };
+}
+
+export function formatCompetition(competition) {
+  if (!competition) return null;
+
+  const {
+    competition_id,
+    name,
+    version,
+    pool_address,
+    games,
+    members,
+    rule,
+    public: isPublic,
+  } = competition;
+
+  return {
+    id: competition_id,
+    name,
+    version,
+    poolAddress: pool_address,
+    isPublic,
+    games: games.map(formatGame).filter((g) => g),
+    members: members,
+    payoutRule: rule.payout_type,
+    stake: rule.stake,
+    maxMembers: rule.max_members,
+  };
+}
