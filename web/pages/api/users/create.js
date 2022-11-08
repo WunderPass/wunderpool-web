@@ -31,7 +31,6 @@ export default async function handler(req, res) {
       data: data,
       headers: headers,
     });
-    console.log(resp.data);
     res.status(200).json(resp.data);
   } catch (error) {
     console.log(error);
