@@ -12,11 +12,12 @@ export function formatEvent(event) {
     event_competition,
     event_competition_name,
     team_home,
+    team_home_id,
     team_away,
+    team_away_id,
   } = event;
 
-  var splitted = event_name.split('Spieltag');
-  var shortName = splitted[0] + 'Spieltag';
+  var shortName = event_name.match(/(.*) -.*vs\./)[1];
 
   return {
     id: event_id,
@@ -31,8 +32,8 @@ export function formatEvent(event) {
     version: network_event_id?.contract_version || null,
     competitionName: event_competition_name || event_competition?.name,
     competitionId: event_competition?.id,
-    teamHome: team_home,
-    teamAway: team_away,
+    teamHome: { id: team_home_id, name: team_home },
+    teamAway: { id: team_away_id, name: team_away },
   };
 }
 

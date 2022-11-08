@@ -218,9 +218,9 @@ function InputJoinAmount(props) {
           >
             Bet {currency(game.stake / 1000000) /*TODO*/} on{' '}
             {guessOne > guessTwo
-              ? game.event.teamHome
+              ? game.event.teamHome?.name
               : guessOne < guessTwo
-              ? game.event.teamAway
+              ? game.event.teamAway?.name
               : ' a Tie'}
           </button>
         </div>

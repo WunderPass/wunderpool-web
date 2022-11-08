@@ -51,6 +51,7 @@ export async function createSingleCompetition({
   wunderId,
   isPublic,
   prediction,
+  afterPoolCreate = async () => {},
 }) {
   try {
     const txHash = await createPool({
@@ -70,6 +71,7 @@ export async function createSingleCompetition({
     console.log(txHash);
     const { address: poolAddress, governanceToken } =
       await getPoolAddressFromTx(txHash);
+    await afterPoolCreate();
     const game = await registerGame(
       event.name,
       stake * 1000000,
@@ -100,6 +102,7 @@ export async function joinSingleCompetition({
   stake,
   poolAddress,
   poolVersion,
+  afterPoolJoin = async () => {},
 }) {
   try {
     try {
@@ -115,6 +118,7 @@ export async function joinSingleCompetition({
         throw error;
       }
     }
+    await afterPoolJoin();
     await registerParticipant(
       gameId,
       prediction,

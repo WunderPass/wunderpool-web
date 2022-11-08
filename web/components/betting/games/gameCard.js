@@ -252,7 +252,7 @@ export default function GameCard(props) {
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome}
+                    {game.event.teamHome?.name}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
@@ -265,7 +265,7 @@ export default function GameCard(props) {
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway}
+                    {game.event.teamAway?.name}
                   </p>
                 </div>
               </div>

@@ -33,6 +33,7 @@ export default function EventCard(props) {
   const { event, games, user } = props;
   const [eventGames, setEventGames] = useState([]);
   const [loading, setLoading] = useState(null);
+  const [loadingText, setLoadingText] = useState(null);
 
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
@@ -53,6 +54,7 @@ export default function EventCard(props) {
 
   const joinPublicCompetition = () => {
     setLoading(true);
+    setLoadingText('Joining Public Competition...');
     if (selectedCompetition.matchingGame) {
       joinSingleCompetition({
         gameId: selectedCompetition.matchingGame.id,
@@ -64,13 +66,18 @@ export default function EventCard(props) {
           selectedCompetition.matchingGame.pool.launcher.launcher_version,
         wunderId: user.wunderId,
         event: event,
+        afterPoolJoin: async () => {
+          setLoadingText('Placing your Bet...');
+        },
       })
         .then(() => {
-          setLoading(false);
           router.push('/betting/bets');
         })
         .catch((err) => {
           console.log(err);
+        })
+        .then(() => {
+          setLoadingText(null);
           setLoading(false);
         });
     } else {
@@ -81,13 +88,18 @@ export default function EventCard(props) {
         wunderId: user.wunderId,
         isPublic: true,
         prediction: [guessOne, guessTwo],
+        afterPoolCreate: async () => {
+          setLoadingText('Placing your Bet...');
+        },
       })
         .then(() => {
-          setLoading(false);
           router.push('/betting/bets');
         })
         .catch((err) => {
           console.log(err);
+        })
+        .then(() => {
+          setLoadingText(null);
           setLoading(false);
         });
     }
@@ -95,6 +107,7 @@ export default function EventCard(props) {
 
   const createPrivateCompetition = () => {
     setLoading(true);
+    setLoadingText('Creating Public Competition...');
     createSingleCompetition({
       event,
       stake: selectedCompetition.stake || customAmount,
@@ -102,13 +115,18 @@ export default function EventCard(props) {
       wunderId: user.wunderId,
       isPublic: false,
       prediction: [guessOne, guessTwo],
+      afterPoolCreate: async () => {
+        setLoadingText('Placing your Bet...');
+      },
     })
       .then(() => {
-        setLoading(false);
         router.push('/betting/bets');
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        setLoadingText(null);
         setLoading(false);
       });
   };
@@ -131,11 +149,15 @@ export default function EventCard(props) {
           <div className="opacity-50 text-base h-auto sm:h-14">
             {event.shortName}
           </div>
-          <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full sm:text-2xl text-lg ">
-            <div className="flex flex-row w-5/12 lg:flex-col items-center justify-start sm:justify-center  text-left sm:text-center ">
-              <div className="font-semibold">{event.teamHome}</div>
+          <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full text-lg ">
+            <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
+              <img
+                src={`/api/betting/events/teamImage?id=${event.teamHome?.id}`}
+                className="w-16"
+              />
+              <div className="font-semibold">{event.teamHome?.name}</div>
             </div>
-            <div className="flex flex-col w-2/12 opacity-70 items-center justify-center ">
+            <div className="flex flex-col w-2/12 opacity-70 items-center justify-center">
               <div className="text-sm sm:text-lg">
                 {toDate(event.startTime)}
               </div>
@@ -143,31 +165,41 @@ export default function EventCard(props) {
                 {toTime(event.startTime)}
               </div>
             </div>
-            <div className="flex flex-row w-5/12 lg:flex-col items-center justify-end sm:justify-center text-right sm:text-center ">
-              <div className="font-semibold">{event.teamAway}</div>
+            <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
+              <img
+                src={`/api/betting/events/teamImage?id=${event.teamAway?.id}`}
+                className="w-16"
+              />
+              <div className="font-semibold">{event.teamAway?.name}</div>
             </div>
           </div>
         </div>
         <Collapse in={Boolean(selectedCompetition.stake)}>
-          <div className="flex flex-row items-center justify-between w-9/12 gap-3 mx-auto mb-3">
-            <div className="w-20">
-              <input
-                disabled={loading}
-                inputMode="numeric"
-                className="textfield text-center py-1 px-3"
-                value={guessOne}
-                onChange={(e) => setGuessOne(e.target.value)}
-              />
+          <div className="flex flex-row items-center justify-between w-full gap-3 mx-auto mb-3">
+            <div className="w-5/12 flex justify-center">
+              <div className="w-20">
+                <input
+                  disabled={loading}
+                  inputMode="numeric"
+                  className="textfield text-center py-1 px-3"
+                  value={guessOne}
+                  onChange={(e) => setGuessOne(e.target.value)}
+                />
+              </div>
             </div>
-            <p className="text-center mt-3 text-casama-blue">Your Prediction</p>
-            <div className="w-20">
-              <input
-                disabled={loading}
-                inputMode="numeric"
-                className="textfield text-center py-1 px-3"
-                value={guessTwo}
-                onChange={(e) => setGuessTwo(e.target.value)}
-              />
+            <p className="text-center mt-3 text-casama-blue w-2/12">
+              Your Prediction
+            </p>
+            <div className="w-5/12 flex justify-center">
+              <div className="w-20">
+                <input
+                  disabled={loading}
+                  inputMode="numeric"
+                  className="textfield text-center py-1 px-3"
+                  value={guessTwo}
+                  onChange={(e) => setGuessTwo(e.target.value)}
+                />
+              </div>
             </div>
           </div>
           <Collapse in={Boolean(guessOne && guessTwo)}>
@@ -179,15 +211,15 @@ export default function EventCard(props) {
               >
                 Bet {currency(selectedCompetition.stake)} on{' '}
                 {guessOne > guessTwo
-                  ? event.teamHome
+                  ? event.teamHome?.name
                   : guessOne < guessTwo
-                  ? event.teamAway
+                  ? event.teamAway?.name
                   : ' a Tie'}
               </button>
             </div>
           </Collapse>
         </Collapse>
-        <TransactionFrame open={loading} />
+        <TransactionFrame open={loading} text={loadingText} />
         {!loading && (
           <>
             <Divider />
