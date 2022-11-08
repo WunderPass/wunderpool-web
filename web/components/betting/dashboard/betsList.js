@@ -17,6 +17,9 @@ export default function BetsList(props) {
     bettingService.games.length > 0 ? (
       <div className={'grid grid-cols-1 gap-5 w-full'}>
         {bettingService.games.map((game, i) => {
+          {
+            console.log('game', game);
+          }
           if (isSortById) {
             if (game.id == sortId) {
               return (

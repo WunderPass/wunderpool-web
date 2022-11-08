@@ -127,12 +127,12 @@ export default function DashBoardGameCard(props) {
               <div className="flex flex-row justify-between items-center text-center mb-8 w-full">
                 <div className="flex flex-col justify-center items-center text-center w-5/12 ">
                   <p className="text-xl sm:text-2xl font-semibold ">
-                    {game.event.teamHome}
+                    {game.event.teamHome?.name || game.event?.teamHome}
                   </p>
                 </div>
                 <div className="flex flex-col justify-center items-center text-center w-5/12 ">
                   <p className="text-xl sm:text-2xl font-semibold ">
-                    {game.event.teamAway}
+                    {game.event.teamAway?.name || game.event?.teamAway}
                   </p>
                 </div>
               </div>
@@ -180,7 +180,7 @@ export default function DashBoardGameCard(props) {
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome?.name}
+                    {game.event.teamHome?.name || game.event.teamHome}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
@@ -193,7 +193,7 @@ export default function DashBoardGameCard(props) {
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway?.name}
+                    {game.event.teamAway?.name || game.event.teamAway}
                   </p>
                 </div>
               </div>
