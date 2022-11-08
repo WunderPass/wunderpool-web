@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import MetaMaskLogo from './metaMaskLogo';
 import WalletConnectIcon from '/public/images/walletconnect.png';
 
-function CasamaLoading({ open }) {
+function CasamaLoading({ open, text = null }) {
   const [step, setStep] = useState(0);
 
   const steps = [
