@@ -96,14 +96,48 @@ export default function DashBoardGameCard(props) {
               </IconButton>
             </div>
           </div>
-          <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
-            {game.name}
+          <Typography className="text-xl sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
+            {game.event.shortName}
           </Typography>
         </div>
 
         <div className="flex flex-col w-full ">
           <div className="flex flex-col w-full justify-center items-center mb-5 ">
-            <div className="w-full sm:w-2/3 md:w-7/12">
+            <div className="flex flex-col w-full ml-2">
+              {/* ICONS */}
+              <div className="flex flex-row justify-between items-center text-center w-full">
+                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                  <img
+                    src={`/api/betting/events/teamImage?id=${game.event.teamHome.id}`}
+                    className="w-16 mb-2"
+                  />
+                </div>
+                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                  <img
+                    src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
+                    className="w-16 mb-2"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-lg sm:text-xl font-semibold">vs</p>
+              </div>
+
+              {/* NAMEN */}
+              <div className="flex flex-row justify-between items-center text-center mb-8 w-full">
+                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                  <p className="text-xl sm:text-2xl font-semibold ">
+                    {game.event.teamHome?.name || game.event?.teamHome}
+                  </p>
+                </div>
+                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                  <p className="text-xl sm:text-2xl font-semibold ">
+                    {game.event.teamAway?.name || game.event?.teamAway}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="w-full sm:w-2/3 md:w-7/12 ">
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
@@ -146,7 +180,7 @@ export default function DashBoardGameCard(props) {
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome?.name}
+                    {game.event.teamHome?.name || game.event.teamHome}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
@@ -159,7 +193,7 @@ export default function DashBoardGameCard(props) {
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway?.name}
+                    {game.event.teamAway?.name || game.event.teamAway}
                   </p>
                 </div>
               </div>
