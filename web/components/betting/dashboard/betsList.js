@@ -5,7 +5,7 @@ import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 import Link from 'next/link';
 
 export default function BetsList(props) {
-  const { user, bettingService, eventTypeSort } = props;
+  const { user, bettingService, eventTypeSort, sortId, isSortById } = props;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,9 +15,29 @@ export default function BetsList(props) {
 
   return !loading ? (
     bettingService.games.length > 0 ? (
-      <div className="grid grid-cols-1 gap-6 w-full">
+      <div
+        className={
+          isSortById
+            ? ' grid grid-cols-1 gap-5 w-full'
+            : '2xl:grid-cols-2 2xl:gap-6 grid grid-cols-1 gap-5 w-full'
+        }
+      >
         {bettingService.games.map((game, i) => {
-          if (
+          console.log('game in betslist', game);
+          console.log('isSortById', isSortById);
+          console.log('sortId', sortId);
+          if (isSortById) {
+            if (game.id == sortId) {
+              return (
+                <DashboardGameCard
+                  key={`dashboard-game-card-${game.id}`}
+                  game={game}
+                  user={user}
+                  {...props}
+                />
+              );
+            }
+          } else if (
             game.event.competitionName == eventTypeSort ||
             eventTypeSort == 'All Events'
           ) {

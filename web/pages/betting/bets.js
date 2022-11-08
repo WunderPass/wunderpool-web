@@ -4,11 +4,30 @@ import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import BetsList from '/components/betting/dashboard/betsList';
 import DropDown from '/components/general/utils/dropDown';
+import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { useRouter } from 'next/router';
 
 export default function Bets(props) {
   const { user, bettingService, handleInfo, handleError } = props;
   const [loading, setLoading] = useState(true);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
+  const [isSortById, setIsSortById] = useState(false);
+  const [sortId, setSortId] = useState(null);
+  const { removeQueryParam } = UseAdvancedRouter();
+  const router = useRouter();
+
+  const pickFilter = (value) => {
+    setEventTypeSort(value);
+    setIsSortById(false);
+    removeQueryParam('sortId');
+  };
+
+  useEffect(() => {
+    if (!router.query.sortId) return;
+    setSortId(router.query.sortId);
+    setIsSortById(true);
+    setEventTypeSort('Game ID: ' + router.query.sortId);
+  }, [router.query]);
 
   useEffect(() => {
     setLoading(!bettingService.isReady);
@@ -66,7 +85,7 @@ export default function Bets(props) {
                       ),
                     ]}
                     value={eventTypeSort}
-                    setValue={setEventTypeSort}
+                    setValue={(item) => pickFilter(item)}
                   />
                 </div>
 
@@ -75,6 +94,8 @@ export default function Bets(props) {
                     className="mx-4"
                     bettingService={bettingService}
                     eventTypeSort={eventTypeSort}
+                    sortId={sortId}
+                    isSortById={isSortById}
                     user={user}
                     {...props}
                   />
