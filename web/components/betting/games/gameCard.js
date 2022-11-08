@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
-import usePool from '/hooks/usePool';
+import { compAddr } from '../../../services/memberHelpers';
 
 function calculatePoints(eventType, prediction, result) {
   // SOCCER
@@ -88,7 +88,7 @@ function ParticipantTable({ user, participants, stake }) {
             >
               <div
                 className={
-                  participant.address === user.address
+                  compAddr(participant.address, user.address)
                     ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
                     : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
                 }
@@ -154,8 +154,8 @@ export default function GameCard(props) {
     totalTokens /
     10 ** wunderPool.governanceToken.decimals;
 
-  const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == wunderPool.userAddress?.toLowerCase()
+  const usersBet = game.participants.find((p) =>
+    compAddr(p.address, wunderPool.userAddress)
   )?.prediction;
 
   const handleOpenBetNow = (onlyClose = false) => {
@@ -169,12 +169,12 @@ export default function GameCard(props) {
   };
 
   useEffect(() => {
-    if (!game.event.outcome || game.event.outcome.length == 0) {
+    if (!game.event?.outcome || game.event.outcome.length == 0) {
       setGameResultTable(game.participants);
     } else {
       setGameResultTable(calculateWinnings(game, stake, game.event.outcome));
     }
-  }, [game.event.outcome]);
+  }, [game.event?.outcome]);
 
   useEffect(() => {
     setOpen(router.query.bet == game.id);
@@ -202,7 +202,7 @@ export default function GameCard(props) {
             </div>
           </div>
           <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
-            {game.event.name}
+            {game.event?.name}
           </Typography>
         </div>
 
@@ -251,7 +251,7 @@ export default function GameCard(props) {
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome}
+                    {game.event.teamHome?.name}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
@@ -264,7 +264,7 @@ export default function GameCard(props) {
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway}
+                    {game.event.teamAway?.name}
                   </p>
                 </div>
               </div>
@@ -290,10 +290,8 @@ export default function GameCard(props) {
 
           {/* Only Show participants if user has voted */}
           {game.event.state == 'RESOLVED' ||
-            (game.participants.find(
-              (participant) =>
-                participant.address?.toLowerCase() ===
-                user.address?.toLowerCase()
+            (game.participants.find((participant) =>
+              compAddr(participant.address, user.address)
             ) && (
               <ParticipantTable
                 user={user}

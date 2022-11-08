@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 export function formatEvent(event) {
   if (!event) return null;
   const {
@@ -14,11 +12,12 @@ export function formatEvent(event) {
     event_competition,
     event_competition_name,
     team_home,
+    team_home_id,
     team_away,
+    team_away_id,
   } = event;
 
-  var splitted = event_name.split('Spieltag');
-  var shortName = splitted[0] + 'Spieltag';
+  var shortName = event_name.match(/(.*) -.*vs\./)[1];
 
   return {
     id: event_id,
@@ -33,7 +32,23 @@ export function formatEvent(event) {
     version: network_event_id?.contract_version || null,
     competitionName: event_competition_name || event_competition?.name,
     competitionId: event_competition?.id,
-    teamHome: team_home,
-    teamAway: team_away,
+    teamHome: { id: team_home_id, name: team_home },
+    teamAway: { id: team_away_id, name: team_away },
   };
+}
+
+export function calculateOdds(participants) {
+  const winnerPredictions = [0, 0, 0];
+  if (!participants || participants.length == 0) return [0, 0, 0];
+  participants.forEach((p) => {
+    if (Number(p.prediction[0]) > Number(p.prediction[1])) {
+      winnerPredictions[0]++;
+    } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
+      winnerPredictions[1]++;
+    } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
+      winnerPredictions[2]++;
+    }
+  });
+
+  return winnerPredictions.map((p) => p / participants.length);
 }

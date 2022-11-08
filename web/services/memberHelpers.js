@@ -41,3 +41,7 @@ export async function fetchUserFriends(wunderId) {
   });
   return data.map(formatMember);
 }
+
+export function compAddr(addr1, addr2) {
+  return addr1?.toLowerCase() == addr2?.toLowerCase();
+}

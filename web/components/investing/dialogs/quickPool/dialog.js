@@ -8,6 +8,7 @@ import TransactionFrame from '/components/general/utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
+import { compAddr } from '../../../../services/memberHelpers';
 
 export default function AdvancedPoolDialog(props) {
   const {
@@ -100,7 +101,7 @@ export default function AdvancedPoolDialog(props) {
 
   useEffect(() => {
     if (txHash) {
-      if (newPoolEvent?.hash?.toLowerCase() == txHash?.toLowerCase()) {
+      if (compAddr(newPoolEvent?.hash, txHash)) {
         handleSuccess(`Created Pool "${newPoolEvent.name}"`);
         user.fetchUsdBalance();
         router.push(`/investing/pools/${newPoolEvent.address}`);

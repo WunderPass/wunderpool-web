@@ -38,6 +38,10 @@ export default function usePoolListener(handleInfo) {
     return first?.toLowerCase() == second?.toLowerCase();
   };
 
+  const truncateAddr = (addr) => {
+    return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+  };
+
   const relevantForPool = (event) => {
     return compareAddr(JSON.parse(event.data)?.pool_address, poolAddress);
   };
@@ -121,9 +125,9 @@ export default function usePoolListener(handleInfo) {
     if (relevantForPool(event)) {
       const wunderId = await resolveUser(user.members_address);
       notifyIfRelevant(
-        `${wunderId || user.members_address} joined the Pool with ${currency(
-          user.invest
-        )}`,
+        `${
+          wunderId || truncateAddr(user.members_address)
+        } joined the Pool with ${currency(user.invest)}`,
         user.members_address
       );
       setNewMemberEvent(user);
@@ -132,7 +136,7 @@ export default function usePoolListener(handleInfo) {
       if (!pool) return;
       const wunderId = await resolveUser(user.members_address);
       handleInfo(
-        `${wunderId || user.members_address} joined the Pool "${
+        `${wunderId || truncateAddr(user.members_address)} joined the Pool "${
           pool.name
         }" with ${currency(user.invest)}`,
         { href: poolLink(pool.address), btn: 'Show' }

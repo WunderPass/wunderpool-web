@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
+import { compAddr } from '../../../services/memberHelpers';
 
 function ParticipantTable({ game, stake, user }) {
   const { participants, event } = game;
@@ -29,7 +30,7 @@ function ParticipantTable({ game, stake, user }) {
           >
             <div
               className={
-                participant.address === user.address
+                compAddr(participant.address, user.address)
                   ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
                   : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
               }
@@ -72,16 +73,11 @@ function ParticipantTable({ game, stake, user }) {
 export default function DashBoardGameCard(props) {
   const { game, handleSuccess, user } = props;
   const router = useRouter();
-
   const stake = game.stake / 1000000; //TODO
 
-  const usersBet = game.participants.find(
-    (p) => p.address.toLowerCase() == user.address.toLowerCase()
-  )?.prediction;
-
   return (
-    <div className="container-gray pb-16 ">
-      <div className="flex flex-col items-start gap-2  ">
+    <div className="container-gray pb-16 w-full">
+      <div className="flex flex-col items-start gap-2  w-full">
         <div className="flex flex-row justify-center items-start w-full mb-4">
           <div className="flex flex-col justify-start items-start">
             <div className="flex flex-col justify-start items-start ">
@@ -90,8 +86,7 @@ export default function DashBoardGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/pools?sortId=' +
-                      game.event.id,
+                    'https://app.casama.io/betting/pools/join/' + game.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
@@ -151,7 +146,7 @@ export default function DashBoardGameCard(props) {
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome}
+                    {game.event.teamHome?.name}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
@@ -164,7 +159,7 @@ export default function DashBoardGameCard(props) {
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway}
+                    {game.event.teamAway?.name}
                   </p>
                 </div>
               </div>
@@ -191,10 +186,8 @@ export default function DashBoardGameCard(props) {
           {/* Only Show participants if user has voted */}
           {user &&
             (game.event.state == 'RESOLVED' ||
-              (game.participants.find(
-                (participant) =>
-                  participant.address?.toLowerCase() ===
-                  user.address?.toLowerCase()
+              (game.participants.find((participant) =>
+                compAddr(participant.address, user.address)
               ) && <ParticipantTable game={game} stake={stake} user={user} />))}
         </div>
       </div>

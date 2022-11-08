@@ -19,6 +19,7 @@
     "@mui/base": "^5.0.0-alpha.104",
     "@mui/icons-material": "^5.2.0",
     "@mui/material": "^5.2.1",
+    "@sendgrid/mail": "^7.7.0",
     "@walletconnect/web3-provider": "^1.8.0",
     "autoprefixer": "^10.4.8",
     "axios": "^0.24.0",

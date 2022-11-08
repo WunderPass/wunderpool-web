@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import MetaMaskLogo from './metaMaskLogo';
 import WalletConnectIcon from '/public/images/walletconnect.png';
 
-function CasamaLoading({ open }) {
+function CasamaLoading({ open, text = null }) {
   const [step, setStep] = useState(0);
 
   const steps = [
@@ -34,14 +34,14 @@ function CasamaLoading({ open }) {
         <LinearProgress color="casamaBlue" />
       </div>
       <Typography variant="h6" textAlign="center">
-        Processing Transaction...
+        {text || 'Processing Transaction...'}
       </Typography>
       <p className="text-casama-blue text-center">{steps[step]}</p>
     </div>
   );
 }
 
-export default function TransactionFrame({ open }) {
+export default function TransactionFrame({ open, text = null }) {
   const [isSafari, setIsSafari] = useState(false);
   const [isApple, setIsApple] = useState(false);
   const [loginMethod, setLoginMethod] = useState(false);
@@ -83,14 +83,14 @@ export default function TransactionFrame({ open }) {
       >
         <div className="flex justify-center my-4">{renderTitleImage()}</div>
         <Typography variant="h6" textAlign="center">
-          Please Sign With your Wallet
+          {text || 'Please Sign With your Wallet'}
         </Typography>
       </div>
     );
   }
 
   if (loginMethod == 'Casama') {
-    return <CasamaLoading open={open} />;
+    return <CasamaLoading text={text} open={open} />;
   }
 
   return (

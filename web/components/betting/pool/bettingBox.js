@@ -33,10 +33,10 @@ function BettingBox(props) {
   }, [bettingService.games]);
 
   useEffect(() => {
-    if (user.isReady) {
+    if (bettingService.isReady) {
       setLoading(false);
     }
-  }, [user.isReady]);
+  }, [bettingService.isReady]);
 
   return !loading ? (
     <>
