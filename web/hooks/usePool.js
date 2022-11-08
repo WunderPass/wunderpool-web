@@ -320,11 +320,6 @@ export default function usePool(
   const determinePoolBettingGames = async () => {
     try {
       updateLoadingState('bets', false);
-      const events = (
-        await axios({
-          url: '/api/betting/events',
-        })
-      ).data;
       const games = (
         await axios({
           url: '/api/betting/games',
@@ -332,12 +327,7 @@ export default function usePool(
         })
       ).data;
 
-      setBettingGames(
-        games.map((g) => ({
-          ...g,
-          event: events.find((e) => e.id == g.event.id),
-        }))
-      );
+      setBettingGames(games);
       updateLoadingState('bets');
     } catch (error) {
       handleError('Could not load Games');

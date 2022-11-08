@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
-import usePool from '/hooks/usePool';
 import { compAddr } from '../../../services/memberHelpers';
 
 function calculatePoints(eventType, prediction, result) {
@@ -170,12 +169,12 @@ export default function GameCard(props) {
   };
 
   useEffect(() => {
-    if (!game.event.outcome || game.event.outcome.length == 0) {
+    if (!game.event?.outcome || game.event.outcome.length == 0) {
       setGameResultTable(game.participants);
     } else {
       setGameResultTable(calculateWinnings(game, stake, game.event.outcome));
     }
-  }, [game.event.outcome]);
+  }, [game.event?.outcome]);
 
   useEffect(() => {
     setOpen(router.query.bet == game.id);
@@ -203,7 +202,7 @@ export default function GameCard(props) {
             </div>
           </div>
           <Typography className="text-xl  sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full mr-12 sm:mr-14 ">
-            {game.event.name}
+            {game.event?.name}
           </Typography>
         </div>
 
