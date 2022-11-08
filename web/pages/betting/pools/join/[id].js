@@ -48,11 +48,11 @@ export default function JoinPool(props) {
 
   return (
     <>
-      {/* <CustomHeader TODO ADD THIS AFTER serversideprops are added
+      <CustomHeader
         title={metaTagInfo.title}
         description={metaTagInfo.description}
         imageUrl={metaTagInfo.imageUrl}
-      /> */}
+      />
       <Container
         className="flex flex-col justify-center items-center gap-3"
         maxWidth="xl"
@@ -230,40 +230,48 @@ function InputJoinAmount(props) {
 }
 
 //TODO change this to ID not address and display game info
-// export async function getServerSideProps(context) {
-//   const address = context.query.address;
+export async function getServerSideProps(context) {
+  const id = context.query.id;
 
-//   try {
-//     const {
-//       pool_name,
-//       pool_description,
-//       pool_treasury,
-//       pool_members,
-//       shareholder_agreement,
-//     } = await (
-//       await fetch(`https://app.casama.io/api/pools/show?address=${address}`)
-//     ).json();
+  try {
+    const { event } = await (
+      await fetch(`https://app.casama.io/api/betting/games?gameId=${id}`)
+    ).json();
 
-//     const balance = currency(pool_treasury.act_balance);
-
-//     return {
-//       props: {
-//         metaTagInfo: {
-//           title: `Casama - ${pool_name} - ${balance}`,
-//           description: pool_description,
-//           imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=${pool_name}&balance=${balance}&maxMembers=${shareholder_agreement.max_members}&members=${pool_members.length}`,
-//         },
-//       },
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       props: {
-//         metaTagInfo: {
-//           title: 'Casama',
-//           imageUrl: `/api/pools/metadata/ogImage?address=${address}&name=Casama`,
-//         },
-//       },
-//     };
-//   }
-// }
+    if (
+      event.teamHome?.name &&
+      event.teamAway?.name &&
+      event.teamHome?.id &&
+      event.teamAway?.id
+    ) {
+      return {
+        props: {
+          metaTagInfo: {
+            title: `Casama - Bet on ${event.teamHome.name} vs. ${event.teamAway.name}`,
+            description: event.name,
+            imageUrl: `/api/betting/metadata/ogImage?teamHomeId=${event.teamHome.id}&teamAwayId=${event.teamAway.id}&eventName=${event.name}`,
+          },
+        },
+      };
+    } else {
+      return {
+        props: {
+          metaTagInfo: {
+            title: 'Casama - Betting with Friends',
+            imageUrl: `/api/betting/metadata/ogImage`,
+          },
+        },
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        metaTagInfo: {
+          title: 'Casama - Betting with Friends',
+          imageUrl: `/api/betting/metadata/ogImage`,
+        },
+      },
+    };
+  }
+}
