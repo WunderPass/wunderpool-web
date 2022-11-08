@@ -9,7 +9,7 @@ export function getNameFor(member = {}) {
     : member.wunder_id || member.wunderId || 'External User';
 }
 
-export function showWunderIdsAsIcons(arr, amount) {
+export function showWunderIdsAsIcons(arr, amount = 3) {
   if (arr.length < 1)
     return (
       <>
