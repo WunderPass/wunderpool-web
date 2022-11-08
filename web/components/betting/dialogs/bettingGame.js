@@ -73,7 +73,7 @@ export default function BettingGameDialog(props) {
         console.log(res);
         handleSuccess('Created Betting Group');
         handleOpenClose(true);
-        wunderPool.determineBettingGames();
+        wunderPool.determineBettingCompetitions();
       })
       .catch((err) => {
         console.log(err);

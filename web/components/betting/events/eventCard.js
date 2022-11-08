@@ -8,7 +8,7 @@ import {
   joinSingleCompetition,
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
-import { calculateOdds } from '/services/eventHelpers';
+import { calculateOdds } from '/services/bettingHelpers';
 import { compAddr } from '/services/memberHelpers';
 
 function toDate(str) {
@@ -30,8 +30,8 @@ function toTime(str) {
 }
 
 export default function EventCard(props) {
-  const { event, games, user } = props;
-  const [eventGames, setEventGames] = useState([]);
+  const { event, bettingService, user } = props;
+  const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
 
@@ -55,15 +55,13 @@ export default function EventCard(props) {
   const joinPublicCompetition = () => {
     setLoading(true);
     setLoadingText('Joining Public Competition...');
-    if (selectedCompetition.matchingGame) {
+    if (selectedCompetition.matchingCompetition) {
       joinSingleCompetition({
-        gameId: selectedCompetition.matchingGame.id,
-        poolAddress: selectedCompetition.matchingGame.poolAddress,
+        gameId: selectedCompetition.matchingCompetition.games[0].id,
+        poolAddress: selectedCompetition.matchingCompetition.poolAddress,
         prediction: [guessOne, guessTwo],
         userAddress: user.address,
-        stake: selectedCompetition.matchingGame.stake,
-        poolVersion:
-          selectedCompetition.matchingGame.pool.launcher.launcher_version,
+        stake: selectedCompetition.matchingCompetition.stake,
         wunderId: user.wunderId,
         event: event,
         afterPoolJoin: async () => {
@@ -85,7 +83,6 @@ export default function EventCard(props) {
         event,
         stake: selectedCompetition.stake,
         creator: user.address,
-        wunderId: user.wunderId,
         isPublic: true,
         prediction: [guessOne, guessTwo],
         afterPoolCreate: async () => {
@@ -107,13 +104,12 @@ export default function EventCard(props) {
 
   const createPrivateCompetition = () => {
     setLoading(true);
-    setLoadingText('Creating Public Competition...');
+    setLoadingText('Creating Private Competition...');
     createSingleCompetition({
       event,
       stake: selectedCompetition.stake || customAmount,
       creator: user.address,
-      wunderId: user.wunderId,
-      isPublic: false,
+      isPublic: true,
       prediction: [guessOne, guessTwo],
       afterPoolCreate: async () => {
         setLoadingText('Placing your Bet...');
@@ -139,8 +135,14 @@ export default function EventCard(props) {
   };
 
   useEffect(() => {
-    setEventGames(games.filter((g) => g.event.id == event.id));
-  }, [games.length]);
+    setEventCompetitions(
+      bettingService.publicCompetitions.filter(
+        (comp) =>
+          comp.games.length == 1 &&
+          comp.games.find((g) => g.event.id == event.id)
+      )
+    );
+  }, [bettingService.isReady]);
 
   return (
     <>
@@ -234,10 +236,12 @@ export default function EventCard(props) {
                       selectedCompetition.public &&
                       selectedCompetition.stake == stake &&
                       !showCustomInput;
-                    const matchingGame = eventGames.find(
-                      (g) => g.pool.shareholder_agreement.min_invest == stake
+                    const matchingCompetition = eventCompetitions.find(
+                      (comp) => comp.stake == stake
                     );
-                    const odds = calculateOdds(matchingGame?.participants);
+                    const odds = calculateOdds(
+                      matchingCompetition?.games?.[0]?.participants
+                    );
                     return (
                       <div
                         key={`public-competition-${event.id}-${stake}`}
@@ -250,8 +254,8 @@ export default function EventCard(props) {
                         }`}
                       >
                         <div className="flex flex-col items-center p-2 gap-2">
-                          {matchingGame?.participants?.find((part) =>
-                            compAddr(part.address, user.address)
+                          {matchingCompetition?.games?.[0]?.participants?.find(
+                            (part) => compAddr(part.address, user.address)
                           ) ? (
                             <button
                               disabled
@@ -266,7 +270,7 @@ export default function EventCard(props) {
                                 toggleSelectedCompetition({
                                   stake,
                                   public: true,
-                                  matchingGame,
+                                  matchingCompetition,
                                 })
                               }
                               className="btn-casama px-4 sm:px-6 p-1 w-full"

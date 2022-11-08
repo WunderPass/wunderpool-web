@@ -53,9 +53,9 @@ export default function GameList(props) {
 
   const [allGames, openGames, closedGames] = useMemo(() => {
     return [
-      wunderPool.bettingGames,
-      wunderPool.bettingGames.filter((bet) => !bet.closed),
-      wunderPool.bettingGames.filter((bet) => bet.closed),
+      wunderPool.bettingCompetitions,
+      wunderPool.bettingCompetitions.filter((bet) => !bet.closed),
+      wunderPool.bettingCompetitions.filter((bet) => bet.closed),
     ];
   }, [wunderPool.loadingState.bets]);
 

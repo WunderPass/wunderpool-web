@@ -53,51 +53,53 @@ function EventCard({
   event,
   gameCount,
   fetchEvents,
-  fetchGames,
+  fetchCompetitions,
   handleSuccess,
   handleError,
 }) {
   const [loading, setLoading] = useState(false);
 
   const settleAllGames = async () => {
-    setLoading(true);
-    axios({ url: '/api/betting/games' }).then(async (res) => {
-      const openGames = res.data.filter(
-        (g) => event.id == g.eventId && g.version == event.version && !g.closed
-      );
-      var closedGames = await Promise.all(
-        openGames.map(async (game) => {
-          return await determineGame(game.id, game.version)
-            .then((res) => {
-              handleSuccess(`Closed Game "${game.name}"`);
-            })
-            .catch((err) => {
-              handleError(err);
-            })
-            .then(() => {
-              setLoading(false);
-            });
-        })
-      );
-      return closedGames;
-    });
+    // setLoading(true);
+    // axios({ url: '/api/betting/games' }).then(async (res) => {
+    //   const openGames = res.data.filter(
+    //     (g) => event.id == g.eventId && g.version == event.version && !g.closed
+    //   );
+    //   var closedGames = await Promise.all(
+    //     openGames.map(async (game) => {
+    //       return await determineGame(game.id, game.version)
+    //         .then((res) => {
+    //           handleSuccess(`Closed Game "${game.name}"`);
+    //         })
+    //         .catch((err) => {
+    //           handleError(err);
+    //         })
+    //         .then(() => {
+    //           setLoading(false);
+    //         });
+    //     })
+    //   );
+    //   return closedGames;
+    // });
+    handleError('NOT IMPLEMENTED');
   };
 
   const handleResolve = () => {
-    setLoading(true);
-    resolveEvent(event.id)
-      .then((res) => {
-        handleSuccess(`Resolved Event "${event.name}"`);
-        fetchEvents(false);
-        fetchGames();
-      })
-      .catch((err) => {
-        handleError(err);
-      })
-      .then(() => {
-        setLoading(false);
-        settleAllGames();
-      });
+    // setLoading(true);
+    // resolveEvent(event.id)
+    //   .then((res) => {
+    //     handleSuccess(`Resolved Event "${event.name}"`);
+    //     fetchEvents(false);
+    //     fetchCompetitions();
+    //   })
+    //   .catch((err) => {
+    //     handleError(err);
+    //   })
+    //   .then(() => {
+    //     setLoading(false);
+    //     settleAllGames();
+    //   });
+    handleError('NOT IMPLEMENTED');
   };
 
   return (
@@ -181,7 +183,12 @@ function ListedEventCard({
   );
 }
 
-function GameCard({ game, fetchGames, handleSuccess, handleError }) {
+function CompetitionCard({
+  competition,
+  fetchCompetitions,
+  handleSuccess,
+  handleError,
+}) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -190,7 +197,7 @@ function GameCard({ game, fetchGames, handleSuccess, handleError }) {
       .then((res) => {
         console.log(res);
         handleSuccess(`Closed Game "${game.name}"`);
-        fetchGames();
+        fetchCompetitions();
       })
       .catch((err) => {
         handleError(err);
@@ -198,48 +205,58 @@ function GameCard({ game, fetchGames, handleSuccess, handleError }) {
       .then(() => setLoading(false));
   };
 
-  return game.event ? (
+  return (
     <Paper className="p-3 my-2 rounded-xl relative">
-      {game.participants.length > 0 && (
+      {competition.members.length > 0 && (
         <p className="absolute top-3 right-3 text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] h-6 rounded-full bg-red-500 text-white">
-          {game.participants.length}
+          {competition.members.length}
         </p>
       )}
-      <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
-        <MdSportsSoccer className="text-5xl text-casama-blue" />
-        <div className="flex-grow flex flex-col w-full">
-          <div className="sm:mr-10">
-            <p className="text-casama-blue">{game.event?.name}</p>
-            <Link href={`/betting/pools/${game.poolAddress}`}>
-              <a className="text-lg font-medium">{game.name}</a>
-            </Link>
+      <Link href={`/betting/pools/${competition.poolAddress}`}>
+        <a className="text-lg font-medium">{competition.name}</a>
+      </Link>
+      {competition.games.map((game) => {
+        return (
+          <div
+            key={`game-${competition.id}-${game.id}`}
+            className="flex flex-col sm:flex-row items-center gap-2 w-full"
+          >
+            <MdSportsSoccer className="text-5xl text-casama-blue" />
+            <div className="flex-grow flex flex-col w-full">
+              <div className="sm:mr-10">
+                <p className="text-casama-blue">{game.event?.shortName}</p>
+                <p>
+                  Status: {game.state} / {game.event.state}
+                </p>
+              </div>
+              <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <p>Stake: {competition.stake} $</p>
+                <button
+                  className="btn-casama py-1 px-2 w-full sm:w-auto"
+                  onClick={handleClose}
+                  disabled={loading || !game.event?.resolved}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <p>Stake: {toFixed((game.stake / 1000000) * 0.951, 2)} $</p>
-            <button
-              className="btn-casama py-1 px-2 w-full sm:w-auto"
-              onClick={handleClose}
-              disabled={loading || !game.event?.resolved}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
+        );
+      })}
     </Paper>
-  ) : null;
+  );
 }
 
 export default function AdminBettingPage(props) {
   const { user } = props;
   const router = useRouter();
-  const [games, setGames] = useState([]);
+  const [competitions, setCompetitions] = useState([]);
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]);
 
   const [showListedEvents, setShowListedEvents] = useState(false);
   const [showOpenEvents, setShowOpenEvents] = useState(false);
-  const [showGames, setShowGames] = useState(false);
+  const [showCompetitions, setShowCompetitions] = useState(false);
 
   const fetchEvents = (fetchListed = false) => {
     axios({ url: '/api/betting/events/registered' }).then((res) => {
@@ -262,9 +279,11 @@ export default function AdminBettingPage(props) {
     setListedEvents((evs) => evs.filter((ev) => ev.id != id));
   };
 
-  const fetchGames = () => {
-    axios({ url: '/api/betting/games' }).then((res) => {
-      setGames(res.data.filter((g) => !g.closed));
+  const fetchCompetitions = () => {
+    axios({ url: '/api/betting/competitions' }).then((res) => {
+      setCompetitions(
+        res.data.filter((comp) => comp.games.find((g) => g.state != 'CLOSED'))
+      );
     });
   };
 
@@ -273,7 +292,7 @@ export default function AdminBettingPage(props) {
       if (!admins.includes(user.address.toLowerCase())) {
         router.push('/betting/pools');
       } else {
-        fetchGames();
+        fetchCompetitions();
         fetchEvents(true);
       }
     }
@@ -322,9 +341,13 @@ export default function AdminBettingPage(props) {
               <EventCard
                 key={`event-${event.version}-${event.id}`}
                 event={event}
-                gameCount={games.filter((g) => g.event.id == event.id).length}
+                gameCount={
+                  competitions.filter((comp) =>
+                    comp.games.find((g) => g.event.id == event.id)
+                  ).length
+                }
                 fetchEvents={fetchEvents}
-                fetchGames={fetchGames}
+                fetchCompetitions={fetchCompetitions}
                 {...props}
               />
             );
@@ -337,25 +360,31 @@ export default function AdminBettingPage(props) {
           justifyContent="space-between"
         >
           <div className="flex items-center gap-3">
-            <p className="text-2xl">Active Games</p>
-            <button onClick={() => setShowGames((show) => !show)}>
-              {showGames ? (
+            <p className="text-2xl">Active Competitions</p>
+            <button onClick={() => setShowCompetitions((show) => !show)}>
+              {showCompetitions ? (
                 <AiFillUpCircle className="text-casama-blue text-2xl" />
               ) : (
                 <AiOutlineDownCircle className="text-casama-blue text-2xl" />
               )}
             </button>
           </div>
-          <button className="text-3xl text-casama-blue" onClick={fetchGames}>
+          <button
+            className="text-3xl text-casama-blue"
+            onClick={fetchCompetitions}
+          >
             <IoMdRefresh />
           </button>
         </Stack>
-        <Collapse in={showGames}>
-          {games.map((game) => {
+        <Collapse in={showCompetitions}>
+          {competitions.map((competition) => {
             return (
-              <div key={`game-${game.version}-${game.id}`} className="mb-8">
-                <GameCard game={game} fetchGames={fetchGames} {...props} />
-              </div>
+              <CompetitionCard
+                key={`competition-${competition.version}-${competition.id}`}
+                competition={competition}
+                fetchCompetitions={fetchCompetitions}
+                {...props}
+              />
             );
           })}
         </Collapse>

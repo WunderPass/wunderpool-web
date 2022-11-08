@@ -36,10 +36,10 @@ export default function GameList(props) {
       width="100%"
       sx={{ height: '100px', borderRadius: 3 }}
     />
-  ) : wunderPool.bettingGames.length > 0 ? (
+  ) : wunderPool.bettingCompetitions.length > 0 ? (
     <Stack style={{ maxWidth: '100%' }}>
-      {wunderPool.bettingGames.filter((bet) => !bet.closed).length > 0 &&
-        wunderPool.bettingGames
+      {wunderPool.bettingCompetitions.filter((bet) => !bet.closed).length > 0 &&
+        wunderPool.bettingCompetitions
           .filter((bet) => !bet.closed)
           .map((game) => {
             return (

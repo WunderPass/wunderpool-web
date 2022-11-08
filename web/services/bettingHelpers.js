@@ -65,7 +65,7 @@ export function formatParticipant(participant) {
 
 export function formatGame(game) {
   if (!game) return null;
-  const { state, game_id, name, event, participants } = game;
+  const { state, game_id, name, event, participants = [] } = game;
 
   return {
     id: game_id,
@@ -84,8 +84,8 @@ export function formatCompetition(competition) {
     name,
     version,
     pool_address,
-    games,
-    members,
+    games = [],
+    members = [],
     rule,
     public: isPublic,
   } = competition;
@@ -96,10 +96,10 @@ export function formatCompetition(competition) {
     version,
     poolAddress: pool_address,
     isPublic,
-    games: games.map(formatGame).filter((g) => g),
+    games: games.map(formatGame)?.filter((g) => g),
     members: members,
-    payoutRule: rule.payout_type,
-    stake: rule.stake,
-    maxMembers: rule.max_members,
+    payoutRule: rule?.payout_type,
+    stake: Number(rule?.stake),
+    maxMembers: rule?.max_members,
   };
 }

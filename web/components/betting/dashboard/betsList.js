@@ -14,11 +14,11 @@ export default function BetsList(props) {
   }, [bettingService.isReady]);
 
   return !loading ? (
-    bettingService.games.length > 0 ? (
+    bettingService.userCompetitions.length > 0 ? (
       <div className={'grid grid-cols-1 gap-5 w-full'}>
-        {bettingService.games.map((game, i) => {
+        {bettingService.userCompetitions.map((comp, i) => {
           if (isSortById) {
-            if (game.id == sortId) {
+            if (comp.id == sortId) {
               return (
                 <DashboardGameCard
                   key={`dashboard-game-card-${game.id}`}

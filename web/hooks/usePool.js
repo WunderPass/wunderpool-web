@@ -64,7 +64,7 @@ export default function usePool(
   const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
   const [poolProposals, setPoolProposals] = useState([]);
-  const [bettingGames, setBettingGames] = useState([]);
+  const [bettingCompetitions, setBettingCompetitions] = useState([]);
 
   const [minInvest, setMinInvest] = useState('');
   const [maxInvest, setMaxInvest] = useState('');
@@ -317,17 +317,17 @@ export default function usePool(
     }
   };
 
-  const determinePoolBettingGames = async () => {
+  const determinePoolBettingCompetitions = async () => {
     try {
       updateLoadingState('bets', false);
       const games = (
         await axios({
-          url: '/api/betting/games',
+          url: '/api/betting/competitions',
           params: { poolAddress: poolAddress },
         })
       ).data;
 
-      setBettingGames(games);
+      setBettingCompetitions(games);
       updateLoadingState('bets');
     } catch (error) {
       handleError('Could not load Games');
@@ -494,7 +494,7 @@ export default function usePool(
       await determinePoolData(poolAddress)
         .then(async ({ vers, exists }) => {
           if (exists) {
-            await determinePoolBettingGames();
+            await determinePoolBettingCompetitions();
             await determinePoolNfts();
             await determinePoolProposals(vers);
           }
@@ -554,7 +554,7 @@ export default function usePool(
     assetCount,
     tokens: poolTokens,
     nfts: poolNfts,
-    bettingGames,
+    bettingCompetitions,
     governanceToken: poolGovernanceToken,
     proposals: poolProposals,
     getTransactionData,
@@ -572,7 +572,7 @@ export default function usePool(
     execute,
     determineTokens: determinePoolTokens,
     determineNfts: determinePoolNfts,
-    determineBettingGames: determinePoolBettingGames,
+    determineBettingCompetitions: determinePoolBettingCompetitions,
     determineProposals: determinePoolProposals,
     determineBalance: determineUsdcBalance,
   };

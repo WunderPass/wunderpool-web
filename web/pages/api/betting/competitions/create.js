@@ -1,20 +1,17 @@
 import axios from 'axios';
+import { usdcAddress } from '/services/contract/init';
 const FormData = require('form-data');
-const fs = require('fs');
 
 export default async function handler(req, res) {
   try {
     const {
       name,
       version,
-      network,
       creator,
-      events,
+      eventIds,
       invitations,
       payoutRule,
       stake,
-      decimals,
-      tokenAddress,
       isPublic,
     } = req.body;
 
@@ -25,33 +22,24 @@ export default async function handler(req, res) {
       JSON.stringify({
         name,
         version,
-        network,
+        network: 'POLYGON_MAINNET',
         creator,
-        events,
+        events: eventIds,
         invitations,
         rule: {
           payout_type: payoutRule,
           stake,
-          // stake_decimals: decimals,
-          // stake_currency_address: tokenAddress,
+          stake_decimals: 6,
+          stake_currency: 'USDC',
+          stake_currency_address: usdcAddress,
         },
         public: isPublic,
       }),
       { contentType: 'application/json' }
     );
 
-    data.append('image', fs.createReadStream('./public/casama_logo.png'), {
-      filename: 'CasamaIcon.png',
-      contentType: 'image/png',
-    });
-
-    data.append('banner', fs.createReadStream('./public/casama-blk.png'), {
-      filename: 'CasamaLogo.png',
-      contentType: 'image/png',
-    });
-
     const headers = {
-      authorization: `Bearer 5nCea5SrMrlxqP5rlG63`,
+      authorization: `Bearer ${process.env.BETTING_SERVICE_CLIENT_TOKEN}`,
       ...data.getHeaders(),
     };
 
