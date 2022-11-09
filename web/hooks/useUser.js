@@ -172,6 +172,30 @@ export default function useUser() {
     }
   };
 
+  const requestGas = (privKey = null) => {
+    return new Promise((resolve, reject) => {
+      try {
+        if (privKey || privateKey) {
+          const { signedMessage, signature } = signMillis(
+            privKey || privateKey
+          );
+          const headers = { signed: signedMessage, signature: signature };
+          axios({ url: '/api/users/requestGas', headers: headers })
+            .then((res) => {
+              resolve(res.data);
+            })
+            .catch((err) => {
+              resolve(err);
+            });
+        } else {
+          resolve(null);
+        }
+      } catch (error) {
+        resolve(error);
+      }
+    });
+  };
+
   const decryptKeyWithPassword = (password) => {
     const privKey = decryptKey(password, true);
     if (privKey) {
@@ -382,5 +406,6 @@ export default function useUser() {
     getUserData,
     getSignedMillis,
     passwordRequired,
+    requestGas,
   };
 }
