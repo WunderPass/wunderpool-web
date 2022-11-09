@@ -8,7 +8,7 @@ import {
   joinSingleCompetition,
 } from '/services/contract/betting/competitions';
 import { currency } from '/services/formatter';
-import { calculateOdds } from '/services/eventHelpers';
+import { calculateOdds } from '/services/bettingHelpers';
 import { compAddr, showWunderIdsAsIcons } from '/services/memberHelpers';
 
 function toDate(str) {
@@ -30,8 +30,8 @@ function toTime(str) {
 }
 
 export default function EventCard(props) {
-  const { event, games, user } = props;
-  const [eventGames, setEventGames] = useState([]);
+  const { event, bettingService, user } = props;
+  const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
 
@@ -73,16 +73,15 @@ export default function EventCard(props) {
   const joinPublicCompetition = () => {
     setLoading(true);
     setLoadingText('Joining Public Competition...');
-    if (selectedCompetition.matchingGame) {
+    if (selectedCompetition.matchingCompetition) {
       joinSingleCompetition({
-        gameId: selectedCompetition.matchingGame.id,
-        poolAddress: selectedCompetition.matchingGame.poolAddress,
+        competitionId: selectedCompetition.matchingCompetition.id,
+        gameId: selectedCompetition.matchingCompetition.games[0].id,
+        poolVersion: 'ETA',
+        poolAddress: selectedCompetition.matchingCompetition.poolAddress,
         prediction: [guessOne, guessTwo],
         userAddress: user.address,
-        stake: selectedCompetition.matchingGame.stake,
-        poolVersion:
-          selectedCompetition.matchingGame.pool.launcher.launcher_version,
-        wunderId: user.wunderId,
+        stake: selectedCompetition.matchingCompetition.stake,
         event: event,
         afterPoolJoin: async () => {
           setLoadingText('Placing your Bet...');
@@ -103,7 +102,6 @@ export default function EventCard(props) {
         event,
         stake: selectedCompetition.stake,
         creator: user.address,
-        wunderId: user.wunderId,
         isPublic: true,
         prediction: [guessOne, guessTwo],
         afterPoolCreate: async () => {
@@ -125,12 +123,11 @@ export default function EventCard(props) {
 
   const createPrivateCompetition = () => {
     setLoading(true);
-    setLoadingText('Creating Public Competition...');
+    setLoadingText('Creating Private Competition...');
     createSingleCompetition({
       event,
       stake: selectedCompetition.stake || customAmount,
       creator: user.address,
-      wunderId: user.wunderId,
       isPublic: false,
       prediction: [guessOne, guessTwo],
       afterPoolCreate: async () => {
@@ -157,8 +154,14 @@ export default function EventCard(props) {
   };
 
   useEffect(() => {
-    setEventGames(games.filter((g) => g.event.id == event.id));
-  }, [games.length]);
+    setEventCompetitions(
+      bettingService.publicCompetitions.filter(
+        (comp) =>
+          comp.games.length == 1 &&
+          comp.games.find((g) => g.event.id == event.id)
+      )
+    );
+  }, [bettingService.isReady]);
 
   return (
     <>
@@ -252,13 +255,12 @@ export default function EventCard(props) {
                       selectedCompetition.public &&
                       selectedCompetition.stake == stake &&
                       !showCustomInput;
-                    const matchingGame = eventGames.find(
-                      (g) => g.pool.shareholder_agreement.min_invest == stake
+                    const matchingCompetition = eventCompetitions.find(
+                      (comp) => comp.stake == stake
                     );
-                    const odds = calculateOdds(matchingGame?.participants);
-                    const votes = sortMembersOnVotes(
-                      matchingGame?.participants
-                    );
+                    const participants =
+                      matchingCompetition?.games?.[0]?.participants;
+                    const votes = sortMembersOnVotes(participants);
 
                     return (
                       <div
@@ -276,29 +278,27 @@ export default function EventCard(props) {
                             <div className="flex flex-row">
                               <p>Pot:</p>
                               <p className="font-semibold ml-2 ">
-                                {matchingGame
-                                  ? matchingGame?.participants?.length < 1
+                                {matchingCompetition
+                                  ? participants?.length < 1
                                     ? '$0'
                                     : currency(
-                                        (matchingGame?.stake / 1000000) *
-                                          matchingGame?.participants?.length
+                                        matchingCompetition?.stake *
+                                          matchingCompetition?.games?.[0]
+                                            ?.participants?.length
                                       )
                                   : '$0'}{' '}
                               </p>
                             </div>
                             <div className="flex flex-row">
                               <p className="font-semibold ml-1.5">
-                                {matchingGame
-                                  ? 10 -
-                                    matchingGame?.participants?.length +
-                                    ' / ' +
-                                    '10'
+                                {matchingCompetition
+                                  ? 10 - participants?.length + ' / ' + '10'
                                   : '10 / 10'}
                               </p>
                             </div>
                           </div>
 
-                          {matchingGame?.participants?.find((part) =>
+                          {participants?.find((part) =>
                             compAddr(part.address, user.address)
                           ) ? (
                             <button
@@ -314,7 +314,7 @@ export default function EventCard(props) {
                                 toggleSelectedCompetition({
                                   stake,
                                   public: true,
-                                  matchingGame,
+                                  matchingCompetition,
                                 })
                               }
                               className="btn-casama px-4 sm:px-6 p-1 w-full"

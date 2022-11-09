@@ -1,7 +1,7 @@
 import { Stack, Divider, Typography, Skeleton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
-import GameCard from './gameCard';
+import CompetitionCard from './competitionCard';
 import TabBar from '/components/general/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import BettingGameDialog from '../dialogs/bettingGame';
@@ -44,31 +44,38 @@ export default function GameList(props) {
   const { wunderPool } = props;
   const router = useRouter();
   const [openBet, setOpenBet] = useState(false);
-  const [gamesTab, setGamesTab] = useState(router.query.gameTab || 0);
+  const [competitionsTab, setCompetitionsTab] = useState(
+    router.query.competitionsTab || 0
+  );
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
 
   const totalTokens = useMemo(() => {
     return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
   }, [wunderPool.members, wunderPool.usdcBalance]);
 
-  const [allGames, openGames, closedGames] = useMemo(() => {
-    return [
-      wunderPool.bettingGames,
-      wunderPool.bettingGames.filter((bet) => !bet.closed),
-      wunderPool.bettingGames.filter((bet) => bet.closed),
-    ];
-  }, [wunderPool.loadingState.bets]);
+  const [allCompetitions, openCompetitions, closedCompetitions] =
+    useMemo(() => {
+      return [
+        wunderPool.bettingCompetitions,
+        wunderPool.bettingCompetitions.filter((comp) =>
+          comp.games.find((g) => g.state == 'OPEN')
+        ),
+        wunderPool.bettingCompetitions.filter(
+          (comp) => !comp.games.find((g) => g.state == 'OPEN')
+        ),
+      ];
+    }, [wunderPool.loadingState.bets]);
 
   useEffect(() => {
-    setGamesTab(Number(router.query?.gameTab || 0));
+    setCompetitionsTab(Number(router.query?.competitionsTab || 0));
     setOpenBet(router.query?.bet ? Number(router.query.bet) : null);
   }, [router.query]);
 
   const handleClick = (index) => {
-    if (gamesTab == index) return;
+    if (competitionsTab == index) return;
     index === 0
-      ? removeQueryParam('gameTab')
-      : addQueryParam({ gameTab: index });
+      ? removeQueryParam('competitionsTab')
+      : addQueryParam({ competitionsTab: index });
   };
 
   const handleOpenCloseBetting = (onlyClose = false) => {
@@ -89,12 +96,12 @@ export default function GameList(props) {
       />
     );
 
-  return allGames.length > 0 ? (
+  return allCompetitions.length > 0 ? (
     <Stack style={{ maxWidth: '100%' }}>
       <div className="flex flex-col w-full">
         <TabBar
           tabs={['Open', 'History']}
-          tab={gamesTab}
+          tab={competitionsTab}
           handleClick={handleClick}
           proposals={wunderPool.proposals}
           parent="list"
@@ -102,43 +109,35 @@ export default function GameList(props) {
         <Divider className="mb-6 mt-1 opacity-70" />
       </div>
 
-      {gamesTab == 0 && openGames.length > 0
-        ? openGames.map((game) => {
+      {competitionsTab == 0 && openCompetitions.length > 0
+        ? openCompetitions.map((competition) => {
             return (
-              <div
-                key={`game-card-${game.version}-${game.id}`}
-                className="mb-16"
-              >
-                <GameCard
+              <div key={`competition-card-${competition.id}`} className="mb-16">
+                <CompetitionCard
                   openBet={openBet}
                   setOpenBet={setOpenBet}
-                  game={game}
+                  competition={competition}
                   totalTokens={totalTokens}
-                  wunderPool={wunderPool}
                   {...props}
                 />
               </div>
             );
           })
-        : gamesTab == 0 && (
+        : competitionsTab == 0 && (
             <NoOpenBets
               handleOpenCloseBetting={handleOpenCloseBetting}
               openBet={openBet}
               {...props}
             />
           )}
-      {gamesTab == 1 &&
-        closedGames.map((game) => {
+      {competitionsTab == 1 &&
+        closedCompetitions.map((competition) => {
           return (
-            <div
-              className="mb-16"
-              key={`game-card-history-${game.version}-${game.id}`}
-            >
-              <GameCard
+            <div className="mb-16" key={`competition-card-${competition.id}`}>
+              <CompetitionCard
                 openBet={openBet}
-                game={game}
+                competition={competition}
                 totalTokens={totalTokens}
-                wunderPool={wunderPool}
                 {...props}
               />
             </div>

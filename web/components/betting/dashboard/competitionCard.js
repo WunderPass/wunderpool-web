@@ -70,10 +70,11 @@ function ParticipantTable({ game, stake, user }) {
   );
 }
 
-export default function DashBoardGameCard(props) {
-  const { game, handleSuccess, user } = props;
+export default function DashboardCompetitionCard(props) {
+  const { competition, handleSuccess, user } = props;
   const router = useRouter();
-  const stake = game.stake / 1000000; //TODO
+  const stake = competition.stake; //TODO
+  const game = competition.games[0]; // Only assume Single Competitions as of now
 
   return (
     <div className="container-gray pb-16 w-full">
@@ -86,7 +87,8 @@ export default function DashBoardGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/pools/join/' + game.id,
+                    'https://app.casama.io/betting/pools/join/' +
+                      competition.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
@@ -180,7 +182,7 @@ export default function DashBoardGameCard(props) {
                 </p>
                 <div className="flex flex-row justify-center items-center w-full mb-3">
                   <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome?.name || game.event.teamHome}
+                    {game.event.teamHome.name}
                   </p>
 
                   <div className="w-2/12 flex flex-row justify-center ">
@@ -193,7 +195,7 @@ export default function DashBoardGameCard(props) {
                     </p>
                   </div>
                   <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway?.name || game.event.teamAway}
+                    {game.event.teamAway.name}
                   </p>
                 </div>
               </div>

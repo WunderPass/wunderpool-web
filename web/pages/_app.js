@@ -82,7 +82,8 @@ function WunderPool({ Component, pageProps }) {
       ![
         '/investing/pools/join/[address]',
         '/investing/pools/[address]',
-        '/betting/pools/join/[address]',
+        '/betting/pools/join/[competitionId]',
+        '/betting/pools/join/[competitionId]/[gameId]',
         '/betting/pools/[address]',
       ].includes(router.pathname)
     ) {

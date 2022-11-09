@@ -26,6 +26,22 @@ async function approveUsdc(spender, amount) {
 }
 
 export default function useWalletConnect() {
+  const signMillis = () => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.Web3Provider(window.walletConnect);
+      const signer = provider.getSigner();
+      const millis = new Date().getTime();
+      signer
+        .signMessage(millis)
+        .then((signature) => {
+          resolve({ signedMessage: millis, signature: signature.slice(2) });
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  };
+
   const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.Web3Provider(window.walletConnect);
@@ -80,6 +96,7 @@ export default function useWalletConnect() {
   };
 
   return {
+    signMillis,
     sendSignatureRequest,
     smartContractTransaction,
   };

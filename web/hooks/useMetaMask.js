@@ -26,6 +26,22 @@ async function approveUsdc(spender, amount) {
 }
 
 export default function useMetaMask() {
+  const signMillis = () => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const millis = new Date().getTime();
+      signer
+        .signMessage(millis)
+        .then((signature) => {
+          resolve({ signedMessage: millis, signature: signature.slice(2) });
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  };
+
   const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -81,6 +97,7 @@ export default function useMetaMask() {
   };
 
   return {
+    signMillis,
     sendSignatureRequest,
     smartContractTransaction,
   };

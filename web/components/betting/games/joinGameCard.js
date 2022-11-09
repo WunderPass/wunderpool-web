@@ -10,7 +10,6 @@ import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Timer from '/components/betting/proposals/timer';
-import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
@@ -18,12 +17,14 @@ import { showWunderIdsAsIcons } from '/services/memberHelpers';
 import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
 import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
 import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
+import { joinSingleCompetition } from '/services/contract/betting/competitions';
+import { useRouter } from 'next/router';
+import TransactionFrame from '/components/general/utils/transactionFrame';
 
 export default function JoinGameCard(props) {
-  const { game, handleSuccess, user, handleInfo, handleError } = props;
+  const { competition, game, handleSuccess, user, handleError } = props;
   const [wunderIds, setWunderIds] = useState([]);
-  const router = useRouter();
-  const stake = game.stake / 1000000; //TODO
+  const stake = competition?.stake;
 
   const handleLogin = (data) => {
     user.updateLoginMethod(data.loginMethod);
@@ -59,7 +60,8 @@ export default function JoinGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/pools/join/' + game.id,
+                    'https://app.casama.io/betting/pools/join/' +
+                      competition.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
@@ -77,21 +79,47 @@ export default function JoinGameCard(props) {
         <div className="flex flex-col w-full ">
           <div className="flex flex-col w-full justify-center items-center mb-5 ">
             <div className="w-full sm:w-2/3 md:w-7/12 ">
-              <div className="flex flex-row justify-between items-center text-center mb-4">
-                <p className="text-xl font-semibold w-5/12">
-                  {game.event.teamHome}
-                </p>
-                <p className="w-2/12">vs</p>
-                <p className="text-xl font-semibold w-5/12">
-                  {game.event.teamAway}
-                </p>
+              <div className="flex flex-col w-full ml-2">
+                {/* ICONS */}
+                <div className="flex flex-row justify-between items-center text-center w-full">
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <img
+                      src={`/api/betting/events/teamImage?id=${game.event.teamHome.id}`}
+                      className="w-16 mb-2"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <img
+                      src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
+                      className="w-16 mb-2"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center justify-center">
+                  <p className="text-lg sm:text-xl font-semibold">vs</p>
+                </div>
+
+                {/* NAMEN */}
+                <div className="flex flex-row justify-between items-center text-center mb-4 w-full">
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <p className="text-xl sm:text-2xl font-semibold ">
+                      {game.event.teamHome?.name || game.event?.teamHome}
+                    </p>
+                  </div>
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <p className="text-xl sm:text-2xl font-semibold ">
+                      {game.event.teamAway?.name || game.event?.teamAway}
+                    </p>
+                  </div>
+                </div>
               </div>
               {user?.loggedIn &&
                 (user?.usdBalance < 3 ? (
                   <div className="flex flex-col justify-center items-center w-full mb-4">
                     <TopUpRequired {...props} />
                   </div>
-                ) : game.closed ? (
+                ) : game.state == 'RESOLVED' ||
+                  new Date(game.event.startTime) < new Date() ? (
                   <div className="flex flex-col justify-center items-center w-full mb-4">
                     <Alert
                       severity="warning"
@@ -102,13 +130,13 @@ export default function JoinGameCard(props) {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center w-full mb-4 ">
-                    <InputJoinAmount game={game} user={user} />
+                    <InputJoinAmount {...props} />
                   </div>
                 ))}
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-4">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
-                    {game.payoutRule == 0
+                    {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>
@@ -183,7 +211,7 @@ export default function JoinGameCard(props) {
             )}
           </div>
           {!user?.loggedIn && (
-            <div className="flex flex-col justify-center  items-center w-full  mt-4 ">
+            <div className="flex flex-col justify-center items-center  mt-4 ">
               {!user?.loggedIn && (
                 <NotLoggedIn
                   handleLogin={handleLogin}
@@ -200,7 +228,7 @@ export default function JoinGameCard(props) {
 
 function NotLoggedIn({ handleLogin, handleError }) {
   return (
-    <>
+    <div className="flex flex-col justify-center items-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
       <Typography className="text-sm text-center">
         Sign Up or Login to join this Bet
       </Typography>
@@ -216,7 +244,7 @@ function NotLoggedIn({ handleLogin, handleError }) {
           handleError={handleError}
         />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -250,33 +278,38 @@ function TopUpRequired(props) {
 }
 
 function InputJoinAmount(props) {
-  const { game, user } = props;
+  const { game, competition, user } = props;
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
   const [loading, setLoading] = useState(null);
+  const [loadingText, setLoadingText] = useState(null);
+  const router = useRouter();
 
   const placeBet = () => {
-    joinPublicCompetition();
-  };
-
-  const joinPublicCompetition = () => {
     setLoading(true);
+    setLoadingText('Joining Competition...');
+
     joinSingleCompetition({
+      competitionId: competition.id,
       gameId: game.id,
-      poolAddress: game.poolAddress,
+      poolAddress: competition.poolAddress,
       prediction: [guessOne, guessTwo],
       userAddress: user.address,
-      stake: game.stake,
-      poolVersion: 'ETA', //TODO
-      wunderId: user.wunderId,
+      stake: competition.stake,
+      poolVersion: 'ETA',
       event: game.event,
+      afterPoolJoin: async () => {
+        setLoadingText('Placing your Bet...');
+      },
     })
       .then(() => {
-        setLoading(false);
         router.push('/betting/bets');
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        setLoadingText(null);
         setLoading(false);
       });
   };
@@ -311,7 +344,7 @@ function InputJoinAmount(props) {
             className="btn-casama px-5 py-2 text-xl"
             onClick={placeBet}
           >
-            Bet {currency(game.stake / 1000000) /*TODO*/} on{' '}
+            Bet {currency(competition.stake)} on{' '}
             {guessOne > guessTwo
               ? game.event.teamHome?.name
               : guessOne < guessTwo
@@ -320,6 +353,7 @@ function InputJoinAmount(props) {
           </button>
         </div>
       </Collapse>
+      <TransactionFrame open={loading} text={loadingText} />
     </div>
   );
 }

@@ -8,37 +8,29 @@ export default function useBettingService(
   handleError = () => {},
   props
 ) {
-  const [games, setGames] = useState([]);
+  const [competitions, setCompetitions] = useState([]);
+  const [userCompetitions, setUserCompetitions] = useState([]);
+  const [publicCompetitions, setPublicCompetitions] = useState([]);
   const [events, setEvents] = useState([]);
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
 
-  const getGames = async () => {
+  const getCompetitions = async () => {
     await axios({
-      method: 'get',
-      url: `/api/betting/games`,
-      params: { userAddress: userAddress },
+      url: `/api/betting/competitions`,
     }).then(async (res) => {
-      const { data: pools } = await axios({
-        method: 'get',
-        url: `/api/pools/all`,
-        params: { public: true },
-      });
-      const resolvedGames = res.data
-        .map((game) => {
-          const pool = pools.find((p) =>
-            compAddr(p.pool_address, game.poolAddress)
-          );
-          return pool ? { ...game, pool } : null;
-        })
-        .filter((g) => g);
-      setGames(resolvedGames);
+      setCompetitions(res.data);
+      setUserCompetitions(
+        res.data.filter((comp) =>
+          comp.members.find((m) => compAddr(m.address, userAddress))
+        )
+      );
+      setPublicCompetitions(res.data.filter((comp) => comp.isPublic));
     });
   };
 
   const getEvents = async () => {
     await axios({
-      method: 'get',
       url: `/api/betting/events/registered`,
     }).then((res) => {
       setEvents(res.data.filter((e) => new Date(e.startTime) > new Date()));
@@ -46,7 +38,7 @@ export default function useBettingService(
   };
 
   const initialize = async () => {
-    await getGames();
+    await getCompetitions();
     await getEvents();
   };
 
@@ -59,5 +51,11 @@ export default function useBettingService(
     }
   }, [userAddress, router.asPath]);
 
-  return { games, events, isReady };
+  return {
+    competitions,
+    publicCompetitions,
+    userCompetitions,
+    events,
+    isReady,
+  };
 }

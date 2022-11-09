@@ -2,7 +2,8 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import useWeb3 from '/hooks/useWeb3';
 import { connectContract, gasPrice } from '../init';
-import { initDistributor } from './init';
+import { distributorAddress, initDistributor } from './init';
+import { postAndWaitForTransaction } from '../../backendApi';
 
 export async function registerGame(
   name,
@@ -74,6 +75,40 @@ export async function registerGame(
 }
 
 export async function registerParticipant(
+  competitionId,
+  gameId,
+  prediction,
+  userAddress,
+  version
+) {
+  const { openPopup, sendSignatureRequest } = useWeb3();
+  const popup = openPopup('sign');
+  const address = distributorAddress(version);
+  try {
+    const { signature } = await sendSignatureRequest(
+      ['uint256', 'address', 'uint256[]'],
+      [gameId, address, prediction],
+      true,
+      popup
+    );
+
+    await postAndWaitForTransaction({
+      url: '/api/betting/competitions/bet',
+      body: {
+        competitionId,
+        gameId,
+        userAddress,
+        prediction,
+        signature,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function registerParticipantOld(
   gameId,
   prediction,
   participant,

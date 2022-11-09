@@ -8,6 +8,7 @@ export function formatEvent(event) {
     utc_end_time,
     event_icon_url,
     event_state,
+    event_result,
     network_event_id,
     event_competition,
     event_competition_name,
@@ -18,6 +19,9 @@ export function formatEvent(event) {
   } = event;
 
   var shortName = event_name.match(/(.*) -.*vs\./)[1];
+  const outcome = event_result
+    ? event_result.split(' - ').map((n) => Number(n))
+    : [0, 0];
 
   return {
     id: event_id,
@@ -28,6 +32,7 @@ export function formatEvent(event) {
     endTime: new Date(`${utc_end_time}Z`) || null,
     iconUrl: event_icon_url || null,
     state: event_state,
+    outcome: outcome.length == 2 ? outcome : [0, 0],
     blockchainId: network_event_id?.event_id || null,
     version: network_event_id?.contract_version || null,
     competitionName: event_competition_name || event_competition?.name,
@@ -51,4 +56,55 @@ export function calculateOdds(participants) {
   });
 
   return winnerPredictions.map((p) => p / participants.length);
+}
+
+export function formatParticipant(participant) {
+  if (!participant) return null;
+  const { user_address, home_score, away_score } = participant;
+
+  return {
+    address: user_address,
+    prediction: [home_score, away_score],
+  };
+}
+
+export function formatGame(game) {
+  if (!game) return null;
+  const { state, game_id, name, event, participants = [] } = game;
+
+  return {
+    id: game_id,
+    state,
+    name,
+    event: formatEvent(event),
+    participants: participants.map(formatParticipant).filter((p) => p),
+  };
+}
+
+export function formatCompetition(competition) {
+  if (!competition) return null;
+
+  const {
+    competition_id,
+    name,
+    version,
+    pool_address,
+    games = [],
+    members = [],
+    rule,
+    public: isPublic,
+  } = competition;
+
+  return {
+    id: competition_id,
+    name,
+    version,
+    poolAddress: pool_address,
+    isPublic,
+    games: games.map(formatGame)?.filter((g) => g),
+    members: members,
+    payoutRule: rule?.payout_type,
+    stake: Number(rule?.stake),
+    maxMembers: rule?.max_members,
+  };
 }

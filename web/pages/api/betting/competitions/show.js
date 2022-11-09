@@ -1,17 +1,19 @@
 import axios from 'axios';
-import { formatEvent } from '/services/bettingHelpers';
+import { formatCompetition } from '/services/bettingHelpers';
 
 export default async function handler(req, res) {
   try {
     const headers = {
       'Content-Type': 'application/json',
-      authorization: `Bearer ${process.env.BETTING_SERVICE_ADMIN_TOKEN}`,
+      authorization: `Bearer ${process.env.BETTING_SERVICE_CLIENT_TOKEN}`,
     };
+
     const { data } = await axios({
-      url: `${process.env.BETTING_SERVICE}/admin/listedEvents`,
+      url: `${process.env.BETTING_SERVICE}/competitions/${req.query.id}`,
       headers,
     });
-    res.status(200).json(data.map(formatEvent));
+
+    res.status(200).json(formatCompetition(data));
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

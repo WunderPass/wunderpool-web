@@ -6,7 +6,7 @@ export default async function handler(req, res) {
 
     const headers = {
       'Content-Type': 'application/json',
-      authorization: `Bearer ${process.env.BETTING_SERVICE_TOKEN}`,
+      authorization: `Bearer ${process.env.BETTING_SERVICE_ADMIN_TOKEN}`,
     };
 
     const { data } = await axios({

@@ -1,23 +1,31 @@
 import { Container } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import useGame from '/hooks/useGame';
+import useCompetition from '/hooks/useCompetition';
 import JoinGameCard from '/components/betting/games/joinGameCard';
 import CustomHeader from '/components/general/utils/customHeader';
+import { useMemo } from 'react';
 
-export default function JoinPool(props) {
+export default function JoinCompetitionGame(props) {
   const router = useRouter();
   const { user, metaTagInfo, handleInfo, handleError } = props;
-  const game = useGame(router.query.id, user);
+  const competition = useCompetition(router.query.competitionId, user);
+  const game = useMemo(
+    () =>
+      competition.isReady
+        ? competition?.games?.find((g) => g.id == router.query.gameId)
+        : null,
+    [competition.isReady]
+  );
 
   const loginCallback = () => {
-    router.push(`/betting/bets?sortId=${game.game.id}`); //TODO add sortId in for bets (check /pools?sortId=27)
+    router.push(`/betting/bets?sortId=${competition.competition?.id}`); //TODO add sortId in for bets (check /pools?sortId=27)
   };
 
   useEffect(() => {
-    if (game.isReady) {
-      if (game.exists) {
-        if (game.isParticipant) {
+    if (competition.isReady) {
+      if (game) {
+        if (competition.isGameParticipant(game.id)) {
           handleInfo('You already placed a bet for this game');
           loginCallback();
         }
@@ -26,7 +34,7 @@ export default function JoinPool(props) {
         router.push('/betting/pools');
       }
     }
-  }, [game.isReady, game.isParticipant]);
+  }, [game]);
 
   // TODO ADD IF BET IS ALREDY FINISHED AN NOT AVAILABLE FOR VOTES
   // useEffect(() => {
@@ -47,14 +55,12 @@ export default function JoinPool(props) {
         className="flex flex-col justify-center items-center gap-3"
         maxWidth="xl"
       >
-        {game.isReady && (
+        {competition.isReady && (
           <div className="flex flex-col my-8 w-full ">
             <JoinGameCard
-              key={`dashboard-game-card-${game.game.id}`}
-              game={game.game}
+              game={game}
+              competition={competition?.competition}
               user={user}
-              handleInfo={handleInfo}
-              handleError={handleError}
               {...props}
             />
           </div>
@@ -65,13 +71,15 @@ export default function JoinPool(props) {
 }
 
 export async function getServerSideProps(context) {
-  const id = context.query.id;
+  const { competitionId, gameId } = context.query;
 
   try {
     const data = await (
-      await fetch(`https://app.casama.io/api/betting/games?gameId=${id}`)
+      await fetch(
+        `http://localhost:3001/api/betting/competitions/show?id=${competitionId}`
+      )
     ).json();
-    const event = data[0]?.event;
+    const event = data?.games?.find((g) => g.id == gameId)?.event;
     if (
       event.teamHome?.name &&
       event.teamAway?.name &&

@@ -57,7 +57,7 @@ export default function PlaceBetDialog({
       .then((res) => {
         handleSuccess(`Placed Bet on ${game.event.name}`);
         handleClose();
-        wunderPool.determineBettingGames();
+        wunderPool.determineBettingCompetitions();
       })
       .catch(handleError)
       .then(() => setLoading(false));

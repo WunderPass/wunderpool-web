@@ -50,18 +50,18 @@ export default function body(props) {
   }, [newProposalEvent]);
 
   useEffect(() => {
-    if (wunderPool.bettingGames.length == 0) {
+    if (wunderPool.bettingCompetitions.length == 0) {
       setTabOptions((opts) => setBadgeFor(opts, 'Betting', 0));
     } else {
       setTabOptions((opts) =>
         setBadgeFor(
           opts,
           'Betting',
-          wunderPool.bettingGames.filter((g) => !g.closed).length
+          wunderPool.bettingCompetitions.filter((g) => !g.closed).length
         )
       );
     }
-  }, [wunderPool.bettingGames]);
+  }, [wunderPool.bettingCompetitions]);
 
   useEffect(() => {
     if (wunderPool.proposals.length == 0) {

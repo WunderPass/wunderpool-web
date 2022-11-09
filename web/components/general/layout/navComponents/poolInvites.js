@@ -54,7 +54,7 @@ const poolInvites = (props) => {
                 return (
                   <Link
                     key={`pool-${i}`}
-                    href={`/betting/pools/join/${pool.address}`}
+                    href={`/investing/pools/join/${pool.address}`}
                     sx={{ textDecoration: 'none', color: 'inherit' }}
                     passHref
                   >

@@ -63,7 +63,7 @@ export default function UseIOS() {
     window.swiftJsBridgeV1.appWillBecomeActive = () => {
       setAppIsActive(true);
     };
-    setIsIOSApp(Boolean(window.webkit?.messageHandlers));
+    setIsIOSApp(Boolean(window.webkit?.messageHandlers?.swiftJsBridgeV1));
   }, []);
 
   return {
