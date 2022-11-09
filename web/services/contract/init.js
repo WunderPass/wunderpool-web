@@ -53,12 +53,6 @@ export const tokenAbi = [
   'function approve(address,uint)',
   'function transfer(address,uint)',
 ];
-export const nftAbi = [
-  'function name() public view returns(string)',
-  'function symbol() public view returns(string)',
-  'function balanceOf(address) public view returns(uint)',
-  'function tokenURI(uint) public view returns(string)',
-];
 
 export function initPool(poolAddress) {
   const abi = [

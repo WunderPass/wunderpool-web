@@ -1,6 +1,4 @@
-import { encodeParams } from '/services/formatter';
 import { initProposalEpsilon } from './init';
-import { usdcAddress } from '/services/contract/init';
 
 export function fetchTransactionDataEpsilon(address, id, transactionCount) {
   return new Promise(async (resolve, reject) => {
@@ -18,72 +16,6 @@ export function fetchTransactionDataEpsilon(address, id, transactionCount) {
     );
     resolve(transactions);
   });
-}
-
-export async function createNftBuyProposalEpsilon(
-  poolAddress,
-  nftAddress,
-  tokenId,
-  title,
-  description,
-  amount,
-  userAddress
-) {
-  return createMultiActionProposalEpsilon(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      'transferFrom(address,address,uint256)',
-      'transferFrom(address,address,uint256)',
-    ],
-    [
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [userAddress, poolAddress, amount]
-      ),
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [poolAddress, userAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    userAddress
-  );
-}
-
-export async function createNftSellProposalEpsilon(
-  poolAddress,
-  nftAddress,
-  tokenId,
-  title,
-  description,
-  amount,
-  userAddress
-) {
-  return createMultiActionProposalEpsilon(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      'transferFrom(address,address,uint256)',
-      'transferFrom(address,address,uint256)',
-    ],
-    [
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [poolAddress, userAddress, amount]
-      ),
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [userAddress, poolAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    userAddress
-  );
 }
 
 export function proposalExecutableEpsilon(poolAddress, id) {

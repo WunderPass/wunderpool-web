@@ -2,7 +2,6 @@ import { Skeleton, Divider } from '@mui/material';
 import ProposalList from '/components/betting/proposals/list';
 import { useRouter } from 'next/router';
 import TokenList from '/components/investing/tokens/list';
-import NftList from '/components/investing/tokens/nfts';
 import TransactionsList from '/components/betting/pool/transactions';
 import { useState, useEffect } from 'react';
 import TabBar from '/components/general/utils/tabBar';
@@ -106,9 +105,6 @@ export default function body(props) {
             )}
             {tabOptions[tab].title == 'Assets' && (
               <TokenList tokens={wunderPool.tokens} {...props} />
-            )}
-            {tabOptions[tab].title == 'NFTs' && (
-              <NftList nfts={wunderPool.nfts} {...props} />
             )}
             {tabOptions[tab].title == 'Transactions' && (
               <TransactionsList {...props} />
