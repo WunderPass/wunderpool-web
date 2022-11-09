@@ -38,6 +38,17 @@ function ParticipantTable({ participants, stake, user }) {
     convertAddressesToMembers(addresses);
   }, [participants.length]);
 
+  // Update members winnings if participants change without refetching wunderIDs
+  useEffect(() => {
+    if (!members) return;
+    setMembers((mems) =>
+      mems.map((m) => ({
+        ...participants.find((p) => compAddr(p.address, m.address)),
+        wunderId: m.wunderId,
+      }))
+    );
+  }, [participants]);
+
   return (
     <div className="">
       {participants.length > 0 && (
@@ -112,7 +123,7 @@ export default function DashboardCompetitionCard(props) {
 
   useEffect(() => {
     if (
-      game.event?.state == 'RESOLVED' ||
+      game.event?.state == 'SETTLED' ||
       game.event?.outcome?.reduce((a, b) => a + b, 0) == 0
     ) {
       setGameResultTable(game.participants);
@@ -183,15 +194,13 @@ export default function DashboardCompetitionCard(props) {
                     className="w-16 mb-2"
                   />
                 </div>
+                <p className="text-3xl font-semibold">vs</p>
                 <div className="flex flex-col justify-center items-center text-center w-5/12 ">
                   <img
                     src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
                     className="w-16 mb-2"
                   />
                 </div>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-lg sm:text-xl font-semibold">vs</p>
               </div>
 
               {/* NAMEN */}
