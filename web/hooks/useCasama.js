@@ -2,7 +2,8 @@ import { ethers } from 'ethers';
 import { tokenAbi, usdcAddress } from '../services/contract/init';
 import { httpProvider } from '../services/contract/provider';
 import { retreiveKey } from '../services/crypto';
-import { signTypedData } from '/services/sign';
+import { signTypedData, signMillis } from '/services/sign';
+import axios from 'axios';
 
 async function approveUsdc(spender, amount) {
   const privKey = retreiveKey();
@@ -52,6 +53,7 @@ export default function useCasama() {
 
   const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
     return new Promise((resolve, reject) => {
+      const privKey = retreiveKey();
       if (usdc?.spender && usdc?.amount) {
         approveUsdc(usdc.spender, usdc.amount)
           .then((res) => {
@@ -64,7 +66,6 @@ export default function useCasama() {
           });
       }
       if (tx) {
-        const privKey = retreiveKey();
         if (!privKey)
           reject(
             'Session Expired. Please Refresh the Page and type in your Password'
@@ -79,6 +80,30 @@ export default function useCasama() {
           .catch((err) => {
             reject(err);
           });
+      }
+      requestGas(privKey);
+    });
+  };
+
+  const requestGas = (privKey = null) => {
+    return new Promise((resolve, reject) => {
+      try {
+        if (privKey) {
+          const { signedMessage, signature } = signMillis(privKey);
+          const headers = { signed: signedMessage, signature: signature };
+
+          axios({ url: '/api/users/requestGas', headers: headers })
+            .then((res) => {
+              resolve(res.data);
+            })
+            .catch((err) => {
+              resolve(err);
+            });
+        } else {
+          resolve(null);
+        }
+      } catch (error) {
+        resolve(error);
       }
     });
   };

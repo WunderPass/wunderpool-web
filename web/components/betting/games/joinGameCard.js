@@ -210,7 +210,7 @@ export default function JoinGameCard(props) {
             )}
           </div>
           {!user?.loggedIn && (
-            <div className="flex flex-col justify-center  items-center w-full  mt-4 ">
+            <div className="flex flex-col justify-center items-center  mt-4 ">
               {!user?.loggedIn && (
                 <NotLoggedIn
                   handleLogin={handleLogin}
@@ -227,7 +227,7 @@ export default function JoinGameCard(props) {
 
 function NotLoggedIn({ handleLogin, handleError }) {
   return (
-    <>
+    <div className="flex flex-col justify-center items-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
       <Typography className="text-sm text-center">
         Sign Up or Login to join this Bet
       </Typography>
@@ -243,7 +243,7 @@ function NotLoggedIn({ handleLogin, handleError }) {
           handleError={handleError}
         />
       </div>
-    </>
+    </div>
   );
 }
 
