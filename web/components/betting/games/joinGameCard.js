@@ -19,6 +19,7 @@ import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConn
 import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
 import { joinSingleCompetition } from '/services/contract/betting/competitions';
 import { useRouter } from 'next/router';
+import TransactionFrame from '/components/general/utils/transactionFrame';
 
 export default function JoinGameCard(props) {
   const { competition, game, handleSuccess, user, handleError } = props;
@@ -281,10 +282,13 @@ function InputJoinAmount(props) {
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
   const [loading, setLoading] = useState(null);
+  const [loadingText, setLoadingText] = useState(null);
   const router = useRouter();
 
   const placeBet = () => {
     setLoading(true);
+    setLoadingText('Joining Competition...');
+
     joinSingleCompetition({
       competitionId: competition.id,
       gameId: game.id,
@@ -294,13 +298,18 @@ function InputJoinAmount(props) {
       stake: competition.stake,
       poolVersion: 'ETA',
       event: game.event,
+      afterPoolJoin: async () => {
+        setLoadingText('Placing your Bet...');
+      },
     })
       .then(() => {
-        setLoading(false);
         router.push('/betting/bets');
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        setLoadingText(null);
         setLoading(false);
       });
   };
@@ -344,6 +353,7 @@ function InputJoinAmount(props) {
           </button>
         </div>
       </Collapse>
+      <TransactionFrame open={loading} text={loadingText} />
     </div>
   );
 }
