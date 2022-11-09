@@ -11,6 +11,8 @@ import { fetchUserFriends } from '/services/memberHelpers';
 import { decryptKey, retreiveKey } from '/services/crypto';
 import { signMillis, signMessage } from '/services/sign';
 import { ethProvider } from '/services/contract/provider';
+import useMetaMask from './useMetaMask';
+import useWalletConnect from './useWalletConnect';
 
 export default function useUser() {
   const [privateKey, setPrivateKey] = useState(null);
@@ -151,21 +153,14 @@ export default function useUser() {
 
   const getUserData = async () => {
     if (firstName && lastName && email && phoneNumber && userName) return;
-    const { signedMessage, signature } = getSignedMillis() || {};
-    if (!signature) return;
+    if (!address) return;
 
     try {
-      const profile = (
-        await axios({
-          method: 'get',
-          url: '/api/users/getProfile',
-          headers: {
-            signature: signature,
-            signed: signedMessage,
-          },
-          params: { wunderId },
-        })
-      ).data;
+      const { data: profile } = await axios({
+        method: 'post',
+        url: '/api/users/find',
+        data: { address },
+      });
 
       updateFirstName(profile?.firstname);
       updateLastName(profile?.lastname);
@@ -212,17 +207,30 @@ export default function useUser() {
   };
 
   const getSignedMillis = () => {
-    if (loginMethod != 'Casama') return;
-    const savedKey = retreiveKey();
-    if (savedKey) setPrivateKey(savedKey);
+    return new Promise((resolve, reject) => {
+      if (loginMethod == 'Casama') {
+        const savedKey = retreiveKey();
+        if (savedKey) setPrivateKey(savedKey);
 
-    if (privateKey || savedKey) {
-      const { signedMessage, signature } = signMillis(privateKey || savedKey);
-      return { signedMessage, signature };
-    } else {
-      setPasswordRequired(true);
-      return;
-    }
+        if (privateKey || savedKey) {
+          const data = signMillis(privateKey || savedKey);
+          resolve(data);
+        } else {
+          setPasswordRequired(true);
+          resolve({});
+        }
+      } else if (loginMethod == 'MetaMask') {
+        const { signMillis } = useMetaMask();
+        signMillis().then((data) => {
+          resolve(data);
+        });
+      } else if (loginMethod == 'WalletConnect') {
+        const { signMillis } = useWalletConnect();
+        signMillis().then((data) => {
+          resolve(data);
+        });
+      }
+    });
   };
 
   const logOut = () => {

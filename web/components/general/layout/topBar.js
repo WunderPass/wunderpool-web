@@ -143,17 +143,23 @@ export default function TopBar(props) {
                   {open && (
                     <div>
                       <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-casama-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
-                        {user.loginMethod == 'Casama' && (
-                          <motion.li
-                            initial={animateFrom}
-                            animate={animateTo}
-                            transition={{ delay: 0.1 }}
-                          >
-                            <div className="px-2 py-1">
-                              <Link href={`/profile`}>Profile</Link>
-                            </div>
-                          </motion.li>
-                        )}
+                        <motion.li
+                          initial={animateFrom}
+                          animate={animateTo}
+                          transition={{ delay: 0.1 }}
+                        >
+                          <div className="px-2 py-1">
+                            <Link
+                              href={
+                                user.loginMethod == 'WunderPass'
+                                  ? 'https://app.wunderpass.org/profile'
+                                  : '/profile'
+                              }
+                            >
+                              Profile
+                            </Link>
+                          </div>
+                        </motion.li>
 
                         <motion.li
                           initial={animateFrom}

@@ -150,7 +150,7 @@ export default function SignUpWithCasama({
   }, [pass]);
 
   return (
-    <form className="flex justify-center items-center+" onSubmit={handleSubmit}>
+    <form className="w-full" onSubmit={handleSubmit}>
       <div className=" flex flex-col justify-center items-center gap-4 w-full">
         <div className="flex flex-row gap-4 ">
           <div className="w-full">

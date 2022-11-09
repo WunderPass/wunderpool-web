@@ -19,7 +19,7 @@ export async function getServerSideProps(context) {
   try {
     const data = await (
       await fetch(
-        `http://localhost:3001/api/betting/competitions/show?id=${competitionId}`
+        `https://app.casama.io/api/betting/competitions/show?id=${competitionId}`
       )
     ).json();
 
