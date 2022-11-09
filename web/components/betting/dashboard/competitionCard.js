@@ -23,34 +23,14 @@ function ParticipantTable({ participants, stake, user }) {
         data: { addresses: addresses },
       })
     ).data;
-    formattedMembers(resolvedMembers);
-  };
-
-  const formattedMembers = (members) => {
-    let formattedParticipants = [];
-    participants.map((p) => {
-      let wunderIdExists = false;
-
-      members.map((m) => {
-        if (p.address == m.wallet_address) {
-          formattedParticipants.push({
-            wunderId: m.wunder_id,
-            address: m.wallet_address,
-            prediction: p.prediction,
-          });
-          wunderIdExists = true;
-        }
-      });
-      if (!wunderIdExists) {
-        formattedParticipants.push({
-          wunderId: p.address,
-          address: p.address,
-          prediction: p.prediction,
-        });
-        return;
-      }
-    });
-    setMembers(formattedParticipants);
+    setMembers(
+      participants.map((part) => {
+        const wunderId = resolvedMembers.find((m) =>
+          compAddr(part.address, m.wallet_address)
+        )?.wunder_id;
+        return { ...part, wunderId };
+      })
+    );
   };
 
   useEffect(() => {
@@ -66,56 +46,55 @@ function ParticipantTable({ participants, stake, user }) {
         </div>
       )}
 
-      {members &&
-        members
-          .sort((a, b) => b.winnings || 0 - a.winnings || 0)
-          .map((participant, i) => {
-            return (
-              <div
-                key={`participant-${participant.address}`}
-                className={
-                  compAddr(participant.address, user.address)
-                    ? `container-casama-p-0 p-2 flex flex-row items-center justify-between gap-2 my-1 w-full`
-                    : `container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full`
-                }
-              >
-                <div>
-                  <Avatar
-                    wunderId={participant.wunderId}
-                    tooltip={`${participant.wunderId}`}
-                    text={participant.wunderId ? participant.wunderId : '0-X'}
-                    color={['green', 'blue', 'red'][i % 3]}
-                    i={i}
-                  />
-                </div>
-                <div className="flex items-center justify-start truncate flex-grow">
-                  {participant.wunderId ? (
-                    <div className="truncate">{participant.wunderId}</div>
-                  ) : (
-                    <div className="truncate">{participant.address}</div>
-                  )}
-                </div>
-                <div className="flex flex-row justify-end items-center text-xl">
-                  <p>{participant.prediction[0]}</p>
-                  <p className="px-1">:</p>
-                  <p>{participant.prediction[1]}</p>
-                </div>
-                {participant.winnings != undefined && (
-                  <div className=" min-w-[5rem] text-right text-xl">
-                    {participant.winnings >= stake ? (
-                      <p className="text-green-500">
-                        {currency(participant.winnings)}
-                      </p>
-                    ) : (
-                      <p className="text-red-500">
-                        {currency(stake - participant.winnings)}
-                      </p>
-                    )}
-                  </div>
+      {(members || participants)
+        .sort((a, b) => b.winnings || 0 - a.winnings || 0)
+        .map((participant, i) => {
+          return (
+            <div
+              key={`participant-${participant.address}`}
+              className={
+                compAddr(participant.address, user.address)
+                  ? `container-casama-p-0 p-2 flex flex-row items-center justify-between gap-2 my-1 w-full`
+                  : `container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full`
+              }
+            >
+              <div>
+                <Avatar
+                  wunderId={participant.wunderId}
+                  tooltip={`${participant.wunderId}`}
+                  text={participant.wunderId ? participant.wunderId : '0-X'}
+                  color={['green', 'blue', 'red'][i % 3]}
+                  i={i}
+                />
+              </div>
+              <div className="flex items-center justify-start truncate flex-grow">
+                {participant.wunderId ? (
+                  <div className="truncate">{participant.wunderId}</div>
+                ) : (
+                  <div className="truncate">{participant.address}</div>
                 )}
               </div>
-            );
-          })}
+              <div className="flex flex-row justify-end items-center text-xl">
+                <p>{participant.prediction[0]}</p>
+                <p className="px-1">:</p>
+                <p>{participant.prediction[1]}</p>
+              </div>
+              {participant.winnings != undefined && (
+                <div className=" min-w-[5rem] text-right text-xl">
+                  {participant.winnings >= stake ? (
+                    <p className="text-green-500">
+                      {currency(participant.winnings)}
+                    </p>
+                  ) : (
+                    <p className="text-red-500">
+                      {currency(stake - participant.winnings)}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
     </div>
   );
 }
