@@ -10,9 +10,54 @@ import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
+import axios from 'axios';
 
 function ParticipantTable({ game, stake, user }) {
   const { participants, event } = game;
+  const [members, setMembers] = useState(null);
+
+  const convertAddressesToMembers = async (addresses) => {
+    const resolvedMembers = (
+      await axios({
+        method: 'POST',
+        url: '/api/users/find',
+        data: { addresses: addresses },
+      })
+    ).data;
+    formattedMembers(resolvedMembers);
+  };
+
+  const formattedMembers = (members) => {
+    let formattedParticipants = [];
+    participants.map((p) => {
+      let wunderIdExists = false;
+
+      members.map((m) => {
+        if (p.address == m.wallet_address) {
+          formattedParticipants.push({
+            wunderId: m.wunder_id,
+            address: m.wallet_address,
+            prediction: p.prediction,
+          });
+          wunderIdExists = true;
+        }
+      });
+      if (!wunderIdExists) {
+        formattedParticipants.push({
+          wunderId: p.address,
+          address: p.address,
+          prediction: p.prediction,
+        });
+        return;
+      }
+    });
+    setMembers(formattedParticipants);
+  };
+
+  useEffect(() => {
+    const addresses = participants.map((p) => p.address);
+    convertAddressesToMembers(addresses);
+  }, [participants]);
 
   return (
     <div className="">
@@ -22,50 +67,51 @@ function ParticipantTable({ game, stake, user }) {
         </div>
       )}
 
-      {participants.map((participant, i) => {
-        return (
-          <div
-            key={`participant-${participant.address}`}
-            className="flex flex-row w-full "
-          >
+      {members &&
+        members.map((participant, i) => {
+          return (
             <div
-              className={
-                compAddr(participant.address, user.address)
-                  ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
-                  : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
-              }
+              key={`participant-${participant.address}`}
+              className="flex flex-row w-full "
             >
-              <div className=" flex flex-row justify-start w-5/6">
-                <div className="flex ml-2">
-                  <Avatar
-                    wunderId={participant.wunderId}
-                    tooltip={`${participant.wunderId}`}
-                    text={participant.wunderId ? participant.wunderId : '0-X'}
-                    color={['green', 'blue', 'red'][i % 3]}
-                    i={i}
-                  />
-                </div>
+              <div
+                className={
+                  compAddr(participant.address, user.address)
+                    ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
+                    : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
+                }
+              >
+                <div className=" flex flex-row justify-start w-5/6">
+                  <div className="flex ml-2">
+                    <Avatar
+                      wunderId={participant.wunderId}
+                      tooltip={`${participant.wunderId}`}
+                      text={participant.wunderId ? participant.wunderId : '0-X'}
+                      color={['green', 'blue', 'red'][i % 3]}
+                      i={i}
+                    />
+                  </div>
 
-                {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
+                  {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
                   console.log('name', name)
                 )} */}
-                <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
-                  {participant.wunderId ? (
-                    <div className="truncate ...">{participant.wunderId}</div>
-                  ) : (
-                    <div className="truncate ...">{participant.address}</div>
-                  )}
+                  <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
+                    {participant.wunderId ? (
+                      <div className="truncate ...">{participant.wunderId}</div>
+                    ) : (
+                      <div className="truncate ...">{participant.address}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
+                  <p>{participant.prediction[0]}</p>
+                  <p className="px-1">:</p>
+                  <p>{participant.prediction[1]}</p>
                 </div>
               </div>
-              <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
-                <p>{participant.prediction[0]}</p>
-                <p className="px-1">:</p>
-                <p>{participant.prediction[1]}</p>
-              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }
