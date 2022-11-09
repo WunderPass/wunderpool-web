@@ -55,36 +55,35 @@ export default function Profile(props) {
     }
   };
 
-  const uploadToServer = () => {
+  const uploadToServer = async () => {
     if (!image) {
       setUploading(false);
       setDataHasChanged(false);
     } else {
-      const { signedMessage, signature } = user.getSignedMillis();
-      const formData = new FormData();
-      formData.append('image', image);
-      formData.append('wunderId', user?.wunderId);
+      try {
+        const { signedMessage, signature } = await user.getSignedMillis();
+        const formData = new FormData();
+        formData.append('image', image);
+        formData.append('wunderId', user?.wunderId);
 
-      axios({
-        method: 'post',
-        url: '/api/users/setImage',
-        headers: {
-          signature,
-          signed_message: signedMessage,
-        },
-        data: formData,
-      })
-        .then(() => {
-          setImage(null);
-          handleSuccess('messages.profile.saved');
-        })
-        .catch((err) => {
-          handleError(err?.response?.data?.error);
-        })
-        .then(() => {
-          setUploading(false);
-          setDataHasChanged(false);
+        await axios({
+          method: 'post',
+          url: '/api/users/setImage',
+          headers: {
+            signature,
+            signed_message: signedMessage,
+          },
+          data: formData,
         });
+        setImage(null);
+        handleSuccess('messages.profile.saved');
+        setUploading(false);
+        setDataHasChanged(false);
+      } catch (error) {
+        handleError(error?.response?.data?.error || error);
+        setUploading(false);
+        setDataHasChanged(false);
+      }
     }
   };
 
@@ -121,43 +120,42 @@ export default function Profile(props) {
     setEmail(event.target.value);
   };
 
-  const updateUserInfo = () => {
+  const updateUserInfo = async () => {
     setUploading(true);
-    const { signedMessage, signature } = user.getSignedMillis();
-    const number = phoneNumber == '' ? null : phoneNumber;
+    try {
+      const { signedMessage, signature } = await user.getSignedMillis();
+      const number = phoneNumber == '' ? null : phoneNumber;
+      console.log({ signedMessage, signature });
+      const reqData = {
+        wunderId: user.wunderId,
+        handle: userName,
+        firstname: firstName,
+        lastname: lastName,
+        email: email,
+        phone_number: number,
+      };
 
-    const reqData = {
-      wunderId: user.wunderId,
-      handle: userName,
-      firstname: firstName,
-      lastname: lastName,
-      email: email,
-      phone_number: number,
-    };
-
-    axios({
-      method: 'put',
-      url: '/api/users/setProfile',
-      headers: {
-        signature: signature,
-        signed: signedMessage,
-      },
-      data: reqData,
-    })
-      .then(() => {
-        handleSuccess('Your profile was saved!');
-        user.getUserData();
-      })
-      .catch((err) => {
-        handleError(err?.response?.data?.error);
-      })
-      .then(() => {
-        uploadToServer();
+      await axios({
+        method: 'put',
+        url: '/api/users/setProfile',
+        headers: {
+          signature: signature,
+          signed: signedMessage,
+        },
+        data: reqData,
       });
+      handleSuccess('Your profile was saved!');
+      user.getUserData();
+      await uploadToServer();
+    } catch (error) {
+      console.log(error);
+      handleError(error?.response?.data?.error || error);
+      setUploading(true);
+    }
   };
 
   const handleSave = async () => {
-    updateUserInfo();
+    await updateUserInfo();
   };
 
   const uploadToClient = (event) => {
