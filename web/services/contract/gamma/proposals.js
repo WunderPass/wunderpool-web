@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { encodeParams, usdc } from '/services/formatter';
-import useWunderPass from '/hooks/useWunderPass';
 import { initPoolGamma } from './init';
 import {
   gasPrice,
@@ -283,72 +282,6 @@ export async function createSwapSuggestionGamma(
       popup
     );
   }
-}
-
-export async function createNftBuyProposalGamma(
-  poolAddress,
-  nftAddress,
-  tokenId,
-  title,
-  description,
-  amount,
-  userAddress
-) {
-  return createMultiActionProposalGamma(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      'transferFrom(address,address,uint256)',
-      'transferFrom(address,address,uint256)',
-    ],
-    [
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [userAddress, poolAddress, amount]
-      ),
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [poolAddress, userAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    1846183041
-  );
-}
-
-export async function createNftSellProposalGamma(
-  poolAddress,
-  nftAddress,
-  tokenId,
-  title,
-  description,
-  amount,
-  userAddress
-) {
-  return createMultiActionProposalGamma(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      'transferFrom(address,address,uint256)',
-      'transferFrom(address,address,uint256)',
-    ],
-    [
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [poolAddress, userAddress, amount]
-      ),
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [userAddress, poolAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    1846183041
-  );
 }
 
 export function proposalExecutableGamma(poolAddress, id) {
