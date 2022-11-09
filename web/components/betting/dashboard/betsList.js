@@ -1,8 +1,8 @@
 import { FaMoneyCheck } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { Typography, Skeleton } from '@mui/material';
-import DashboardGameCard from '/components/betting/games/dashboardGameCard';
 import Link from 'next/link';
+import DashboardCompetitionCard from '/components/betting/dashboard/competitionCard';
 
 export default function BetsList(props) {
   const { user, bettingService, eventTypeSort, sortId, isSortById } = props;
@@ -20,22 +20,22 @@ export default function BetsList(props) {
           if (isSortById) {
             if (comp.id == sortId) {
               return (
-                <DashboardGameCard
-                  key={`dashboard-game-card-${game.id}`}
-                  game={game}
+                <DashboardCompetitionCard
+                  key={`dashboard-competition-card-${comp.id}`}
+                  competition={comp}
                   user={user}
                   {...props}
                 />
               );
             }
           } else if (
-            game.event.competitionName == eventTypeSort ||
+            comp.games.find((g) => g.event.competitionName == eventTypeSort) ||
             eventTypeSort == 'All Events'
           ) {
             return (
-              <DashboardGameCard
-                key={`dashboard-game-card-${game.id}`}
-                game={game}
+              <DashboardCompetitionCard
+                key={`dashboard-competition-card-${comp.id}`}
+                competition={comp}
                 user={user}
                 {...props}
               />

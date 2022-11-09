@@ -30,7 +30,7 @@ function calculatePayout(payoutRule, results, stake) {
   const totalPot = stake * results.length;
 
   // Winner Takes It All
-  if (payoutRule == 0) {
+  if (payoutRule == 'WINNER_TAKES_IT_ALL') {
     const maxPoints = Math.max(...results.map(({ points }) => points));
     const winnerCount = results.filter(
       ({ points }) => points == maxPoints
@@ -42,7 +42,7 @@ function calculatePayout(payoutRule, results, stake) {
       };
     });
     // Proportional
-  } else if (payoutRule == 1) {
+  } else if (payoutRule == 'PROPORTIONAL') {
     const totalPoints = results.reduce((a, b) => a + b.points, 0);
     const winningsPerPoint = totalPot / totalPoints;
     return results.map((participant) => {
@@ -55,8 +55,8 @@ function calculatePayout(payoutRule, results, stake) {
   }
 }
 
-function calculateWinnings(game, stake, result) {
-  const { participants, payoutRule, event } = game;
+function calculateWinnings(game, stake, result, payoutRule) {
+  const { participants, event } = game;
 
   const results = participants.map((participant) => {
     const points = calculatePoints(
@@ -108,11 +108,11 @@ function ParticipantTable({ user, participants, stake }) {
                   {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
                   console.log('name', name)
                 )} */}
-                  <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
+                  <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4">
                     {participant.wunderId ? (
-                      <div className="truncate ...">{participant.wunderId}</div>
+                      <div className="truncate">{participant.wunderId}</div>
                     ) : (
-                      <div className="truncate ...">{participant.address}</div>
+                      <div className="truncate">{participant.address}</div>
                     )}
                   </div>
                 </div>
@@ -142,17 +142,13 @@ function ParticipantTable({ user, participants, stake }) {
   );
 }
 
-export default function GameCard(props) {
-  const { game, totalTokens, wunderPool, handleSuccess, user } = props;
+export default function CompetitionCard(props) {
+  const { competition, totalTokens, wunderPool, handleSuccess, user } = props;
+  const game = competition.games[0]; // Only assume Single Competitions as of now
   const [open, setOpen] = useState(false);
   const [gameResultTable, setGameResultTable] = useState([]);
   const { addQueryParam, removeQueryParam, goBack } = UseAdvancedRouter();
   const router = useRouter();
-
-  const stake =
-    (game.stake * wunderPool.usdcBalance) /
-    totalTokens /
-    10 ** wunderPool.governanceToken.decimals;
 
   const usersBet = game.participants.find((p) =>
     compAddr(p.address, wunderPool.userAddress)
@@ -172,7 +168,14 @@ export default function GameCard(props) {
     if (!game.event?.outcome || game.event.outcome.length == 0) {
       setGameResultTable(game.participants);
     } else {
-      setGameResultTable(calculateWinnings(game, stake, game.event.outcome));
+      setGameResultTable(
+        calculateWinnings(
+          game,
+          competition.stake,
+          game.event.outcome,
+          competition.payoutRule
+        )
+      );
     }
   }, [game.event?.outcome]);
 
@@ -210,7 +213,7 @@ export default function GameCard(props) {
           <div className="flex flex-col w-full justify-center items-center mb-5 ">
             <div className="w-full sm:w-2/3 md:w-7/12">
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
+                <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate">
                   <p className="mx-2 ">
                     {game.payoutRule == 0
                       ? 'Winner Takes It All'
@@ -223,21 +226,21 @@ export default function GameCard(props) {
                 </div>
                 <Divider className="my-1" />
 
-                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate">
                   <p>Participants:</p>
                   <p className="ml-2">{`${game.participants.length}`}</p>
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
-                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate">
                   <p>Entry:</p>
-                  <p className="ml-2">{`${currency(stake)}`}</p>
+                  <p className="ml-2">{`${currency(competition.stake)}`}</p>
                 </div>
                 <Divider className="my-1" />
-                <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
+                <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate">
                   <p>Pot:</p>
                   <p className="ml-2">{` ${currency(
-                    stake * game.participants.length
+                    competition.stake * game.participants.length
                   )} `}</p>
                 </div>
               </div>
@@ -296,7 +299,7 @@ export default function GameCard(props) {
               <ParticipantTable
                 user={user}
                 participants={gameResultTable}
-                stake={stake}
+                stake={competition.stake}
               />
             ))}
           {wunderPool.isMember &&

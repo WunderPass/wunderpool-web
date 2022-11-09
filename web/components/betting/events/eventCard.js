@@ -75,12 +75,13 @@ export default function EventCard(props) {
     setLoadingText('Joining Public Competition...');
     if (selectedCompetition.matchingCompetition) {
       joinSingleCompetition({
+        competitionId: selectedCompetition.matchingCompetition.id,
         gameId: selectedCompetition.matchingCompetition.games[0].id,
+        poolVersion: 'ETA',
         poolAddress: selectedCompetition.matchingCompetition.poolAddress,
         prediction: [guessOne, guessTwo],
         userAddress: user.address,
         stake: selectedCompetition.matchingCompetition.stake,
-        wunderId: user.wunderId,
         event: event,
         afterPoolJoin: async () => {
           setLoadingText('Placing your Bet...');
@@ -127,7 +128,7 @@ export default function EventCard(props) {
       event,
       stake: selectedCompetition.stake || customAmount,
       creator: user.address,
-      isPublic: true,
+      isPublic: false,
       prediction: [guessOne, guessTwo],
       afterPoolCreate: async () => {
         setLoadingText('Placing your Bet...');
@@ -257,9 +258,9 @@ export default function EventCard(props) {
                     const matchingCompetition = eventCompetitions.find(
                       (comp) => comp.stake == stake
                     );
-                    const votes = sortMembersOnVotes(
-                      matchingCompetition?.games?.[0]?.participants
-                    );
+                    const participants =
+                      matchingCompetition?.games?.[0]?.participants;
+                    const votes = sortMembersOnVotes(participants);
 
                     return (
                       <div
@@ -277,30 +278,28 @@ export default function EventCard(props) {
                             <div className="flex flex-row">
                               <p>Pot:</p>
                               <p className="font-semibold ml-2 ">
-                                {matchingGame
-                                  ? matchingGame?.participants?.length < 1
+                                {matchingCompetition
+                                  ? participants?.length < 1
                                     ? '$0'
                                     : currency(
-                                        (matchingGame?.stake / 1000000) *
-                                          matchingGame?.participants?.length
+                                        matchingCompetition?.stake *
+                                          matchingCompetition?.games?.[0]
+                                            ?.participants?.length
                                       )
                                   : '$0'}{' '}
                               </p>
                             </div>
                             <div className="flex flex-row">
                               <p className="font-semibold ml-1.5">
-                                {matchingGame
-                                  ? 10 -
-                                    matchingGame?.participants?.length +
-                                    ' / ' +
-                                    '10'
+                                {matchingCompetition
+                                  ? 10 - participants?.length + ' / ' + '10'
                                   : '10 / 10'}
                               </p>
                             </div>
                           </div>
 
-                          {matchingCompetition?.games?.[0]?.participants?.find(
-                            (part) => compAddr(part.address, user.address)
+                          {participants?.find((part) =>
+                            compAddr(part.address, user.address)
                           ) ? (
                             <button
                               disabled

@@ -8,6 +8,7 @@ export function formatEvent(event) {
     utc_end_time,
     event_icon_url,
     event_state,
+    event_result,
     network_event_id,
     event_competition,
     event_competition_name,
@@ -18,6 +19,9 @@ export function formatEvent(event) {
   } = event;
 
   var shortName = event_name.match(/(.*) -.*vs\./)[1];
+  const outcome = event_result
+    ? event_result.split(' - ').map((n) => Number(n))
+    : [0, 0];
 
   return {
     id: event_id,
@@ -28,6 +32,7 @@ export function formatEvent(event) {
     endTime: new Date(`${utc_end_time}Z`) || null,
     iconUrl: event_icon_url || null,
     state: event_state,
+    outcome: outcome.length == 2 ? outcome : [0, 0],
     blockchainId: network_event_id?.event_id || null,
     version: network_event_id?.contract_version || null,
     competitionName: event_competition_name || event_competition?.name,

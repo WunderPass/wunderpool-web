@@ -71,15 +71,21 @@ export async function createSingleCompetition({
     console.log('competitionId', competitionId);
 
     const competition = await new Promise((res, rej) => {
+      let retry = 0;
       const interval = setInterval(async () => {
-        const { data } = await axios({
-          url: '/api/betting/competitions/show',
-          params: { id: competitionId },
-        });
+        try {
+          const { data } = await axios({
+            url: '/api/betting/competitions/show',
+            params: { id: competitionId },
+          });
 
-        if (data && data?.games && data.games[0].id) {
-          clearInterval(interval);
-          res(data);
+          if (data && data?.games && data.games[0].id) {
+            clearInterval(interval);
+            res(data);
+          }
+          console.log(`Retrying: ${retry++}`);
+        } catch (error) {
+          console.log(`Retrying: ${retry++}`);
         }
       }, 1000);
     });
@@ -102,10 +108,10 @@ export async function createSingleCompetition({
 }
 
 export async function joinSingleCompetition({
+  competitionId,
   gameId,
   prediction,
   userAddress,
-  wunderId,
   event,
   stake,
   poolAddress,
@@ -117,7 +123,7 @@ export async function joinSingleCompetition({
       await joinPool(
         poolAddress,
         userAddress,
-        stake / 1000000,
+        stake,
         '',
         versionLookup[poolVersion.toLowerCase()].number
       );
@@ -128,10 +134,10 @@ export async function joinSingleCompetition({
     }
     await afterPoolJoin();
     await registerParticipant(
+      competitionId,
       gameId,
       prediction,
       userAddress,
-      wunderId,
       event.version
     );
     return true;
