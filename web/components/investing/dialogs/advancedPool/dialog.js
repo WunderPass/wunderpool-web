@@ -5,12 +5,12 @@ import { useRouter } from 'next/router';
 import NewPoolConfigStep from './configStep';
 import NewPoolInviteStep from './inviteStep';
 import NewPoolVotingStep from './votingStep';
-import NewPoolButtons from './buttons';
+import NewPoolButtons from '/components/investing/dialogs/advancedPool/buttons';
 import TransactionFrame from '/components/general/utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import { compAddr } from '../../../../services/memberHelpers';
+import { compAddr } from '/services/memberHelpers';
 
 export default function AdvancedPoolDialog(props) {
   const {

@@ -39,7 +39,7 @@ export default function TopBar(props) {
         >
           <Toolbar>
             <Stack className="hidden sm:flex flex-row w-full justify-between items-center">
-              <Link href="/betting/pools">
+              <Link href="/betting">
                 <div className="flex flex-row cursor-pointer items-center">
                   <div className="pl-1.5 items-center justify-center mr-3">
                     <div className="hidden lg:block w-40">
@@ -81,10 +81,10 @@ export default function TopBar(props) {
                           My Bets
                         </li>
                       </Link>
-                      <Link href={`/betting/pools`}>
+                      <Link href={`/betting`}>
                         <li
                           className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
-                            router.pathname == '/betting/pools'
+                            router.pathname == '/betting'
                               ? 'bg-casama-light-blue'
                               : ''
                           }`}

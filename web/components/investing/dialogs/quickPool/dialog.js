@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 import { createPool } from '/services/contract/pools';
 import { useRouter } from 'next/router';
 import CreatePoolStep from './createStep';
-import QuickPoolButtons from './buttons';
+import QuickPoolButtons from '/components/investing/dialogs/quickPool/buttons';
 import TransactionFrame from '/components/general/utils/transactionFrame';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import { compAddr } from '../../../../services/memberHelpers';
+import { compAddr } from '/services/memberHelpers';
 
 export default function AdvancedPoolDialog(props) {
   const {

@@ -27,14 +27,14 @@ export async function getServerSideProps(context) {
       return {
         redirect: {
           permanent: false,
-          destination: `/betting/pools`,
+          destination: `/betting`,
         },
       };
     } else if (data.games.length == 1) {
       return {
         redirect: {
           permanent: false,
-          destination: `/betting/pools/join/${competitionId}/${data.games[0].id}`,
+          destination: `/betting/join/${competitionId}/${data.games[0].id}`,
         },
       };
     }

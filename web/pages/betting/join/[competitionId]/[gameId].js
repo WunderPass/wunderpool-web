@@ -31,7 +31,7 @@ export default function JoinCompetitionGame(props) {
         }
       } else {
         handleInfo('This Bet does not exist');
-        router.push('/betting/pools');
+        router.push('/betting');
       }
     }
   }, [game]);
@@ -40,7 +40,7 @@ export default function JoinCompetitionGame(props) {
   // useEffect(() => {
   //   if (wunderPool.liquidated) {
   //     handleInfo('This Bet is already resolved');
-  //     router.push('/betting/pools');
+  //     router.push('/betting');
   //   }
   // }, [wunderPool.liquidated]);
 

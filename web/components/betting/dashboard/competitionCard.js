@@ -133,8 +133,7 @@ export default function DashboardCompetitionCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/pools/join/' +
-                      competition.id,
+                    'https://app.casama.io/betting/join/' + competition.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
