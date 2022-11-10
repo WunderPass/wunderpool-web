@@ -4,16 +4,20 @@ import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Avatar from '/components/general/members/avatar';
+<<<<<<< HEAD
 import Timer from '/components/general/utils/timer';
 import { useRouter } from 'next/router';
+=======
+import Timer from '/components/betting/proposals/timer';
+>>>>>>> 42e0957e42e34b7580e3c019364681dd0fdb5a17
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
 import axios from 'axios';
+import { calculateWinnings } from '/services/bettingHelpers';
 
-function ParticipantTable({ game, stake, user }) {
-  const { participants, event } = game;
+function ParticipantTable({ participants, stake, user }) {
   const [members, setMembers] = useState(null);
 
   const convertAddressesToMembers = async (addresses) => {
@@ -24,39 +28,30 @@ function ParticipantTable({ game, stake, user }) {
         data: { addresses: addresses },
       })
     ).data;
-    formattedMembers(resolvedMembers);
-  };
-
-  const formattedMembers = (members) => {
-    let formattedParticipants = [];
-    participants.map((p) => {
-      let wunderIdExists = false;
-
-      members.map((m) => {
-        if (p.address == m.wallet_address) {
-          formattedParticipants.push({
-            wunderId: m.wunder_id,
-            address: m.wallet_address,
-            prediction: p.prediction,
-          });
-          wunderIdExists = true;
-        }
-      });
-      if (!wunderIdExists) {
-        formattedParticipants.push({
-          wunderId: p.address,
-          address: p.address,
-          prediction: p.prediction,
-        });
-        return;
-      }
-    });
-    setMembers(formattedParticipants);
+    setMembers(
+      participants.map((part) => {
+        const wunderId = resolvedMembers.find((m) =>
+          compAddr(part.address, m.wallet_address)
+        )?.wunder_id;
+        return { ...part, wunderId };
+      })
+    );
   };
 
   useEffect(() => {
     const addresses = participants.map((p) => p.address);
     convertAddressesToMembers(addresses);
+  }, [participants.length]);
+
+  // Update members winnings if participants change without refetching wunderIDs
+  useEffect(() => {
+    if (!members) return;
+    setMembers((mems) =>
+      mems.map((m) => ({
+        ...participants.find((p) => compAddr(p.address, m.address)),
+        wunderId: m.wunderId,
+      }))
+    );
   }, [participants]);
 
   return (
@@ -67,48 +62,52 @@ function ParticipantTable({ game, stake, user }) {
         </div>
       )}
 
-      {members &&
-        members.map((participant, i) => {
+      {(members || participants)
+        .sort((a, b) => b.winnings || 0 - a.winnings || 0)
+        .map((participant, i) => {
           return (
             <div
               key={`participant-${participant.address}`}
-              className="flex flex-row w-full "
+              className={
+                compAddr(participant.address, user.address)
+                  ? `container-casama-p-0 p-2 flex flex-row items-center justify-between gap-2 my-1 w-full`
+                  : `container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full`
+              }
             >
-              <div
-                className={
-                  compAddr(participant.address, user.address)
-                    ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
-                    : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
-                }
-              >
-                <div className=" flex flex-row justify-start w-5/6">
-                  <div className="flex ml-2">
-                    <Avatar
-                      wunderId={participant.wunderId}
-                      tooltip={`${participant.wunderId}`}
-                      text={participant.wunderId ? participant.wunderId : '0-X'}
-                      color={['green', 'blue', 'red'][i % 3]}
-                      i={i}
-                    />
-                  </div>
-
-                  {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
-                  console.log('name', name)
-                )} */}
-                  <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4 ...">
-                    {participant.wunderId ? (
-                      <div className="truncate ...">{participant.wunderId}</div>
-                    ) : (
-                      <div className="truncate ...">{participant.address}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
-                  <p>{participant.prediction[0]}</p>
-                  <p className="px-1">:</p>
-                  <p>{participant.prediction[1]}</p>
-                </div>
+              <div>
+                <Avatar
+                  wunderId={participant.wunderId}
+                  tooltip={`${participant.wunderId}`}
+                  text={participant.wunderId ? participant.wunderId : '0-X'}
+                  color={['green', 'blue', 'red'][i % 3]}
+                  i={i}
+                />
               </div>
+              <div className="flex items-center justify-start truncate flex-grow">
+                {participant.wunderId ? (
+                  <div className="truncate">{participant.wunderId}</div>
+                ) : (
+                  <div className="truncate">{participant.address}</div>
+                )}
+              </div>
+              <div className="flex flex-row justify-end items-center text-xl">
+                <p>{participant.prediction[0]}</p>
+                <p className="px-1">:</p>
+                <p>{participant.prediction[1]}</p>
+              </div>
+              {participant.winnings != undefined && (
+                <div className=" min-w-[5rem] text-right text-xl">
+                  {participant.winnings >= stake ? (
+                    <p className="text-green-500">
+                      {currency(participant.winnings)}
+                    </p>
+                  ) : (
+                    <p className="text-red-500">
+                      {currency(stake - participant.winnings)}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
@@ -118,9 +117,49 @@ function ParticipantTable({ game, stake, user }) {
 
 export default function DashboardCompetitionCard(props) {
   const { competition, handleSuccess, user } = props;
-  const router = useRouter();
+  const [liveCompetition, setLiveCompetition] = useState(null);
+  const [gameResultTable, setGameResultTable] = useState([]);
   const stake = competition.stake; //TODO
-  const game = competition.games[0]; // Only assume Single Competitions as of now
+  const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
+  const isLive = game?.event?.startTime
+    ? new Date(game.event.startTime) < new Date() &&
+      new Date(game.event.endTime) > new Date()
+    : false;
+
+  useEffect(() => {
+    if (
+      game.event?.state == 'SETTLED' ||
+      game.event?.outcome?.reduce((a, b) => a + b, 0) == 0
+    ) {
+      setGameResultTable(game.participants);
+    } else {
+      setGameResultTable(
+        calculateWinnings(
+          game,
+          competition.stake,
+          game.event.outcome,
+          competition.payoutRule
+        )
+      );
+    }
+  }, [game.event?.outcome]);
+
+  useEffect(() => {
+    if (isLive) {
+      const interval = setInterval(() => {
+        axios({
+          url: '/api/betting/competitions/show',
+          params: { id: competition.id },
+        }).then(({ data }) => {
+          console.log(data);
+          if (data && data.games?.[0]) setLiveCompetition(data);
+        });
+      }, 150000);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [isLive]);
 
   return (
     <div className="container-gray pb-16 w-full">
@@ -159,15 +198,13 @@ export default function DashboardCompetitionCard(props) {
                     className="w-16 mb-2"
                   />
                 </div>
+                <p className="text-3xl font-semibold">vs</p>
                 <div className="flex flex-col justify-center items-center text-center w-5/12 ">
                   <img
                     src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
                     className="w-16 mb-2"
                   />
                 </div>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-lg sm:text-xl font-semibold">vs</p>
               </div>
 
               {/* NAMEN */}
@@ -220,8 +257,14 @@ export default function DashboardCompetitionCard(props) {
             </div>
           </div>
           <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
-            {game.event.state == 'RESOLVED' ? (
-              <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center">
+            {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ? (
+              <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
+                {isLive && (
+                  <div className="absolute top-3 right-5 flex items-center gap-1 animate-pulse">
+                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                    <div className="text-sm">LIVE</div>
+                  </div>
+                )}
                 <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
                   Result
                 </p>
@@ -263,13 +306,18 @@ export default function DashboardCompetitionCard(props) {
               </div>
             )}
           </div>
-
           {/* Only Show participants if user has voted */}
           {user &&
-            (game.event.state == 'RESOLVED' ||
-              (game.participants.find((participant) =>
+            (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ||
+              game.participants.find((participant) =>
                 compAddr(participant.address, user.address)
-              ) && <ParticipantTable game={game} stake={stake} user={user} />))}
+              )) && (
+              <ParticipantTable
+                participants={gameResultTable}
+                stake={stake}
+                user={user}
+              />
+            )}
         </div>
       </div>
     </div>

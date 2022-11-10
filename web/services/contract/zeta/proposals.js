@@ -1,6 +1,4 @@
-import { encodeParams } from '/services/formatter';
 import { initProposalZeta } from './init';
-import { usdcAddress } from '/services/contract/init';
 
 export function fetchTransactionDataZeta(address, id, transactionCount) {
   return new Promise(async (resolve, reject) => {
@@ -18,72 +16,6 @@ export function fetchTransactionDataZeta(address, id, transactionCount) {
     );
     resolve(transactions);
   });
-}
-
-export async function createNftBuyProposalZeta(
-  poolAddress,
-  nftAddress,
-  tokenId,
-  title,
-  description,
-  amount,
-  userAddress
-) {
-  return createMultiActionProposalZeta(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      'transferFrom(address,address,uint256)',
-      'transferFrom(address,address,uint256)',
-    ],
-    [
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [userAddress, poolAddress, amount]
-      ),
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [poolAddress, userAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    userAddress
-  );
-}
-
-export async function createNftSellProposalZeta(
-  poolAddress,
-  nftAddress,
-  tokenId,
-  title,
-  description,
-  amount,
-  userAddress
-) {
-  return createMultiActionProposalZeta(
-    poolAddress,
-    title,
-    description,
-    [usdcAddress, nftAddress],
-    [
-      'transferFrom(address,address,uint256)',
-      'transferFrom(address,address,uint256)',
-    ],
-    [
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [poolAddress, userAddress, amount]
-      ),
-      encodeParams(
-        ['address', 'address', 'uint256'],
-        [userAddress, poolAddress, tokenId]
-      ),
-    ],
-    [0, 0],
-    userAddress
-  );
 }
 
 export function proposalExecutableZeta(poolAddress, id) {

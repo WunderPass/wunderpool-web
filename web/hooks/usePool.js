@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { fetchPoolNfts } from '/services/contract/token';
 import {
   isMember,
   joinPool,
@@ -17,8 +16,6 @@ import {
   createSwapSuggestion,
   executeProposal,
   proposalExecutable,
-  createNftSellProposal,
-  createNftBuyProposal,
 } from '/services/contract/proposals';
 import { vote, voteAgainst, voteFor } from '/services/contract/vote';
 import {
@@ -61,7 +58,6 @@ export default function usePool(
   const [totalBalance, setTotalBalance] = useState(0);
   const [assetCount, setAssetCount] = useState(0);
   const [poolTokens, setPoolTokens] = useState([]);
-  const [poolNfts, setPoolNfts] = useState([]);
   const [poolGovernanceToken, setPoolGovernanceToken] = useState(null);
   const [poolProposals, setPoolProposals] = useState([]);
   const [bettingCompetitions, setBettingCompetitions] = useState([]);
@@ -201,32 +197,6 @@ export default function usePool(
     );
   };
 
-  const nftSellProposal = (nftAddress, tokenId, title, description, amount) => {
-    return createNftSellProposal(
-      poolAddress,
-      nftAddress,
-      tokenId,
-      title,
-      description,
-      amount,
-      userAddress,
-      version?.number
-    );
-  };
-
-  const nftBuyProposal = (nftAddress, tokenId, title, description, amount) => {
-    return createNftBuyProposal(
-      poolAddress,
-      nftAddress,
-      tokenId,
-      title,
-      description,
-      amount,
-      userAddress,
-      version?.number
-    );
-  };
-
   const liquidateSuggestion = (title, description) => {
     return createLiquidateSuggestion(
       poolAddress,
@@ -306,15 +276,6 @@ export default function usePool(
         throw error;
       }
     }, 2000);
-  };
-
-  const determinePoolNfts = async () => {
-    if (liquidated) return;
-    try {
-      setPoolNfts(await fetchPoolNfts(poolAddress, version?.number));
-    } catch (error) {
-      handleError('Could not load NFTs');
-    }
   };
 
   const determinePoolBettingCompetitions = async () => {
@@ -495,7 +456,6 @@ export default function usePool(
         .then(async ({ vers, exists }) => {
           if (exists) {
             await determinePoolBettingCompetitions();
-            await determinePoolNfts();
             await determinePoolProposals(vers);
           }
         })
@@ -553,7 +513,6 @@ export default function usePool(
     totalBalance,
     assetCount,
     tokens: poolTokens,
-    nfts: poolNfts,
     bettingCompetitions,
     governanceToken: poolGovernanceToken,
     proposals: poolProposals,
@@ -562,8 +521,6 @@ export default function usePool(
     apeSuggestion,
     fudSuggestion,
     swapSuggestion,
-    nftSellProposal,
-    nftBuyProposal,
     liquidateSuggestion,
     vote: voteWithMode,
     voteForProposal,
@@ -571,7 +528,6 @@ export default function usePool(
     executable,
     execute,
     determineTokens: determinePoolTokens,
-    determineNfts: determinePoolNfts,
     determineBettingCompetitions: determinePoolBettingCompetitions,
     determineProposals: determinePoolProposals,
     determineBalance: determineUsdcBalance,

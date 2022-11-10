@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
-import { fetchPoolNftsDelta } from './delta/token';
-import { fetchPoolNftsGamma, fetchPoolTokensGamma } from './gamma/token';
+import { fetchPoolTokensGamma } from './gamma/token';
 import { gasPrice, tokenAbi, usdcAddress } from './init';
 import { httpProvider } from './provider';
 import { toEthString } from '/services/formatter';
@@ -65,14 +64,6 @@ export async function fetchErc20TokenData(address, ownerAddress = null) {
 
 export function fetchPoolTokens(address, version) {
   return fetchPoolTokensGamma(address);
-}
-
-export function fetchPoolNfts(address, version) {
-  if (version > 3) {
-    return fetchPoolNftsDelta(address);
-  } else {
-    return fetchPoolNftsGamma(address);
-  }
 }
 
 export function tokenBalanceOf(address, tokenAddress, decimals = null) {

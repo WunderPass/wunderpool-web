@@ -84,11 +84,7 @@ export default function Pool(props) {
   useEffect(() => {
     if (!address || !user.address) return;
     if (!tokenAddedEvent) return;
-    if (tokenAddedEvent.nft) {
-      wunderPool.determineNfts();
-    } else {
-      wunderPool.determineTokens();
-    }
+    wunderPool.determineTokens();
     resetEvents();
   }, [tokenAddedEvent]);
 

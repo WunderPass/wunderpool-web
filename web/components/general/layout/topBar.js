@@ -89,7 +89,7 @@ export default function TopBar(props) {
                               : ''
                           }`}
                         >
-                          Betting
+                          All Games
                         </li>
                       </Link>
                       <Link href={`/investing/pools`}>

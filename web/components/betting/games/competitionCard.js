@@ -11,62 +11,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
-
-function calculatePoints(eventType, prediction, result) {
-  // SOCCER
-  if (eventType == 0) {
-    const winner = result[0] > result[1] ? 0 : result[1] > result[0] ? 1 : 2;
-    const predictedWinner =
-      prediction[0] > prediction[1] ? 0 : prediction[1] > prediction[0] ? 1 : 2;
-    if (prediction[0] == result[0] && prediction[1] == result[1]) return 3;
-    if (prediction[0] - prediction[1] == result[0] - result[1]) return 2;
-    if (winner == predictedWinner) return 1;
-    return 0;
-  }
-}
-
-function calculatePayout(payoutRule, results, stake) {
-  const totalPot = stake * results.length;
-
-  // Winner Takes It All
-  if (payoutRule == 'WINNER_TAKES_IT_ALL') {
-    const maxPoints = Math.max(...results.map(({ points }) => points));
-    const winnerCount = results.filter(
-      ({ points }) => points == maxPoints
-    ).length;
-    return results.map((participant) => {
-      return {
-        ...participant,
-        winnings: participant.points == maxPoints ? totalPot / winnerCount : 0,
-      };
-    });
-    // Proportional
-  } else if (payoutRule == 'PROPORTIONAL') {
-    const totalPoints = results.reduce((a, b) => a + b.points, 0);
-    const winningsPerPoint = totalPot / totalPoints;
-    return results.map((participant) => {
-      return {
-        ...participant,
-        winnings:
-          totalPoints == 0 ? stake : participant.points * winningsPerPoint,
-      };
-    });
-  }
-}
-
-function calculateWinnings(game, stake, result, payoutRule) {
-  const { participants, event } = game;
-
-  const results = participants.map((participant) => {
-    const points = calculatePoints(
-      event.eventType,
-      participant.prediction,
-      result
-    );
-    return { ...participant, points };
-  });
-  return calculatePayout(payoutRule, results, stake);
-}
+import { calculateWinnings } from '/services/bettingHelpers';
 
 function ParticipantTable({ user, participants, stake }) {
   return (

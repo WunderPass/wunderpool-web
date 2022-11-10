@@ -1,8 +1,8 @@
 import { Skeleton, Divider } from '@mui/material';
-import ProposalList from '/components/investing/proposals/list';
+import ProposalList from '/components/betting/proposals/list';
 import { useRouter } from 'next/router';
 import TokenList from '/components/investing/tokens/list';
-import TransactionsList from '/components/investing/pool/transactions';
+import TransactionsList from '/components/betting/pool/transactions';
 import { useState, useEffect } from 'react';
 import TabBar from '/components/general/utils/tabBar';
 import GameList from '/components/betting/games/list';
