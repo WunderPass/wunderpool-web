@@ -1,5 +1,5 @@
 import CustomHeader from '/components/general/utils/customHeader';
-import BettingBox from '/components/betting/pool/bettingBox';
+import BettingBox from '/components/betting/dashboard/bettingBox';
 import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import BetsList from '/components/betting/dashboard/betsList';

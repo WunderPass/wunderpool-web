@@ -4,7 +4,7 @@ import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Avatar from '/components/general/members/avatar';
-import Timer from '/components/betting/proposals/timer';
+import Timer from '/components/general/utils/timer';
 import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
