@@ -198,7 +198,7 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
     setErrors(errors);
 
     if (valid) {
-      loginUserWithCredentials(userIdentifier, password)
+      loginUserWithCredentials(userIdentifier.toLowerCase(), password)
         .then(({ wunderId, address }) => {
           onSuccess({ wunderId, address, loginMethod: 'Casama' });
         })
