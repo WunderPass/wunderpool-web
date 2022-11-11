@@ -1,3 +1,5 @@
+import { sendSignUpMail } from '/services/mailer/signUp';
+
 const axios = require('axios');
 const FormData = require('form-data');
 
@@ -31,6 +33,11 @@ export default async function handler(req, res) {
       data: data,
       headers: headers,
     });
+    try {
+      sendSignUpMail({ to: req.body.email, firstName: req.body.firstName });
+    } catch (mailError) {
+      console.log(mailError);
+    }
     res.status(200).json(resp.data);
   } catch (error) {
     console.log(error);

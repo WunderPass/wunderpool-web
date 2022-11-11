@@ -212,7 +212,7 @@ function CompetitionCard({
           {competition.members.length}
         </p>
       )}
-      <Link href={`/betting/pools/${competition.poolAddress}`}>
+      <Link href={`/betting/${competition.poolAddress}`}>
         <a className="text-lg font-medium">{competition.name}</a>
       </Link>
       {competition.games.map((game) => {
@@ -290,7 +290,7 @@ export default function AdminBettingPage(props) {
   useEffect(() => {
     if (router.isReady && user.address) {
       if (!admins.includes(user.address.toLowerCase())) {
-        router.push('/betting/pools');
+        router.push('/betting');
       } else {
         fetchCompetitions();
         fetchEvents(true);

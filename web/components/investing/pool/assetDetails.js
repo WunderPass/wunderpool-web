@@ -6,7 +6,7 @@ import { currency } from '/services/formatter';
 import { GrMoney } from 'react-icons/gr';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
-import BettingGameDialog from '/components/betting/dialogs/bettingGame';
+import BettingGameDialog from '/components/investing/dialogs/bettingGame';
 
 function assetDetails(props) {
   const { wunderPool } = props;

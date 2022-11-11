@@ -113,6 +113,8 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
   };
 
   const loginWithWalletConnect = async () => {
+    // Reset Connections if any
+    localStorage.removeItem('walletconnect');
     setLoading(true);
     const provider = new WalletConnectProvider({
       rpc: {

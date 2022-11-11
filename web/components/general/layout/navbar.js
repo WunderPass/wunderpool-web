@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router';
 import TopBar from './topBar';
 import BottomBar from './bottomBar';
-import BottomBar2 from './bottomBar2';
-import BottomBar3 from './bottomBar3';
 
 export default function Navbar(props) {
   const { pathname } = useRouter();
@@ -12,7 +10,7 @@ export default function Navbar(props) {
   return (
     <div className="">
       <TopBar {...props} />
-      <BottomBar3 {...props} />
+      <BottomBar {...props} />
     </div>
   );
 }

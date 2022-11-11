@@ -24,7 +24,7 @@ function Home(props) {
 
   useEffect(() => {
     if (user.loggedIn) {
-      router.push('/betting/pools');
+      router.push('/betting');
     }
   }, [user.loggedIn]);
 

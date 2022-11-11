@@ -32,7 +32,7 @@ export default function useMetaMask() {
       const signer = provider.getSigner();
       const millis = new Date().getTime();
       signer
-        .signMessage(millis)
+        .signMessage(String(millis))
         .then((signature) => {
           resolve({ signedMessage: millis, signature: signature.slice(2) });
         })

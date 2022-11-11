@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { formatPool } from '/services/contract/pools';
-import PublicPoolCard from '/components/betting/dashboard/publicPoolCard';
+import PublicPoolCard from '/components/investing/dashboard/publicPoolCard';
 
 import { Paper, Skeleton, Typography } from '@mui/material';
 import axios from 'axios';
