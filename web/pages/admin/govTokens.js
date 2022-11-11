@@ -9,13 +9,7 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { registerEvent, resolveEvent } from '/services/contract/betting/events';
-import ResponsiveDialog from '/components/general/utils/responsiveDialog';
-import { MdSportsSoccer } from 'react-icons/md';
-import { determineGame } from '/services/contract/betting/games';
-import { IoMdRefresh } from 'react-icons/io';
 import { formatMembers } from '../../services/contract/pools';
-import CapTable from '../../components/betting/pool/capTable';
 import { getNameFor } from '/services/memberHelpers';
 import { currency, toFixed } from '/services/formatter';
 import Avatar from '../../components/general/members/avatar';
@@ -178,7 +172,6 @@ export default function AdminBettingPage(props) {
             </thead>
             <tbody>
               {members.map((member, i) => {
-                console.log(member);
                 return (
                   <tr key={`member-${i}`}>
                     <td className="pb-2">
