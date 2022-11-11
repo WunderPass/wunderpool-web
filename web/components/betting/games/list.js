@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import CompetitionCard from './competitionCard';
 import TabBar from '/components/general/utils/tabBar';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
-import BettingGameDialog from '../dialogs/bettingGame';
+import BettingGameDialog from '/components/betting/dialogs/bettingGame';
 
 function NoOpenBets(props) {
   const { wunderPool, handleOpenCloseBetting, openBet } = props;
