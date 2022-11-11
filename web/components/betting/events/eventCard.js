@@ -34,6 +34,7 @@ export default function EventCard(props) {
   const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
+  const [collapsePublic, setCollapsePublic] = useState(false);
 
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
@@ -143,10 +144,14 @@ export default function EventCard(props) {
       .then(() => {
         setLoadingText(null);
         setLoading(false);
+        setCollapsePublic(false);
       });
   };
 
   const toggleSelectedCompetition = (params, fromCustom = false) => {
+    if (!params.public) {
+      setCollapsePublic(true);
+    }
     !fromCustom && setShowCustomInput(false);
     setSelectedCompetition((comp) =>
       comp.stake == params.stake && comp.public == params.public ? {} : params
@@ -243,118 +248,121 @@ export default function EventCard(props) {
         <TransactionFrame open={loading} text={loadingText} />
         {!loading && (
           <>
-            <Divider />
-            <div className="my-5">
-              <div className="flex justify-center items-center text-semibold sm:text-lg mb-4">
-                Public Betting Games
-              </div>
-              <div>
-                <div className="flex flex-row w-full gap-3 flex-wrap sm:flex-nowrap">
-                  {[5, 10, 50].map((stake) => {
-                    const selected =
-                      selectedCompetition.public &&
-                      selectedCompetition.stake == stake &&
-                      !showCustomInput;
-                    const matchingCompetition = eventCompetitions.find(
-                      (comp) => comp.stake == stake
-                    );
-                    const participants =
-                      matchingCompetition?.games?.[0]?.participants;
-                    const votes = sortMembersOnVotes(participants);
+            <Collapse in={!collapsePublic}>
+              <Divider />
+              <div className="my-5">
+                <div className="flex justify-center items-center text-semibold sm:text-lg mb-4">
+                  Public Betting Games
+                </div>
+                <div>
+                  <div className="flex flex-row w-full gap-3 flex-wrap sm:flex-nowrap">
+                    {[5, 10, 50].map((stake) => {
+                      const selected =
+                        selectedCompetition.public &&
+                        selectedCompetition.stake == stake &&
+                        !showCustomInput;
+                      const matchingCompetition = eventCompetitions.find(
+                        (comp) => comp.stake == stake
+                      );
+                      const participants =
+                        matchingCompetition?.games?.[0]?.participants;
+                      const votes = sortMembersOnVotes(participants);
 
-                    return (
-                      <div
-                        key={`public-competition-${event.id}-${stake}`}
-                        className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
-                          (selectedCompetition.stake == undefined &&
-                            user.usdBalance >= stake) ||
-                          selected
-                            ? 'opacity-100'
-                            : 'opacity-40'
-                        }`}
-                      >
-                        <div className="flex flex-col items-center p-2 gap-2">
-                          <div className="flex flex-row justify-between items-center w-full px-3  mt-2 sm:px-2">
-                            <div className="flex flex-row">
-                              <p>Pot:</p>
-                              <p className="font-semibold ml-2 ">
-                                {matchingCompetition
-                                  ? participants?.length < 1
-                                    ? '$0'
-                                    : currency(
-                                        matchingCompetition?.stake *
-                                          matchingCompetition?.games?.[0]
-                                            ?.participants?.length
-                                      )
-                                  : '$0'}{' '}
-                              </p>
+                      return (
+                        <div
+                          key={`public-competition-${event.id}-${stake}`}
+                          className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
+                            (selectedCompetition.stake == undefined &&
+                              user.usdBalance >= stake) ||
+                            selected
+                              ? 'opacity-100'
+                              : 'opacity-40'
+                          }`}
+                        >
+                          <div className="flex flex-col items-center p-2 gap-2">
+                            <div className="flex flex-row justify-between items-center w-full px-3  mt-2 sm:px-2">
+                              <div className="flex flex-row">
+                                <p>Pot:</p>
+                                <p className="font-semibold ml-2 ">
+                                  {matchingCompetition
+                                    ? participants?.length < 1
+                                      ? '$0'
+                                      : currency(
+                                          matchingCompetition?.stake *
+                                            matchingCompetition?.games?.[0]
+                                              ?.participants?.length
+                                        )
+                                    : '$0'}{' '}
+                                </p>
+                              </div>
+                              <div className="flex flex-row">
+                                <p className="font-semibold ml-1.5">
+                                  {matchingCompetition
+                                    ? 10 - participants?.length + ' / ' + '10'
+                                    : '10 / 10'}
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex flex-row">
-                              <p className="font-semibold ml-1.5">
-                                {matchingCompetition
-                                  ? 10 - participants?.length + ' / ' + '10'
-                                  : '10 / 10'}
-                              </p>
-                            </div>
+
+                            {participants?.find((part) =>
+                              compAddr(part.address, user.address)
+                            ) ? (
+                              <button
+                                disabled
+                                className="btn-casama px-4 sm:px-6 p-1 w-full"
+                              >
+                                $ {stake} (Joined)
+                              </button>
+                            ) : (
+                              <button
+                                disabled={user.usdBalance < stake}
+                                onClick={() =>
+                                  toggleSelectedCompetition({
+                                    stake,
+                                    public: true,
+                                    matchingCompetition,
+                                  })
+                                }
+                                className="btn-casama px-4 sm:px-6 p-1 w-full"
+                              >
+                                $ {stake}
+                              </button>
+                            )}
                           </div>
+                          {votes != null && (
+                            <>
+                              <Divider />
+                              <div className="w-full flex justify-around p-1 ">
+                                <div className="w-full text-center">
+                                  <p>Home</p>
+                                  <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                    {showWunderIdsAsIcons(votes[0], 2)}
+                                  </div>
+                                </div>
+                                <div className="w-full text-center">
+                                  <p>Tie</p>
+                                  <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                    {showWunderIdsAsIcons(votes[1], 2)}
+                                  </div>
+                                </div>
 
-                          {participants?.find((part) =>
-                            compAddr(part.address, user.address)
-                          ) ? (
-                            <button
-                              disabled
-                              className="btn-casama px-4 sm:px-6 p-1 w-full"
-                            >
-                              $ {stake} (Joined)
-                            </button>
-                          ) : (
-                            <button
-                              disabled={user.usdBalance < stake}
-                              onClick={() =>
-                                toggleSelectedCompetition({
-                                  stake,
-                                  public: true,
-                                  matchingCompetition,
-                                })
-                              }
-                              className="btn-casama px-4 sm:px-6 p-1 w-full"
-                            >
-                              $ {stake}
-                            </button>
+                                <div className="w-full text-center">
+                                  <p>Away</p>
+                                  <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                    {showWunderIdsAsIcons(votes[2], 2)}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
                           )}
                         </div>
-                        {votes != null && (
-                          <>
-                            <Divider />
-                            <div className="w-full flex justify-around p-1 ">
-                              <div className="w-full text-center">
-                                <p>Home</p>
-                                <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                  {showWunderIdsAsIcons(votes[0], 2)}
-                                </div>
-                              </div>
-                              <div className="w-full text-center">
-                                <p>Tie</p>
-                                <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                  {showWunderIdsAsIcons(votes[1], 2)}
-                                </div>
-                              </div>
-
-                              <div className="w-full text-center">
-                                <p>Away</p>
-                                <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                  {showWunderIdsAsIcons(votes[2], 2)}
-                                </div>
-                              </div>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Collapse>
+
             <Divider />
             <div className="flex flex-col justify-center items-center mt-5">
               <div className=" flex-col text-semibold sm:text-lg text-center mb-4">
