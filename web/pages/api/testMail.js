@@ -1,15 +1,11 @@
-// const sgMail = require('@sendgrid/mail');
+// import { sendSignUpMail } from '../../services/mailer/signUp';
+
 // export default function handler(req, res) {
-//   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-//   const msg = {
-//     to: 'g.fricke@wunderpass.io',
-//     from: 'notifications@casama.io',
-//     subject: 'Your Betting Game is done!',
-//     text: 'Click here to view your results',
-//     html: '<strong>Click here to view your results</strong>',
-//   };
-//   sgMail
-//     .send(msg)
+//   sendSignUpMail({
+//     to: req.query.to,
+//     firstName: req.query.firstName,
+//     bcc: req.query.bcc,
+//   })
 //     .then(() => {
 //       res.status(200).json({ message: 'Email sent' });
 //     })

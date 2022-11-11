@@ -30,9 +30,10 @@ export default function useWalletConnect() {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.Web3Provider(window.walletConnect);
       const signer = provider.getSigner();
+      console.log('signer', signer);
       const millis = new Date().getTime();
       signer
-        .signMessage(millis)
+        .signMessage(String(millis))
         .then((signature) => {
           resolve({ signedMessage: millis, signature: signature.slice(2) });
         })

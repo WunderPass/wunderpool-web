@@ -4,12 +4,7 @@ import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Avatar from '/components/general/members/avatar';
-<<<<<<< HEAD
 import Timer from '/components/general/utils/timer';
-import { useRouter } from 'next/router';
-=======
-import Timer from '/components/betting/proposals/timer';
->>>>>>> 42e0957e42e34b7580e3c019364681dd0fdb5a17
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';

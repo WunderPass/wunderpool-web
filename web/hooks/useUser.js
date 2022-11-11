@@ -9,7 +9,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
 import { fetchUserFriends } from '/services/memberHelpers';
 import { decryptKey, retreiveKey } from '/services/crypto';
-import { signMillis, signMessage } from '/services/sign';
+import { signMillis } from '/services/sign';
 import { ethProvider } from '/services/contract/provider';
 import useMetaMask from './useMetaMask';
 import useWalletConnect from './useWalletConnect';
