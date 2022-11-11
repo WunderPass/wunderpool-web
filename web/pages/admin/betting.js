@@ -1,24 +1,19 @@
 import {
   Collapse,
   Container,
-  DialogActions,
   Divider,
-  MenuItem,
   Paper,
-  Select,
   Stack,
   Typography,
 } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { registerEvent, resolveEvent } from '/services/contract/betting/events';
-import ResponsiveDialog from '/components/general/utils/responsiveDialog';
+import { registerEvent } from '/services/contract/betting/events';
 import { MdSportsSoccer } from 'react-icons/md';
 import { determineGame } from '/services/contract/betting/games';
 import { IoMdRefresh } from 'react-icons/io';
 import { AiFillUpCircle, AiOutlineDownCircle } from 'react-icons/ai';
-import { toFixed } from '../../services/formatter';
 import Link from 'next/link';
 
 const admins = [
