@@ -11,6 +11,7 @@ import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
 import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
+import usePool from '/hooks/usePool';
 
 function ParticipantTable({ participants, stake, user }) {
   const [members, setMembers] = useState(null);
@@ -111,15 +112,17 @@ function ParticipantTable({ participants, stake, user }) {
 }
 
 export default function DashboardCompetitionCard(props) {
-  const { competition, handleSuccess, user } = props;
+  const { competition, handleSuccess, handleError, user } = props;
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
-  const stake = competition.stake; //TODO
+  const [inviteLink, setInviteLink] = useState();
+  const stake = competition.stake; //TODO stake formatt
   const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
     ? new Date(game.event.startTime) < new Date() &&
       new Date(game.event.endTime) > new Date()
     : false;
+  const wunderPool = usePool(user.address, competition.poolAddress); //TODO THIS IS UNperformant so find new solution in futue for inviteLink
 
   useEffect(() => {
     if (
@@ -156,6 +159,24 @@ export default function DashboardCompetitionCard(props) {
     }
   }, [isLive]);
 
+  //TODO ADD invite link support
+  const createInviteLink = () => {
+    const secret = [...Array(33)]
+      .map(() => (~~(Math.random() * 36)).toString(36))
+      .join('');
+    wunderPool
+      .createInviteLink(secret, wunderPool.maxMembers)
+      .then((res) => {
+        setInviteLink(
+          `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`
+        );
+      })
+      .catch((err) => {
+        console.log('error', err);
+        handleError(err);
+      });
+  };
+
   return (
     <div className="container-gray pb-16 w-full">
       <div className="flex flex-col items-start gap-2  w-full">
@@ -167,7 +188,7 @@ export default function DashboardCompetitionCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/join/' + competition.id,
+                    `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`,
                     `Look at this Bet: `,
                     handleSuccess
                   )
