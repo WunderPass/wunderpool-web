@@ -28,7 +28,7 @@ export function sendSignUpMail({ to, firstName }) {
                 <p>At Casama you can bet on Sports Events against strangers in Public Competitions or create a private
                   Competition with your friends</p>
                 <div class="flex items-center">
-                  <a class="btn-casama" href="https://app.casama.io/betting/pools">Discover Current Competitions</a>
+                  <a class="btn-casama" href="https://app.casama.io/betting">Discover Current Competitions</a>
                 </div>
                 <div class="divider my-5"></div>
                 <h4 class="text-casama">Save your Seed Phrase</h4>
