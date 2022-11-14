@@ -17,7 +17,6 @@ import Head from 'next/head';
 import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredAlert';
 import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
 import UseIOS from '/hooks/useIOS';
-import IOSAuthGuard from '../components/general/dialogs/iOSAuthGuard';
 import useBettingService from '/hooks/useBettingService';
 
 function WunderPool({ Component, pageProps }) {
@@ -37,15 +36,7 @@ function WunderPool({ Component, pageProps }) {
     resetEvents,
   } = usePoolListener(handleInfo);
 
-  const {
-    isIOSApp,
-    appConnected,
-    appIsActive,
-    hasBiometry,
-    triggerBiometry,
-    updateWunderId,
-    updateBackgroundColor,
-  } = UseIOS();
+  const { updateWunderId, updateBackgroundColor } = UseIOS();
 
   const bettingService = useBettingService(user.address, handleError);
 
@@ -160,9 +151,6 @@ function WunderPool({ Component, pageProps }) {
             user={user}
           />
           <BackupSeedPhraseAlert user={user} />
-          {user.loggedIn && isIOSApp && (
-            <IOSAuthGuard triggerBiometry={triggerBiometry} />
-          )}
         </ThemeProvider>
       </StyledEngineProvider>
     </>
