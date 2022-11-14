@@ -13,44 +13,7 @@ import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
 import usePool from '/hooks/usePool';
 
-function ParticipantTable({ participants, stake, user }) {
-  const [members, setMembers] = useState(null);
-  //TODO change members to participants from backend
-
-  const convertAddressesToMembers = async (addresses) => {
-    const resolvedMembers = (
-      await axios({
-        method: 'POST',
-        url: '/api/users/find',
-        data: { addresses: addresses },
-      })
-    ).data;
-    setMembers(
-      participants.map((part) => {
-        const wunderId = resolvedMembers.find((m) =>
-          compAddr(part.address, m.wallet_address)
-        )?.wunder_id;
-        return { ...part, wunderId };
-      })
-    );
-  };
-
-  useEffect(() => {
-    const addresses = participants.map((p) => p.address);
-    convertAddressesToMembers(addresses);
-  }, [participants.length]);
-
-  // Update members winnings if participants change without refetching wunderIDs
-  useEffect(() => {
-    if (!members) return;
-    setMembers((mems) =>
-      mems.map((m) => ({
-        ...participants.find((p) => compAddr(p.address, m.address)),
-        wunderId: m.wunderId,
-      }))
-    );
-  }, [participants]);
-
+function ParticipantTable({ participants, members, stake, user }) {
   return (
     <div className="">
       {participants.length > 0 && (
@@ -59,9 +22,12 @@ function ParticipantTable({ participants, stake, user }) {
         </div>
       )}
 
-      {(members || participants)
+      {participants
         .sort((a, b) => b.winnings || 0 - a.winnings || 0)
         .map((participant, i) => {
+          const wunderId = members.find((m) =>
+            compAddr(m.address, participant.address)
+          )?.wunderId;
           return (
             <div
               key={`participant-${participant.address}`}
@@ -73,16 +39,16 @@ function ParticipantTable({ participants, stake, user }) {
             >
               <div>
                 <Avatar
-                  wunderId={participant.wunderId}
-                  tooltip={`${participant.wunderId}`}
-                  text={participant.wunderId ? participant.wunderId : '0-X'}
+                  wunderId={wunderId}
+                  tooltip={wunderId}
+                  text={wunderId ? wunderId : '0-X'}
                   color={['green', 'blue', 'red'][i % 3]}
                   i={i}
                 />
               </div>
               <div className="flex items-center justify-start truncate flex-grow">
-                {participant.wunderId ? (
-                  <div className="truncate">{participant.wunderId}</div>
+                {wunderId ? (
+                  <div className="truncate">{wunderId}</div>
                 ) : (
                   <div className="truncate">{participant.address}</div>
                 )}
@@ -350,6 +316,7 @@ export default function DashboardCompetitionCard(props) {
                 )) && (
                 <ParticipantTable
                   participants={gameResultTable}
+                  members={competition.members}
                   stake={stake}
                   user={user}
                 />
