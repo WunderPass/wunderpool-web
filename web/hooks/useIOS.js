@@ -44,7 +44,7 @@ export default function UseIOS() {
   };
 
   const triggerBiometry = (reason, callback = () => {}) => {
-    if (!isIOSApp) callback(true);
+    if (!window?.webkit?.messageHandlers?.swiftJsBridgeV1) callback(true);
     if (!window.swiftJsBridgeV1.triggerBiometryCallback)
       window.swiftJsBridgeV1.triggerBiometryCallback = (success) => {
         callback(success);
