@@ -15,6 +15,7 @@ import usePool from '/hooks/usePool';
 
 function ParticipantTable({ participants, stake, user }) {
   const [members, setMembers] = useState(null);
+  //TODO change members to participants from backend
 
   const convertAddressesToMembers = async (addresses) => {
     const resolvedMembers = (
