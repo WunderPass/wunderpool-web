@@ -393,14 +393,16 @@ export function addToWhiteListWithSecret(
   userAddress,
   secret,
   validFor,
-  version
+  version,
+  afterSignature = () => {}
 ) {
   if (version > 4) {
     return addToWhiteListWithSecretEpsilon(
       poolAddress,
       userAddress,
       secret,
-      validFor
+      validFor,
+      afterSignature
     );
   } else {
     throw 'Not implemented before EPSILON';

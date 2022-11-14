@@ -14,7 +14,7 @@ export default function JoinCompetition(props) {
 }
 
 export async function getServerSideProps(context) {
-  const { competitionId } = context.query;
+  const { competitionId, secret } = context.query;
 
   try {
     const data = await (
@@ -34,7 +34,9 @@ export async function getServerSideProps(context) {
       return {
         redirect: {
           permanent: false,
-          destination: `/betting/join/${competitionId}/${data.games[0].id}`,
+          destination: `/betting/join/${competitionId}/${data.games[0].id}${
+            secret ? `?secret=${secret}` : ''
+          }`,
         },
       };
     }

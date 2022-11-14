@@ -12,45 +12,10 @@ import { compAddr } from '../../../services/memberHelpers';
 import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
 import usePool from '/hooks/usePool';
+import { addToWhiteListWithSecret } from '../../../services/contract/pools';
+import TransactionDialog from '../../general/utils/transactionDialog';
 
-function ParticipantTable({ participants, stake, user }) {
-  const [members, setMembers] = useState(null);
-  //TODO change members to participants from backend
-
-  const convertAddressesToMembers = async (addresses) => {
-    const resolvedMembers = (
-      await axios({
-        method: 'POST',
-        url: '/api/users/find',
-        data: { addresses: addresses },
-      })
-    ).data;
-    setMembers(
-      participants.map((part) => {
-        const wunderId = resolvedMembers.find((m) =>
-          compAddr(part.address, m.wallet_address)
-        )?.wunder_id;
-        return { ...part, wunderId };
-      })
-    );
-  };
-
-  useEffect(() => {
-    const addresses = participants.map((p) => p.address);
-    convertAddressesToMembers(addresses);
-  }, [participants.length]);
-
-  // Update members winnings if participants change without refetching wunderIDs
-  useEffect(() => {
-    if (!members) return;
-    setMembers((mems) =>
-      mems.map((m) => ({
-        ...participants.find((p) => compAddr(p.address, m.address)),
-        wunderId: m.wunderId,
-      }))
-    );
-  }, [participants]);
-
+function ParticipantTable({ participants, members, stake, user }) {
   return (
     <div className="">
       {participants.length > 0 && (
@@ -59,9 +24,12 @@ function ParticipantTable({ participants, stake, user }) {
         </div>
       )}
 
-      {(members || participants)
+      {participants
         .sort((a, b) => b.winnings || 0 - a.winnings || 0)
         .map((participant, i) => {
+          const wunderId = members.find((m) =>
+            compAddr(m.address, participant.address)
+          )?.wunderId;
           return (
             <div
               key={`participant-${participant.address}`}
@@ -73,16 +41,16 @@ function ParticipantTable({ participants, stake, user }) {
             >
               <div>
                 <Avatar
-                  wunderId={participant.wunderId}
-                  tooltip={`${participant.wunderId}`}
-                  text={participant.wunderId ? participant.wunderId : '0-X'}
+                  wunderId={wunderId}
+                  tooltip={wunderId}
+                  text={wunderId ? wunderId : '0-X'}
                   color={['green', 'blue', 'red'][i % 3]}
                   i={i}
                 />
               </div>
               <div className="flex items-center justify-start truncate flex-grow">
-                {participant.wunderId ? (
-                  <div className="truncate">{participant.wunderId}</div>
+                {wunderId ? (
+                  <div className="truncate">{wunderId}</div>
                 ) : (
                   <div className="truncate">{participant.address}</div>
                 )}
@@ -117,14 +85,48 @@ export default function DashboardCompetitionCard(props) {
   const [showDetails, setShowDetails] = useState(false);
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
-  const [inviteLink, setInviteLink] = useState();
+  const [inviteLink, setInviteLink] = useState(null);
+  const [loading, setLoading] = useState(false);
   const stake = competition.stake; //TODO stake formatt
   const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
     ? new Date(game.event.startTime) < new Date() &&
       new Date(game.event.endTime) > new Date()
     : false;
-  const wunderPool = usePool(user.address, competition.poolAddress); //TODO THIS IS Unperformant so find new solution in futue for inviteLink
+
+  const handleShareCompetition = () => {
+    if (competition.isPublic || inviteLink) {
+      handleShare(
+        inviteLink ||
+          `${window.location.origin}/betting/join/${competition.id}`,
+        `Join this Betting Competition`,
+        handleSuccess
+      );
+    } else {
+      setLoading(true);
+      const secret = [...Array(33)]
+        .map(() => (~~(Math.random() * 36)).toString(36))
+        .join('');
+      addToWhiteListWithSecret(
+        competition.poolAddress,
+        user.address,
+        secret,
+        50,
+        7,
+        () => {
+          setInviteLink(
+            `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`
+          );
+          setLoading(false);
+          handleShare(
+            `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`,
+            `Join this Betting Competition`,
+            handleSuccess
+          );
+        }
+      );
+    }
+  };
 
   useEffect(() => {
     if (
@@ -161,24 +163,6 @@ export default function DashboardCompetitionCard(props) {
     }
   }, [isLive]);
 
-  //TODO ADD invite link support
-  const createInviteLink = () => {
-    const secret = [...Array(33)]
-      .map(() => (~~(Math.random() * 36)).toString(36))
-      .join('');
-    wunderPool
-      .createInviteLink(secret, wunderPool.maxMembers)
-      .then((res) => {
-        setInviteLink(
-          `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`
-        );
-      })
-      .catch((err) => {
-        console.log('error', err);
-        handleError(err);
-      });
-  };
-
   return (
     <div
       onClick={() => setShowDetails(!showDetails)}
@@ -191,13 +175,7 @@ export default function DashboardCompetitionCard(props) {
               <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue " />
               <IconButton
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
-                onClick={() =>
-                  handleShare(
-                    `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`,
-                    `Look at this Bet: `,
-                    handleSuccess
-                  )
-                }
+                onClick={handleShareCompetition}
               >
                 <ShareIcon className="text-casama-blue sm:text-2xl text-lg" />
               </IconButton>
@@ -350,11 +328,13 @@ export default function DashboardCompetitionCard(props) {
                 )) && (
                 <ParticipantTable
                   participants={gameResultTable}
+                  members={competition.members}
                   stake={stake}
                   user={user}
                 />
               )}
           </Collapse>
+          <TransactionDialog open={loading} onClose={() => setLoading(false)} />
         </div>
       </div>
     </div>

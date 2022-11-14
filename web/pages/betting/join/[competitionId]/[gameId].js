@@ -60,6 +60,7 @@ export default function JoinCompetitionGame(props) {
             <JoinGameCard
               game={game}
               competition={competition?.competition}
+              secret={router.query.secret}
               user={user}
               {...props}
             />
