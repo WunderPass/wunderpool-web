@@ -244,7 +244,7 @@ export default function DashboardCompetitionCard(props) {
             </div>
           </div>
 
-          <button onClick={() => setShowDetails(!showDetails)}>
+          {/* <button onClick={() => setShowDetails(!showDetails)}>
             {showDetails ? (
               <p className="underline text-casama-blue font-ligth">
                 Hide Details
@@ -254,7 +254,7 @@ export default function DashboardCompetitionCard(props) {
                 Show Details
               </p>
             )}
-          </button>
+          </button> */}
 
           <Collapse in={showDetails}>
             <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
