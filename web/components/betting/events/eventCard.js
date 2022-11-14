@@ -45,18 +45,21 @@ export default function EventCard(props) {
   const [customAmount, setCustomAmount] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
 
-  const sortMembersOnVotes = (participants) => {
+  const sortMembersOnVotes = (participants, members) => {
     let votes = null;
     if (!participants) return votes;
     if (participants.length > 0) {
       votes = [[], [], []];
       participants.forEach((p) => {
+        const wunderId = members.find((m) =>
+          compAddr(m.address, p.address)
+        )?.wunderId;
         if (Number(p.prediction[0]) > Number(p.prediction[1])) {
-          votes[0].push(p.wunderId);
+          votes[0].push(wunderId);
         } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
-          votes[1].push(p.wunderId);
+          votes[1].push(wunderId);
         } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
-          votes[2].push(p.wunderId);
+          votes[2].push(wunderId);
         }
       });
     }
@@ -266,7 +269,10 @@ export default function EventCard(props) {
                       );
                       const participants =
                         matchingCompetition?.games?.[0]?.participants;
-                      const votes = sortMembersOnVotes(participants);
+                      const votes = sortMembersOnVotes(
+                        participants,
+                        matchingCompetition?.members
+                      );
 
                       return (
                         <div

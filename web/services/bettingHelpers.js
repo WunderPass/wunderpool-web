@@ -68,6 +68,17 @@ export function formatParticipant(participant) {
   };
 }
 
+export function formatMember(member) {
+  if (!member) return null;
+  const { address, stake, user_name } = member;
+
+  return {
+    address,
+    stake,
+    wunderId: user_name,
+  };
+}
+
 export function formatGame(game) {
   if (!game) return null;
   const { state, game_id, name, event, participants = [] } = game;
@@ -102,7 +113,7 @@ export function formatCompetition(competition) {
     poolAddress: pool_address,
     isPublic,
     games: games.map(formatGame)?.filter((g) => g),
-    members: members,
+    members: members.map(formatMember)?.filter((m) => m),
     payoutRule: rule?.payout_type,
     stake: Number(rule?.stake),
     maxMembers: rule?.max_members,
