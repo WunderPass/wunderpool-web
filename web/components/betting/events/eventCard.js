@@ -194,7 +194,7 @@ export default function EventCard(props) {
               <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
                 <img
                   src={`/api/betting/events/teamImage?id=${event.teamHome?.id}`}
-                  className="w-16"
+                  className="w-16 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
                 />
                 <div className="font-semibold">{event.teamHome?.name}</div>
               </div>
@@ -209,7 +209,7 @@ export default function EventCard(props) {
               <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
                 <img
                   src={`/api/betting/events/teamImage?id=${event.teamAway?.id}`}
-                  className="w-16"
+                  className="w-16 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
                 />
                 <div className="font-semibold">{event.teamAway?.name}</div>
               </div>
@@ -342,15 +342,6 @@ export default function EventCard(props) {
                               )}
                             </div>
                             <Divider />
-                            {console.log('votes != null', votes != null)}
-                            {console.log(
-                              'stake !== showPredicitionInput',
-                              stake !== showPredicitionInput
-                            )}
-                            {console.log(
-                              'isPredicitonPublic',
-                              isPredicitonPublic
-                            )}
                             {votes != null &&
                             (stake !== showPredicitionInput ||
                               !isPredicitonPublic) ? (
