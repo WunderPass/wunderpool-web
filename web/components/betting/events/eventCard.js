@@ -342,7 +342,18 @@ export default function EventCard(props) {
                               )}
                             </div>
                             <Divider />
-                            {votes != null ? (
+                            {console.log('votes != null', votes != null)}
+                            {console.log(
+                              'stake !== showPredicitionInput',
+                              stake !== showPredicitionInput
+                            )}
+                            {console.log(
+                              'isPredicitonPublic',
+                              isPredicitonPublic
+                            )}
+                            {votes != null &&
+                            (stake !== showPredicitionInput ||
+                              !isPredicitonPublic) ? (
                               <>
                                 <div className="w-full flex justify-around p-1 ">
                                   <div className="w-full text-center">
