@@ -32,56 +32,77 @@ async function approveUsdc(spender, amount) {
   }
 }
 
+const triggerBiometry = (reason, callback = () => {}) => {
+  if (window?.webkit?.messageHandlers?.swiftJsBridgeV1) {
+    if (!window.swiftJsBridgeV1.triggerBiometryCallback)
+      window.swiftJsBridgeV1.triggerBiometryCallback = (success) => {
+        callback(success);
+        window.swiftJsBridgeV1.triggerBiometryCallback = undefined;
+      };
+    window.webkit.messageHandlers.swiftJsBridgeV1.postMessage(
+      JSON.stringify({ func: 'triggerBiometry', parameter: reason })
+    );
+  } else {
+    callback(true);
+  }
+};
+
 export default function useCasama() {
   const sendSignatureRequest = (types, values, packed = true) => {
     return new Promise((resolve, reject) => {
-      const privKey = retreiveKey();
-      if (!privKey)
-        reject(
-          'Session Expired. Please Refresh the Page and type in your Password'
-        );
-      signTypedData(privKey, types, values, packed)
-        .then((signature) => {
-          resolve({ signature });
-        })
-        .catch((err) => {
-          console.log(err);
-          reject('Invalid Signature');
-        });
+      triggerBiometry('Sign a Transaction', (success) => {
+        if (!success) reject('Signature Denied');
+        const privKey = retreiveKey();
+        if (!privKey)
+          reject(
+            'Session Expired. Please Refresh the Page and type in your Password'
+          );
+        signTypedData(privKey, types, values, packed)
+          .then((signature) => {
+            resolve({ signature });
+          })
+          .catch((err) => {
+            console.log(err);
+            reject('Invalid Signature');
+          });
+      });
     });
   };
 
   const smartContractTransaction = (tx, usdc = {}, network = 'polygon') => {
     return new Promise((resolve, reject) => {
-      const privKey = retreiveKey();
-      if (usdc?.spender && usdc?.amount) {
-        approveUsdc(usdc.spender, usdc.amount)
-          .then((res) => {
-            if (!tx) {
+      triggerBiometry('Send a Transaction', (success) => {
+        if (!success) reject('Signature Denied');
+        const privKey = retreiveKey();
+        if (usdc?.spender && usdc?.amount) {
+          approveUsdc(usdc.spender, usdc.amount)
+            .then((res) => {
+              if (!tx) {
+                resolve(res);
+              }
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        }
+        if (tx) {
+          if (!privKey)
+            reject(
+              'Session Expired. Please Refresh the Page and type in your Password'
+            );
+          const provider = httpProvider;
+          const wallet = new ethers.Wallet(privKey, provider);
+          wallet
+            .sendTransaction(tx)
+            .then((res) => {
               resolve(res);
-            }
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      }
-      if (tx) {
-        if (!privKey)
-          reject(
-            'Session Expired. Please Refresh the Page and type in your Password'
-          );
-        const provider = httpProvider;
-        const wallet = new ethers.Wallet(privKey, provider);
-        wallet
-          .sendTransaction(tx)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      }
-      requestGas(privKey);
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        }
+        requestGas(privKey);
+      });
     });
   };
 

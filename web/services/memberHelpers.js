@@ -20,9 +20,11 @@ export function showWunderIdsAsIcons(arr, amount = 3) {
     <>
       {arr.slice(0, amount).map((wunderId, i) => (
         <Avatar
+          key={`member-avatar-${wunderId}`}
           shiftRight
           wunderId={wunderId}
           text={wunderId ? wunderId : '0-X'}
+          tooltip={wunderId}
           color={['green', 'blue', 'red'][i % 3]}
           i={i}
         />
