@@ -277,7 +277,7 @@ function TopUpRequired(props) {
 }
 
 function InputJoinAmount(props) {
-  const { game, competition, user } = props;
+  const { game, competition, secret, user } = props;
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
   const [loading, setLoading] = useState(null);
@@ -295,6 +295,7 @@ function InputJoinAmount(props) {
       prediction: [guessOne, guessTwo],
       userAddress: user.address,
       stake: competition.stake,
+      secret,
       poolVersion: 'ETA',
       event: game.event,
       afterPoolJoin: async () => {

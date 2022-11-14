@@ -11,7 +11,6 @@ import { currency } from '/services/formatter';
 import { calculateOdds } from '/services/bettingHelpers';
 import { compAddr, showWunderIdsAsIcons } from '/services/memberHelpers';
 import { BsFillArrowUpSquareFill } from 'react-icons/bs';
-import Link from 'next/link';
 
 function toDate(str) {
   return str
@@ -151,7 +150,6 @@ export default function EventCard(props) {
       .then(() => {
         setLoadingText(null);
         setLoading(false);
-        setCollapsePublic(false);
       });
   };
 

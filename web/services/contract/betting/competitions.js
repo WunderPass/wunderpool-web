@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { usdc } from '../../formatter';
 import { versionLookup } from '../init';
-import { createPool, getPoolAddressFromTx, joinPool } from '../pools';
+import { joinPool } from '../pools';
 import { approveUSDC } from '../token';
 import { registerGame, registerParticipant } from './games';
 
@@ -114,6 +114,7 @@ export async function joinSingleCompetition({
   userAddress,
   event,
   stake,
+  secret = '',
   poolAddress,
   poolVersion,
   afterPoolJoin = async () => {},
@@ -124,7 +125,7 @@ export async function joinSingleCompetition({
         poolAddress,
         userAddress,
         stake,
-        '',
+        secret,
         versionLookup[poolVersion.toLowerCase()].number
       );
     } catch (error) {

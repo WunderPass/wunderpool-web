@@ -6,7 +6,8 @@ export function addToWhiteListWithSecretEpsilon(
   poolAddress,
   userAddress,
   secret,
-  validFor
+  validFor,
+  afterSignature
 ) {
   return new Promise(async (resolve, reject) => {
     const { openPopup, sendSignatureRequest } = useWeb3();
@@ -20,6 +21,7 @@ export function addToWhiteListWithSecretEpsilon(
 
     sendSignatureRequest(types, values, true, popup)
       .then(async (signature) => {
+        afterSignature(secret);
         const body = {
           poolAddress,
           userAddress,
