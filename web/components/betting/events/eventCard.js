@@ -10,6 +10,8 @@ import {
 import { currency } from '/services/formatter';
 import { calculateOdds } from '/services/bettingHelpers';
 import { compAddr, showWunderIdsAsIcons } from '/services/memberHelpers';
+import { BsFillArrowUpSquareFill } from 'react-icons/bs';
+import Link from 'next/link';
 
 function toDate(str) {
   return str
@@ -34,7 +36,9 @@ export default function EventCard(props) {
   const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
-  const [collapsePublic, setCollapsePublic] = useState(false);
+  const [showPredicitionInput, setShowPredicitionInput] = useState();
+  const [isPredicitonPublic, setIsPredicitonPublic] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
@@ -152,9 +156,9 @@ export default function EventCard(props) {
   };
 
   const toggleSelectedCompetition = (params, fromCustom = false) => {
-    if (!params.public) {
-      setCollapsePublic(true);
-    }
+    setIsPredicitonPublic(params.public);
+    setShowPredicitionInput(params.stake);
+
     !fromCustom && setShowCustomInput(false);
     setSelectedCompetition((comp) =>
       comp.stake == params.stake && comp.public == params.public ? {} : params
@@ -173,274 +177,447 @@ export default function EventCard(props) {
 
   return (
     <>
-      <div className="container-white pb-16 ">
-        <div className="flex flex-col items-center justify-center text-center mt-2 mb-5">
-          <div className="opacity-50 text-base h-auto sm:h-14">
-            {event.shortName}
-          </div>
-          <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full text-lg ">
-            <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
-              <img
-                src={`/api/betting/events/teamImage?id=${event.teamHome?.id}`}
-                className="w-16"
-              />
-              <div className="font-semibold">{event.teamHome?.name}</div>
+      <div
+        id={`${event.name}`}
+        className={
+          showDetails
+            ? 'container-white pb-16'
+            : 'container-white pb-16 cursor-pointer'
+        }
+      >
+        <div onClick={() => setShowDetails(true)}>
+          <div className="flex flex-col items-center justify-center text-center mt-2 ">
+            <div className="opacity-50 text-base h-auto sm:h-14">
+              {event.shortName}
             </div>
-            <div className="flex flex-col w-2/12 opacity-70 items-center justify-center">
-              <div className="text-sm sm:text-lg">
-                {toDate(event.startTime)}
-              </div>
-              <div className="text-sm sm:text-base">
-                {toTime(event.startTime)}
-              </div>
-            </div>
-            <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
-              <img
-                src={`/api/betting/events/teamImage?id=${event.teamAway?.id}`}
-                className="w-16"
-              />
-              <div className="font-semibold">{event.teamAway?.name}</div>
-            </div>
-          </div>
-        </div>
-        <Collapse in={Boolean(selectedCompetition.stake)}>
-          <div className="flex flex-row items-center justify-between w-full gap-3 mx-auto mb-3">
-            <div className="w-5/12 flex justify-center">
-              <div className="w-20">
-                <input
-                  disabled={loading}
-                  inputMode="numeric"
-                  className="textfield text-center py-1 px-3"
-                  value={guessOne}
-                  onChange={(e) => setGuessOne(e.target.value)}
+            <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full text-lg ">
+              <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
+                <img
+                  src={`/api/betting/events/teamImage?id=${event.teamHome?.id}`}
+                  className="w-16"
                 />
+                <div className="font-semibold">{event.teamHome?.name}</div>
               </div>
-            </div>
-            <p className="text-center mt-3 text-casama-blue w-2/12">
-              Your Prediction
-            </p>
-            <div className="w-5/12 flex justify-center">
-              <div className="w-20">
-                <input
-                  disabled={loading}
-                  inputMode="numeric"
-                  className="textfield text-center py-1 px-3"
-                  value={guessTwo}
-                  onChange={(e) => setGuessTwo(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-          <Collapse in={Boolean(guessOne && guessTwo)}>
-            <div className="flex items-center justify-center">
-              <button
-                disabled={loading}
-                className="btn-casama px-5 py-2 text-xl"
-                onClick={placeBet}
-              >
-                Bet {currency(selectedCompetition.stake)} on{' '}
-                {guessOne > guessTwo
-                  ? event.teamHome?.name
-                  : guessOne < guessTwo
-                  ? event.teamAway?.name
-                  : ' a Tie'}
-              </button>
-            </div>
-          </Collapse>
-        </Collapse>
-        <TransactionFrame open={loading} text={loadingText} />
-        {!loading && (
-          <>
-            <Collapse in={!collapsePublic}>
-              <Divider />
-              <div className="my-5">
-                <div className="flex justify-center items-center text-semibold sm:text-lg mb-4">
-                  Public Betting Games
+              <div className="flex flex-col w-2/12 opacity-70 items-center justify-center">
+                <div className="text-sm sm:text-lg">
+                  {toDate(event.startTime)}
                 </div>
-                <div>
-                  <div className="flex flex-row w-full gap-3 flex-wrap sm:flex-nowrap">
-                    {[5, 10, 50].map((stake) => {
-                      const selected =
-                        selectedCompetition.public &&
-                        selectedCompetition.stake == stake &&
-                        !showCustomInput;
-                      const matchingCompetition = eventCompetitions.find(
-                        (comp) => comp.stake == stake
-                      );
-                      const participants =
-                        matchingCompetition?.games?.[0]?.participants;
-                      const votes = sortMembersOnVotes(
-                        participants,
-                        matchingCompetition?.members
-                      );
+                <div className="text-sm sm:text-base">
+                  {toTime(event.startTime)}
+                </div>
+              </div>
+              <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
+                <img
+                  src={`/api/betting/events/teamImage?id=${event.teamAway?.id}`}
+                  className="w-16"
+                />
+                <div className="font-semibold">{event.teamAway?.name}</div>
+              </div>
+            </div>
+          </div>
+          {/* <Collapse in={Boolean(selectedCompetition.stake)}>
+            <Collapse in={Boolean(guessOne && guessTwo)}>
+              <div className="flex items-center justify-center">
+                <button
+                  disabled={loading}
+                  className="btn-casama px-5 py-2 text-xl"
+                  onClick={placeBet}
+                >
+                  Bet {currency(selectedCompetition.stake)} on{' '}
+                  {guessOne > guessTwo
+                    ? event.teamHome?.name
+                    : guessOne < guessTwo
+                    ? event.teamAway?.name
+                    : ' a Tie'}
+                </button>
+              </div>
+            </Collapse>
+          </Collapse> */}
+          <div className="mt-6">
+            <TransactionFrame open={loading} text={loadingText} />
+          </div>
+          {!loading && (
+            <>
+              <Collapse in={showDetails}>
+                <Divider className="mt-6" />
+                <div className="my-5">
+                  <div className="flex justify-center items-center text-semibold sm:text-lg mb-4">
+                    Public Betting Games
+                  </div>
+                  <div>
+                    <div className="flex flex-row w-full gap-3 flex-wrap sm:flex-nowrap">
+                      {[5, 10, 50].map((stake) => {
+                        const selected =
+                          selectedCompetition.public &&
+                          selectedCompetition.stake == stake &&
+                          !showCustomInput;
+                        const matchingCompetition = eventCompetitions.find(
+                          (comp) => comp.stake == stake
+                        );
+                        const participants =
+                          matchingCompetition?.games?.[0]?.participants;
+                        const votes = sortMembersOnVotes(
+                          participants,
+                          matchingCompetition?.members
+                        );
 
-                      return (
-                        <div
-                          key={`public-competition-${event.id}-${stake}`}
-                          className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
-                            (selectedCompetition.stake == undefined &&
-                              user.usdBalance >= stake) ||
-                            selected
-                              ? 'opacity-100'
-                              : 'opacity-40'
-                          }`}
-                        >
-                          <div className="flex flex-col items-center p-2 gap-2">
-                            <div className="flex flex-row justify-between items-center w-full px-3  mt-2 sm:px-2">
-                              <div className="flex flex-row">
-                                <p>Pot:</p>
-                                <p className="font-semibold ml-2 ">
-                                  {matchingCompetition
-                                    ? participants?.length < 1
-                                      ? '$0'
-                                      : currency(
-                                          matchingCompetition?.stake *
-                                            matchingCompetition?.games?.[0]
-                                              ?.participants?.length
-                                        )
-                                    : '$0'}{' '}
-                                </p>
+                        return (
+                          <div
+                            key={`public-competition-${event.id}-${stake}`}
+                            className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
+                              (selectedCompetition.stake == undefined &&
+                                user.usdBalance >= stake) ||
+                              selected
+                                ? 'opacity-100'
+                                : 'opacity-40'
+                            }`}
+                          >
+                            <div className="flex flex-col items-center p-2 gap-2">
+                              <div className="flex flex-row justify-between items-center w-full px-3  mt-2 sm:px-2">
+                                <div className="flex flex-row">
+                                  <p>Pot:</p>
+                                  <p className="font-semibold ml-2 ">
+                                    {matchingCompetition
+                                      ? participants?.length < 1
+                                        ? '$0'
+                                        : currency(
+                                            matchingCompetition?.stake *
+                                              matchingCompetition?.games?.[0]
+                                                ?.participants?.length
+                                          )
+                                      : '$0'}{' '}
+                                  </p>
+                                </div>
+                                <div className="flex flex-row">
+                                  <p className="font-semibold ml-1.5">
+                                    {matchingCompetition
+                                      ? 10 - participants?.length + ' / ' + '10'
+                                      : '10 / 10'}
+                                  </p>
+                                </div>
                               </div>
-                              <div className="flex flex-row">
-                                <p className="font-semibold ml-1.5">
-                                  {matchingCompetition
-                                    ? 10 - participants?.length + ' / ' + '10'
-                                    : '10 / 10'}
-                                </p>
-                              </div>
+
+                              {participants?.find((part) =>
+                                compAddr(part.address, user.address)
+                              ) ? (
+                                <button
+                                  disabled
+                                  className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
+                                >
+                                  $ {stake} (Joined)
+                                </button>
+                              ) : guessOne &&
+                                guessTwo &&
+                                stake === showPredicitionInput &&
+                                isPredicitonPublic &&
+                                !showCustomInput ? (
+                                <div className="flex items-center justify-center w-full">
+                                  <button
+                                    disabled={loading}
+                                    className="btn-casama w-full  py-1 text-lg mb-3"
+                                    onClick={placeBet}
+                                  >
+                                    Bet {currency(selectedCompetition.stake)} on{' '}
+                                    {guessOne > guessTwo
+                                      ? event.teamHome?.name
+                                      : guessOne < guessTwo
+                                      ? event.teamAway?.name
+                                      : ' a Tie'}
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  disabled={user.usdBalance < stake}
+                                  onClick={() =>
+                                    toggleSelectedCompetition({
+                                      stake,
+                                      public: true,
+                                      matchingCompetition,
+                                    })
+                                  }
+                                  className="btn-casama  p-1 text-lg w-full"
+                                >
+                                  $ {stake}
+                                </button>
+                              )}
                             </div>
+                            <Divider />
+                            {console.log('votes != null', votes != null)}
+                            {console.log(
+                              'stake !== showPredicitionInput',
+                              stake !== showPredicitionInput
+                            )}
+                            {console.log(
+                              'isPredicitonPublic',
+                              isPredicitonPublic
+                            )}
+                            {votes != null &&
+                            (stake !== showPredicitionInput ||
+                              !isPredicitonPublic) ? (
+                              <>
+                                <div className="w-full flex justify-around p-1 ">
+                                  <div className="w-full text-center">
+                                    <p>Home</p>
+                                    <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                      {showWunderIdsAsIcons(votes[0], 2)}
+                                    </div>
+                                  </div>
+                                  <div className="w-full text-center">
+                                    <p>Tie</p>
+                                    <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                      {showWunderIdsAsIcons(votes[1], 2)}
+                                    </div>
+                                  </div>
 
-                            {participants?.find((part) =>
-                              compAddr(part.address, user.address)
-                            ) ? (
-                              <button
-                                disabled
-                                className="btn-casama px-4 sm:px-6 p-1 w-full"
-                              >
-                                $ {stake} (Joined)
-                              </button>
+                                  <div className="w-full text-center">
+                                    <p>Away</p>
+                                    <div className="flex flex-row justify-center items-center ml-2 my-1">
+                                      {showWunderIdsAsIcons(votes[2], 2)}
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
                             ) : (
-                              <button
-                                disabled={user.usdBalance < stake}
-                                onClick={() =>
-                                  toggleSelectedCompetition({
-                                    stake,
-                                    public: true,
-                                    matchingCompetition,
-                                  })
+                              <Collapse
+                                in={
+                                  stake === showPredicitionInput &&
+                                  isPredicitonPublic &&
+                                  !showCustomInput
                                 }
-                                className="btn-casama px-4 sm:px-6 p-1 w-full"
                               >
-                                $ {stake}
-                              </button>
+                                <PredicitionInput
+                                  event={event}
+                                  loading={loading}
+                                  guessOne={guessOne}
+                                  guessTwo={guessTwo}
+                                  setGuessOne={setGuessOne}
+                                  setGuessTwo={setGuessTwo}
+                                />
+                              </Collapse>
                             )}
                           </div>
-                          {votes != null && (
-                            <>
-                              <Divider />
-                              <div className="w-full flex justify-around p-1 ">
-                                <div className="w-full text-center">
-                                  <p>Home</p>
-                                  <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                    {showWunderIdsAsIcons(votes[0], 2)}
-                                  </div>
-                                </div>
-                                <div className="w-full text-center">
-                                  <p>Tie</p>
-                                  <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                    {showWunderIdsAsIcons(votes[1], 2)}
-                                  </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                <Divider />
+                <div className="flex flex-col justify-center items-center mt-5">
+                  <div className=" flex-col text-semibold sm:text-lg text-center mb-4">
+                    <p>Create a private Betting Game </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row w-full gap-5 sm:gap-3 ">
+                    {[5, 10, 0].map((stake) => {
+                      return (
+                        <>
+                          <div className="flex flex-col w-full container-casama-light-p-0 ">
+                            {stake > 0 ? (
+                              <div>
+                                <div className=" w-full p-3">
+                                  {guessOne &&
+                                  guessTwo &&
+                                  stake === showPredicitionInput &&
+                                  !isPredicitonPublic &&
+                                  !showCustomInput ? (
+                                    <div className="flex items-center justify-center">
+                                      <button
+                                        disabled={loading}
+                                        className="btn-casama w-full py-1 text-lg my-2"
+                                        onClick={placeBet}
+                                      >
+                                        Bet{' '}
+                                        {currency(selectedCompetition.stake)} on{' '}
+                                        {guessOne > guessTwo
+                                          ? event.teamHome?.name
+                                          : guessOne < guessTwo
+                                          ? event.teamAway?.name
+                                          : ' a Tie'}
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      className={`btn-casama w-full py-1 text-lg my-2 ${
+                                        (selectedCompetition.stake ==
+                                          undefined &&
+                                          user.usdBalance >= stake) ||
+                                        (!selectedCompetition.public &&
+                                          selectedCompetition.stake == stake &&
+                                          !showCustomInput)
+                                          ? 'opacity-100'
+                                          : 'opacity-40'
+                                      }`}
+                                      onClick={() =>
+                                        toggleSelectedCompetition({
+                                          stake: stake,
+                                          public: false,
+                                        })
+                                      }
+                                    >
+                                      $ {stake}
+                                    </button>
+                                  )}
                                 </div>
 
-                                <div className="w-full text-center">
-                                  <p>Away</p>
-                                  <div className="flex flex-row justify-center items-center ml-2 my-1">
-                                    {showWunderIdsAsIcons(votes[2], 2)}
-                                  </div>
-                                </div>
+                                <Collapse
+                                  in={
+                                    stake === showPredicitionInput &&
+                                    !isPredicitonPublic &&
+                                    !showCustomInput
+                                  }
+                                >
+                                  <Divider className="w-full" />
+
+                                  <PredicitionInput
+                                    event={event}
+                                    loading={loading}
+                                    guessOne={guessOne}
+                                    guessTwo={guessTwo}
+                                    setGuessOne={setGuessOne}
+                                    setGuessTwo={setGuessTwo}
+                                  />
+                                </Collapse>
                               </div>
-                            </>
-                          )}
-                        </div>
+                            ) : (
+                              <div>
+                                <div className=" w-full p-3">
+                                  {guessOne && guessTwo && showCustomInput ? (
+                                    <div className="flex items-center justify-center">
+                                      <button
+                                        disabled={loading}
+                                        className="btn-casama w-full  py-1 text-lg my-2"
+                                        onClick={placeBet}
+                                      >
+                                        Bet{' '}
+                                        {currency(selectedCompetition.stake)} on{' '}
+                                        {guessOne > guessTwo
+                                          ? event.teamHome?.name
+                                          : guessOne < guessTwo
+                                          ? event.teamAway?.name
+                                          : ' a Tie'}
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <CustomInput
+                                        className="bg-casama-blue text-white"
+                                        show={showCustomInput}
+                                        value={customAmount}
+                                        placeholder="$ 50"
+                                        onClickAway={() =>
+                                          setShowCustomInput(
+                                            Boolean(customAmount)
+                                          )
+                                        }
+                                        onChange={(e) => {
+                                          setCustomAmount(e.target.value);
+                                          toggleSelectedCompetition(
+                                            {
+                                              stake: e.target.value,
+                                              public: false,
+                                            },
+                                            true
+                                          );
+                                        }}
+                                      />
+                                      {!showCustomInput && (
+                                        <button
+                                          className={`btn-casama w-full py-1 text-lg my-2 ${
+                                            selectedCompetition.stake ==
+                                            undefined
+                                              ? 'opacity-100'
+                                              : 'opacity-40'
+                                          }`}
+                                          onClick={() =>
+                                            setShowCustomInput(true)
+                                          }
+                                        >
+                                          $ Custom
+                                        </button>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                                <Collapse in={showCustomInput}>
+                                  <Divider className="w-full" />
+                                  <PredicitionInput
+                                    event={event}
+                                    loading={loading}
+                                    guessOne={guessOne}
+                                    guessTwo={guessTwo}
+                                    setGuessOne={setGuessOne}
+                                    setGuessTwo={setGuessTwo}
+                                  />
+                                </Collapse>
+                              </div>
+                            )}
+                          </div>
+                        </>
                       );
                     })}
                   </div>
                 </div>
-              </div>
-            </Collapse>
-
-            <Divider />
-            <div className="flex flex-col justify-center items-center mt-5">
-              <div className=" flex-col text-semibold sm:text-lg text-center mb-4">
-                <p>Create a private Betting Game </p>
-              </div>
-
-              <div className="flex flex-row w-full gap-3">
-                <button
-                  className={`btn-casama w-full p-2 ${
-                    (selectedCompetition.stake == undefined &&
-                      user.usdBalance >= 5) ||
-                    (!selectedCompetition.public &&
-                      selectedCompetition.stake == 5 &&
-                      !showCustomInput)
-                      ? 'opacity-100'
-                      : 'opacity-40'
-                  }`}
-                  onClick={() =>
-                    toggleSelectedCompetition({ stake: 5, public: false })
-                  }
-                >
-                  $ 5
-                </button>
-                <button
-                  className={`btn-casama w-full p-2 ${
-                    (selectedCompetition.stake == undefined &&
-                      user.usdBalance >= 10) ||
-                    (!selectedCompetition.public &&
-                      selectedCompetition.stake == 10 &&
-                      !showCustomInput)
-                      ? 'opacity-100'
-                      : 'opacity-40'
-                  }`}
-                  onClick={() =>
-                    toggleSelectedCompetition({ stake: 10, public: false })
-                  }
-                >
-                  $ 10
-                </button>
-                <CustomInput
-                  className="bg-casama-blue text-white"
-                  show={showCustomInput}
-                  value={customAmount}
-                  placeholder="$ 50"
-                  onClickAway={() => setShowCustomInput(Boolean(customAmount))}
-                  onChange={(e) => {
-                    setCustomAmount(e.target.value);
-                    toggleSelectedCompetition(
-                      {
-                        stake: e.target.value,
-                        public: false,
-                      },
-                      true
-                    );
-                  }}
-                />
-                {!showCustomInput && (
-                  <button
-                    className={`btn-casama w-full p-2 ${
-                      selectedCompetition.stake == undefined
-                        ? 'opacity-100'
-                        : 'opacity-40'
-                    }`}
-                    onClick={() => setShowCustomInput(true)}
-                  >
-                    $ Custom
-                  </button>
-                )}
-              </div>
-            </div>
-          </>
+              </Collapse>
+            </>
+          )}
+        </div>
+        {showDetails && !loading && (
+          <div className="flex flex-row justify-center items-center mt-5">
+            <a href={`#${event.name}`} scroll={true}>
+              <button
+                onClick={() => {
+                  setShowDetails(false);
+                }}
+              >
+                <div className="flex flex-row items-center justify-center">
+                  <div className="underline text-casama-blue ">
+                    Hide betting games
+                  </div>
+                  <BsFillArrowUpSquareFill className="text-casama-blue text-xl mx-2" />
+                </div>
+              </button>
+            </a>
+          </div>
         )}
+      </div>
+    </>
+  );
+}
+
+function PredicitionInput(props) {
+  const { event, loading, guessOne, guessTwo, setGuessOne, setGuessTwo } =
+    props;
+
+  return (
+    <>
+      <div className="flex items-center justify-center text-casama-blue mt-4">
+        <p>Your Prediciton</p>
+      </div>
+
+      <div className="flex flex-row justify-between w-full mb-3">
+        <div className="w-full flex flex-col items-center justify-center">
+          <div>{(event?.teamHome?.name).substr(0, 3)}</div>
+          <div className="w-20">
+            <input
+              disabled={loading}
+              inputMode="numeric"
+              className="textfield text-center py-1 px-3"
+              value={guessOne}
+              onChange={(e) => setGuessOne(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="w-full flex flex-col items-center justify-center">
+          <div>{(event?.teamAway?.name).substr(0, 3)}</div>
+          <div className="w-20">
+            <input
+              disabled={loading}
+              inputMode="numeric"
+              className="textfield text-center py-1 px-3"
+              value={guessTwo}
+              onChange={(e) => setGuessTwo(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
     </>
   );
