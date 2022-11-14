@@ -124,7 +124,7 @@ export default function DashboardCompetitionCard(props) {
     ? new Date(game.event.startTime) < new Date() &&
       new Date(game.event.endTime) > new Date()
     : false;
-  const wunderPool = usePool(user.address, competition.poolAddress); //TODO THIS IS UNperformant so find new solution in futue for inviteLink
+  const wunderPool = usePool(user.address, competition.poolAddress); //TODO THIS IS Unperformant so find new solution in futue for inviteLink
 
   useEffect(() => {
     if (
