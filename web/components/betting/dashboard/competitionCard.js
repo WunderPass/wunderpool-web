@@ -1,4 +1,4 @@
-import { Typography, IconButton, Divider } from '@mui/material';
+import { Typography, IconButton, Divider, Collapse } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
@@ -114,6 +114,7 @@ function ParticipantTable({ participants, stake, user }) {
 
 export default function DashboardCompetitionCard(props) {
   const { competition, handleSuccess, handleError, user } = props;
+  const [showDetails, setShowDetails] = useState(false);
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState();
@@ -179,7 +180,10 @@ export default function DashboardCompetitionCard(props) {
   };
 
   return (
-    <div className="container-gray pb-16 w-full">
+    <div
+      onClick={() => setShowDetails(!showDetails)}
+      className="container-gray pb-16 w-full cursor-pointer"
+    >
       <div className="flex flex-col items-start gap-2  w-full">
         <div className="flex flex-row justify-center items-start w-full mb-4">
           <div className="flex flex-col justify-start items-start">
@@ -205,7 +209,7 @@ export default function DashboardCompetitionCard(props) {
         </div>
 
         <div className="flex flex-col w-full ">
-          <div className="flex flex-col w-full justify-center items-center mb-5 ">
+          <div className="flex flex-col w-full justify-center items-center">
             <div className="flex flex-col w-full ml-2">
               {/* ICONS */}
               <div className="flex flex-row justify-between items-center text-center w-full">
@@ -225,7 +229,7 @@ export default function DashboardCompetitionCard(props) {
               </div>
 
               {/* NAMEN */}
-              <div className="flex flex-row justify-between items-center text-center mb-8 w-full">
+              <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
                 <div className="flex flex-col justify-center items-center text-center w-5/12 ">
                   <p className="text-xl sm:text-2xl font-semibold ">
                     {game.event.teamHome?.name || game.event?.teamHome}
@@ -238,103 +242,119 @@ export default function DashboardCompetitionCard(props) {
                 </div>
               </div>
             </div>
-            <div className="w-full sm:w-2/3 md:w-7/12 ">
-              <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
-                  <p className="mx-2 ">
-                    {game.payoutRule == 0
-                      ? 'Winner Takes It All'
-                      : 'Proportional'}
-                  </p>
-
-                  <div className="mt-2">
-                    <PayoutRuleInfoButton />
-                  </div>
-                </div>
-                <Divider className="my-1" />
-
-                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
-                  <p>Participants:</p>
-                  <p className="ml-2">{`${game.participants.length}`}</p>
-                </div>
-              </div>
-              <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
-                <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
-                  <p>Entry:</p>
-                  <p className="ml-2">{`${currency(stake)}`}</p>
-                </div>
-                <Divider className="my-1" />
-                <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
-                  <p>Pot:</p>
-                  <p className="ml-2">{` ${currency(
-                    stake * game.participants.length
-                  )} `}</p>
-                </div>
-              </div>
-            </div>
           </div>
-          <div className="flex flex-row gap-1 items-center justify-center my-2 mb-4">
-            {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ? (
-              <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
-                {isLive && (
-                  <div className="absolute top-3 right-5 flex items-center gap-1 animate-pulse">
-                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                    <div className="text-sm">LIVE</div>
-                  </div>
-                )}
-                <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
-                  Result
-                </p>
-                <div className="flex flex-row justify-center items-center w-full mb-3">
-                  <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                    {game.event.teamHome.name}
-                  </p>
 
-                  <div className="w-2/12 flex flex-row justify-center ">
-                    <p className="font-semibold text-xl sm:text-2xl">
-                      {game.event?.outcome[0] || 0}
-                    </p>
-                    <p className="px-1 text-xl sm:text-2xl">:</p>
-                    <p className="font-semibold text-xl sm:text-2xl">
-                      {game.event?.outcome[1] || 0}
-                    </p>
-                  </div>
-                  <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                    {game.event.teamAway.name}
-                  </p>
-                </div>
-              </div>
+          <button onClick={() => setShowDetails(!showDetails)}>
+            {showDetails ? (
+              <p className="underline text-casama-blue font-ligth">
+                Hide Details
+              </p>
             ) : (
-              <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
-                {new Date(game.event.startTime) < new Date() && (
-                  <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
-                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                    <div className="text-sm">LIVE</div>
+              <p className="underline text-casama-blue font-ligth">
+                Show Details
+              </p>
+            )}
+          </button>
+
+          <Collapse in={showDetails}>
+            <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
+              <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
+                <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
+                  <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
+                    <p className="mx-2 ">
+                      {game.payoutRule == 0
+                        ? 'Winner Takes It All'
+                        : 'Proportional'}
+                    </p>
+
+                    <div className="mt-2">
+                      <PayoutRuleInfoButton />
+                    </div>
                   </div>
-                )}
-                <Timer
-                  start={Number(new Date())}
-                  end={
-                    new Date(game.event.startTime) > new Date()
-                      ? game.event.startTime
-                      : game.event.endTime
-                  }
-                />
+                  <Divider className="my-1" />
+
+                  <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                    <p>Participants:</p>
+                    <p className="ml-2">{`${game.participants.length}`}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
+                  <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                    <p>Entry:</p>
+                    <p className="ml-2">{`${currency(stake)}`}</p>
+                  </div>
+                  <Divider className="my-1" />
+                  <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
+                    <p>Pot:</p>
+                    <p className="ml-2">{` ${currency(
+                      stake * game.participants.length
+                    )} `}</p>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-          {/* Only Show participants if user has voted */}
-          {user &&
-            (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ||
-              game.participants.find((participant) =>
-                compAddr(participant.address, user.address)
-              )) && (
-              <ParticipantTable
-                participants={gameResultTable}
-                stake={stake}
-                user={user}
-              />
-            )}
+
+              {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ? (
+                <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
+                  {isLive && (
+                    <div className="absolute top-3 right-5 flex items-center gap-1 animate-pulse">
+                      <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                      <div className="text-sm">LIVE</div>
+                    </div>
+                  )}
+                  <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
+                    Result
+                  </p>
+                  <div className="flex flex-row justify-center items-center w-full mb-3">
+                    <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
+                      {game.event.teamHome.name}
+                    </p>
+
+                    <div className="w-2/12 flex flex-row justify-center ">
+                      <p className="font-semibold text-xl sm:text-2xl">
+                        {game.event?.outcome[0] || 0}
+                      </p>
+                      <p className="px-1 text-xl sm:text-2xl">:</p>
+                      <p className="font-semibold text-xl sm:text-2xl">
+                        {game.event?.outcome[1] || 0}
+                      </p>
+                    </div>
+                    <p className="w-5/12 text-center text-base sm:text-xl px-2">
+                      {game.event.teamAway.name}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                  {new Date(game.event.startTime) < new Date() && (
+                    <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
+                      <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                      <div className="text-sm">LIVE</div>
+                    </div>
+                  )}
+                  <Timer
+                    start={Number(new Date())}
+                    end={
+                      new Date(game.event.startTime) > new Date()
+                        ? game.event.startTime
+                        : game.event.endTime
+                    }
+                  />
+                </div>
+              )}
+            </div>
+            {/* Only Show participants if user has voted */}
+            {user &&
+              (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ||
+                game.participants.find((participant) =>
+                  compAddr(participant.address, user.address)
+                )) && (
+                <ParticipantTable
+                  participants={gameResultTable}
+                  stake={stake}
+                  user={user}
+                />
+              )}
+          </Collapse>
         </div>
       </div>
     </div>
