@@ -87,7 +87,7 @@ export default function DashboardCompetitionCard(props) {
   const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
-  const stake = competition.stake; //TODO stake formatt
+  const stake = competition.stake;
   const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
     ? new Date(game.event.startTime) < new Date() &&
