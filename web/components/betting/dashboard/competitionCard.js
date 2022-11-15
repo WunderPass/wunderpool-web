@@ -1,4 +1,4 @@
-import { Typography, IconButton, Divider, Collapse } from '@mui/material';
+import { Typography, IconButton, Divider, Collapse, Chip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
@@ -184,8 +184,22 @@ export default function DashboardCompetitionCard(props) {
           <Typography className="text-xl sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
             {game.event.shortName}
           </Typography>
+          <div>
+            {competition.isPublic ? (
+              <Chip
+                className="bg-white text-casama-blue"
+                size="medium"
+                label="Public"
+              />
+            ) : (
+              <Chip
+                className="bg-white text-casama-blue"
+                size="medium"
+                label="Private"
+              />
+            )}
+          </div>
         </div>
-
         <div className="flex flex-col w-full ">
           <div className="flex flex-col w-full justify-center items-center">
             <div className="flex flex-col w-full ml-2">
