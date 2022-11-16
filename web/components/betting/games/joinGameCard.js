@@ -288,6 +288,7 @@ function InputJoinAmount(props) {
       },
     })
       .then(() => {
+        user.fetchUsdBalance();
         router.push('/betting/bets');
       })
       .catch((err) => {
