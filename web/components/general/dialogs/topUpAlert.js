@@ -7,6 +7,8 @@ import {
   Checkbox,
   Typography,
   Chip,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
 import { forwardRef, useState, useEffect } from 'react';
 import { BsApple } from 'react-icons/bs';
@@ -14,6 +16,8 @@ import { SiSepa } from 'react-icons/si';
 import { RiVisaFill } from 'react-icons/ri';
 import { SiMastercard } from 'react-icons/si';
 import { FaGooglePay } from 'react-icons/fa';
+import PayPalButton from '../utils/payPalButton';
+import { useRouter } from 'next/router';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -22,8 +26,12 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function TopUpAlert(props) {
   const { open, setOpen, user } = props;
   const [isApple, setIsApple] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState(null);
+  const [amount, setAmount] = useState(null);
   const [checked, setChecked] = useState(null);
+
+  const router = useRouter();
   // const [userData, setUserData] = useState(null);
 
   // useEffect(() => {
@@ -49,10 +57,21 @@ export default function TopUpAlert(props) {
     setIsApple(window.navigator.vendor.toLowerCase().match(/apple/));
   }, []);
 
+  useEffect(() => {
+    if (!router.isReady) return;
+    setShowAlert(
+      !['/balance', '/balance/topUp/success'].includes(router.pathname)
+    );
+  }, [router.isReady]);
+
   const handleClose = () => {
     user.updateCheckedTopUp(user.checkedTopUp || checked);
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (open) setRedirectUrl(new URL(document.URL));
+  }, [open]);
 
   useEffect(() => {
     if (open) setRedirectUrl(new URL(document.URL));
@@ -63,17 +82,52 @@ export default function TopUpAlert(props) {
       fullWidth
       maxWidth="sm"
       className="rounded-xl"
-      open={open || false}
+      open={Boolean(open && showAlert)}
       onClose={handleClose}
       TransitionComponent={Transition}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Manage Funds</DialogTitle>
       <DialogContent>
-        <Stack spacing={2} className="flex w-full">
+        <Stack spacing={2} className="w-full">
           <p>
             The main currency on Casama is USDC on the Polygon Chain. To create
             or join Pools you need to have USDC in your Wallet.
           </p>
+          <div className="container-gray flex flex-col gap-3">
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-around"
+              gap={1}
+              flexWrap="wrap"
+            >
+              {[5, 10, 50, 100].map((val, i) => {
+                return (
+                  <button
+                    className="btn-casama py-2 px-3 flex-grow"
+                    key={`top-up-button-${i}`}
+                    variant="contained"
+                    onClick={() => {
+                      setAmount(`${val}`);
+                    }}
+                  >{`${val}€`}</button>
+                );
+              })}
+            </Stack>
+            <TextField
+              autoFocus
+              type="number"
+              margin="dense"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Custom Amount"
+              fullWidth
+              InputProps={{
+                endAdornment: <InputAdornment position="end">$</InputAdornment>,
+              }}
+            />
+            <PayPalButton amount={amount} {...props} />
+          </div>
           <div className="container-casama">
             <p>
               <b>Buy</b> or <b>Sell</b> your USDC for fiat money directly with
