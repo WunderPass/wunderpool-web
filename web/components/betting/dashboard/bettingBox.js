@@ -1,24 +1,29 @@
 import { Typography, Skeleton, Divider } from '@mui/material';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { currency } from '/services/formatter';
 
 function BettingBox(props) {
   const { user, bettingService } = props;
 
-  const [totalPotSize, totalMoneyStake] = useMemo(() => {
+  const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
     return bettingService.isReady
       ? [
-          bettingService.userCompetitions.reduce(
-            (accum, comp) => accum + comp.stake * comp.members.length,
-            0
-          ),
-          bettingService.userCompetitions.reduce(
+          bettingService.userCompetitions?.reduce((accum, comp) => {
+            accum = accum + comp.stake * comp.members?.length;
+            return accum;
+          }, 0),
+          bettingService.userCompetitions?.reduce(
             (accum, comp) => accum + comp.stake,
             0
           ),
+          bettingService.userCompetitions?.length,
         ]
-      : [0, 0];
-  }, [bettingService.isReady]);
+      : [0, 0, 0];
+  }, [
+    bettingService.isReady,
+    bettingService.userCompetitions,
+    bettingService.userCompetitions.length,
+  ]);
 
   return bettingService.isReady ? (
     <>
@@ -29,7 +34,7 @@ function BettingBox(props) {
               <div className="flex flex-row justify-between items-center gap-2">
                 <Typography className="text-xl">Open Bets</Typography>
                 <Typography className="text-2xl font-semibold">
-                  {bettingService.userCompetitions?.length}
+                  {openBets}
                 </Typography>
               </div>
             </div>
