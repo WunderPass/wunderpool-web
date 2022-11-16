@@ -289,7 +289,7 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
               type="button"
               className="btn-casama-white px-5 py-2"
             >
-              Sign Up with Email
+              Sign Up
             </button>
           </>
         )}

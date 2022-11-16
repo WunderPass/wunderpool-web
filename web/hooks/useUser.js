@@ -44,7 +44,7 @@ export default function useUser() {
     [wunderId]
   );
 
-  // useEffect(async () => { TODO
+  // useEffect(async () => { //TODO
   //   if (!address) return;
   //   var name = await ethProvider.lookupAddress(address);
   //   if (name) setEnsName(name);

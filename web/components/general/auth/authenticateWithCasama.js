@@ -57,7 +57,7 @@ export default function AuthenticateWithCasama({ onSuccess }) {
               onClick={() => setIsSignup(true)}
               className="btn-casama px-5 py-2 mb-5 font-medium max-w-xs w-full"
             >
-              Sign Up with Email
+              Sign Up
             </button>{' '}
           </div>
         </Collapse>
