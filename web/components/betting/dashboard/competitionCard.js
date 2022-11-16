@@ -18,6 +18,9 @@ import { BiArrowFromTop } from 'react-icons/bi';
 import { BiArrowFromBottom } from 'react-icons/bi';
 
 function ParticipantTable({ participants, members, stake, user }) {
+  console.log('participants', participants);
+  console.log('members', members);
+
   return (
     <div className="">
       {participants.length > 0 && (
