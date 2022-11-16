@@ -1,20 +1,20 @@
-const { createCanvas, loadImage, Image, registerFont } = require('canvas');
+const { createCanvas, loadImage, registerFont } = require('canvas');
 const fs = require('fs');
 
 function square(image) {
-  const minWidthHeight = Math.min(image.naturalWidth, image.naturalHeight);
-  const canvas = createCanvas(minWidthHeight, minWidthHeight);
+  const maxWidthHeight = Math.max(image.naturalWidth, image.naturalHeight);
+  const canvas = createCanvas(maxWidthHeight, maxWidthHeight);
   const context = canvas.getContext('2d');
   context.drawImage(
     image,
-    (image.naturalWidth - minWidthHeight) / 2,
-    (image.naturalHeight - minWidthHeight) / 2,
-    minWidthHeight,
-    minWidthHeight,
+    (image.naturalWidth - maxWidthHeight) / 2,
+    (image.naturalHeight - maxWidthHeight) / 2,
+    maxWidthHeight,
+    maxWidthHeight,
     0,
     0,
-    minWidthHeight,
-    minWidthHeight
+    maxWidthHeight,
+    maxWidthHeight
   );
   return canvas;
 }
@@ -154,7 +154,6 @@ export default async function handler(req, res) {
     const context = canvas.getContext('2d');
     context.fillStyle = '#7560ff';
     context.fillRect(0, 0, canvasWidth, canvasHeight);
-    context.fillStyle = '#00000077';
     roundRect(
       context,
       (padding * 7) / 10,
@@ -163,7 +162,7 @@ export default async function handler(req, res) {
       canvasHeight - padding,
       20
     );
-    context.fillStyle = '#fff';
+    context.fillStyle = '#F7F7F7';
     roundRect(
       context,
       padding / 2,

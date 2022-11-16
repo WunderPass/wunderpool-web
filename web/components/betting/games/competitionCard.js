@@ -159,7 +159,7 @@ export default function CompetitionCard(props) {
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate">
                   <p className="mx-2 ">
-                    {game.payoutRule == 0
+                    {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>

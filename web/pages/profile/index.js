@@ -6,6 +6,7 @@ import {
   Divider,
   Link,
   Typography,
+  Chip,
 } from '@mui/material';
 import NextLink from 'next/link';
 import { BiEdit } from 'react-icons/bi';
@@ -14,6 +15,7 @@ import axios from 'axios';
 import { validateEmail, validatePhone } from '/services/validator';
 import PasswordRequiredAlert from '../../components/general/dialogs/passwordRequiredAlert';
 import { decryptSeed } from '../../services/crypto';
+import RevealLoginCode from '/components/general/profile/revealLoginCode';
 
 export default function Profile(props) {
   const { user, handleSuccess, handleError } = props;
@@ -378,12 +380,6 @@ export default function Profile(props) {
                     </button>
                   </NextLink>
                 </div>
-                <div className="flex flex-row justify-between items-center py-2 pt-4">
-                  <Typography className="font-semibold ">
-                    Seed Phrase as QR
-                  </Typography>
-                  <RevealLoginCode {...props} />
-                </div>
               </div>
             </div>
             <div className="flex items-center justify-center">
@@ -400,9 +396,18 @@ export default function Profile(props) {
       {user.loginMethod == 'Casama' && (
         <div className="container-white my-5">
           <div className="text-left w-full ">
-            <Typography className="text-lg ml-4 mt-7 p-1 font-semibold ">
-              Seed Phrase
-            </Typography>
+            <div className="flex flex-row justify-between items-center mt-7">
+              <Typography className="text-lg ml-4  p-1 font-semibold ">
+                Seed Phrase
+              </Typography>
+              {seedPhrase && (
+                <Chip
+                  className="bg-casama-extra-light-blue text-casama-blue px-2"
+                  size="medium"
+                  label={<RevealLoginCode privKey={seedPhrase} />}
+                />
+              )}
+            </div>
             <Divider className="w-full mt-2 mb-4" />
             <Alert severity="warning" className="items-center">
               <AlertTitle>Kepp your Seed Phrase to yourself!</AlertTitle> Anyone

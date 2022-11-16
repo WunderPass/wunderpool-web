@@ -70,17 +70,6 @@ export default function TopBar(props) {
                 <div className="w-full">
                   <ul className="flex flex-row justify-between items-center w-full">
                     <div className="hidden sm:flex flex-row justify-start gap-1">
-                      <Link href={`/betting/bets`}>
-                        <li
-                          className={`px-4 py-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
-                            router.pathname == '/betting/bets'
-                              ? 'bg-casama-light-blue'
-                              : ''
-                          }`}
-                        >
-                          My Bets
-                        </li>
-                      </Link>
                       <Link href={`/betting`}>
                         <li
                           className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
@@ -90,6 +79,17 @@ export default function TopBar(props) {
                           }`}
                         >
                           All Games
+                        </li>
+                      </Link>
+                      <Link href={`/betting/bets`}>
+                        <li
+                          className={`px-4 py-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
+                            router.pathname == '/betting/bets'
+                              ? 'bg-casama-light-blue'
+                              : ''
+                          }`}
+                        >
+                          My Bets
                         </li>
                       </Link>
                       <Link href={`/investing/pools`}>

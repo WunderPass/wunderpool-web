@@ -250,12 +250,12 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
           </div>
         </form>
       </Collapse>
-      <Collapse in={!signUpRequired}>
+      <Collapse className="w-10/12 sm:w-2/3" in={!signUpRequired}>
         <button
           className="flex my-2 w-full p-1 pt-1.5 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"
           onClick={loginWithWetaMask}
         >
-          <div className="pl-1">
+          <div className="pl-1 ">
             {/* You cannot change height and width with hot reload */}
             <MetaMaskLogo width={40} height={40} />
           </div>

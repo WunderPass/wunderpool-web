@@ -213,12 +213,12 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
           </div>
         </form>
       </Collapse>
-      <Collapse in={!signUpRequired}>
+      <Collapse className="w-10/12 sm:w-2/3" in={!signUpRequired}>
         <button
           className="flex my-2 p-1 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
           onClick={loginWithWalletConnect}
         >
-          <div className="pr-2 pl-3 pt-1">
+          <div className="pr-2 pl-3 pt-1 ">
             <Image
               src={WalletConnectIcon}
               alt="walletconnect"

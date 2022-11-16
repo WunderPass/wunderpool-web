@@ -23,7 +23,6 @@ import TransactionFrame from '/components/general/utils/transactionFrame';
 
 export default function JoinGameCard(props) {
   const { competition, game, handleSuccess, user, handleError } = props;
-  const [wunderIds, setWunderIds] = useState([]);
   const stake = competition?.stake;
 
   const handleLogin = (data) => {
@@ -31,23 +30,6 @@ export default function JoinGameCard(props) {
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
-
-  const wunderIdFromParticipants = (participants) => {
-    let votes = [];
-    if (!participants) return votes;
-    if (participants.length > 0) {
-      votes = [];
-      participants.forEach((p) => {
-        votes.push(p.wunderId);
-      });
-    }
-    return votes;
-  };
-
-  useEffect(() => {
-    if (!game) return;
-    setWunderIds(wunderIdFromParticipants(game.participants));
-  }, [game]);
 
   return (
     <div className="container-gray pb-16 w-full">
@@ -147,7 +129,10 @@ export default function JoinGameCard(props) {
                 <Divider className="my-1" />
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-center truncate my-1 ...">
-                  {showWunderIdsAsIcons(wunderIds, 7)}
+                  {showWunderIdsAsIcons(
+                    competition.members.map((m) => m.wunderId),
+                    7
+                  )}
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">

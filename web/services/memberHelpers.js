@@ -10,12 +10,7 @@ export function getNameFor(member = {}) {
 }
 
 export function showWunderIdsAsIcons(arr, amount = 3) {
-  if (arr.length < 1)
-    return (
-      <>
-        <InitialsAvatar shiftRight text={`+${0}`} color={'powder'} />
-      </>
-    );
+  if (arr.length < 1) return null;
   return (
     <>
       {arr.slice(0, amount).map((wunderId, i) => (

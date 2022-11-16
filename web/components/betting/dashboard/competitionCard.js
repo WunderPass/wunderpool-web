@@ -1,4 +1,4 @@
-import { Typography, IconButton, Divider, Collapse } from '@mui/material';
+import { Typography, IconButton, Divider, Collapse, Chip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
@@ -87,7 +87,7 @@ export default function DashboardCompetitionCard(props) {
   const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
-  const stake = competition.stake; //TODO stake formatt
+  const stake = competition.stake;
   const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
     ? new Date(game.event.startTime) < new Date() &&
@@ -184,8 +184,22 @@ export default function DashboardCompetitionCard(props) {
           <Typography className="text-xl sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
             {game.event.shortName}
           </Typography>
+          <div>
+            {competition.isPublic ? (
+              <Chip
+                className="bg-white text-casama-blue"
+                size="medium"
+                label="Public"
+              />
+            ) : (
+              <Chip
+                className="bg-white text-casama-blue"
+                size="medium"
+                label="Private"
+              />
+            )}
+          </div>
         </div>
-
         <div className="flex flex-col w-full ">
           <div className="flex flex-col w-full justify-center items-center">
             <div className="flex flex-col w-full ml-2">
@@ -240,7 +254,7 @@ export default function DashboardCompetitionCard(props) {
                 <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
                   <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                     <p className="mx-2 ">
-                      {game.payoutRule == 0
+                      {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
                         ? 'Winner Takes It All'
                         : 'Proportional'}
                     </p>
