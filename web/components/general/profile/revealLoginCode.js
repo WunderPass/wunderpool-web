@@ -4,7 +4,7 @@ import QrCode from '/components/general/utils/qrCode';
 import { BiShowAlt } from 'react-icons/bi';
 
 export default function RevealLoginCode(props) {
-  const { t, privKey } = props;
+  const { privKey } = props;
   const [open, setOpen] = useState(false);
 
   return (

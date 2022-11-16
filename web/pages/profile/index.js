@@ -380,12 +380,6 @@ export default function Profile(props) {
                     </button>
                   </NextLink>
                 </div>
-                <div className="flex flex-row justify-between items-center py-2 pt-4">
-                  <Typography className="font-semibold ">
-                    Seed Phrase as QR
-                  </Typography>
-                  <RevealLoginCode {...props} />
-                </div>
               </div>
             </div>
             <div className="flex items-center justify-center">
@@ -432,9 +426,6 @@ export default function Profile(props) {
                 {seedPhrase ? 'Hide' : 'Reveal'} Seed Phrase
               </button>
             </div>
-            <button className="btn-warning px-5 py-2 mt-2 block mx-auto">
-              Reveal Seed Phrase as QR Code
-            </button>
           </div>
         </div>
       )}
