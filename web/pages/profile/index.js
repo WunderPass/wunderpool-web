@@ -378,12 +378,6 @@ export default function Profile(props) {
                     </button>
                   </NextLink>
                 </div>
-                <div className="flex flex-row justify-between items-center py-2 pt-4">
-                  <Typography className="font-semibold ">
-                    Seed Phrase as QR
-                  </Typography>
-                  <RevealLoginCode {...props} />
-                </div>
               </div>
             </div>
             <div className="flex items-center justify-center">
