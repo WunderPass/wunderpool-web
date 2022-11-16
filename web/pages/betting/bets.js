@@ -26,7 +26,7 @@ export default function Bets(props) {
     if (!router.query.sortId) return;
     setSortId(router.query.sortId);
     setIsSortById(true);
-    setEventTypeSort('Game ID: ' + router.query.sortId);
+    setEventTypeSort(router.query.sortId);
   }, [router.query]);
 
   useEffect(() => {
@@ -76,7 +76,6 @@ export default function Bets(props) {
                   <Typography className="text-2xl sm:text-3xl font-medium ">
                     My Bets
                   </Typography>
-
                   <DropDown
                     list={[
                       'All Events',

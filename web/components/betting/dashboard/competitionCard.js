@@ -14,6 +14,8 @@ import { calculateWinnings } from '/services/bettingHelpers';
 import usePool from '/hooks/usePool';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
+import { BiArrowFromTop } from 'react-icons/bi';
+import { BiArrowFromBottom } from 'react-icons/bi';
 
 function ParticipantTable({ participants, members, stake, user }) {
   return (
@@ -81,7 +83,7 @@ function ParticipantTable({ participants, members, stake, user }) {
 }
 
 export default function DashboardCompetitionCard(props) {
-  const { competition, handleSuccess, handleError, user } = props;
+  const { competition, handleSuccess, handleError, user, isSortById } = props;
   const [showDetails, setShowDetails] = useState(false);
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
@@ -147,6 +149,11 @@ export default function DashboardCompetitionCard(props) {
   }, [game.event?.outcome]);
 
   useEffect(() => {
+    if (!isSortById) return;
+    setShowDetails(true);
+  }, [isSortById]);
+
+  useEffect(() => {
     if (isLive) {
       const interval = setInterval(() => {
         axios({
@@ -164,14 +171,11 @@ export default function DashboardCompetitionCard(props) {
   }, [isLive]);
 
   return (
-    <div
-      onClick={() => setShowDetails(!showDetails)}
-      className="container-gray pb-16 w-full cursor-pointer"
-    >
-      <div className="flex flex-col items-start gap-2  w-full">
-        <div className="flex flex-row justify-center items-start w-full mb-4">
-          <div className="flex flex-col justify-start items-start">
-            <div className="flex flex-col justify-start items-start ">
+    <div className="container-gray pb-16 w-full ">
+      <div className="flex flex-col items-between gap-2 w-full  ">
+        <div className="flex flex-row w-full mb-4 ">
+          <div className="flex flex-col">
+            <div className="flex flex-col h-full ">
               <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue " />
               <IconButton
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
@@ -179,9 +183,20 @@ export default function DashboardCompetitionCard(props) {
               >
                 <ShareIcon className="text-casama-blue sm:text-2xl text-lg" />
               </IconButton>
+              {showDetails ? (
+                <BiArrowFromBottom
+                  onClick={() => setShowDetails(!showDetails)}
+                  className="text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer"
+                />
+              ) : (
+                <BiArrowFromTop
+                  onClick={() => setShowDetails(!showDetails)}
+                  className="text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer"
+                />
+              )}
             </div>
           </div>
-          <Typography className="text-xl sm:text-3xl font-bold mx-3 text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
+          <Typography className="text-xl sm:text-3xl font-bold mx-3  text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
             {game.event.shortName}
           </Typography>
           <div>
@@ -200,7 +215,7 @@ export default function DashboardCompetitionCard(props) {
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full ">
+        <div className="flex flex-col w-full  ">
           <div className="flex flex-col w-full justify-center items-center">
             <div className="flex flex-col w-full ml-2">
               {/* ICONS */}
@@ -221,8 +236,8 @@ export default function DashboardCompetitionCard(props) {
               </div>
 
               {/* NAMEN */}
-              <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
-                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+              <div className="flex flex-row justify-between items-center text-center mb-2 w-full ">
+                <div className="flex flex-row justify-center items-center text-center w-5/12 ">
                   <p className="text-xl sm:text-2xl font-semibold ">
                     {game.event.teamHome?.name || game.event?.teamHome}
                   </p>

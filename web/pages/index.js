@@ -1,7 +1,7 @@
 import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
 import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
 import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
-import { FaTwitter, FaDiscord } from 'react-icons/fa';
+import { FaTwitter, FaTelegramPlane } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga';
@@ -71,10 +71,10 @@ function Home(props) {
                     <FaTwitter className="text-sm "></FaTwitter>
                   </a>
                   <a
-                    href="https://discord.gg/DEZTc7t4th"
+                    href="https://t.me/+sVH-nNZB4g0zYmRk"
                     className="p-2 mx-1 rounded-full border-2 border-gray-200 lg:p-3 "
                   >
-                    <FaDiscord className="text-sm "></FaDiscord>
+                    <FaTelegramPlane className="text-sm "></FaTelegramPlane>
                   </a>
                 </div>
               </div>
