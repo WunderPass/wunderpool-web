@@ -95,6 +95,7 @@ export default function EventCard(props) {
         },
       })
         .then(() => {
+          user.fetchUsdBalance();
           router.push('/betting/bets');
         })
         .catch((err) => {
@@ -116,6 +117,7 @@ export default function EventCard(props) {
         },
       })
         .then(() => {
+          user.fetchUsdBalance();
           router.push('/betting/bets');
         })
         .catch((err) => {
@@ -142,6 +144,7 @@ export default function EventCard(props) {
       },
     })
       .then(() => {
+        user.fetchUsdBalance();
         router.push('/betting/bets');
       })
       .catch((err) => {
