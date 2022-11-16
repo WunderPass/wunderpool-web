@@ -20,7 +20,7 @@ export default function JoinCompetitionGame(props) {
   );
 
   const loginCallback = () => {
-    router.push(`/betting/bets?sortId=${competition.competition?.id}`); //TODO add sortId in for bets (check /pools?sortId=27)
+    router.push(`/betting/bets?sortId=${competition.competition?.id}`);
   };
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function JoinCompetitionGame(props) {
           <div className="flex flex-col my-8 w-full ">
             <JoinGameCard
               game={game}
-              competition={competition?.competition}
+              competition={competition}
               secret={router.query.secret}
               user={user}
               {...props}

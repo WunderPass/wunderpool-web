@@ -24,6 +24,7 @@ export default function BetsList(props) {
                   key={`dashboard-competition-card-${comp.id}`}
                   competition={comp}
                   user={user}
+                  isSortById={isSortById}
                   {...props}
                 />
               );
@@ -37,6 +38,7 @@ export default function BetsList(props) {
                 key={`dashboard-competition-card-${comp.id}`}
                 competition={comp}
                 user={user}
+                isSortById={isSortById}
                 {...props}
               />
             );
