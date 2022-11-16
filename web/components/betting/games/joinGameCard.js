@@ -212,7 +212,7 @@ export default function JoinGameCard(props) {
 
 function NotLoggedIn({ handleLogin, handleError }) {
   return (
-    <div className="flex flex-col justify-center items-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
+    <div className="flex flex-col justify-center items-center max-w-xs w-full">
       <Typography className="text-sm text-center">
         Sign Up or Login to join this Bet
       </Typography>
@@ -221,7 +221,7 @@ function NotLoggedIn({ handleLogin, handleError }) {
       <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-4">
         Already have a wallet?
       </p>
-      <div className="max-w-sm mb-4">
+      <div className="max-w-xs w-full mb-4 ">
         <LoginWithMetaMask onSuccess={handleLogin} handleError={handleError} />
         <LoginWithWalletConnect
           onSuccess={handleLogin}

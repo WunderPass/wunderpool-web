@@ -35,7 +35,7 @@ function Home(props) {
         <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center bg-white lg:bg-[#f3f3f3] ">
           <div className="h-screen lg:h-fit lg:flex rounded-2xl shadow-custom lg:w-2/3 w-screen lg:mb-7 ">
             <div className="p-5 bg-white rounded-2xl w-full">
-              <div className="flex justify-center flex-col items-center py-5 lg:py-10 mb-14">
+              <div className="flex justify-center flex-col items-center py-5 lg:py-10 mb-14 w-full">
                 <h2 className="text-3xl font-medium text-casama-blue mt-3 mb-6">
                   You need a wallet to use Casama
                 </h2>
@@ -47,7 +47,7 @@ function Home(props) {
                 <div className="w-full max-w-sm">
                   <AuthenticateWithCasama onSuccess={handleSuccess} />
                 </div>
-                <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 ">
+                <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 max-w-xs w-full">
                   <div className="my-2 w-72 items-center mb-2">
                     <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-8">
                       Already have a wallet?
