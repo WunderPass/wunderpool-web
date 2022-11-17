@@ -11,11 +11,9 @@ import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
 import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
-import usePool from '/hooks/usePool';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import { BiArrowFromTop } from 'react-icons/bi';
-import { BiArrowFromBottom } from 'react-icons/bi';
 
 function ParticipantTable({ participants, members, stake, user }) {
   console.log('participants', participants);
@@ -174,7 +172,10 @@ export default function DashboardCompetitionCard(props) {
   }, [isLive]);
 
   return (
-    <div className="container-gray pb-16 w-full ">
+    <div
+      className="container-gray pb-16 w-full cursor-pointer"
+      onClick={() => setShowDetails((s) => !s)}
+    >
       <div className="flex flex-col items-between gap-2 w-full  ">
         <div className="flex flex-row w-full mb-4 ">
           <div className="flex flex-col">
@@ -182,21 +183,19 @@ export default function DashboardCompetitionCard(props) {
               <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue " />
               <IconButton
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
-                onClick={handleShareCompetition}
+                onClick={() => {
+                  setShowDetails((s) => !s);
+                  handleShareCompetition();
+                }}
               >
                 <ShareIcon className="text-casama-blue sm:text-2xl text-lg" />
               </IconButton>
-              {showDetails ? (
-                <BiArrowFromBottom
-                  onClick={() => setShowDetails(!showDetails)}
-                  className="text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer"
-                />
-              ) : (
-                <BiArrowFromTop
-                  onClick={() => setShowDetails(!showDetails)}
-                  className="text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer"
-                />
-              )}
+              <BiArrowFromTop
+                onClick={() => setShowDetails((s) => !s)}
+                className={`text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer transition-transform ${
+                  showDetails ? 'rotate-180' : 'rotate-0'
+                }`}
+              />
             </div>
           </div>
           <Typography className="text-xl sm:text-3xl font-bold mx-3  text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
@@ -218,7 +217,7 @@ export default function DashboardCompetitionCard(props) {
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full  ">
+        <div className="flex flex-col w-full">
           <div className="flex flex-col w-full justify-center items-center">
             <div className="flex flex-col w-full ml-2">
               {/* ICONS */}
