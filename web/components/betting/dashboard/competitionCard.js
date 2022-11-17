@@ -16,7 +16,6 @@ import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import { BsFillArrowUpSquareFill } from 'react-icons/bs';
 
-
 function ParticipantTable({ participants, members, stake, user }) {
   return (
     <div className="">
@@ -331,12 +330,11 @@ export default function DashboardCompetitionCard(props) {
                       </p>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
-                  {new Date(game.event.startTime) < new Date() && (
-                    <div className="absolute top-2 right-3 flex items-center gap-1 ">
-                      {/* <div>
+                ) : (
+                  <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                    {new Date(game.event.startTime) < new Date() && (
+                      <div className="absolute top-2 right-3 flex items-center gap-1 ">
+                        {/* <div>
                         <SoccerTimer
                           start={Number(new Date())}
                           end={Number(addMinutes(new Date(), 90))}
@@ -345,23 +343,24 @@ export default function DashboardCompetitionCard(props) {
                         {console.log(addMinutes(new Date(), 90))}
                       </div> */}
 
-                      <div className="flex flex-row animate-pulse">
-                        <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                        <div className="text-sm">LIVE</div>
+                        <div className="flex flex-row animate-pulse">
+                          <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                          <div className="text-sm">LIVE</div>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <Timer
-                    start={Number(new Date())}
-                    end={
-                      new Date(game.event.startTime) > new Date()
-                        ? game.event.startTime
-                        : game.event.endTime
-                    }
-                    size="large"
-
-                  />
+                    )}
+                    <Timer
+                      start={Number(new Date())}
+                      end={
+                        new Date(game.event.startTime) > new Date()
+                          ? game.event.startTime
+                          : game.event.endTime
+                      }
+                      size="large"
+                    />
+                  </div>
                 )}
+              </div>
             </Collapse>
             <TransactionDialog
               open={loading}
