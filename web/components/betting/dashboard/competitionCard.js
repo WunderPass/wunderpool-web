@@ -5,6 +5,7 @@ import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Avatar from '/components/general/members/avatar';
 import Timer from '/components/general/utils/timer';
+import SoccerTimer from '/components/general/utils/soccerTimer';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
@@ -150,6 +151,10 @@ export default function DashboardCompetitionCard(props) {
       );
     }
   }, [game.event?.outcome]);
+
+  function addMinutes(date, minutes) {
+    return new Date(date.getTime() + minutes * 60000);
+  }
 
   useEffect(() => {
     if (!isSortById) return;
@@ -336,9 +341,20 @@ export default function DashboardCompetitionCard(props) {
               ) : (
                 <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
                   {new Date(game.event.startTime) < new Date() && (
-                    <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
-                      <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                      <div className="text-sm">LIVE</div>
+                    <div className="absolute top-2 right-3 flex items-center gap-1 ">
+                      <div>
+                        <SoccerTimer
+                          start={Number(new Date())}
+                          end={Number(addMinutes(new Date(), 90))}
+                        />
+                        {console.log(new Date())}
+                        {console.log(addMinutes(new Date(), 90))}
+                      </div>
+
+                      <div className="flex flex-row animate-pulse">
+                        <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                        <div className="text-sm">LIVE</div>
+                      </div>
                     </div>
                   )}
                   <Timer
@@ -348,6 +364,7 @@ export default function DashboardCompetitionCard(props) {
                         ? game.event.startTime
                         : game.event.endTime
                     }
+                    size="large"
                   />
                 </div>
               )}

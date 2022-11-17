@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 
 const Timer = (props) => {
-  const { start, end, size, text = 'Days Left', bar } = props;
+  const { start, end, size } = props;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {
@@ -11,18 +11,12 @@ const Timer = (props) => {
 
   const formattedDate = (millis) => {
     const seconds = Math.floor(millis % 60);
-    const minutes = Math.floor((millis / 60) % 60);
-    const hours = Math.floor((millis / 60 / 60) % 24);
-    const days = Math.floor(millis / 60 / 60 / 24);
+    const minutes = Math.floor((millis / 90) % 90); //TODO chekc if this works
 
-    if (days >= 1) {
-      return `${Math.round(millis / 60 / 60 / 24)}`;
-    } else if (millis >= 1) {
-      return `${formatDecimals(hours)}:${formatDecimals(
-        minutes
-      )}:${formatDecimals(seconds)}`;
+    if (millis >= 1) {
+      return `${formatDecimals(minutes)}:${formatDecimals(seconds)}`;
     } else {
-      return '00:00:00';
+      return '00:00';
     }
   };
 
@@ -58,36 +52,7 @@ const Timer = (props) => {
         >
           {formattedDate(timer)}
         </div>
-        <div className="flex flex-row opacity-50">
-          {timer >= 86400 ? (
-            <>
-              <Typography className="text-xs mr-1">{text}</Typography>
-            </>
-          ) : (
-            <div
-              className={
-                size == 'large'
-                  ? 'text-sm flex flex-row'
-                  : size == 'medium'
-                  ? 'text-xs flex flex-row'
-                  : 'text-xs flex flex-row'
-              }
-            >
-              <div className="mr-1">Hours</div>
-              <div className="mx-1">Minutes</div>
-              <div className="ml-1">Seconds</div>
-            </div>
-          )}
-        </div>
       </div>
-      {bar && (
-        <div className="mt-5">
-          <TimerBar
-            passed={Math.round(Number(new Date())) - start}
-            total={end - start}
-          />
-        </div>
-      )}
     </div>
   );
 };
