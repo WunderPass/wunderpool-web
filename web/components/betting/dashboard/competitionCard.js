@@ -361,6 +361,12 @@ export default function DashboardCompetitionCard(props) {
                   </div>
                 )}
               </div>
+              <ParticipantTable
+                participants={gameResultTable}
+                members={competition.members}
+                stake={stake}
+                user={user}
+              />
             </Collapse>
             <TransactionDialog
               open={loading}
