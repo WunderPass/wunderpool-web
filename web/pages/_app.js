@@ -3,7 +3,7 @@ import '/styles/globals.css';
 import useNotification from '/hooks/useNotification';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import usePoolListener from '/hooks/usePoolListener';
+import useEventListener from '/hooks/useEventListener';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import muiTheme from '/theme/mui';
 import Navbar from '/components/general/layout/navbar';
@@ -34,7 +34,7 @@ function WunderPool({ Component, pageProps }) {
     proposalExecutedEvent,
     tokenAddedEvent,
     resetEvents,
-  } = usePoolListener(handleInfo);
+  } = useEventListener(handleInfo);
 
   const { updateWunderId, updateBackgroundColor } = UseIOS();
 

@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { BsArrowDownLeft, BsArrowRight, BsArrowUpRight } from 'react-icons/bs';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import usePoolListener from '/hooks/usePoolListener';
 import { decodeError, decodeInputParams } from '/services/contract/provider';
 import { fetchErc20TokenData } from '/services/contract/token';
 import { currency, formatTokenBalance, weiToMatic } from '/services/formatter';

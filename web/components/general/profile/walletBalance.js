@@ -6,11 +6,13 @@ import { ImArrowDownLeft2 } from 'react-icons/im';
 import { GiPayMoney } from 'react-icons/gi';
 import { GiReceiveMoney } from 'react-icons/gi';
 import { currency } from '/services/formatter';
+import TopUpAlert from '../dialogs/topUpAlert';
 
 export default function WalletBalance(props) {
   const { user } = props;
   const [receiveDialog, setReceiveDialog] = useState(false);
   const [sendDialog, setSendDialog] = useState(false);
+  const [openTopUp, setOpenTopUp] = useState(false);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function WalletBalance(props) {
               <p className="btn-circle-text-light">Receive</p>
             </div>
           </button>
-          <a
+          {/* <a
             href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&productsAvailed=BUY&network=polygon&cryptoCurrencyCode=USDC&walletAddress=${user.address}&defaultCryptoAmount=60&isAutoFillUserData=true&userData=${userData}&redirectURL=https://app.casama.io/balance`}
             target="_blank"
             className="w-1/2 sm:w-1/4"
@@ -76,7 +78,15 @@ export default function WalletBalance(props) {
               </div>
               <p className="btn-circle-text-light">Deposit</p>
             </div>
-          </a>
+          </a> */}
+          <button className="w-1/2 sm:w-1/4" onClick={() => setOpenTopUp(true)}>
+            <div className="flex w-full flex-col gap-3 justify-center items-center">
+              <div className="btn-circle-light">
+                <GiPayMoney className=" text-xl" />
+              </div>
+              <p className="btn-circle-text-light">Deposit</p>
+            </div>
+          </button>
           <a
             href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=polygon&productsAvailed=SELL&&walletAddress=${user.address}&defaultCryptoAmount=52&isAutoFillUserData=true&userData=${userData}redirectURL=https://app.casama.io/balance`}
             target="_blank"
@@ -96,6 +106,7 @@ export default function WalletBalance(props) {
         open={receiveDialog}
         {...props}
       />
+      <TopUpAlert open={openTopUp} setOpen={setOpenTopUp} {...props} />
       <SendDialog setOpen={setSendDialog} open={sendDialog} {...props} />
     </div>
   );

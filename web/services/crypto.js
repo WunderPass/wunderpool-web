@@ -24,7 +24,6 @@ export function encryptKey(privateKey, password, save = false) {
   localStorage.setItem('privKey', encrypted);
   if (save) {
     localStorage.setItem('decrPrivKey', privateKey);
-    localStorage.setItem('destroyKeyAt', new Date().getTime() + 604800000);
   }
 }
 
@@ -34,7 +33,6 @@ export function decryptKey(password, save = false) {
     const privKey = decrypt(privateKey, password);
     if (save) {
       localStorage.setItem('decrPrivKey', privKey);
-      localStorage.setItem('destroyKeyAt', new Date().getTime() + 604800000);
     }
     return privKey;
   } else {
@@ -66,15 +64,9 @@ export function decryptSeed(password) {
 }
 
 export function retreiveKey() {
-  if (new Date().getTime() > Number(localStorage.getItem('destroyKeyAt'))) {
-    localStorage.removeItem('decrPrivKey');
-  } else {
-    const decrPrivKey = localStorage.getItem('decrPrivKey');
-    if (decrPrivKey == 'null') {
-      return null;
-    } else return decrPrivKey;
-  }
-  return null;
+  const decrPrivKey = localStorage.getItem('decrPrivKey');
+  if (decrPrivKey == 'null') return null;
+  return decrPrivKey;
 }
 
 export function generateKeys(seedPhrase) {

@@ -6,13 +6,13 @@ const uuid = require('uuid');
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.json());
 
 const port = process.env.PORT || 5000;
 let clients = [];
 let eventEmitter = null;
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 function notifyClients(title, event) {
   clients.forEach((client) =>
@@ -88,7 +88,21 @@ function handleSubscribe(request, response, next) {
   });
 }
 
+function handleBettingNotification(request, response, next) {
+  const body = request.body || {};
+  if (body.type && body.state && body.entity) {
+    notifyClients(`${body.type}_${body.state}`, {
+      data: JSON.stringify(body.entity),
+    });
+    response.status(200).send('OK');
+  } else {
+    response.status(400).send('Invalid Request');
+  }
+}
+
 app.get('/subscribe', handleSubscribe);
+
+app.post('/message/betting', handleBettingNotification);
 
 app.listen(port, '0.0.0.0', () => console.log(`Listening on Port ${port}...`));
 
