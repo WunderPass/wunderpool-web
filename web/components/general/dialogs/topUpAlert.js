@@ -59,9 +59,7 @@ export default function TopUpAlert(props) {
 
   useEffect(() => {
     if (!router.isReady) return;
-    setShowAlert(
-      !['/balance', '/balance/topUp/success'].includes(router.pathname)
-    );
+    setShowAlert(!['/balance/topUp/success'].includes(router.pathname));
   }, [router.isReady]);
 
   const handleClose = () => {
