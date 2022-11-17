@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { currency } from '/services/formatter';
 
 function BettingBox(props) {
-  const { user, bettingService } = props;
+  const { user, bettingService, isHistory } = props;
 
   const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
     return bettingService.isReady

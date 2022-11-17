@@ -10,6 +10,7 @@ export default function useBettingService(
 ) {
   const [competitions, setCompetitions] = useState([]);
   const [userCompetitions, setUserCompetitions] = useState([]);
+  const [userHistoryCompetitions, setUserHistoryCompetitions] = useState([]);
   const [publicCompetitions, setPublicCompetitions] = useState([]);
   const [events, setEvents] = useState([]);
   const [isReady, setIsReady] = useState(false);
@@ -29,6 +30,25 @@ export default function useBettingService(
     });
   };
 
+  const getHistory = async () => {
+    await axios({
+      url: `/api/betting/competitions`,
+    }).then(async (res) => {
+      console.log('res.data', res.data);
+      console.log(
+        'filtered',
+        res.data.filter((comp) =>
+          comp.members.find((m) => compAddr(m.address, userAddress))
+        )
+      );
+      setUserHistoryCompetitions(
+        res.data.filter((comp) =>
+          comp.members.find((m) => compAddr(m.address, userAddress))
+        )
+      );
+    });
+  };
+
   const getEvents = async () => {
     await axios({
       url: `/api/betting/events/registered`,
@@ -40,6 +60,7 @@ export default function useBettingService(
   const initialize = async () => {
     await getCompetitions();
     await getEvents();
+    await getHistory();
   };
 
   useEffect(() => {
@@ -55,6 +76,7 @@ export default function useBettingService(
     competitions,
     publicCompetitions,
     userCompetitions,
+    userHistoryCompetitions,
     events,
     isReady,
   };

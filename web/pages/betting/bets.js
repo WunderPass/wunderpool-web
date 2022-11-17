@@ -3,6 +3,7 @@ import BettingBox from '/components/betting/dashboard/bettingBox';
 import { useEffect, useState } from 'react';
 import { Container, Skeleton, Typography } from '@mui/material';
 import BetsList from '/components/betting/dashboard/betsList';
+import HistoryList from '/components/betting/dashboard/historyList';
 import DropDown from '/components/general/utils/dropDown';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
@@ -14,12 +15,17 @@ export default function Bets(props) {
   const [isSortById, setIsSortById] = useState(false);
   const [sortId, setSortId] = useState(null);
   const { removeQueryParam } = UseAdvancedRouter();
+  const [isHistory, setIsHistory] = useState(false);
   const router = useRouter();
 
   const pickFilter = (value) => {
     setEventTypeSort(value);
     setIsSortById(false);
     removeQueryParam('sortId');
+  };
+
+  const toggleHistory = () => {
+    setIsHistory(!isHistory);
   };
 
   useEffect(() => {
@@ -33,6 +39,8 @@ export default function Bets(props) {
     setLoading(!bettingService.isReady);
   }, [bettingService.isReady]);
 
+  console.log('bettingService', bettingService);
+
   return (
     <>
       <CustomHeader />
@@ -45,6 +53,7 @@ export default function Bets(props) {
                   <Typography className=" text-3xl mt-5 sm:text-4xl mb-2 font-medium">
                     Betting Dashboard
                   </Typography>
+                  <button onClick={toggleHistory}>Toggle history</button>
                 </div>
               </div>
             </div>
@@ -60,6 +69,7 @@ export default function Bets(props) {
                     bettingService={bettingService}
                     eventTypeSort={eventTypeSort}
                     user={user}
+                    isHistory={isHistory}
                     {...props}
                   />
                 ) : (
@@ -73,9 +83,15 @@ export default function Bets(props) {
 
               <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                 <div className="flex flex-row items-center justify-between mb-3 h-14 w-full">
-                  <Typography className="text-2xl sm:text-3xl font-medium ">
-                    My Bets
-                  </Typography>
+                  {isHistory ? (
+                    <Typography className="text-2xl sm:text-3xl font-medium ">
+                      My History
+                    </Typography>
+                  ) : (
+                    <Typography className="text-2xl sm:text-3xl font-medium ">
+                      My Bets
+                    </Typography>
+                  )}
                   <DropDown
                     list={[
                       'All Events',
@@ -96,6 +112,7 @@ export default function Bets(props) {
                     sortId={sortId}
                     isSortById={isSortById}
                     user={user}
+                    isHistory={isHistory}
                     {...props}
                   />
                 ) : (
