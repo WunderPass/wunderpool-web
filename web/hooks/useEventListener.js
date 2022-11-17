@@ -1,11 +1,9 @@
 import axios from 'axios';
-import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { cacheItemDB, getCachedItemDB } from '/services/caching';
-import { toEthString, currency, polyValueToUsd } from '/services/formatter';
-import { initPoolSocket } from '/services/contract/init';
+import { currency } from '/services/formatter';
 
-export default function usePoolListener(handleInfo) {
+export default function useEventListener(handleInfo) {
   const [eventSource, setEventSource] = useState(null);
   const [userPools, setUserPools] = useState([]);
   const [poolAddress, setPoolAddress] = useState(null);
@@ -244,7 +242,7 @@ export default function usePoolListener(handleInfo) {
 // import { toEthString, currency, polyValueToUsd } from '/services/formatter';
 // import { initPoolSocket } from '/services/contract/init';
 
-// export default function usePoolListener(handleInfo) {
+// export default function useEventListener(handleInfo) {
 //   const [poolAddress, setPoolAddress] = useState(null);
 //   const [userAddress, setUserAddress] = useState(null);
 //   const [votedEvent, setVotedEvent] = useState(null);
