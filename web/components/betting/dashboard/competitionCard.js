@@ -14,8 +14,7 @@ import { calculateWinnings } from '/services/bettingHelpers';
 import usePool from '/hooks/usePool';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
-import { BiArrowFromTop } from 'react-icons/bi';
-import { BiArrowFromBottom } from 'react-icons/bi';
+import { BsFillArrowUpSquareFill } from 'react-icons/bs';
 
 function ParticipantTable({ participants, members, stake, user }) {
   return (
@@ -160,7 +159,6 @@ export default function DashboardCompetitionCard(props) {
           url: '/api/betting/competitions/show',
           params: { id: competition.id },
         }).then(({ data }) => {
-          console.log(data);
           if (data && data.games?.[0]) setLiveCompetition(data);
         });
       }, 150000);
@@ -171,87 +169,83 @@ export default function DashboardCompetitionCard(props) {
   }, [isLive]);
 
   return (
-    <div className="container-gray pb-16 w-full ">
-      <div className="flex flex-col items-between gap-2 w-full  ">
-        <div className="flex flex-row w-full mb-4 ">
-          <div className="flex flex-col">
-            <div className="flex flex-col h-full ">
-              <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue " />
-              <IconButton
-                className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
-                onClick={handleShareCompetition}
-              >
-                <ShareIcon className="text-casama-blue sm:text-2xl text-lg" />
-              </IconButton>
-              {showDetails ? (
-                <BiArrowFromBottom
-                  onClick={() => setShowDetails(!showDetails)}
-                  className="text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer"
+    <div
+      className={
+        showDetails
+          ? 'container-gray pb-16 w-full'
+          : 'container-gray pb-16 w-full cursor-pointer'
+      }
+    >
+      <div onClick={() => setShowDetails(true)}>
+        <div className="flex flex-col items-between gap-2 w-full onClick={() => setShowDetails(true)} ">
+          <div className="flex flex-row w-full mb-4 ">
+            <div className="flex flex-col">
+              <div className="flex flex-col h-full ">
+                <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue " />
+                <IconButton
+                  className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
+                  onClick={handleShareCompetition}
+                >
+                  <ShareIcon className="text-casama-blue sm:text-2xl text-lg" />
+                </IconButton>
+              </div>
+            </div>
+            <Typography className="text-xl sm:text-3xl font-bold mx-3  text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
+              {game.event.shortName}
+            </Typography>
+            <div>
+              {competition.isPublic ? (
+                <Chip
+                  className="bg-white text-casama-blue"
+                  size="medium"
+                  label="Public"
                 />
               ) : (
-                <BiArrowFromTop
-                  onClick={() => setShowDetails(!showDetails)}
-                  className="text-casama-blue text-3xl mt-2 sm:ml-2 ml-0.5 cursor-pointer"
+                <Chip
+                  className="bg-white text-casama-blue"
+                  size="medium"
+                  label="Private"
                 />
               )}
             </div>
           </div>
-          <Typography className="text-xl sm:text-3xl font-bold mx-3  text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
-            {game.event.shortName}
-          </Typography>
-          <div>
-            {competition.isPublic ? (
-              <Chip
-                className="bg-white text-casama-blue"
-                size="medium"
-                label="Public"
-              />
-            ) : (
-              <Chip
-                className="bg-white text-casama-blue"
-                size="medium"
-                label="Private"
-              />
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col w-full  ">
-          <div className="flex flex-col w-full justify-center items-center">
-            <div className="flex flex-col w-full ml-2">
-              {/* ICONS */}
-              <div className="flex flex-row justify-between items-center text-center w-full">
-                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
-                  <img
-                    src={`/api/betting/events/teamImage?id=${game.event.teamHome.id}`}
-                    className="w-16 mb-2"
-                  />
+          <div className="flex flex-col w-full  ">
+            <div className="flex flex-col w-full justify-center items-center">
+              <div className="flex flex-col w-full ml-2">
+                {/* ICONS */}
+                <div className="flex flex-row justify-between items-center text-center w-full">
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <img
+                      src={`/api/betting/events/teamImage?id=${game.event.teamHome.id}`}
+                      className="w-16 mb-2"
+                    />
+                  </div>
+                  <p className="text-3xl font-semibold">vs</p>
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <img
+                      src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
+                      className="w-16 mb-2"
+                    />
+                  </div>
                 </div>
-                <p className="text-3xl font-semibold">vs</p>
-                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
-                  <img
-                    src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
-                    className="w-16 mb-2"
-                  />
-                </div>
-              </div>
 
-              {/* NAMEN */}
-              <div className="flex flex-row justify-between items-center text-center mb-2 w-full ">
-                <div className="flex flex-row justify-center items-center text-center w-5/12 ">
-                  <p className="text-xl sm:text-2xl font-semibold ">
-                    {game.event.teamHome?.name || game.event?.teamHome}
-                  </p>
-                </div>
-                <div className="flex flex-col justify-center items-center text-center w-5/12 ">
-                  <p className="text-xl sm:text-2xl font-semibold ">
-                    {game.event.teamAway?.name || game.event?.teamAway}
-                  </p>
+                {/* NAMEN */}
+                <div className="flex flex-row justify-between items-center text-center mb-2 w-full ">
+                  <div className="flex flex-row justify-center items-center text-center w-5/12 ">
+                    <p className="text-xl sm:text-2xl font-semibold ">
+                      {game.event.teamHome?.name || game.event?.teamHome}
+                    </p>
+                  </div>
+                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                    <p className="text-xl sm:text-2xl font-semibold ">
+                      {game.event.teamAway?.name || game.event?.teamAway}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* <button onClick={() => setShowDetails(!showDetails)}>
+            {/* <button onClick={() => setShowDetails(!showDetails)}>
             {showDetails ? (
               <p className="underline text-casama-blue font-ligth">
                 Hide Details
@@ -263,109 +257,131 @@ export default function DashboardCompetitionCard(props) {
             )}
           </button> */}
 
-          <Collapse in={showDetails}>
-            <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
-              <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
-                <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                  <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
-                    <p className="mx-2 ">
-                      {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
-                        ? 'Winner Takes It All'
-                        : 'Proportional'}
-                    </p>
+            <Collapse in={showDetails}>
+              <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
+                <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
+                  <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
+                    <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
+                      <p className="mx-2 ">
+                        {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
+                          ? 'Winner Takes It All'
+                          : 'Proportional'}
+                      </p>
 
-                    <div className="mt-2">
-                      <PayoutRuleInfoButton />
+                      <div className="mt-2">
+                        <PayoutRuleInfoButton />
+                      </div>
+                    </div>
+                    <Divider className="my-1" />
+
+                    <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                      <p>Participants:</p>
+                      <p className="ml-2">{`${game.participants.length}`}</p>
                     </div>
                   </div>
-                  <Divider className="my-1" />
+                  <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
+                    <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
+                      <p>Entry:</p>
+                      <p className="ml-2">{`${currency(stake)}`}</p>
+                    </div>
+                    <Divider className="my-1" />
+                    <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
+                      <p>Pot:</p>
+                      <p className="ml-2">{` ${currency(
+                        stake * game.participants.length
+                      )} `}</p>
+                    </div>
+                  </div>
+                </div>
 
-                  <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
-                    <p>Participants:</p>
-                    <p className="ml-2">{`${game.participants.length}`}</p>
+                {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
+                  game.event.state
+                ) ? (
+                  <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
+                    {isLive && (
+                      <div className="absolute top-3 right-5 flex items-center gap-1 animate-pulse">
+                        <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                        <div className="text-sm">LIVE</div>
+                      </div>
+                    )}
+                    <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
+                      Result
+                    </p>
+                    <div className="flex flex-row justify-center items-center w-full mb-3">
+                      <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
+                        {game.event.teamHome.name}
+                      </p>
+
+                      <div className="w-2/12 flex flex-row justify-center ">
+                        <p className="font-semibold text-xl sm:text-2xl">
+                          {game.event?.outcome[0] || 0}
+                        </p>
+                        <p className="px-1 text-xl sm:text-2xl">:</p>
+                        <p className="font-semibold text-xl sm:text-2xl">
+                          {game.event?.outcome[1] || 0}
+                        </p>
+                      </div>
+                      <p className="w-5/12 text-center text-base sm:text-xl px-2">
+                        {game.event.teamAway.name}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
-                  <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
-                    <p>Entry:</p>
-                    <p className="ml-2">{`${currency(stake)}`}</p>
+                ) : (
+                  <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                    {new Date(game.event.startTime) < new Date() && (
+                      <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
+                        <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                        <div className="text-sm">LIVE</div>
+                      </div>
+                    )}
+                    <Timer
+                      start={Number(new Date())}
+                      end={
+                        new Date(game.event.startTime) > new Date()
+                          ? game.event.startTime
+                          : game.event.endTime
+                      }
+                    />
                   </div>
-                  <Divider className="my-1" />
-                  <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
-                    <p>Pot:</p>
-                    <p className="ml-2">{` ${currency(
-                      stake * game.participants.length
-                    )} `}</p>
-                  </div>
-                </div>
+                )}
               </div>
-
-              {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ? (
-                <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
-                  {isLive && (
-                    <div className="absolute top-3 right-5 flex items-center gap-1 animate-pulse">
-                      <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                      <div className="text-sm">LIVE</div>
-                    </div>
-                  )}
-                  <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
-                    Result
-                  </p>
-                  <div className="flex flex-row justify-center items-center w-full mb-3">
-                    <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
-                      {game.event.teamHome.name}
-                    </p>
-
-                    <div className="w-2/12 flex flex-row justify-center ">
-                      <p className="font-semibold text-xl sm:text-2xl">
-                        {game.event?.outcome[0] || 0}
-                      </p>
-                      <p className="px-1 text-xl sm:text-2xl">:</p>
-                      <p className="font-semibold text-xl sm:text-2xl">
-                        {game.event?.outcome[1] || 0}
-                      </p>
-                    </div>
-                    <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                      {game.event.teamAway.name}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
-                  {new Date(game.event.startTime) < new Date() && (
-                    <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
-                      <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                      <div className="text-sm">LIVE</div>
-                    </div>
-                  )}
-                  <Timer
-                    start={Number(new Date())}
-                    end={
-                      new Date(game.event.startTime) > new Date()
-                        ? game.event.startTime
-                        : game.event.endTime
-                    }
+              {/* Only Show participants if user has voted */}
+              {user &&
+                (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
+                  game.event.state
+                ) ||
+                  game.participants.find((participant) =>
+                    compAddr(participant.address, user.address)
+                  )) && (
+                  <ParticipantTable
+                    participants={gameResultTable}
+                    members={competition.members}
+                    stake={stake}
+                    user={user}
                   />
-                </div>
-              )}
-            </div>
-            {/* Only Show participants if user has voted */}
-            {user &&
-              (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state) ||
-                game.participants.find((participant) =>
-                  compAddr(participant.address, user.address)
-                )) && (
-                <ParticipantTable
-                  participants={gameResultTable}
-                  members={competition.members}
-                  stake={stake}
-                  user={user}
-                />
-              )}
-          </Collapse>
-          <TransactionDialog open={loading} onClose={() => setLoading(false)} />
+                )}
+            </Collapse>
+            <TransactionDialog
+              open={loading}
+              onClose={() => setLoading(false)}
+            />
+          </div>
         </div>
       </div>
+      {showDetails && !loading && (
+        <div className="flex flex-row justify-center items-center mt-5">
+          <button
+            onClick={() => {
+              setShowDetails(false);
+            }}
+          >
+            <div className="flex flex-row items-center justify-center">
+              <div className="underline text-casama-blue ">Hide Details</div>
+              <BsFillArrowUpSquareFill className="text-casama-blue text-xl mx-2" />
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

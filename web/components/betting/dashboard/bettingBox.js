@@ -6,7 +6,22 @@ function BettingBox(props) {
   const { user, bettingService, isHistory } = props;
 
   const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
-    return bettingService.isReady
+    console.log('isHistory in bettingbox', isHistory);
+    return isHistory
+      ? bettingService.isReady
+        ? [
+            bettingService.userHistoryCompetitions?.reduce((accum, comp) => {
+              accum = accum + comp.stake * comp.members?.length;
+              return accum;
+            }, 0),
+            bettingService.userHistoryCompetitions?.reduce(
+              (accum, comp) => accum + comp.stake,
+              0
+            ),
+            bettingService.userHistoryCompetitions?.length,
+          ]
+        : [0, 0, 0]
+      : bettingService.isReady
       ? [
           bettingService.userCompetitions?.reduce((accum, comp) => {
             accum = accum + comp.stake * comp.members?.length;
@@ -20,9 +35,10 @@ function BettingBox(props) {
         ]
       : [0, 0, 0];
   }, [
+    isHistory,
     bettingService.isReady,
     bettingService.userCompetitions,
-    bettingService.userCompetitions.length,
+    bettingService.userHistoryCompetitions,
   ]);
 
   return bettingService.isReady ? (
@@ -32,7 +48,10 @@ function BettingBox(props) {
           <div>
             <div className="flex flex-col container-white-p-0 p-5  mb-4">
               <div className="flex flex-row justify-between items-center gap-2">
-                <Typography className="text-xl">Open Bets</Typography>
+                <Typography className="text-xl">
+                  {' '}
+                  {isHistory ? 'Total Bets' : 'Open Bets'}
+                </Typography>
                 <Typography className="text-2xl font-semibold">
                   {openBets}
                 </Typography>
@@ -40,20 +59,46 @@ function BettingBox(props) {
             </div>
 
             <div className="flex flex-col container-white-p-0 p-5 ">
-              <div className="flex  flex-row justify-between items-center gap-2">
-                <Typography className="text-xl">Money at Stake</Typography>
-                <Typography className="text-2xl font-semibold">
-                  {currency(totalMoneyStake)}
-                </Typography>
-              </div>
-              <Divider className="opacity-80 my-4" />
+              {isHistory ? (
+                <div className=" opacity-30 ">
+                  <div className="flex flex-row justify-center items-center gap-2">
+                    <Typography className="text-2xl  font-semibold">
+                      COMING SOON
+                    </Typography>
+                  </div>
+                  <Divider className="opacity-80 my-4" />
 
-              <div className="flex flex-row justify-between items-center gap-2">
-                <Typography className="text-xl">Possible Profit</Typography>
-                <Typography className="text-2xl text-green-600 font-semibold">
-                  {currency(totalPotSize)}
-                </Typography>
-              </div>
+                  <div className="flex  flex-row justify-between items-center gap-2">
+                    <Typography className="text-xl">Money Lost</Typography>
+                    <Typography className="text-2xl text-red-600 font-semibold">
+                      {/* {currency(totalMoneyStake)} */} -
+                    </Typography>
+                  </div>
+                  <Divider className="opacity-80 my-4" />
+                  <div className="flex flex-row justify-between items-center gap-2">
+                    <Typography className="text-xl">Winnings</Typography>
+                    <Typography className="text-2xl text-green-600 font-semibold">
+                      {/* {currency(totalPotSize)} */} -
+                    </Typography>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex  flex-row justify-between items-center gap-2">
+                    <Typography className="text-xl">Money at Stake</Typography>
+                    <Typography className="text-2xl font-semibold">
+                      {currency(totalMoneyStake)}
+                    </Typography>
+                  </div>
+                  <Divider className="opacity-80 my-4" />
+                  <div className="flex flex-row justify-between items-center gap-2">
+                    <Typography className="text-xl">Possible Profit</Typography>
+                    <Typography className="text-2xl text-green-600 font-semibold">
+                      {currency(totalPotSize)}
+                    </Typography>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

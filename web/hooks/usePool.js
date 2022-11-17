@@ -284,7 +284,7 @@ export default function usePool(
       const games = (
         await axios({
           url: '/api/betting/competitions',
-          params: { poolAddress: poolAddress },
+          params: { poolAddress: poolAddress, states: ['UPCOMING', 'LIVE'] },
         })
       ).data;
 

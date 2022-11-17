@@ -15,8 +15,8 @@ export default function DropDown(props) {
       <button
         className={
           eventListOpen
-            ? 'container-white-p-0 p-3 border-gray-800 border w-56'
-            : 'container-white-p-0 p-3 border-gray-300 border w-56'
+            ? 'container-white-p-0 p-2 border-gray-800 border w-56'
+            : 'container-white-p-0 p-2 border-gray-300 border w-56'
         }
         onClick={(e) => setEventListOpen(e.currentTarget)}
       >
