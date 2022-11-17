@@ -341,14 +341,14 @@ export default function DashboardCompetitionCard(props) {
                 <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
                   {new Date(game.event.startTime) < new Date() && (
                     <div className="absolute top-2 right-3 flex items-center gap-1 ">
-                      <div>
+                      {/* <div>
                         <SoccerTimer
                           start={Number(new Date())}
                           end={Number(addMinutes(new Date(), 90))}
                         />
                         {console.log(new Date())}
                         {console.log(addMinutes(new Date(), 90))}
-                      </div>
+                      </div> */}
 
                       <div className="flex flex-row animate-pulse">
                         <div className="bg-red-500 w-2 h-2 rounded-full"></div>
