@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const resp = await axios({
       method: 'get',
       url: `${process.env.POOLS_SERVICE}/web3Proxy/pools`,
-      params: { userAddress: req.query.address?.toLowerCase() },
+      params: { userAddress: req.query.address?.toLowerCase(), active: true },
       headers: headers,
     });
 
