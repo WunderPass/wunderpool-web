@@ -161,7 +161,7 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
   };
 
   return (
-    <>
+    <div className="flex flex-col justify-center items-center max-w-xs w-full">
       <Collapse in={signUpRequired}>
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="flex flex-col justify-center items-center gap-4 w-full">
@@ -213,7 +213,7 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
           </div>
         </form>
       </Collapse>
-      <Collapse className="w-10/12 sm:w-2/3" in={!signUpRequired}>
+      <Collapse className="w-full" in={!signUpRequired}>
         <button
           className="flex my-2 p-1 w-full justify-start items-center text-center text-casama-blue rounded-xl border-casama-blue border-2 "
           onClick={loginWithWalletConnect}
@@ -230,6 +230,6 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
           {loading ? 'Connecting...' : 'Connect with WalletConnect'}
         </button>
       </Collapse>
-    </>
+    </div>
   );
 }

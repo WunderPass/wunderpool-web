@@ -198,7 +198,7 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
   };
 
   return (
-    <>
+    <div className="flex flex-col justify-center items-center w-full">
       <Collapse in={signUpRequired}>
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="flex flex-col justify-center items-center gap-4 w-full">
@@ -250,7 +250,7 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
           </div>
         </form>
       </Collapse>
-      <Collapse className="w-10/12 sm:w-2/3" in={!signUpRequired}>
+      <Collapse className="w-full" in={!signUpRequired}>
         <button
           className="flex my-2 w-full p-1 pt-1.5 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"
           onClick={loginWithWetaMask}
@@ -264,6 +264,6 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
           </div>
         </button>
       </Collapse>
-    </>
+    </div>
   );
 }

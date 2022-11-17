@@ -22,14 +22,34 @@ import { useRouter } from 'next/router';
 import TransactionFrame from '/components/general/utils/transactionFrame';
 
 export default function JoinGameCard(props) {
-  const { competition, game, handleSuccess, user, handleError } = props;
+  const { competition, game, handleSuccess, user, handleError, handleInfo } =
+    props;
   const stake = competition?.stake;
+  const router = useRouter();
 
   const handleLogin = (data) => {
     user.updateLoginMethod(data.loginMethod);
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
+
+  const loginCallback = () => {
+    router.push(`/betting/bets?sortId=${competition.competition?.id}`);
+  };
+
+  useEffect(() => {
+    if (user.loggedIn) {
+      if (game) {
+        if (competition.isGameParticipant(game.id)) {
+          handleInfo('You already placed a bet for this game');
+          loginCallback();
+        }
+      } else {
+        handleInfo('This Bet does not exist');
+        router.push('/betting');
+      }
+    }
+  }, [user.address]);
 
   return (
     <div className="container-gray pb-16 w-full">
@@ -42,7 +62,8 @@ export default function JoinGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/join/' + competition.id,
+                    'https://app.casama.io/betting/join/' +
+                      competition?.competition.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
@@ -111,13 +132,17 @@ export default function JoinGameCard(props) {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center w-full mb-4 ">
-                    <InputJoinAmount {...props} />
+                    <InputJoinAmount
+                      competition={competition?.competition}
+                      {...props}
+                    />
                   </div>
                 ))}
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-4">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
-                    {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
+                    {competition?.competition.payoutRule ==
+                    'WINNER_TAKES_IT_ALL'
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>
@@ -130,7 +155,7 @@ export default function JoinGameCard(props) {
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-center truncate my-1 ...">
                   {showWunderIdsAsIcons(
-                    competition.members.map((m) => m.wunderId),
+                    competition?.competition.members.map((m) => m.wunderId),
                     7
                   )}
                 </div>
@@ -212,7 +237,7 @@ export default function JoinGameCard(props) {
 
 function NotLoggedIn({ handleLogin, handleError }) {
   return (
-    <div className="flex flex-col justify-center items-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
+    <div className="flex flex-col justify-center items-center max-w-xs w-full">
       <Typography className="text-sm text-center">
         Sign Up or Login to join this Bet
       </Typography>
@@ -221,7 +246,7 @@ function NotLoggedIn({ handleLogin, handleError }) {
       <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-4">
         Already have a wallet?
       </p>
-      <div className="max-w-sm mb-4">
+      <div className="max-w-xs w-full mb-4 ">
         <LoginWithMetaMask onSuccess={handleLogin} handleError={handleError} />
         <LoginWithWalletConnect
           onSuccess={handleLogin}
@@ -288,6 +313,7 @@ function InputJoinAmount(props) {
       },
     })
       .then(() => {
+        user.fetchUsdBalance();
         router.push('/betting/bets');
       })
       .catch((err) => {

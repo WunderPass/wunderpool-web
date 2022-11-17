@@ -6,8 +6,8 @@ export default function PayoutRuleInfoButton(props) {
   const [showInfo, setShowInfo] = useState(false);
   const [infoBoxAnchorEl, setInfoBoxAnchorEl] = useState(false);
 
-  const showPayoutRuleInfo = (e) => {
-    setInfoBoxAnchorEl(e.currentTarget);
+  const showPayoutRuleInfo = (e, bool) => {
+    setInfoBoxAnchorEl(e.currentTarget - 100);
     setShowInfo(!showInfo);
   };
 
@@ -17,9 +17,12 @@ export default function PayoutRuleInfoButton(props) {
 
   return (
     <>
-      <button className="cursor-pointer" onClick={(e) => showPayoutRuleInfo(e)}>
+      <div
+        className="cursor-pointer "
+        onMouseOver={(e) => showPayoutRuleInfo(e)}
+      >
         <FaRegQuestionCircle className="ml-2 text-xl mb-1 text-casama-blue" />
-      </button>
+      </div>
       <Popover
         open={showInfo}
         onClose={handleClose}
@@ -34,7 +37,10 @@ export default function PayoutRuleInfoButton(props) {
         }}
       >
         <div>
-          <div className="flex flex-col text-gray-500 text-sm my-2 sm:my-0">
+          <div
+            onMouseLeave={() => setShowInfo(false)}
+            className="flex flex-col text-gray-500 text-sm my-2 sm:my-0"
+          >
             <div className="flex flex-col m-2 mx-3 ">
               <span className="text-base font-bold underline sm:text-center mb-1">
                 Scoring system:

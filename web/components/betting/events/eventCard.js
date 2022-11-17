@@ -95,6 +95,7 @@ export default function EventCard(props) {
         },
       })
         .then(() => {
+          user.fetchUsdBalance();
           router.push('/betting/bets');
         })
         .catch((err) => {
@@ -116,6 +117,7 @@ export default function EventCard(props) {
         },
       })
         .then(() => {
+          user.fetchUsdBalance();
           router.push('/betting/bets');
         })
         .catch((err) => {
@@ -142,6 +144,7 @@ export default function EventCard(props) {
       },
     })
       .then(() => {
+        user.fetchUsdBalance();
         router.push('/betting/bets');
       })
       .catch((err) => {
@@ -289,8 +292,8 @@ export default function EventCard(props) {
                                 <div className="flex flex-row">
                                   <p className="font-semibold ml-1.5">
                                     {matchingCompetition
-                                      ? 10 - participants?.length + ' / ' + '10'
-                                      : '10 / 10'}
+                                      ? 20 - participants?.length + ' / ' + '20'
+                                      : '20 / 20'}
                                   </p>
                                 </div>
                               </div>

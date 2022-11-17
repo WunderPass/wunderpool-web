@@ -226,7 +226,7 @@ export default function Profile(props) {
 
               <div className="flex flex-col m-4 gap-2">
                 <div className="flex flex-row justify-between">
-                  {user.wunderId && (
+                  {user.userName && (
                     <div className="flex flex-row items-center justify-between w-full">
                       <label
                         className={'text-black py-2 px-3 mt-2 font-semibold'}
@@ -239,7 +239,7 @@ export default function Profile(props) {
                     <input
                       className="textfield py-2 px-3 mx-2"
                       type="text"
-                      placeholder="Wunder Id"
+                      placeholder="userName"
                       value={userName}
                       onChange={handleChangeUserName}
                     />
