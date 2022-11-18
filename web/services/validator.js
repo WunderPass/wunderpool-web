@@ -9,3 +9,7 @@ export function validatePhone(number) {
     number
   );
 }
+
+export function validateUserName(userName) {
+  return /^[a-zA-Z0-9]*$/.test(userName);
+}
