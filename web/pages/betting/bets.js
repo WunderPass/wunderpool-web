@@ -35,12 +35,6 @@ export default function Bets(props) {
   };
 
   useEffect(() => {
-    console.log('isHistory', isHistory);
-
-    console.log('vale', value);
-  }, [value]);
-
-  useEffect(() => {
     if (!router.query.sortId) return;
     setSortId(router.query.sortId);
     setIsSortById(true);
@@ -77,7 +71,6 @@ export default function Bets(props) {
                   }}
                 >
                   <StyledTabs
-                    textColor=""
                     value={value}
                     onChange={handleChange}
                     variant="fullWidth"

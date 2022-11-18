@@ -6,7 +6,6 @@ function BettingBox(props) {
   const { user, bettingService, isHistory } = props;
 
   const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
-    console.log('isHistory in bettingbox', isHistory);
     return isHistory
       ? bettingService.isReady
         ? [

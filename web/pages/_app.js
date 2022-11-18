@@ -40,7 +40,6 @@ function WunderPool({ Component, pageProps }) {
 
   const bettingService = useBettingService(user.address, handleError);
 
-  console.log('bettingServe', bettingService);
   const appProps = Object.assign(
     {
       user,
