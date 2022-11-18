@@ -56,7 +56,7 @@ function BettingBox(props) {
                 </Typography>
               </div>
             </div>
-
+            {console.log('bettingService', bettingService)}
             <div className="flex flex-col container-white-p-0 p-5 ">
               {isHistory ? (
                 <div className=" opacity-30 ">
