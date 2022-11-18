@@ -1,7 +1,7 @@
 import { Tooltip, Typography } from '@mui/material';
 
 export default function InitialsAvatar(props) {
-  const { tooltip, text, separator, color, shiftRight } = props;
+  const { tooltip, text, color, shiftRight } = props;
   let className = `initials-avatar ${shiftRight ? '-ml-2 ' : ' '}`;
 
   switch (color) {
@@ -67,16 +67,12 @@ export default function InitialsAvatar(props) {
       break;
   }
 
-  const initials = separator
+  const names = text.match(/([A-Za-z]+)(-| |_)([A-Za-z]+)/)?.slice(1, 4);
+  const initials = names
+    ? `${names?.[0]?.[0]}${names?.[2]?.[0]}`
+    : text.length == 2
     ? text
-        ?.match(
-          new RegExp(
-            `([\u00C0-\u017FA-Za-z])${separator}([\u00C0-\u017FA-Za-z])`
-          )
-        )
-        ?.slice(1, 3)
-        ?.join('')
-    : text;
+    : '0X';
 
   return (
     <div className={className}>

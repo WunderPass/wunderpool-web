@@ -60,11 +60,13 @@ export function calculateOdds(participants) {
 
 export function formatParticipant(participant) {
   if (!participant) return null;
-  const { user_address, home_score, away_score } = participant;
+  const { user_address, user_name, home_score, away_score } = participant;
 
   return {
     address: user_address,
     prediction: [home_score, away_score],
+    userName: user_name,
+    wunderId: user_name,
   };
 }
 
@@ -75,6 +77,7 @@ export function formatMember(member) {
   return {
     address,
     stake,
+    userName: user_name,
     wunderId: user_name,
   };
 }
