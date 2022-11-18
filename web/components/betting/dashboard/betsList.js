@@ -18,9 +18,32 @@ export default function BetsList(props) {
     isHistory ? (
       bettingService.userHistoryCompetitions.length > 0 ? (
         <div className={'grid grid-cols-1 gap-5 w-full'}>
-          {bettingService.userHistoryCompetitions.map((comp, i) => {
-            if (isSortById) {
-              if (comp.id == sortId) {
+          {bettingService.userHistoryCompetitions
+            .sort(
+              //TODO fix this as soon as comp has more then one game //
+              (a, b) =>
+                new Date(b.games[0]?.event?.startTime || 0) -
+                new Date(a.games[0]?.event?.startTime || 0)
+            )
+            .map((comp, i) => {
+              if (isSortById) {
+                if (comp.id == sortId) {
+                  return (
+                    <DashboardCompetitionCard
+                      key={`dashboard-competition-card-${comp.id}`}
+                      competition={comp}
+                      user={user}
+                      isSortById={isSortById}
+                      {...props}
+                    />
+                  );
+                }
+              } else if (
+                comp.games.find(
+                  (g) => g.event.competitionName == eventTypeSort
+                ) ||
+                eventTypeSort == 'All Events'
+              ) {
                 return (
                   <DashboardCompetitionCard
                     key={`dashboard-competition-card-${comp.id}`}
@@ -31,23 +54,7 @@ export default function BetsList(props) {
                   />
                 );
               }
-            } else if (
-              comp.games.find(
-                (g) => g.event.competitionName == eventTypeSort
-              ) ||
-              eventTypeSort == 'All Events'
-            ) {
-              return (
-                <DashboardCompetitionCard
-                  key={`dashboard-competition-card-${comp.id}`}
-                  competition={comp}
-                  user={user}
-                  isSortById={isSortById}
-                  {...props}
-                />
-              );
-            }
-          })}
+            })}
         </div>
       ) : (
         <div className="container-white">
