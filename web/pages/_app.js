@@ -39,8 +39,6 @@ function WunderPool({ Component, pageProps }) {
   const { updateWunderId, updateBackgroundColor } = UseIOS();
 
   const bettingService = useBettingService(user.address, handleError);
-
-  console.log('bettingServe', bettingService);
   const appProps = Object.assign(
     {
       user,

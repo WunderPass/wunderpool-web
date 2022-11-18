@@ -22,12 +22,10 @@ export default async function handler(req, res) {
             (p) => p.address == part.address
           );
           if (!serverParticipant) {
-            console.log(`New Participant: ${part.address}`);
             serverGame.participants.push(part);
           }
         });
       } else {
-        console.log(`New Game: ${game.name}`);
         games.push(game);
       }
     });
