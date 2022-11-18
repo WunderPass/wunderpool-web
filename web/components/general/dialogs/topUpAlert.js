@@ -18,6 +18,7 @@ import { SiMastercard } from 'react-icons/si';
 import { FaGooglePay } from 'react-icons/fa';
 import PayPalButton from '../utils/payPalButton';
 import { useRouter } from 'next/router';
+import { AiFillCloseCircle } from 'react-icons/ai';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -84,7 +85,14 @@ export default function TopUpAlert(props) {
       onClose={handleClose}
       TransitionComponent={Transition}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Manage Funds</DialogTitle>
+      <DialogTitle sx={{ textAlign: 'center' }}>
+        <div className="flex justify-end ">
+          <button onClick={() => handleClose()}>
+            <AiFillCloseCircle />
+          </button>
+        </div>{' '}
+        <div>Manage Funds</div>
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={2} className="w-full">
           <p>

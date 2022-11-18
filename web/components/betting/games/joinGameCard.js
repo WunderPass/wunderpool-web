@@ -264,6 +264,7 @@ function TopUpRequired(props) {
 
   return (
     <div className="flex flex-col justify-center items-center">
+      <div>X</div>
       <Typography className="text-sm mt-3">
         To continue, your Account needs more funds.
       </Typography>

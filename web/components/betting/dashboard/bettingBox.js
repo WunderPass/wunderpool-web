@@ -6,7 +6,6 @@ function BettingBox(props) {
   const { user, bettingService, isHistory } = props;
 
   const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
-    console.log('isHistory in bettingbox', isHistory);
     return isHistory
       ? bettingService.isReady
         ? [
@@ -57,7 +56,7 @@ function BettingBox(props) {
                 </Typography>
               </div>
             </div>
-
+            {console.log('bettingService', bettingService)}
             <div className="flex flex-col container-white-p-0 p-5 ">
               {isHistory ? (
                 <div className=" opacity-30 ">

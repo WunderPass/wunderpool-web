@@ -12,7 +12,11 @@ import NextLink from 'next/link';
 import { BiEdit } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { validateEmail, validatePhone } from '/services/validator';
+import {
+  validateEmail,
+  validatePhone,
+  validateUserName,
+} from '/services/validator';
 import PasswordRequiredAlert from '../../components/general/dialogs/passwordRequiredAlert';
 import { decryptSeed } from '../../services/crypto';
 import RevealLoginCode from '/components/general/profile/revealLoginCode';
@@ -29,6 +33,7 @@ export default function Profile(props) {
   const [showEmailError, setShowEmailError] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [showPhoneError, setShowPhoneError] = useState(null);
+  const [showUserNameError, setShowUserNameError] = useState(false);
   const [dataHasChanged, setDataHasChanged] = useState(false);
 
   const [seedPhrase, setSeedPhrase] = useState(null);
@@ -90,6 +95,7 @@ export default function Profile(props) {
 
   const handleChangeUserName = (event) => {
     setDataHasChanged(true);
+    setShowUserNameError(!validateUserName(event.target.value));
     setUserName(event.target.value);
   };
 
@@ -239,11 +245,16 @@ export default function Profile(props) {
                       className="textfield py-2 px-3 mx-2"
                       type="text"
                       placeholder="userName"
-                      value={userName}
+                      value={userName.toLowerCase()}
                       onChange={handleChangeUserName}
                     />
                   </div>
                 </div>
+                {showUserNameError && (
+                  <p className="text-red-700 text-right mr-3">
+                    Username is not valid! Please only use letters and numbers!
+                  </p>
+                )}
 
                 <div className="flex flex-row justify-between ">
                   <div className="flex flex-row items-center justify-between w-full">

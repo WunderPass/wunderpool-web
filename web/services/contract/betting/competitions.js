@@ -68,8 +68,6 @@ export async function createSingleCompetition({
 
     await afterPoolCreate();
 
-    console.log('competitionId', competitionId);
-
     const competition = await new Promise((res, rej) => {
       let retry = 0;
       const interval = setInterval(async () => {
