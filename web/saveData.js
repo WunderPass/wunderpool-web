@@ -4,7 +4,7 @@ const fs = require('fs');
 async function main() {
   try {
     const { data } = await axios({
-      url: 'http://localhost:3001/api/betting/admin/stats',
+      url: 'https://app.casama.io/api/betting/admin/stats',
     });
 
     let stats = [];
