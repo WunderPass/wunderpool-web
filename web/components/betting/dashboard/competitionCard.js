@@ -130,12 +130,7 @@ export default function DashboardCompetitionCard(props) {
   };
 
   useEffect(() => {
-    if (
-      game.event?.state == 'SETTLED' ||
-      game.event?.outcome?.reduce((a, b) => a + b, 0) == 0
-    ) {
-      setGameResultTable(game.participants);
-    } else {
+    if (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state)) {
       setGameResultTable(
         calculateWinnings(
           game,
@@ -144,6 +139,8 @@ export default function DashboardCompetitionCard(props) {
           competition.payoutRule
         )
       );
+    } else {
+      setGameResultTable(game.participants);
     }
   }, [game.event?.outcome]);
 
