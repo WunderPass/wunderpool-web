@@ -78,7 +78,6 @@ export default function Profile(props) {
           data: formData,
         });
         setImage(null);
-        handleSuccess('messages.profile.saved');
         setUploading(false);
         setDataHasChanged(false);
       } catch (error) {
@@ -146,9 +145,9 @@ export default function Profile(props) {
         },
         data: reqData,
       });
+      await uploadToServer();
       handleSuccess('Your profile was saved!');
       user.getUserData();
-      await uploadToServer();
     } catch (error) {
       console.log(error);
       handleError(error?.response?.data?.error || error);

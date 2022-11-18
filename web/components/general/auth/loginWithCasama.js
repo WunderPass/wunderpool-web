@@ -262,7 +262,7 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
           <Error msg={errors.password} />
         </div>
         <Error msg={loginError} />
-        {suggestLoginWithSeed && (
+        {suggestLoginWithSeed ? (
           <>
             <p className="text-gray-500">
               It looks like your Account was created with an early Version of
@@ -274,9 +274,16 @@ function CredentialsForm({ setLoginWithSeed, onSuccess, toggleSignup }) {
               type="button"
               className="btn-casama-white px-5 py-2"
             >
-              Login With Seed Phrase
+              Restore Account with Seed Phrase
             </button>
           </>
+        ) : (
+          <a
+            onClick={() => setLoginWithSeed(true)}
+            className="text-casama-blue underline cursor-pointer"
+          >
+            Restore Account with Seed Phrase
+          </a>
         )}
         {suggestSignup && (
           <>
@@ -313,6 +320,7 @@ function SeedPhraseForm({
   password,
   setPassword,
   onSuccess,
+  setLoginWithSeed,
 }) {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errors, setErrors] = useState({});
@@ -391,6 +399,12 @@ function SeedPhraseForm({
           <Error msg={errors.passwordConfirmation} />
         </div>
         <Error msg={loginError} />
+        <a
+          onClick={() => setLoginWithSeed(false)}
+          className="text-casama-blue underline cursor-pointer"
+        >
+          Login with Username or Email
+        </a>
         <button
           type="submit"
           disabled={loading}
@@ -422,6 +436,7 @@ export default function LoginWithCasama({ onSuccess, toggleSignup }) {
             password={password}
             setPassword={setPassword}
             onSuccess={onSuccess}
+            setLoginWithSeed={setLoginWithSeed}
           />
         ) : (
           <CredentialsForm

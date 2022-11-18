@@ -5,16 +5,17 @@ import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Avatar from '/components/general/members/avatar';
 import Timer from '/components/general/utils/timer';
+import SoccerTimer from '/components/general/utils/soccerTimer';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
 import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
 import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
-import usePool from '/hooks/usePool';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import { BsFillArrowUpSquareFill } from 'react-icons/bs';
+
 
 function ParticipantTable({ participants, members, stake, user }) {
   return (
@@ -146,6 +147,10 @@ export default function DashboardCompetitionCard(props) {
       );
     }
   }, [game.event?.outcome]);
+
+  function addMinutes(date, minutes) {
+    return new Date(date.getTime() + minutes * 60000);
+  }
 
   useEffect(() => {
     if (!isSortById) return;
@@ -326,38 +331,35 @@ export default function DashboardCompetitionCard(props) {
                       </p>
                     </div>
                   </div>
-                ) : (
-                  <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
-                    {new Date(game.event.startTime) < new Date() && (
-                      <div className="absolute top-2 right-3 flex items-center gap-1 animate-pulse">
+                </div>
+              ) : (
+                <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
+                  {new Date(game.event.startTime) < new Date() && (
+                    <div className="absolute top-2 right-3 flex items-center gap-1 ">
+                      {/* <div>
+                        <SoccerTimer
+                          start={Number(new Date())}
+                          end={Number(addMinutes(new Date(), 90))}
+                        />
+                        {console.log(new Date())}
+                        {console.log(addMinutes(new Date(), 90))}
+                      </div> */}
+
+                      <div className="flex flex-row animate-pulse">
                         <div className="bg-red-500 w-2 h-2 rounded-full"></div>
                         <div className="text-sm">LIVE</div>
                       </div>
-                    )}
-                    <Timer
-                      start={Number(new Date())}
-                      end={
-                        new Date(game.event.startTime) > new Date()
-                          ? game.event.startTime
-                          : game.event.endTime
-                      }
-                    />
-                  </div>
-                )}
-              </div>
-              {/* Only Show participants if user has voted */}
-              {user &&
-                (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
-                  game.event.state
-                ) ||
-                  game.participants.find((participant) =>
-                    compAddr(participant.address, user.address)
-                  )) && (
-                  <ParticipantTable
-                    participants={gameResultTable}
-                    members={competition.members}
-                    stake={stake}
-                    user={user}
+                    </div>
+                  )}
+                  <Timer
+                    start={Number(new Date())}
+                    end={
+                      new Date(game.event.startTime) > new Date()
+                        ? game.event.startTime
+                        : game.event.endTime
+                    }
+                    size="large"
+
                   />
                 )}
             </Collapse>

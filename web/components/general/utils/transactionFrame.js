@@ -11,6 +11,7 @@ function CasamaLoading({ open, text = null }) {
     'Writing your Transaction on the Blockchain',
     'Building the Blocks',
     'Waiting for Confirmation',
+    'We are almost there. Please be Patient',
   ];
 
   useEffect(() => {

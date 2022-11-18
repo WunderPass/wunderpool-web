@@ -24,7 +24,7 @@ import TransactionFrame from '/components/general/utils/transactionFrame';
 export default function JoinGameCard(props) {
   const { competition, game, handleSuccess, user, handleError, handleInfo } =
     props;
-  const stake = competition?.stake;
+  const stake = competition?.competition?.stake;
   const router = useRouter();
 
   const handleLogin = (data) => {
@@ -132,10 +132,7 @@ export default function JoinGameCard(props) {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center w-full mb-4 ">
-                    <InputJoinAmount
-                      competition={competition?.competition}
-                      {...props}
-                    />
+                    <InputJoinAmount {...props} />
                   </div>
                 ))}
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-4">
@@ -299,12 +296,12 @@ function InputJoinAmount(props) {
     setLoadingText('Joining Competition...');
 
     joinSingleCompetition({
-      competitionId: competition.id,
+      competitionId: competition.competition?.id,
       gameId: game.id,
-      poolAddress: competition.poolAddress,
+      poolAddress: competition.competition?.poolAddress,
       prediction: [guessOne, guessTwo],
       userAddress: user.address,
-      stake: competition.stake,
+      stake: competition.competition?.stake,
       secret,
       poolVersion: 'ETA',
       event: game.event,
@@ -355,7 +352,7 @@ function InputJoinAmount(props) {
             className="btn-casama px-5 py-2 text-xl"
             onClick={placeBet}
           >
-            Bet {currency(competition.stake)} on{' '}
+            Bet {currency(competition.competition?.stake)} on{' '}
             {guessOne > guessTwo
               ? game.event.teamHome?.name
               : guessOne < guessTwo
