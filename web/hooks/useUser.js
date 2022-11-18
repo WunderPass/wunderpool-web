@@ -268,7 +268,6 @@ export default function useUser() {
 
       window.ethereum.on('accountsChanged', function ([newAddress]) {
         if (newAddress) {
-          updateWunderId(null, true);
           updateAddress(newAddress);
         } else {
           logOut();
@@ -328,6 +327,7 @@ export default function useUser() {
       await fetchPools();
       await fetchWhitelistedPools();
       await fetchFriends();
+      await getUserData();
       setIsReady(true);
       if (!wunderId) {
         axios({
