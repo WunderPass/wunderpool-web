@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import useCompetition from '/hooks/useCompetition';
 import JoinGameCard from '/components/betting/games/joinGameCard';
-import { compAddr, showWunderIdsAsIcons } from '/services/memberHelpers';
 import CustomHeader from '/components/general/utils/customHeader';
 import { useMemo } from 'react';
 

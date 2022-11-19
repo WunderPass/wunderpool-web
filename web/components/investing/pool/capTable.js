@@ -51,21 +51,12 @@ export default function CapTable(props) {
                         member.share,
                         2
                       )}%`}
-                      text={member.wunderId ? member.wunderId : '0-X'}
-                      color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
+                      text={member.userName ? member.userName : '0X'}
                       i={i}
                     />
 
-                    {/* {getEnsNameFromAddress(member.address).then((name) =>
-                      console.log('name', name)
-                    )} TODO */}
-
                     <Typography className="ml-1 md:hidden">
-                      {member.wunderId
-                        ? member.wunderId
-                        : // : getEnsNameFromAddress(member.address)
-                          // ? getEnsNameFromAddress(member.address)
-                          'External User'}
+                      {member.userName ? member.userName : 'External User'}
                     </Typography>
                   </div>
                 </td>

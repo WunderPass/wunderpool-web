@@ -101,7 +101,7 @@ export default function BottomBar(props) {
                       : null
                   }
                   wunderId={user.wunderId}
-                  text={user.wunderId || '0-X'}
+                  text={user.userName || '0X'}
                   i={1}
                 />
               </div>

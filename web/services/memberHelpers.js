@@ -6,21 +6,20 @@ import InitialsAvatar from '/components/general/members/initialsAvatar';
 export function getNameFor(member = {}) {
   return member.firstName && member.lastName
     ? `${member.firstName} ${member.lastName}`
-    : member.wunder_id || member.wunderId || 'External User';
+    : member.userName || member.handle || member.wunderId || 'External User';
 }
 
 export function showWunderIdsAsIcons(arr, amount = 3) {
   if (arr.length < 1) return null;
   return (
     <>
-      {arr.slice(0, amount).map((wunderId, i) => (
+      {arr.slice(0, amount).map(({ wunderId, userName }, i) => (
         <Avatar
           key={`member-avatar-${wunderId}`}
           shiftRight
           wunderId={wunderId}
-          text={wunderId ? wunderId : '0-X'}
-          tooltip={wunderId}
-          color={['green', 'blue', 'red'][i % 3]}
+          text={userName ? userName : '0X'}
+          tooltip={userName}
           i={i}
         />
       ))}

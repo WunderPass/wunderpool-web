@@ -101,8 +101,7 @@ export default function PoolMembers(props) {
                         tooltip={`${getNameFor(
                           member
                         )}: ${member.share.toString()}%`}
-                        text={member.wunderId ? member.wunderId : '0-X'}
-                        color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
+                        text={member.userName ? member.userName : '0X'}
                         i={i}
                       />
                     );

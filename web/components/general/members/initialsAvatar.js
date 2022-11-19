@@ -70,9 +70,7 @@ export default function InitialsAvatar(props) {
   const names = text.match(/([A-Za-z]+)(-| |_)([A-Za-z]+)/)?.slice(1, 4);
   const initials = names
     ? `${names?.[0]?.[0]}${names?.[2]?.[0]}`
-    : text.length == 2
-    ? text
-    : '0X';
+    : text.slice(0, 2);
 
   return (
     <div className={className}>
