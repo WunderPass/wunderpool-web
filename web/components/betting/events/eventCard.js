@@ -54,15 +54,12 @@ export default function EventCard(props) {
     if (participants.length > 0) {
       votes = [[], [], []];
       participants.forEach((p) => {
-        const wunderId = members.find((m) =>
-          compAddr(m.address, p.address)
-        )?.wunderId;
         if (Number(p.prediction[0]) > Number(p.prediction[1])) {
-          votes[0].push(wunderId);
+          votes[0].push(p);
         } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
-          votes[1].push(wunderId);
+          votes[1].push(p);
         } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
-          votes[2].push(wunderId);
+          votes[2].push(p);
         }
       });
     }

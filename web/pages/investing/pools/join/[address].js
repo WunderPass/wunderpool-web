@@ -279,8 +279,7 @@ export default function JoinPool(props) {
                     tooltip={`${getNameFor(member)}: ${member.share.toFixed(
                       0
                     )}%`}
-                    text={member.wunderId ? member.wunderId : '0-X'}
-                    color={['green', 'blue', 'red'][i % 3]}
+                    text={member.userName ? member.userName : '0X'}
                     i={i}
                   />
                 );

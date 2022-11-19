@@ -32,6 +32,7 @@ export default function useUser() {
   const [friends, setFriends] = useState([]);
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [checkedTopUp, setCheckedTopUp] = useState(null);
   const [confirmedBackup, setConfirmedBackup] = useState(null);
   const router = useRouter();
@@ -139,13 +140,44 @@ export default function useUser() {
     }
   };
 
+  const fetchNotifications = async () => {
+    try {
+      const { data: rewards } = await axios({
+        url: '/api/users/pendingRewards',
+        params: { wunderId },
+      });
+      setNotifications(
+        rewards.map(({ reward_type, description, reward_amount }) => ({
+          type: reward_type,
+          action: () => claimReward(reward_type, reward_amount),
+          text: `Claim $${reward_amount} - "${description}"`,
+          amount: reward_amount,
+        }))
+      );
+    } catch (error) {
+      console.log('Could not Load Notifications', error);
+    }
+  };
+
+  const claimReward = async (type, amount) => {
+    try {
+      const { signedMessage, signature } = await getSignedMillis();
+      await axios({
+        url: '/api/users/claimReward',
+        params: { type },
+        headers: { signed: signedMessage, signature },
+      });
+      setUsdBalance((bal) => Number(bal) + amount || 0);
+      setNotifications((notis) => notis.filter((noti) => noti.type != type));
+    } catch (error) {
+      console.log('Could not Claim Reward', error);
+    }
+  };
+
   const fetchUsdBalance = async () => {
     return new Promise((res, rej) => {
       usdcBalanceOf(address).then((balance) => {
         setUsdBalance(balance);
-        if (balance < 1 && !checkedTopUp) {
-          setTopUpRequired(true);
-        }
         res(balance);
       });
     });
@@ -326,7 +358,6 @@ export default function useUser() {
       await fetchUsdBalance();
       await fetchPools();
       await fetchWhitelistedPools();
-      await fetchFriends();
       await getUserData();
       setIsReady(true);
       if (!wunderId) {
@@ -345,11 +376,19 @@ export default function useUser() {
     }
   }, [address]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (wunderId) {
-      await fetchFriends();
+      fetchNotifications();
+      fetchFriends();
     }
   }, [wunderId]);
+
+  useEffect(() => {
+    if (!isReady) return;
+    if (Number(usdBalance) < 1 && !checkedTopUp && notifications.length == 0) {
+      setTopUpRequired(true);
+    }
+  }, [notifications, isReady]);
 
   useEffect(() => {
     if (router.asPath == '/investing/pools') {
@@ -393,6 +432,7 @@ export default function useUser() {
     fetchFriends,
     whitelistedPools,
     fetchWhitelistedPools,
+    notifications,
     usdBalance,
     fetchUsdBalance,
     topUpRequired,

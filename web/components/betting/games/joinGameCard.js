@@ -151,10 +151,7 @@ export default function JoinGameCard(props) {
                 <Divider className="my-1" />
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-center truncate my-1 ...">
-                  {showWunderIdsAsIcons(
-                    competition?.competition.members.map((m) => m.wunderId),
-                    7
-                  )}
+                  {showWunderIdsAsIcons(competition?.competition.members, 7)}
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">

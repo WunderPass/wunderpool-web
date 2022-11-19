@@ -140,7 +140,7 @@ function WunderPool({ Component, pageProps }) {
             style={{ marginTop: 'env(safe-area-inset-top)' }}
           />
           <TopUpAlert
-            open={user.topUpRequired}
+            open={user.topUpRequired && user.notifications.length == 0}
             setOpen={user.setTopUpRequired}
             user={user}
           />

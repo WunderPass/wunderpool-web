@@ -182,10 +182,7 @@ export default function AdminBettingPage(props) {
                             member.share,
                             2
                           )}%`}
-                          text={member.wunderId ? member.wunderId : '0-X'}
-                          color={
-                            ['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]
-                          }
+                          text={member.wunderId ? member.wunderId : '0X'}
                           i={i}
                         />
 

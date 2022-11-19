@@ -70,7 +70,7 @@ export default function useEventListener(handleInfo) {
             ).data,
             600
           ));
-        resolve(user?.wunder_id || null);
+        resolve(user?.handle || null);
       } catch (error) {
         resolve(null);
       }
@@ -116,10 +116,10 @@ export default function useEventListener(handleInfo) {
   const handleUserJoined = async (event) => {
     const user = JSON.parse(event.data)?.entity;
     if (relevantForPool(event)) {
-      const wunderId = await resolveUser(user.members_address);
+      const userName = await resolveUser(user.members_address);
       notifyIfRelevant(
         `${
-          wunderId || truncateAddr(user.members_address)
+          userName || truncateAddr(user.members_address)
         } joined the Pool with ${currency(user.invest)}`,
         user.members_address
       );
@@ -127,9 +127,9 @@ export default function useEventListener(handleInfo) {
     } else {
       const pool = relevantForUser(event);
       if (!pool) return;
-      const wunderId = await resolveUser(user.members_address);
+      const userName = await resolveUser(user.members_address);
       handleInfo(
-        `${wunderId || truncateAddr(user.members_address)} joined the Pool "${
+        `${userName || truncateAddr(user.members_address)} joined the Pool "${
           pool.name
         }" with ${currency(user.invest)}`,
         { href: poolLink(pool.address), btn: 'Show' }

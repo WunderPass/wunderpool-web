@@ -3,83 +3,16 @@ import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
-import Avatar from '/components/general/members/avatar';
 import Timer from '/components/general/utils/timer';
 import SoccerTimer from '/components/general/utils/soccerTimer';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
-import { getEnsNameFromAddress } from '/services/memberHelpers';
-import { compAddr } from '../../../services/memberHelpers';
 import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import { BsFillArrowUpSquareFill } from 'react-icons/bs';
-
-function ParticipantTable({ participants, members, stake, user }) {
-  return (
-    <div className="">
-      {participants.length > 0 && (
-        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
-          Participants :
-        </div>
-      )}
-
-      {participants
-        .sort((a, b) => b.winnings || 0 - a.winnings || 0)
-        .map((participant, i) => {
-          const wunderId = members.find((m) =>
-            compAddr(m.address, participant.address)
-          )?.wunderId;
-          return (
-            <div
-              key={`participant-${participant.address}`}
-              className={
-                compAddr(participant.address, user.address)
-                  ? `container-casama-p-0 p-2 flex flex-row items-center justify-between gap-2 my-1 w-full`
-                  : `container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full`
-              }
-            >
-              <div>
-                <Avatar
-                  wunderId={wunderId}
-                  tooltip={wunderId}
-                  text={wunderId ? wunderId : '0-X'}
-                  color={['green', 'blue', 'red'][i % 3]}
-                  i={i}
-                />
-              </div>
-              <div className="flex items-center justify-start truncate flex-grow">
-                {wunderId ? (
-                  <div className="truncate">{wunderId}</div>
-                ) : (
-                  <div className="truncate">{participant.address}</div>
-                )}
-              </div>
-              <div className="flex flex-row justify-end items-center text-xl">
-                <p>{participant.prediction[0]}</p>
-                <p className="px-1">:</p>
-                <p>{participant.prediction[1]}</p>
-              </div>
-              {participant.winnings != undefined && (
-                <div className=" min-w-[5rem] text-right text-xl">
-                  {participant.winnings >= stake ? (
-                    <p className="text-green-500">
-                      {currency(participant.winnings)}
-                    </p>
-                  ) : (
-                    <p className="text-red-500">
-                      {currency(stake - participant.winnings)}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
-    </div>
-  );
-}
+import ParticipantTable from '../games/ParticipantTable';
 
 export default function DashboardCompetitionCard(props) {
   const { competition, handleSuccess, handleError, user, isSortById } = props;
@@ -360,7 +293,6 @@ export default function DashboardCompetitionCard(props) {
               </div>
               <ParticipantTable
                 participants={gameResultTable}
-                members={competition.members}
                 stake={stake}
                 user={user}
               />

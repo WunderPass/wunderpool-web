@@ -1,42 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Menu, Badge, MenuItem, ListItemIcon } from '@mui/material';
 import { IoMdNotifications } from 'react-icons/io';
 import RedeemIcon from '@mui/icons-material/Redeem';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-
-const axios = require('axios');
 
 const news = (props) => {
   const { user } = props;
-  const [newsListOpen, setNewsListOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const animateFrom = { opacity: 0, y: -40 };
   const animateTo = { opacity: 1, y: 0 };
-  const [authorized, setAuthorized] = useState(false);
-  const [notifications, setNotifications] = useState(0);
-
-  const checkAuthForClaim = () => {
-    axios({
-      method: 'get',
-      url: '/api/claimable',
-      params: { wunderId: user?.wunderId },
-    }).then((res) => {
-      if (res?.data?.resp) {
-        setNotifications(1);
-      } else {
-        setNotifications(0);
-      }
-      setAuthorized(res?.data?.resp);
-    });
-  };
 
   const handleMenuClose = () => {
-    setNewsListOpen(false);
+    setOpen(false);
   };
-
-  useEffect(() => {
-    if (user?.wunderId) checkAuthForClaim();
-  }, [user?.wunderId]);
 
   return (
     <>
@@ -47,37 +23,35 @@ const news = (props) => {
         transition={{ delay: 0.05 }}
       >
         <button
-          onClick={(e) => setNewsListOpen(e.currentTarget)}
-          className={notifications > 0 ? '' : 'opacity-50'}
+          onClick={(e) => setOpen(e.currentTarget)}
+          className={user.notifications.length > 0 ? '' : 'opacity-50'}
         >
-          <Badge color="red" badgeContent={notifications} max={99}>
+          <Badge color="red" badgeContent={user.notifications.length} max={99}>
             <IoMdNotifications className="text-xl" />
           </Badge>
         </button>
         <Menu
           className="mt-5 "
-          open={Boolean(newsListOpen)}
+          open={Boolean(open)}
           onClose={handleMenuClose}
           onClick={handleMenuClose}
-          anchorEl={newsListOpen}
+          anchorEl={open}
           sx={{ borderRadius: '50%' }}
         >
-          {authorized && (
-            <Link
-              href={`https://app.wunderpass.org/`}
-              sx={{ textDecoration: 'none', color: 'inherit' }}
-              passHref
-            >
-              <MenuItem>
+          {user.notifications.map((notification) => {
+            return (
+              <MenuItem onClick={notification.action}>
                 <ListItemIcon>
                   <RedeemIcon fontSize="small" />
                 </ListItemIcon>
-                Claim 50$ for your WunderPass NFT
+                {notification.text}
               </MenuItem>
-            </Link>
-          )}
+            );
+          })}
 
-          {notifications == 0 && <MenuItem> - no notifications - </MenuItem>}
+          {user.notifications.length == 0 && (
+            <MenuItem> - no notifications - </MenuItem>
+          )}
         </Menu>
       </motion.li>
     </>

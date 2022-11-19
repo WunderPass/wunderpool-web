@@ -85,7 +85,7 @@ export default function usePool(
   const resolveMember = (address) => {
     if (compAddr(address, poolAddress)) return poolName;
     return (
-      poolMembers.find((m) => compAddr(m.address, address))?.wunderId || address
+      poolMembers.find((m) => compAddr(m.address, address))?.userName || address
     );
   };
 
@@ -408,6 +408,7 @@ export default function usePool(
           data: { addresses: pool_members.map((m) => m.members_address) },
         })
       ).data;
+      console.log(resolvedMembers);
 
       const formattedMembers = await Promise.all(
         pool_members.map(async (mem) => {
@@ -424,6 +425,7 @@ export default function usePool(
             member.wunderId = user?.wunder_id;
             member.firstName = user?.firstname;
             member.lastName = user?.lastname;
+            member.userName = user?.handle;
           } catch (err) {
             console.log(err);
           }

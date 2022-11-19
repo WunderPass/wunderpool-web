@@ -60,22 +60,34 @@ export function calculateOdds(participants) {
 
 export function formatParticipant(participant) {
   if (!participant) return null;
-  const { user_address, home_score, away_score } = participant;
-
+  const {
+    user_address,
+    user_name,
+    wunder_id,
+    profile_name,
+    home_score,
+    away_score,
+  } = participant;
   return {
     address: user_address,
     prediction: [home_score, away_score],
+    wunderId: wunder_id,
+    userName: user_name,
+    profileName: profile_name,
   };
 }
 
 export function formatMember(member) {
   if (!member) return null;
-  const { address, stake, user_name } = member;
+  const { address, user_name, wunder_id, profile_name, stake, profit } = member;
 
   return {
     address,
     stake,
-    wunderId: user_name,
+    wunderId: wunder_id,
+    userName: user_name,
+    profileName: profile_name,
+    profit,
   };
 }
 

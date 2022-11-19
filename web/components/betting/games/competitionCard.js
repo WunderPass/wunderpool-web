@@ -1,4 +1,4 @@
-import { Stack, Typography, IconButton, Divider } from '@mui/material';
+import { Typography, IconButton, Divider } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
@@ -9,82 +9,9 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
-import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { compAddr } from '../../../services/memberHelpers';
 import { calculateWinnings } from '/services/bettingHelpers';
-
-function ParticipantTable({ user, participants, stake }) {
-  return (
-    <div className="">
-      {participants.length > 0 && (
-        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
-          Participants :
-        </div>
-      )}
-
-      {participants
-        .sort((a, b) => b.winnings || 0 - a.winnings || 0)
-        .map((participant, i) => {
-          return (
-            <div
-              key={`participant-${participant.address}`}
-              className="flex flex-row w-full "
-            >
-              <div
-                className={
-                  compAddr(participant.address, user.address)
-                    ? `container-casama-p-0 px-4 flex flex-row items-center justify-between pl-2 my-1 w-full`
-                    : `container-white-p-0 px-4 flex flex-row items-center justify-between pl-2 my-0.5 w-full`
-                }
-              >
-                <div className=" flex flex-row justify-start w-5/6">
-                  <div className="flex ml-2">
-                    <Avatar
-                      shiftRight
-                      wunderId={participant.wunderId}
-                      tooltip={`${participant.wunderId}`}
-                      text={participant.wunderId ? participant.wunderId : '0-X'}
-                      color={['green', 'blue', 'red'][i % 3]}
-                      i={i}
-                    />
-                  </div>
-
-                  {/* TODO {getEnsNameFromAddress(participant.address).then((name) =>
-                  console.log('name', name)
-                )} */}
-                  <div className="flex items-center justify-start ml-2 wtext-ellipsis overflow-hidden mr-4">
-                    {participant.wunderId ? (
-                      <div className="truncate">{participant.wunderId}</div>
-                    ) : (
-                      <div className="truncate">{participant.address}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-row justify-end items-center py-3 w-full text-xl">
-                  <p>{participant.prediction[0]}</p>
-                  <p className="px-1">:</p>
-                  <p>{participant.prediction[1]}</p>
-                </div>
-                {participant.winnings != undefined && (
-                  <div className="py-3 ml-4">
-                    {participant.winnings >= stake ? (
-                      <p className="text-green-500 text-xl">
-                        {currency(participant.winnings - stake)}
-                      </p>
-                    ) : (
-                      <p className="text-red-500 text-xl">
-                        {currency(stake - participant.winnings)}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-    </div>
-  );
-}
+import ParticipantTable from './ParticipantTable';
 
 export default function CompetitionCard(props) {
   const { competition, totalTokens, wunderPool, handleSuccess, user } = props;
