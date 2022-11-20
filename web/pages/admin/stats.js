@@ -14,6 +14,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { useMemo } from 'react';
 
 const admins = [
   '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
@@ -23,8 +24,26 @@ const admins = [
   '0x466274eefdd3265e3d8085933e69890f33023048', // Max
 ];
 
-function sum(array) {
-  return array.reduce((a, b) => a + b, 0);
+const timeFrames = [
+  ['1d', 1],
+  ['1w', 7],
+  ['1m', 30],
+  ['1y', 365],
+];
+
+function Diff({ live, historic }) {
+  if (live && historic && live != historic) {
+    let color;
+    if (live < historic) color = 'text-red-500';
+    if (live > historic) color = 'text-green-500';
+    return (
+      <span className={`${color} text-xl ml-2`}>
+        {toFixed(((live - historic) / historic) * 100, 1)}%
+      </span>
+    );
+  } else {
+    return null;
+  }
 }
 
 export default function AdminBettingPage(props) {
@@ -32,6 +51,15 @@ export default function AdminBettingPage(props) {
   const router = useRouter();
   const [historicData, setHistoricData] = useState(null);
   const [liveData, setLiveData] = useState(null);
+  const [timeFrame, setTimeFrame] = useState(1);
+
+  const compareData = useMemo(() => {
+    const lookupDate = new Date(new Date() - timeFrame * 86400000);
+    const ts = `${lookupDate.getFullYear()}-${
+      lookupDate.getMonth() + 1
+    }-${lookupDate.getDate()}`;
+    return historicData?.find((d) => d.date == ts);
+  }, [timeFrame, historicData]);
 
   const fetchHistory = async () => {
     try {
@@ -76,6 +104,25 @@ export default function AdminBettingPage(props) {
     <Container maxWidth="xl" className="mt-5">
       {liveData ? (
         <Stack spacing={2}>
+          <div className="self-end">
+            <div className="flex gap-2">
+              {timeFrames.map(([text, days]) => {
+                return (
+                  <a
+                    key={`timeframe-${text}`}
+                    className={`${
+                      days == timeFrame
+                        ? 'text-casama-blue'
+                        : 'text-gray-500 cursor-pointer'
+                    } underline`}
+                    onClick={() => setTimeFrame(days)}
+                  >
+                    {text}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
           <div className="container-gray">
             <h3 className="text-2xl mb-2 text-center">Number of Games</h3>
             <Divider />
@@ -87,6 +134,10 @@ export default function AdminBettingPage(props) {
                 </div>
                 <p className="text-casama-blue">
                   {liveData.gameCount.historic}
+                  <Diff
+                    live={liveData.gameCount.historic}
+                    historic={compareData?.gameCount?.historic}
+                  />
                 </p>
               </div>
               <div className="flex flex-col gap-2 items-center">
@@ -94,7 +145,13 @@ export default function AdminBettingPage(props) {
                   <MdLiveTv className="text-casama-blue" />
                   Live
                 </div>
-                <p className="text-casama-blue">{liveData.gameCount.live}</p>
+                <p className="text-casama-blue">
+                  {liveData.gameCount.live}
+                  <Diff
+                    live={liveData.gameCount.live}
+                    historic={compareData?.gameCount?.live}
+                  />
+                </p>
               </div>
               <div className="flex flex-col gap-2 items-center">
                 <div className="flex items-center gap-2">
@@ -103,6 +160,10 @@ export default function AdminBettingPage(props) {
                 </div>
                 <p className="text-casama-blue">
                   {liveData.gameCount.upcoming}
+                  <Diff
+                    live={liveData.gameCount.upcoming}
+                    historic={compareData?.gameCount?.upcoming}
+                  />
                 </p>
               </div>
             </div>
@@ -118,6 +179,10 @@ export default function AdminBettingPage(props) {
                 </div>
                 <p className="text-casama-blue">
                   {currency(liveData.potSize.historic)}
+                  <Diff
+                    live={liveData.potSize.historic}
+                    historic={compareData?.potSize?.historic}
+                  />
                 </p>
               </div>
               <div className="flex flex-col gap-2 items-center">
@@ -127,6 +192,10 @@ export default function AdminBettingPage(props) {
                 </div>
                 <p className="text-casama-blue">
                   {currency(liveData.potSize.live)}
+                  <Diff
+                    live={liveData.potSize.live}
+                    historic={compareData?.potSize?.live}
+                  />
                 </p>
               </div>
               <div className="flex flex-col gap-2 items-center">
@@ -136,33 +205,53 @@ export default function AdminBettingPage(props) {
                 </div>
                 <p className="text-casama-blue">
                   {currency(liveData.potSize.upcoming)}
+                  <Diff
+                    live={liveData.potSize.upcoming}
+                    historic={compareData?.potSize?.upcoming}
+                  />
                 </p>
               </div>
             </div>
           </div>
           <div className="flex flex-wrap sm:flex-nowrap gap-3">
-            <div className="container-gray w-full">
+            <div className="container-gray w-full flex flex-col justify-between">
               <h3 className="text-2xl mb-2 text-center">Unique Users</h3>
               <p className="text-3xl text-center text-casama-blue">
                 {liveData.uniqueUsers}
+                <Diff
+                  live={liveData.uniqueUsers}
+                  historic={compareData?.uniqueUsers}
+                />
               </p>
             </div>
-            <div className="container-gray w-full">
+            <div className="container-gray w-full flex flex-col justify-between">
               <h3 className="text-2xl mb-2 text-center">Fees Earned</h3>
               <p className="text-3xl text-center text-casama-blue">
                 {currency(liveData.feesEarned)}
+                <Diff
+                  live={liveData.feesEarned}
+                  historic={compareData?.feesEarned}
+                />
               </p>
             </div>
-            <div className="container-gray w-full">
+            <div className="container-gray w-full flex flex-col justify-between">
               <h3 className="text-2xl mb-2 text-center">Members per Game</h3>
               <p className="text-3xl text-center text-casama-blue">
                 {toFixed(liveData.membersPerGame.count, 2)}
+                <Diff
+                  live={liveData.membersPerGame.count}
+                  historic={compareData?.membersPerGame?.count}
+                />
               </p>
             </div>
-            <div className="container-gray w-full">
+            <div className="container-gray w-full flex flex-col justify-between">
               <h3 className="text-2xl mb-2 text-center">Games per Member</h3>
               <p className="text-3xl text-center text-casama-blue">
                 {toFixed(liveData.gamesPerMember.count, 2)}
+                <Diff
+                  live={liveData.gamesPerMember.count}
+                  historic={compareData?.gamesPerMember?.count}
+                />
               </p>
             </div>
           </div>
