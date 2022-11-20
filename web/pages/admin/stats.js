@@ -31,14 +31,28 @@ const timeFrames = [
   ['1y', 365],
 ];
 
-function Diff({ live, historic }) {
+function formatDate(dateStr) {
+  const date = dateStr ? new Date(dateStr) : new Date();
+  return date.toLocaleDateString('de', {
+    dateStyle: 'short',
+  });
+}
+
+function Diff({ live, historic, percent }) {
   if (live && historic && live != historic) {
-    let color;
-    if (live < historic) color = 'text-red-500';
-    if (live > historic) color = 'text-green-500';
+    const increased = live > historic;
     return (
-      <span className={`${color} text-xl ml-2`}>
-        {toFixed(((live - historic) / historic) * 100, 1)}%
+      <span
+        className={`${
+          increased ? 'text-green-500' : 'text-red-500'
+        } text-xl ml-2`}
+      >
+        {percent
+          ? `${increased ? '+' : '-'}${toFixed(
+              (Math.abs(live - historic) / historic) * 100,
+              1
+            )}%`
+          : `${increased ? '+' : '-'}${toFixed(Math.abs(live - historic), 0)}`}
       </span>
     );
   } else {
@@ -174,6 +188,7 @@ export default function AdminBettingPage(props) {
                 <p className="text-casama-blue">
                   {currency(liveData.potSize.historic)}
                   <Diff
+                    percent
                     live={liveData.potSize.historic}
                     historic={compareData?.potSize?.historic}
                   />
@@ -196,6 +211,7 @@ export default function AdminBettingPage(props) {
                 <p className="text-casama-blue">
                   {currency(liveData.potSize.upcoming)}
                   <Diff
+                    percent
                     live={liveData.potSize.upcoming}
                     historic={compareData?.potSize?.upcoming}
                   />
@@ -219,6 +235,7 @@ export default function AdminBettingPage(props) {
               <p className="text-3xl text-center text-casama-blue">
                 {currency(liveData.feesEarned)}
                 <Diff
+                  percent
                   live={liveData.feesEarned}
                   historic={compareData?.feesEarned}
                 />
@@ -229,6 +246,7 @@ export default function AdminBettingPage(props) {
               <p className="text-3xl text-center text-casama-blue">
                 {toFixed(liveData.membersPerGame.count, 2)}
                 <Diff
+                  percent
                   live={liveData.membersPerGame.count}
                   historic={compareData?.membersPerGame?.count}
                 />
@@ -239,10 +257,55 @@ export default function AdminBettingPage(props) {
               <p className="text-3xl text-center text-casama-blue">
                 {toFixed(liveData.gamesPerMember.count, 2)}
                 <Diff
+                  percent
                   live={liveData.gamesPerMember.count}
                   historic={compareData?.gamesPerMember?.count}
                 />
               </p>
+            </div>
+          </div>
+          <div className="grid grid-rows-2 md:grid-rows-none md:grid-cols-2 gap-3">
+            <div className="container-white w-full">
+              <p className="text-xl text-center">Unique Users</p>
+              <div className="w-full h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={[...historicData, liveData].map((data) => ({
+                      key: formatDate(data.date),
+                      members: data.uniqueUsers,
+                    }))}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="key" />
+                    <YAxis type="number" domain={['dataMin', 'dataMax']} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="members" stroke="#5F45FD" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="container-white w-full">
+              <p className="text-xl text-center">Fees Earned</p>
+              <div className="w-full h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={[...historicData, liveData].map((data) => ({
+                      key: formatDate(data.date),
+                      fees: toFixed(data.feesEarned, 2),
+                    }))}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="key" />
+                    <YAxis
+                      type="number"
+                      domain={['dataMin', 'dataMax']}
+                      tickFormatter={(v) => currency(v)}
+                    />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="fees" stroke="#5F45FD" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
           <div className="grid grid-rows-2 md:grid-rows-none md:grid-cols-2 gap-3">

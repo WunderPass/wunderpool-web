@@ -387,8 +387,10 @@ export default function useUser() {
     if (!isReady) return;
     if (Number(usdBalance) < 1 && !checkedTopUp && notifications.length == 0) {
       setTopUpRequired(true);
+    } else {
+      setTopUpRequired(false);
     }
-  }, [notifications, isReady]);
+  }, [notifications, isReady, usdBalance]);
 
   useEffect(() => {
     if (router.asPath == '/investing/pools') {
