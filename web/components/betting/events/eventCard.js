@@ -295,9 +295,16 @@ export default function EventCard(props) {
                                 </div>
                               </div>
 
-                              {participants?.find((part) =>
-                                compAddr(part.address, user.address)
-                              ) ? (
+                              {participants?.length >= 20 ? (
+                                <button
+                                  disabled
+                                  className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
+                                >
+                                  $ {stake} (No Spots Left)
+                                </button>
+                              ) : participants?.find((part) =>
+                                  compAddr(part.address, user.address)
+                                ) ? (
                                 <button
                                   disabled
                                   className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
