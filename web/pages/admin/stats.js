@@ -145,13 +145,7 @@ export default function AdminBettingPage(props) {
                   <MdLiveTv className="text-casama-blue" />
                   Live
                 </div>
-                <p className="text-casama-blue">
-                  {liveData.gameCount.live}
-                  <Diff
-                    live={liveData.gameCount.live}
-                    historic={compareData?.gameCount?.live}
-                  />
-                </p>
+                <p className="text-casama-blue">{liveData.gameCount.live}</p>
               </div>
               <div className="flex flex-col gap-2 items-center">
                 <div className="flex items-center gap-2">
@@ -192,10 +186,6 @@ export default function AdminBettingPage(props) {
                 </div>
                 <p className="text-casama-blue">
                   {currency(liveData.potSize.live)}
-                  <Diff
-                    live={liveData.potSize.live}
-                    historic={compareData?.potSize?.live}
-                  />
                 </p>
               </div>
               <div className="flex flex-col gap-2 items-center">
