@@ -17,8 +17,6 @@ export default async function handler(req, res) {
       headers,
     });
 
-    console.log('data', data.members);
-
     const allCompetitions = data.map(formatCompetition);
     let filteredCompetitions = allCompetitions;
 
@@ -37,7 +35,7 @@ export default async function handler(req, res) {
         (competition) => competition.id == competitionId
       );
     }
-    console.log('filteredCompetitions', filteredCompetitions);
+
     res.status(200).json(filteredCompetitions);
   } catch (error) {
     console.log(error);

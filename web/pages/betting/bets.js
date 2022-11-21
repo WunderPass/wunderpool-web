@@ -81,7 +81,6 @@ export default function Bets(props) {
                   </StyledTabs>
                 </Box>
 
-                {console.log('bettingService', bettingService)}
                 <div className="flex flex-row items-end justify-end mb-2 mt-1 w-full"></div>
                 <div className="flex items-end justify-end mb-2">
                   <DropDown

@@ -1,44 +1,29 @@
 import { Typography, Skeleton, Divider } from '@mui/material';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { currency } from '/services/formatter';
 
 function BettingBox(props) {
   const { user, bettingService, isHistory } = props;
+  const [profits, setProfits] = useState(0);
+  const [moneyAtStake, setMoneyAtStake] = useState(0);
+  const [openBets, setOpenBets] = useState(0);
 
-  const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
-    return isHistory
-      ? bettingService.isReady
-        ? [
-            bettingService.userHistoryCompetitions?.reduce((accum, comp) => {
-              accum = accum + comp.stake * comp.members?.length;
-              return accum;
-            }, 0),
-            bettingService.userHistoryCompetitions?.reduce(
-              (accum, comp) => accum + comp.stake,
-              0
-            ),
-            bettingService.userHistoryCompetitions?.length,
-          ]
-        : [0, 0, 0]
-      : bettingService.isReady
-      ? [
-          bettingService.userCompetitions?.reduce((accum, comp) => {
-            accum = accum + comp.stake * comp.members?.length;
-            return accum;
-          }, 0),
-          bettingService.userCompetitions?.reduce(
-            (accum, comp) => accum + comp.stake,
-            0
-          ),
-          bettingService.userCompetitions?.length,
-        ]
-      : [0, 0, 0];
-  }, [
-    isHistory,
-    bettingService.isReady,
-    bettingService.userCompetitions,
-    bettingService.userHistoryCompetitions,
-  ]);
+  const calculateValues = (competitions) => {
+    var profit = 0;
+    var moneyAtStake = 0;
+    competitions.map((comp) => {
+      moneyAtStake = moneyAtStake + comp.stake;
+      profit = profit + comp.stake * comp.members?.length - comp.stake;
+    });
+    setOpenBets(competitions.length);
+    setMoneyAtStake(moneyAtStake);
+    setProfits(profit);
+  };
+
+  useEffect(() => {
+    if (!bettingService.isReady) return;
+    calculateValues(bettingService.userCompetitions);
+  }, [isHistory, bettingService.isReady, bettingService.userCompetitions]);
 
   return bettingService.isReady ? (
     <>
@@ -48,7 +33,6 @@ function BettingBox(props) {
             <div className="flex flex-col container-white-p-0 p-5  mb-4">
               <div className="flex flex-row justify-between items-center gap-2">
                 <Typography className="text-xl">
-                  {' '}
                   {isHistory ? 'Total Bets' : 'Open Bets'}
                 </Typography>
                 <Typography className="text-2xl font-semibold">
@@ -56,7 +40,6 @@ function BettingBox(props) {
                 </Typography>
               </div>
             </div>
-            {console.log('bettingService', bettingService)}
             <div className="flex flex-col container-white-p-0 p-5 ">
               {isHistory ? (
                 <div className=" opacity-30 ">
@@ -86,14 +69,14 @@ function BettingBox(props) {
                   <div className="flex  flex-row justify-between items-center gap-2">
                     <Typography className="text-xl">Money at Stake</Typography>
                     <Typography className="text-2xl font-semibold">
-                      {currency(totalMoneyStake)}
+                      {currency(moneyAtStake)}
                     </Typography>
                   </div>
                   <Divider className="opacity-80 my-4" />
                   <div className="flex flex-row justify-between items-center gap-2">
                     <Typography className="text-xl">Possible Profit</Typography>
                     <Typography className="text-2xl text-green-600 font-semibold">
-                      {currency(totalPotSize)}
+                      {currency(profits)}
                     </Typography>
                   </div>
                 </>

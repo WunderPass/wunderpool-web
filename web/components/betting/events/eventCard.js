@@ -219,6 +219,8 @@ export default function EventCard(props) {
           {/* <Collapse in={Boolean(selectedCompetition.stake)}>
             <Collapse in={Boolean(guessOne && guessTwo)}>
               <div className="flex items-center justify-center">
+                                                    <a href={`#${event.name}`} scroll={true}>
+
                 <button
                   disabled={loading}
                   className="btn-casama px-5 py-2 text-xl"
@@ -231,6 +233,7 @@ export default function EventCard(props) {
                     ? event.teamAway?.name
                     : ' a Tie'}
                 </button>
+                </a>
               </div>
             </Collapse>
           </Collapse> */}
@@ -313,18 +316,21 @@ export default function EventCard(props) {
                                 isPredicitonPublic &&
                                 !showCustomInput ? (
                                 <div className="flex items-center justify-center w-full">
-                                  <button
-                                    disabled={loading}
-                                    className="btn-casama w-full  py-1 text-lg mb-3"
-                                    onClick={placeBet}
-                                  >
-                                    Bet {currency(selectedCompetition.stake)} on{' '}
-                                    {guessOne > guessTwo
-                                      ? event.teamHome?.name
-                                      : guessOne < guessTwo
-                                      ? event.teamAway?.name
-                                      : ' a Tie'}
-                                  </button>
+                                  <a href={`#${event.name}`} scroll={true}>
+                                    <button
+                                      disabled={loading}
+                                      className="btn-casama w-full  py-1 text-lg mb-3"
+                                      onClick={placeBet}
+                                    >
+                                      Bet {currency(selectedCompetition.stake)}{' '}
+                                      on{' '}
+                                      {guessOne > guessTwo
+                                        ? event.teamHome?.name
+                                        : guessOne < guessTwo
+                                        ? event.teamAway?.name
+                                        : ' a Tie'}
+                                    </button>
+                                  </a>
                                 </div>
                               ) : (
                                 <button
@@ -412,19 +418,22 @@ export default function EventCard(props) {
                                   !isPredicitonPublic &&
                                   !showCustomInput ? (
                                     <div className="flex items-center justify-center">
-                                      <button
-                                        disabled={loading}
-                                        className="btn-casama w-full py-1 text-lg my-2"
-                                        onClick={placeBet}
-                                      >
-                                        Bet{' '}
-                                        {currency(selectedCompetition.stake)} on{' '}
-                                        {guessOne > guessTwo
-                                          ? event.teamHome?.name
-                                          : guessOne < guessTwo
-                                          ? event.teamAway?.name
-                                          : ' a Tie'}
-                                      </button>
+                                      <a href={`#${event.name}`} scroll={true}>
+                                        <button
+                                          disabled={loading}
+                                          className="btn-casama w-full py-1 text-lg my-2"
+                                          onClick={placeBet}
+                                        >
+                                          Bet{' '}
+                                          {currency(selectedCompetition.stake)}{' '}
+                                          on{' '}
+                                          {guessOne > guessTwo
+                                            ? event.teamHome?.name
+                                            : guessOne < guessTwo
+                                            ? event.teamAway?.name
+                                            : ' a Tie'}
+                                        </button>
+                                      </a>
                                     </div>
                                   ) : (
                                     <button
@@ -474,19 +483,22 @@ export default function EventCard(props) {
                                 <div className=" w-full p-3">
                                   {guessOne && guessTwo && showCustomInput ? (
                                     <div className="flex items-center justify-center">
-                                      <button
-                                        disabled={loading}
-                                        className="btn-casama w-full  py-1 text-lg my-2"
-                                        onClick={placeBet}
-                                      >
-                                        Bet{' '}
-                                        {currency(selectedCompetition.stake)} on{' '}
-                                        {guessOne > guessTwo
-                                          ? event.teamHome?.name
-                                          : guessOne < guessTwo
-                                          ? event.teamAway?.name
-                                          : ' a Tie'}
-                                      </button>
+                                      <a href={`#${event.name}`} scroll={true}>
+                                        <button
+                                          disabled={loading}
+                                          className="btn-casama w-full  py-1 text-lg my-2"
+                                          onClick={placeBet}
+                                        >
+                                          Bet{' '}
+                                          {currency(selectedCompetition.stake)}{' '}
+                                          on{' '}
+                                          {guessOne > guessTwo
+                                            ? event.teamHome?.name
+                                            : guessOne < guessTwo
+                                            ? event.teamAway?.name
+                                            : ' a Tie'}
+                                        </button>
+                                      </a>
                                     </div>
                                   ) : (
                                     <>
