@@ -38,6 +38,17 @@ export default function EventCard(props) {
     }
   };
 
+  const reset = () => {
+    setLoading(null);
+    setLoadingText(null);
+    setShowDetails(false);
+    setGuessOne('');
+    setGuessTwo('');
+    setSelectedCompetition({});
+    setCustomAmount('');
+    setShowCustomInput(false);
+  };
+
   const scrollIntoView = () => {
     cardRef.current.scrollIntoView({
       behavior: 'smooth',
@@ -64,6 +75,7 @@ export default function EventCard(props) {
       })
         .then(() => {
           user.fetchUsdBalance();
+          reset();
           setShowSuccess(true);
         })
         .catch((err) => {
@@ -86,6 +98,7 @@ export default function EventCard(props) {
       })
         .then(() => {
           user.fetchUsdBalance();
+          reset();
           setShowSuccess(true);
         })
         .catch((err) => {
@@ -114,6 +127,7 @@ export default function EventCard(props) {
     })
       .then(() => {
         user.fetchUsdBalance();
+        reset();
         setShowSuccess(true);
       })
       .catch((err) => {
