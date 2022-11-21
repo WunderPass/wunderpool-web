@@ -17,7 +17,7 @@ export default function EventCardSubmitButton({
       : ' a Tie';
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center w-full">
       <button
         disabled={loading}
         className="btn-casama w-full py-1 text-lg my-2"

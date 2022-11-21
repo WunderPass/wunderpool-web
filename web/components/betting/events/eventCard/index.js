@@ -1,6 +1,5 @@
 import { Collapse, Divider } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
 import TransactionFrame from '/components/general/utils/transactionFrame';
 import {
   createSingleCompetition,
@@ -11,14 +10,13 @@ import EventCardFooter from './footer';
 import EventCardPublicGameTile from './publicGameTile';
 import EventCardPrivateGameTile from './privateGameTile';
 import EventCardCustomGameTile from './customGameTile';
+import MagicMomentDialog from './magicMomentDialog';
 
 export default function EventCard(props) {
   const { event, bettingService, user } = props;
-  const router = useRouter();
   const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
-  const [showPredicitionInput, setShowPredicitionInput] = useState();
   const [showDetails, setShowDetails] = useState(false);
 
   const [guessOne, setGuessOne] = useState('');
@@ -27,6 +25,8 @@ export default function EventCard(props) {
 
   const [customAmount, setCustomAmount] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
+
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const cardRef = useRef(null);
 
@@ -64,7 +64,7 @@ export default function EventCard(props) {
       })
         .then(() => {
           user.fetchUsdBalance();
-          router.push('/betting/bets');
+          setShowSuccess(true);
         })
         .catch((err) => {
           console.log(err);
@@ -86,7 +86,7 @@ export default function EventCard(props) {
       })
         .then(() => {
           user.fetchUsdBalance();
-          router.push('/betting/bets');
+          setShowSuccess(true);
         })
         .catch((err) => {
           console.log(err);
@@ -114,7 +114,7 @@ export default function EventCard(props) {
     })
       .then(() => {
         user.fetchUsdBalance();
-        router.push('/betting/bets');
+        setShowSuccess(true);
       })
       .catch((err) => {
         console.log(err);
@@ -126,8 +126,6 @@ export default function EventCard(props) {
   };
 
   const toggleSelectedCompetition = (params, fromCustom = false) => {
-    setShowPredicitionInput(params.stake);
-
     !fromCustom && setShowCustomInput(false);
     setSelectedCompetition((comp) =>
       comp.stake == params.stake && comp.public == params.public ? {} : params
@@ -240,6 +238,13 @@ export default function EventCard(props) {
           />
         )}
       </div>
+      <MagicMomentDialog
+        open={showSuccess}
+        setOpen={setShowSuccess}
+        guessOne={guessOne}
+        guessTwo={guessTwo}
+        event={event}
+      />
     </>
   );
 }
