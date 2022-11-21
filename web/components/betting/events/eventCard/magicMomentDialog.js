@@ -60,14 +60,23 @@ export default function MagicMomentDialog({
             in={open}
             style={{ transitionDelay: '500ms', transitionDuration: '600ms' }}
           >
-            <div className="w-full flex items-center justify-around gap-1 my-6">
+            <div className="w-full flex items-center justify-around gap-1 my-10">
               <img
                 src={`/api/betting/events/teamImage?id=${event.teamHome?.id}`}
                 className="w-10 sm:w-20 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
               />
-              <h1 className="text-4xl sm:text-6xl whitespace-nowrap">
-                {guessOne} : {guessTwo}
-              </h1>
+              <div className="relative">
+                <h1 className="text-4xl sm:text-6xl whitespace-nowrap">
+                  {guessOne} : {guessTwo}
+                </h1>
+                {guessOne == 6 && guessTwo == 9 && (
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full">
+                    <p className="animate-bounce bg-red-500 text-white rounded-full px-2">
+                      Nice
+                    </p>
+                  </div>
+                )}
+              </div>
               <img
                 src={`/api/betting/events/teamImage?id=${event.teamAway?.id}`}
                 className="w-10 sm:w-20 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
