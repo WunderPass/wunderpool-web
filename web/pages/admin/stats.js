@@ -38,6 +38,10 @@ function formatDate(dateStr) {
   });
 }
 
+function pluralize(num, word) {
+  return Number(num) == 1 ? word : word == 'is' ? 'are' : `${word}s`;
+}
+
 function Diff({ live, historic, percent }) {
   if (live && historic && live != historic) {
     const increased = live > historic;
@@ -58,6 +62,41 @@ function Diff({ live, historic, percent }) {
   } else {
     return null;
   }
+}
+
+function MembersPerGameTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="container-white border border-casama-blue">
+        <p className="label">
+          {`There ${pluralize(payload[0].value, 'is')} `}
+          <span className="text-casama-blue">{payload[0].value}</span>
+          {` ${pluralize(payload[0].value, 'Game')} with `}
+          <span className="text-casama-blue">{label}</span>
+          {` ${pluralize(label, 'Member')}`}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function GamesPerMemberTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="container-white border border-casama-blue">
+        <p className="label">
+          <span className="text-casama-blue">{payload[0].value}</span>
+          {` ${pluralize(payload[0].value, 'Member')} betted in `}
+          <span className="text-casama-blue">{label}</span>
+          {` ${pluralize(label, 'Game')}`}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 export default function AdminBettingPage(props) {
@@ -278,7 +317,9 @@ export default function AdminBettingPage(props) {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="key" />
                     <YAxis type="number" domain={['dataMin', 'dataMax']} />
-                    <Tooltip />
+                    <Tooltip
+                      formatter={(value, name, props) => [value, 'Members']}
+                    />
                     <Line type="monotone" dataKey="members" stroke="#5F45FD" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -301,7 +342,12 @@ export default function AdminBettingPage(props) {
                       domain={['dataMin', 'dataMax']}
                       tickFormatter={(v) => currency(v)}
                     />
-                    <Tooltip />
+                    <Tooltip
+                      formatter={(value, name, props) => [
+                        currency(value),
+                        'Fees',
+                      ]}
+                    />
                     <Line type="monotone" dataKey="fees" stroke="#5F45FD" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -315,14 +361,17 @@ export default function AdminBettingPage(props) {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={Object.entries(liveData.membersPerGame.data).map(
-                      ([k, v]) => ({ key: k, members: v })
+                      ([k, v]) => ({ key: k, games: v })
                     )}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="key" />
                     <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="members" stroke="#5F45FD" />
+                    <Tooltip
+                      wrapperStyle={{ outline: 'none' }}
+                      content={<MembersPerGameTooltip />}
+                    />
+                    <Line type="monotone" dataKey="games" stroke="#5F45FD" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -339,7 +388,10 @@ export default function AdminBettingPage(props) {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="key" />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip
+                      wrapperStyle={{ outline: 'none' }}
+                      content={<GamesPerMemberTooltip />}
+                    />
                     <Line type="monotone" dataKey="members" stroke="#5F45FD" />
                   </LineChart>
                 </ResponsiveContainer>
