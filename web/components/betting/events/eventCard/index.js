@@ -137,10 +137,19 @@ export default function EventCard(props) {
   };
 
   const toggleSelectedCompetition = (params, fromCustom = false) => {
-    !fromCustom && setShowCustomInput(false);
-    setSelectedCompetition((comp) =>
-      comp.stake == params.stake && comp.public == params.public ? {} : params
-    );
+    setShowCustomInput(fromCustom);
+
+    setSelectedCompetition((comp) => {
+      if (
+        comp.stake != params.stake &&
+        params.stake &&
+        Number(params.stake) > user.usdBalance
+      )
+        user.setTopUpRequired(true);
+      return comp.stake == params.stake && comp.public == params.public
+        ? {}
+        : params;
+    });
   };
 
   useEffect(() => {
@@ -211,7 +220,6 @@ export default function EventCard(props) {
                         showCustomInput={showCustomInput}
                         stake={stake}
                         event={event}
-                        user={user}
                         guessOne={guessOne}
                         guessTwo={guessTwo}
                         setGuessOne={setGuessOne}
