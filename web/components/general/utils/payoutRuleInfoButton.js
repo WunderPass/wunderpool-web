@@ -1,13 +1,13 @@
-import { Typography, Popover, Divider } from '@mui/material';
+import { Popover, Divider } from '@mui/material';
 import { useState } from 'react';
 import { FaRegQuestionCircle } from 'react-icons/fa';
 
-export default function PayoutRuleInfoButton(props) {
+export default function PayoutRuleInfoButton() {
   const [showInfo, setShowInfo] = useState(false);
   const [infoBoxAnchorEl, setInfoBoxAnchorEl] = useState(false);
 
-  const showPayoutRuleInfo = (e, bool) => {
-    setInfoBoxAnchorEl(e.currentTarget - 100);
+  const showPayoutRuleInfo = (e) => {
+    setInfoBoxAnchorEl(e.currentTarget);
     setShowInfo(!showInfo);
   };
 
@@ -18,7 +18,7 @@ export default function PayoutRuleInfoButton(props) {
   return (
     <>
       <div
-        className="cursor-pointer "
+        className="cursor-pointer"
         onMouseOver={(e) => showPayoutRuleInfo(e)}
       >
         <FaRegQuestionCircle className="ml-2 text-xl mb-1 text-casama-blue" />
@@ -47,20 +47,17 @@ export default function PayoutRuleInfoButton(props) {
               </span>
               <div className="flex flex-col mx-0 sm:mx-2">
                 <span>
-                  <span className="font-bold">3 Points:</span> Hit the exact
-                  result of the game.
+                  <b>3 Points:</b> Hit the exact result of the game.
                 </span>
                 <span>
-                  <span className="font-bold">2 Points: </span> Hit the winning
-                  team and the right goal difference between the teams.
+                  <b>2 Points: </b> Hit the winning team and the right goal
+                  difference between the teams.
                 </span>
                 <span>
-                  <span className="font-bold">1 Point: </span> Hit the winning
-                  team.{' '}
+                  <b>1 Point: </b> Hit the winning team.
                 </span>
                 <span>
-                  <span className="font-bold">0 Points: </span> Bet on the wrong
-                  team.
+                  <b>0 Points: </b> Bet on the wrong team.
                 </span>
               </div>
             </div>
