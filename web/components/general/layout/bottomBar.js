@@ -11,6 +11,7 @@ import Link from 'next/link';
 import CasamaLogo from '/public/casama_logo_white.png';
 import DropIcon from '/assets/icons/drop.svg';
 import Image from 'next/image';
+import { CgProfile } from 'react-icons/cg';
 
 export default function BottomBar(props) {
   const { user } = props;
@@ -45,15 +46,15 @@ export default function BottomBar(props) {
                 <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-full w-[500px]">
                   <Image src={DropIcon} layout="responsive" />
                 </div>
+
                 <button onClick={() => toggleMenuButton()}>
-                  <Link className="" href="/betting">
-                    <div className="flex flex-col items-center justify-center ml-2 cursor-pointer">
-                      <ImUngroup className="text-2xl" />
-                      <div>All Games</div>
+                  <Link href="/profile">
+                    <div className="flex flex-col items-center justify-center ml-9 cursor-pointer">
+                      <CgProfile className="text-2xl mt-0.5" />
+                      <div>Profile</div>
                     </div>
                   </Link>
                 </button>
-
                 <button onClick={() => toggleMenuButton()}>
                   <Link href="/balance">
                     <div className="flex flex-col items-center justify-center mr-2 cursor-pointer">
@@ -62,7 +63,6 @@ export default function BottomBar(props) {
                     </div>
                   </Link>
                 </button>
-
                 <button onClick={() => toggleMenuButton()}>
                   <Link href="/investing/pools">
                     <div className="flex flex-col items-center justify-center mr-9 cursor-pointer">
@@ -90,22 +90,17 @@ export default function BottomBar(props) {
                   layout="intrinsic"
                 />
               </button>
+            </div>{' '}
+            <div className="flex flex-col items-center justify-center w-1/3 mr-8 cursor-pointer">
+              <button onClick={() => toggleMenuButton()}>
+                <Link className="" href="/betting">
+                  <div className="flex flex-col items-center justify-center ">
+                    <ImUngroup className="text-2xl mb-1 mt-1.5" />
+                    <div>All Games</div>
+                  </div>
+                </Link>
+              </button>
             </div>
-            <Link href="/profile">
-              <div className="flex items-center justify-center w-1/3 mr-8">
-                <Avatar
-                  loginMethod={user.loginMethod}
-                  walletConnectUrl={
-                    user.walletConnectMeta?.icons
-                      ? user.walletConnectMeta?.icons[0]
-                      : null
-                  }
-                  wunderId={user.wunderId}
-                  text={user.userName || '0X'}
-                  i={1}
-                />
-              </div>
-            </Link>
           </div>
           <div
             className="bg-casama-blue w-full"

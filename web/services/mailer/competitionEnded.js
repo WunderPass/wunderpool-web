@@ -28,6 +28,7 @@ export function sendCompetitionEndedMail({
   firstName,
   teamHome,
   teamAway,
+  outcome,
   members,
 }) {
   const profit = members.find((m) => m.email == to)?.profit || 0;
@@ -69,7 +70,7 @@ export function sendCompetitionEndedMail({
                   <img src="https://app.casama.io/api/betting/events/teamImage?id=${
                     teamHome.id
                   }" class="w-16" />
-                  <h1 class="mx-5">2:0</h1>
+                  <h1 class="mx-5">${outcome[0]}:${outcome[1]}</h1>
                   <img src="https://app.casama.io/api/betting/events/teamImage?id=${
                     teamAway.id
                   }" class="w-16" />

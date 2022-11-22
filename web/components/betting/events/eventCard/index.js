@@ -11,9 +11,11 @@ import EventCardPublicGameTile from './publicGameTile';
 import EventCardPrivateGameTile from './privateGameTile';
 import EventCardCustomGameTile from './customGameTile';
 import MagicMomentDialog from './magicMomentDialog';
+import { registerParticipant } from '../../../../services/contract/betting/games';
+import { useMemo } from 'react';
 
 export default function EventCard(props) {
-  const { event, bettingService, user } = props;
+  const { event, bettingService, user, handleError } = props;
   const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
@@ -26,15 +28,33 @@ export default function EventCard(props) {
   const [customAmount, setCustomAmount] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
 
+  const [joiningCompetitionId, setJoiningCompetitionId] = useState(null);
+  const [joiningGameId, setJoiningGameId] = useState(null);
+
   const [showSuccess, setShowSuccess] = useState(false);
 
   const cardRef = useRef(null);
 
-  const placeBet = () => {
-    if (selectedCompetition.public) {
-      joinPublicCompetition();
+  const mustClickAgain = useMemo(
+    () => joiningCompetitionId && joiningGameId,
+    [joiningCompetitionId, joiningGameId]
+  );
+
+  const placeBet = async () => {
+    const { competitionId, gameId } = selectedCompetition.public
+      ? await joinPublicCompetition()
+      : await createPrivateCompetition();
+    if (competitionId && gameId) {
+      if (user.loginMethod == 'Casama') {
+        await registerBet(competitionId, gameId);
+      } else {
+        setLoading(false);
+        setJoiningCompetitionId(competitionId);
+        setJoiningGameId(gameId);
+      }
     } else {
-      createPrivateCompetition();
+      setLoading(false);
+      handleError('Betting Pool could not be joined');
     }
   };
 
@@ -44,6 +64,8 @@ export default function EventCard(props) {
     setShowDetails(false);
     setGuessOne('');
     setGuessTwo('');
+    setJoiningCompetitionId(null);
+    setJoiningGameId(null);
     setSelectedCompetition({});
     setCustomAmount('');
     setShowCustomInput(false);
@@ -55,85 +77,82 @@ export default function EventCard(props) {
     });
   };
 
-  const joinPublicCompetition = () => {
+  const joinPublicCompetition = async () => {
     setLoading(true);
     scrollIntoView();
     setLoadingText('Joining Public Competition...');
     if (selectedCompetition.matchingCompetition) {
-      joinSingleCompetition({
-        competitionId: selectedCompetition.matchingCompetition.id,
-        gameId: selectedCompetition.matchingCompetition.games[0].id,
-        poolVersion: 'ETA',
-        poolAddress: selectedCompetition.matchingCompetition.poolAddress,
-        prediction: [guessOne, guessTwo],
-        userAddress: user.address,
-        stake: selectedCompetition.matchingCompetition.stake,
-        event: event,
-        afterPoolJoin: async () => {
-          setLoadingText('Placing your Bet...');
-        },
-      })
-        .then(() => {
-          user.fetchUsdBalance();
-          setShowSuccess(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .then(() => {
-          setLoadingText(null);
-          setLoading(false);
+      try {
+        await joinSingleCompetition({
+          userAddress: user.address,
+          stake: selectedCompetition.matchingCompetition.stake,
+          poolAddress: selectedCompetition.matchingCompetition.poolAddress,
+          poolVersion: 'ETA',
         });
+        return {
+          competitionId: selectedCompetition.matchingCompetition.id,
+          gameId: selectedCompetition.matchingCompetition.games[0].id,
+        };
+      } catch (error) {
+        console.log(error);
+        return {};
+      }
     } else {
-      createSingleCompetition({
-        event,
-        stake: selectedCompetition.stake,
-        creator: user.address,
-        isPublic: true,
-        prediction: [guessOne, guessTwo],
-        afterPoolCreate: async () => {
-          setLoadingText('Placing your Bet...');
-        },
-      })
-        .then(() => {
-          user.fetchUsdBalance();
-          setShowSuccess(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .then(() => {
-          setLoadingText(null);
-          setLoading(false);
+      try {
+        const { competitionId, gameId } = await createSingleCompetition({
+          event,
+          stake: selectedCompetition.stake,
+          creator: user.address,
+          isPublic: true,
         });
+        return { competitionId, gameId };
+      } catch (error) {
+        console.log(error);
+        return {};
+      }
     }
   };
 
-  const createPrivateCompetition = () => {
+  const createPrivateCompetition = async () => {
     setLoading(true);
     scrollIntoView();
     setLoadingText('Creating Private Competition...');
-    createSingleCompetition({
-      event,
-      stake: selectedCompetition.stake || customAmount,
-      creator: user.address,
-      isPublic: false,
-      prediction: [guessOne, guessTwo],
-      afterPoolCreate: async () => {
-        setLoadingText('Placing your Bet...');
-      },
-    })
-      .then(() => {
-        user.fetchUsdBalance();
-        setShowSuccess(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .then(() => {
-        setLoadingText(null);
-        setLoading(false);
+    try {
+      const { competitionId, gameId } = await createSingleCompetition({
+        event,
+        stake: selectedCompetition.stake || customAmount,
+        creator: user.address,
+        isPublic: false,
       });
+      return { competitionId, gameId };
+    } catch (error) {
+      console.log(error);
+      return {};
+    }
+  };
+
+  const registerBet = async (competitionId, gameId) => {
+    setLoading(true);
+    setLoadingText('Placing your Bet...');
+    try {
+      await registerParticipant(
+        competitionId || joiningCompetitionId,
+        gameId || joiningGameId,
+        [guessOne, guessTwo],
+        user.address,
+        event.version
+      );
+      user.fetchUsdBalance();
+      setShowSuccess(true);
+      setLoadingText(null);
+      setLoading(false);
+      return true;
+    } catch (error) {
+      console.log(error);
+      setLoadingText(null);
+      setLoading(false);
+      return false;
+    }
   };
 
   const toggleSelectedCompetition = (params, fromCustom = false) => {
@@ -176,8 +195,26 @@ export default function EventCard(props) {
           <div className="mt-6">
             <TransactionFrame open={loading} text={loadingText} />
           </div>
-          {!loading && (
-            <>
+          {!loading &&
+            (mustClickAgain ? (
+              <Collapse in={true}>
+                <Divider className="mt-6" />
+                <div className="my-5">
+                  <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-3">
+                    Click here to Confirm your Bet on Chain
+                    <button
+                      disabled={loading}
+                      className="btn-casama py-2 px-3 text-lg"
+                      onClick={() =>
+                        registerBet(joiningCompetitionId, joiningGameId)
+                      }
+                    >
+                      Confirm my Bet
+                    </button>
+                  </div>
+                </div>
+              </Collapse>
+            ) : (
               <Collapse in={showDetails}>
                 <Divider className="mt-6" />
                 <div className="my-5">
@@ -202,6 +239,7 @@ export default function EventCard(props) {
                           loading={loading}
                           placeBet={placeBet}
                           toggleSelectedCompetition={toggleSelectedCompetition}
+                          mustClickAgain={mustClickAgain}
                         />
                       ))}
                     </div>
@@ -227,6 +265,7 @@ export default function EventCard(props) {
                         loading={loading}
                         placeBet={placeBet}
                         toggleSelectedCompetition={toggleSelectedCompetition}
+                        mustClickAgain={mustClickAgain}
                       />
                     ))}
                     <EventCardCustomGameTile
@@ -243,14 +282,14 @@ export default function EventCard(props) {
                       loading={loading}
                       placeBet={placeBet}
                       toggleSelectedCompetition={toggleSelectedCompetition}
+                      mustClickAgain={mustClickAgain}
                     />
                   </div>
                 </div>
               </Collapse>
-            </>
-          )}
+            ))}
         </div>
-        {showDetails && !loading && (
+        {showDetails && !loading && !mustClickAgain && (
           <EventCardFooter
             scrollIntoView={scrollIntoView}
             setShowDetails={setShowDetails}

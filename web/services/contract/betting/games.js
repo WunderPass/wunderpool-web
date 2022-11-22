@@ -108,55 +108,6 @@ export async function registerParticipant(
   }
 }
 
-export async function registerParticipantOld(
-  gameId,
-  prediction,
-  participant,
-  wunderId,
-  version
-) {
-  const { openPopup, sendSignatureRequest } = useWeb3();
-  const popup = openPopup('sign');
-  try {
-    const [distributor] = initDistributor(version);
-    const { signature } = await sendSignatureRequest(
-      ['uint256', 'address', 'uint256[]'],
-      [gameId, distributor.address, prediction],
-      true,
-      popup
-    );
-
-    const tx = await connectContract(distributor).registerParticipantForUser(
-      gameId,
-      prediction,
-      participant,
-      signature,
-      {
-        gasPrice: await gasPrice(),
-      }
-    );
-
-    await tx.wait();
-    const data = {
-      gameId,
-      address: participant,
-      prediction,
-      wunderId,
-      version,
-    };
-
-    const res = await axios({
-      method: 'POST',
-      url: '/api/betting/games/join',
-      data,
-    });
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
 export async function determineGame(gameId, version) {
   try {
     const [distributor] = initDistributor(version);
