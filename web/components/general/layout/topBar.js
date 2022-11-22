@@ -184,12 +184,27 @@ export default function TopBar(props) {
               )}
             </Stack>
             <div className="flex sm:hidden w-full items-center justify-between">
-              <p className="font-bold flex-grow">
-                {user.userName ||
-                  (user.address
-                    ? `${user.address.slice(0, 4)}...${user.address.slice(-4)}`
-                    : '0x...')}
-              </p>
+              <div className="font-bold flex-grow">
+                <Link href="/profile">
+                  <div
+                    className="flex items-start justify-start ml-2 mr-4 cursor-pointer
+                "
+                  >
+                    <Avatar
+                      loginMethod={user.loginMethod}
+                      walletConnectUrl={
+                        user.walletConnectMeta?.icons
+                          ? user.walletConnectMeta?.icons[0]
+                          : null
+                      }
+                      wunderId={user.wunderId}
+                      text={user.userName || user.firstName || '0X'}
+                      i={1}
+                    />
+                  </div>
+                </Link>
+              </div>
+
               <div className="flex px-3 ">
                 <News {...props} />
               </div>
