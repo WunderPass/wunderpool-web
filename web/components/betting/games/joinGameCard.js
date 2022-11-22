@@ -12,7 +12,6 @@ import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton
 import Timer from '/components/general/utils/timer';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
-import { getEnsNameFromAddress } from '/services/memberHelpers';
 import { showWunderIdsAsIcons } from '/services/memberHelpers';
 import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
 import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
@@ -20,6 +19,7 @@ import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
 import { joinSingleCompetition } from '/services/contract/betting/competitions';
 import { useRouter } from 'next/router';
 import TransactionFrame from '/components/general/utils/transactionFrame';
+import { registerParticipant } from '../../../services/contract/betting/games';
 
 export default function JoinGameCard(props) {
   const { competition, game, handleSuccess, user, handleError, handleInfo } =
@@ -282,42 +282,55 @@ function TopUpRequired(props) {
 }
 
 function InputJoinAmount(props) {
-  const { game, competition, secret, user } = props;
+  const { game, competition, secret, user, handleError } = props;
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
+  const [mustClickAgain, setMustClickAgain] = useState(null);
   const router = useRouter();
 
-  const placeBet = () => {
+  const placeBet = async () => {
     setLoading(true);
     setLoadingText('Joining Competition...');
-
-    joinSingleCompetition({
-      competitionId: competition.competition?.id,
-      gameId: game.id,
-      poolAddress: competition.competition?.poolAddress,
-      prediction: [guessOne, guessTwo],
-      userAddress: user.address,
-      stake: competition.competition?.stake,
-      secret,
-      poolVersion: 'ETA',
-      event: game.event,
-      afterPoolJoin: async () => {
-        setLoadingText('Placing your Bet...');
-      },
-    })
-      .then(() => {
-        user.fetchUsdBalance();
-        router.push('/betting/bets');
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .then(() => {
-        setLoadingText(null);
-        setLoading(false);
+    try {
+      await joinSingleCompetition({
+        userAddress: user.address,
+        stake: competition.competition?.stake,
+        poolAddress: competition.competition?.poolAddress,
+        poolVersion: 'ETA',
+        secret,
       });
+      if (user.loginMethod == 'Casama') {
+        await registerBet();
+      } else {
+        setLoading(false);
+        setMustClickAgain(true);
+      }
+    } catch (error) {
+      setLoading(false);
+      handleError('Competition could not be joined');
+    }
+  };
+
+  const registerBet = async () => {
+    setLoading(true);
+    setLoadingText('Placing your Bet...');
+    try {
+      await registerParticipant(
+        competition.competition?.id,
+        game.id,
+        [guessOne, guessTwo],
+        user.address,
+        game.event.version
+      );
+      user.fetchUsdBalance();
+      router.push('/betting/bets');
+    } catch (error) {
+      console.log(error);
+      setLoadingText(null);
+      setLoading(false);
+    }
   };
 
   return (
@@ -357,6 +370,19 @@ function InputJoinAmount(props) {
               ? game.event.teamAway?.name
               : ' a Tie'}
           </button>
+        </div>
+      </Collapse>
+      <Collapse in={mustClickAgain && !loading}>
+        <div className="my-5">
+          <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-3">
+            Click here to Confirm your Bet on Chain
+            <button
+              className="btn-casama py-2 px-3 text-lg"
+              onClick={registerBet}
+            >
+              Confirm my Bet
+            </button>
+          </div>
         </div>
       </Collapse>
       <TransactionFrame open={loading} text={loadingText} />
