@@ -7,7 +7,7 @@ import {
   Zoom,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useState, useEffect, forwardRef } from 'react';
+import { useState, useEffect, forwardRef, useRef } from 'react';
 import Confetti from 'react-confetti';
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -23,6 +23,7 @@ export default function MagicMomentDialog({
   event,
 }) {
   const [showConfetti, setShowConfetti] = useState(false);
+  const paperRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,12 +49,15 @@ export default function MagicMomentDialog({
         reset();
         setOpen(false);
       }}
+      PaperProps={{ ref: paperRef }}
       TransitionComponent={Transition}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Success</DialogTitle>
       <DialogContent>
         {showConfetti && (
           <Confetti
+            width={paperRef.current?.offsetWidth}
+            height={paperRef.current?.offsetHeight}
             colors={['#5F45FD', '#462cf1']}
             recycle={false}
             numberOfPieces={2000}
