@@ -245,7 +245,7 @@ export default function Profile(props) {
                       className="textfield py-2 px-3 mx-2"
                       type="text"
                       placeholder="userName"
-                      value={userName.toLowerCase()}
+                      value={userName?.toLowerCase()}
                       onChange={handleChangeUserName}
                     />
                   </div>
