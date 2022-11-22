@@ -68,6 +68,7 @@ export default async function handler(req, res) {
         firstName: user.firstname || user.handle,
         teamHome: competition.games[0].event.teamHome,
         teamAway: competition.games[0].event.teamAway,
+        outcome: competition.games[0].event.outcome,
         members,
       });
     });
