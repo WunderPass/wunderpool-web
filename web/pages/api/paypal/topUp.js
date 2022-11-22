@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
     axios({
       method: 'post',
-      url: 'https://identity-service.wunderpass.org/v3/requestUsd',
+      url: 'https://identity-service.wunderpass.org/v4/requestUsd',
       data: data,
       headers: headers,
     })
