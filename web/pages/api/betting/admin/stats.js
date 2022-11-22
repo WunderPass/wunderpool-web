@@ -40,6 +40,7 @@ export default async function handler(req, res) {
       params: { states: 'HISTORIC,LIVE,UPCOMING' },
       headers,
     });
+    console.log('bims');
 
     const competitions = data.map(formatCompetition);
     const uniqueUsers = [
