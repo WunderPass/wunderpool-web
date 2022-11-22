@@ -44,7 +44,10 @@ export default function MagicMomentDialog({
       maxWidth="sm"
       className="rounded-xl"
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={() => {
+        reset();
+        setOpen(false);
+      }}
       TransitionComponent={Transition}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Success</DialogTitle>
