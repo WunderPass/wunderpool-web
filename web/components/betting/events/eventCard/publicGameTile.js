@@ -6,6 +6,8 @@ import {
 } from '../../../../services/memberHelpers';
 import EventCardPredicitionInput from './predictionInput';
 import EventCardSubmitButton from './submitButton';
+import { GoPerson } from 'react-icons/go';
+import { FaMedal } from 'react-icons/fa';
 
 function sortMembersOnVotes(participants) {
   let votes = null;
@@ -50,6 +52,24 @@ export default function EventCardPublicGameTile({
   const participants = matchingCompetition?.games?.[0]?.participants;
   const votes = sortMembersOnVotes(participants);
 
+  const maxMembersAccordingToStake = (stake) => {
+    let maxMembers = 50;
+    switch (stake) {
+      case 5:
+        maxMembers = 50;
+        break;
+      case 10:
+        maxMembers = 25;
+        break;
+      case 50:
+        maxMembers = 10;
+        break;
+      default:
+        maxMembers = 50;
+    }
+    return maxMembers;
+  };
+
   return (
     <div
       className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
@@ -61,19 +81,29 @@ export default function EventCardPublicGameTile({
       <div className="flex flex-col items-center p-2 gap-2">
         <div className="flex flex-row justify-between items-center w-full px-3  mt-2 sm:px-2">
           <div className="flex flex-row">
-            <p>Pot:</p>
-            <p className="font-semibold ml-2 ">
-              {currency(
-                matchingCompetition?.stake *
-                  matchingCompetition?.games?.[0]?.participants?.length || 0
-              )}
-            </p>
+            <div className="flex flex-row justify-center items-center">
+              <FaMedal className="text-base text-yellow-600 mb-0.5 mr-1" />
+              <p className="font-semibold  ">
+                {currency(
+                  matchingCompetition?.stake *
+                    matchingCompetition?.games?.[0]?.participants?.length || 0
+                )}
+              </p>
+            </div>
           </div>
           <div className="flex flex-row">
             <p className="font-semibold ml-1.5">
-              {matchingCompetition
-                ? `${Math.max(0, 20 - participants?.length)} / 20`
-                : '20 / 20'}
+              <div className="flex flex-row items-center justify-center">
+                <GoPerson className="text-base text-casama-blue mb-0.5 mr-1" />
+                {matchingCompetition
+                  ? `${Math.max(
+                      0,
+                      participants?.length
+                    )} / ${maxMembersAccordingToStake(
+                      matchingCompetition?.stake
+                    )}`
+                  : '0 / 50'}
+              </div>
             </p>
           </div>
         </div>
