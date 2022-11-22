@@ -68,12 +68,6 @@ export default async function handler(req, res) {
     fs.writeFileSync('./data/blackList.json', JSON.stringify(blackList));
     res.status(status).json(message);
 
-    console.log('decryptedSeed', decryptedSeed);
-    console.log('userIdentifier', userIdentifier);
-    console.log('password', password);
-    console.log('messgae', message);
-    console.log('status', status);
-
     return;
   } catch (error) {
     if (/CredentialsNotStoredExceptio/.test(error.response?.data?.errorClass)) {
