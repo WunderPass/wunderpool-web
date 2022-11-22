@@ -54,15 +54,12 @@ export default function EventCard(props) {
     if (participants.length > 0) {
       votes = [[], [], []];
       participants.forEach((p) => {
-        const wunderId = members.find((m) =>
-          compAddr(m.address, p.address)
-        )?.wunderId;
         if (Number(p.prediction[0]) > Number(p.prediction[1])) {
-          votes[0].push(wunderId);
+          votes[0].push(p);
         } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
-          votes[1].push(wunderId);
+          votes[1].push(p);
         } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
-          votes[2].push(wunderId);
+          votes[2].push(p);
         }
       });
     }
@@ -301,9 +298,16 @@ export default function EventCard(props) {
                                 </div>
                               </div>
 
-                              {participants?.find((part) =>
-                                compAddr(part.address, user.address)
-                              ) ? (
+                              {participants?.length >= 20 ? (
+                                <button
+                                  disabled
+                                  className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
+                                >
+                                  $ {stake} (No Spots Left)
+                                </button>
+                              ) : participants?.find((part) =>
+                                  compAddr(part.address, user.address)
+                                ) ? (
                                 <button
                                   disabled
                                   className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"

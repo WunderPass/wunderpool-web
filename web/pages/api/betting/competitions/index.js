@@ -35,7 +35,6 @@ export default async function handler(req, res) {
         (competition) => competition.id == competitionId
       );
     }
-
     res.status(200).json(filteredCompetitions);
   } catch (error) {
     console.log(error);

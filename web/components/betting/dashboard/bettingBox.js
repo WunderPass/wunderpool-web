@@ -1,5 +1,6 @@
 import { Typography, Skeleton, Divider } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
+import { compAddr } from '../../../services/memberHelpers';
 import { currency } from '/services/formatter';
 
 function BettingBox(props) {
@@ -8,22 +9,41 @@ function BettingBox(props) {
   const [moneyAtStake, setMoneyAtStake] = useState(0);
   const [openBets, setOpenBets] = useState(0);
 
-  const calculateValues = (competitions) => {
-    var profit = 0;
-    var moneyAtStake = 0;
-    competitions.map((comp) => {
-      moneyAtStake = moneyAtStake + comp.stake;
-      profit = profit + comp.stake * comp.members?.length - comp.stake;
-    });
-    setOpenBets(competitions.length);
+  const calculateValues = (bettingServ) => {
+    let profit = 0;
+    let moneyAtStake = 0;
+    isHistory
+      ? bettingServ.userHistoryCompetitions.map((comp) => {
+          moneyAtStake = moneyAtStake + comp.stake;
+          profit =
+            profit +
+            comp.members.find((m) => compAddr(m.address, user.address))?.profit;
+        })
+      : bettingServ.userCompetitions.map((comp) => {
+          moneyAtStake = moneyAtStake + comp.stake;
+          comp.members?.length > 1
+            ? (profit = profit + comp.stake * (comp.members?.length - 2))
+            : (profit = profit + comp.stake * (comp.members?.length - 1));
+        });
+
+    setOpenBets(
+      isHistory
+        ? bettingServ.userHistoryCompetitions.length
+        : bettingServ.userCompetitions.length
+    );
     setMoneyAtStake(moneyAtStake);
     setProfits(profit);
   };
 
   useEffect(() => {
     if (!bettingService.isReady) return;
-    calculateValues(bettingService.userCompetitions);
-  }, [isHistory, bettingService.isReady, bettingService.userCompetitions]);
+    calculateValues(bettingService);
+  }, [
+    isHistory,
+    bettingService.isReady,
+    bettingService.userCompetitions,
+    bettingService.userHistoryCompetitions,
+  ]);
 
   return bettingService.isReady ? (
     <>
@@ -42,28 +62,27 @@ function BettingBox(props) {
             </div>
             <div className="flex flex-col container-white-p-0 p-5 ">
               {isHistory ? (
-                <div className=" opacity-30 ">
-                  <div className="flex flex-row justify-center items-center gap-2">
-                    <Typography className="text-2xl  font-semibold">
-                      COMING SOON
-                    </Typography>
-                  </div>
-                  <Divider className="opacity-80 my-4" />
-
+                <>
                   <div className="flex  flex-row justify-between items-center gap-2">
-                    <Typography className="text-xl">Money Lost</Typography>
-                    <Typography className="text-2xl text-red-600 font-semibold">
-                      {/* {currency(totalMoneyStake)} */} -
+                    <Typography className="text-xl">Money Bet</Typography>
+                    <Typography className="text-2xl font-semibold">
+                      {currency(moneyAtStake)}
                     </Typography>
                   </div>
                   <Divider className="opacity-80 my-4" />
                   <div className="flex flex-row justify-between items-center gap-2">
-                    <Typography className="text-xl">Winnings</Typography>
-                    <Typography className="text-2xl text-green-600 font-semibold">
-                      {/* {currency(totalPotSize)} */} -
+                    <Typography className="text-xl">
+                      {profits >= 0 ? 'Profit' : 'Losses'}
+                    </Typography>
+                    <Typography
+                      className={`text-2xl ${
+                        profits >= 0 ? 'text-green-600' : 'text-red-600'
+                      } font-semibold`}
+                    >
+                      {currency(profits)}
                     </Typography>
                   </div>
-                </div>
+                </>
               ) : (
                 <>
                   <div className="flex  flex-row justify-between items-center gap-2">

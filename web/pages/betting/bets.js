@@ -71,7 +71,6 @@ export default function Bets(props) {
                   }}
                 >
                   <StyledTabs
-                    textColor=""
                     value={value}
                     onChange={handleChange}
                     variant="fullWidth"
@@ -177,10 +176,8 @@ const StyledTabs = styled((props) => (
     justifyContent: 'center',
     backgroundColor: 'transparent',
     height: 4,
-    borderRadius: '25px',
   },
   '& .MuiTabs-indicatorSpan': {
-    borderRadius: '50%',
     width: '100%',
     backgroundColor: '#635ee7',
   },

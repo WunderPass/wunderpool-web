@@ -167,7 +167,7 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
                   <div className="mr-3">Deposit from {isDeposit.wunderId}</div>
                   <Avatar
                     wunderId={isDeposit.wunderId}
-                    text={isDeposit.wunderId || '0-X'}
+                    text={isDeposit.wunderId || '0X'}
                     i={1}
                   />
                 </div>
@@ -178,7 +178,7 @@ function TokenTransaction({ transaction, wunderPool, errorMsg }) {
                   </div>
                   <Avatar
                     wunderId={isWithdrawl.wunderId}
-                    text={isWithdrawl.wunderId || '0-X'}
+                    text={isWithdrawl.wunderId || '0X'}
                     i={1}
                   />
                 </div>
@@ -326,7 +326,7 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
   const transactionInfo = () => {
     if (/addToWhiteListForUser/.test(functionName)) {
       const [userAddress, newMember] = params;
-      const wunderId = wunderPool.resolveMember(userAddress);
+      const userName = wunderPool.resolveMember(userAddress);
       const newMemberName = wunderPool.resolveMember(newMember);
 
       return (
@@ -337,21 +337,21 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
           <div className="mx-2">
             <Avatar
               wunderId={newMemberName}
-              text={newMemberName || '0-X'}
+              text={newMemberName || '0X'}
               i={1}
             />
           </div>
-          <div className="text-ellipsis ... overflow-hidden">
-            {newMemberName} was invited by {wunderId}{' '}
+          <div className="text-ellipsis overflow-hidden">
+            {newMemberName} was invited by {userName}
           </div>
           <div className="mx-2 ml-4">
-            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+            <Avatar wunderId={userName} text={userName || '0X'} i={1} />
           </div>
         </div>
       );
     } else if (/addToWhiteListWithSecret/.test(functionName)) {
       const [userAddress, secret, validFor] = params;
-      const wunderId = wunderPool.resolveMember(userAddress);
+      const userName = wunderPool.resolveMember(userAddress);
 
       return (
         <div className="flex flex-row items-center mt-1">
@@ -359,16 +359,16 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
             <AiOutlineUsergroupAdd className="text-4xl " />
           </div>
           <div className="mx-2">
-            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+            <Avatar wunderId={userName} text={userName || '0X'} i={1} />
           </div>
           <div>
-            {wunderId} created a invite Link for {validFor.toString()} people.
+            {userName} created a invite Link for {validFor.toString()} people.
           </div>
         </div>
       );
     } else if (/joinForUser/.test(functionName)) {
       const [amount, user] = params;
-      const wunderId = wunderPool.resolveMember(user);
+      const userName = wunderPool.resolveMember(user);
 
       return (
         <div className="flex flex-row items-center mt-1">
@@ -376,17 +376,17 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
             <ImEnter className="text-4xl mr-2" />
           </div>
           <div className="mx-2">
-            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+            <Avatar wunderId={userName} text={userName || '0X'} i={1} />
           </div>
           <div>
-            {wunderId} joined the Pool with{' '}
+            {userName} joined the Pool with{' '}
             {currency(amount.div(1000000).toString())}
           </div>
         </div>
       );
     } else if (/createProposalForUser/.test(functionName)) {
       const [userAddress, title, description] = params;
-      const wunderId = wunderPool.resolveMember(userAddress);
+      const userName = wunderPool.resolveMember(userAddress);
       let isClosePool = false;
       let color = 'text-4xl text-black';
       if (/sell/i.test(title + description)) {
@@ -411,16 +411,16 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
           )}
 
           <div className="mx-2">
-            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+            <Avatar wunderId={userName} text={userName || '0X'} i={1} />
           </div>
           <div className="text-ellipsis overflow-hidden ...">
-            {wunderId} created Proposal "{title}"
+            {userName} created Proposal "{title}"
           </div>
         </div>
       );
     } else if (/voteForUser/.test(functionName)) {
       const [userAddress, proposalId, mode] = params;
-      const wunderId = wunderPool.resolveMember(userAddress);
+      const userName = wunderPool.resolveMember(userAddress);
       const proposalTitle =
         wunderPool.resolveProposal(proposalId.toNumber())?.title ||
         `#${proposalId.toString()}`;
@@ -437,10 +437,10 @@ function NormalTransaction({ transaction, wunderPool, errorMsg, isError }) {
             />
           </div>
           <div className="mx-2">
-            <Avatar wunderId={wunderId} text={wunderId || '0-X'} i={1} />
+            <Avatar wunderId={userName} text={userName || '0X'} i={1} />
           </div>
           <div>
-            {wunderId} voted {mode.toNumber() == 2 ? 'NO' : 'YES'} for Proposal{' '}
+            {userName} voted {mode.toNumber() == 2 ? 'NO' : 'YES'} for Proposal{' '}
             {proposalTitle}
           </div>
         </div>

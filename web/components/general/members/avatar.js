@@ -8,7 +8,6 @@ export default function Avatar(props) {
     shiftRight = false,
     tooltip,
     text,
-    separator = '-',
     wunderId,
     loginMethod,
     walletConnectUrl,
@@ -49,7 +48,6 @@ export default function Avatar(props) {
     <InitialsAvatar
       tooltip={tooltip}
       text={text}
-      separator={separator}
       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
       shiftRight={shiftRight}
     />

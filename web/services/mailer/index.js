@@ -1,3 +1,5 @@
+import { validateEmail } from '../validator';
+
 const sgMail = require('@sendgrid/mail');
 
 export function htmlWrapper(body) {
@@ -51,19 +53,21 @@ export async function sendMail({
   text,
   html,
 }) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const msg = {
-    from,
-    to,
-    cc,
-    bcc,
-    subject,
-    text,
-    html,
-  };
-  try {
-    return await sgMail.send(msg);
-  } catch (error) {
-    console.log(error);
+  if (to && validateEmail(to)) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      from,
+      to,
+      cc,
+      bcc,
+      subject,
+      text,
+      html,
+    };
+    try {
+      return await sgMail.send(msg);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
