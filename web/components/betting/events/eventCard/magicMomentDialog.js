@@ -17,6 +17,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function MagicMomentDialog({
   open,
   setOpen,
+  reset,
   guessOne,
   guessTwo,
   event,
@@ -99,7 +100,10 @@ export default function MagicMomentDialog({
             </button>
             <button
               className="w-full py-3 px-5 btn-casama"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                reset();
+                setOpen(false);
+              }}
             >
               Place Another Bet
             </button>

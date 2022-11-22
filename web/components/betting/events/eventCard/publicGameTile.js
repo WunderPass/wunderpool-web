@@ -53,8 +53,7 @@ export default function EventCardPublicGameTile({
   return (
     <div
       className={`flex flex-col container-casama-light-p-0 overflow-hidden items-between w-full ${
-        (selectedCompetition.stake == undefined && user.usdBalance >= stake) ||
-        selected
+        selectedCompetition.stake == undefined || selected
           ? 'opacity-100'
           : 'opacity-40'
       }`}
@@ -106,7 +105,6 @@ export default function EventCardPublicGameTile({
           />
         ) : (
           <button
-            disabled={user.usdBalance < stake}
             onClick={() =>
               toggleSelectedCompetition({
                 stake,

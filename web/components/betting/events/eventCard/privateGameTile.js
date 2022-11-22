@@ -7,7 +7,6 @@ export default function EventCardPrivateGameTile({
   showCustomInput,
   stake,
   event,
-  user,
   guessOne,
   guessTwo,
   setGuessOne,
@@ -36,9 +35,7 @@ export default function EventCardPrivateGameTile({
           ) : (
             <button
               className={`btn-casama w-full py-1 text-lg my-2 ${
-                (selectedCompetition.stake == undefined &&
-                  user.usdBalance >= stake) ||
-                selected
+                selectedCompetition.stake == undefined || selected
                   ? 'opacity-100'
                   : 'opacity-40'
               }`}
