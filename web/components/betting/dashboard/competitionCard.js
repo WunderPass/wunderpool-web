@@ -13,9 +13,17 @@ import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import { BsFillArrowUpSquareFill } from 'react-icons/bs';
 import ParticipantTable from '../games/ParticipantTable';
+import { compAddr } from '../../../services/memberHelpers';
 
 export default function DashboardCompetitionCard(props) {
-  const { competition, handleSuccess, handleError, user, isSortById } = props;
+  const {
+    competition,
+    handleSuccess,
+    handleError,
+    user,
+    isSortById,
+    isHistory,
+  } = props;
   const [showDetails, setShowDetails] = useState(false);
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
@@ -124,20 +132,46 @@ export default function DashboardCompetitionCard(props) {
                 </IconButton>
               </div>
             </div>
-            <Typography className="text-xl sm:text-3xl font-bold mx-3  text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
+            <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0  text-gray-800 text-center my-1 sm:my-3 w-full">
               {game.event.shortName}
             </Typography>
+
             <div className="flex flex-col items-end gap-3">
               <Chip
-                className="bg-white text-casama-blue"
+                className="bg-white text-casama-blue w-full"
                 size="medium"
                 label={competition.isPublic ? 'Public' : 'Private'}
               />
               <Chip
-                className="bg-casama-blue text-white"
+                className="bg-casama-blue text-white w-full"
                 size="medium"
                 label={currency(competition.stake)}
               />
+
+              {isHistory && (
+                <Chip
+                  className={
+                    gameResultTable?.find((m) =>
+                      compAddr(m.address, user.address)
+                    )?.winnings > 0
+                      ? 'bg-green-500 text-white'
+                      : 'bg-red-500 text-white'
+                  }
+                  size="medium"
+                  label={
+                    gameResultTable?.find((m) =>
+                      compAddr(m.address, user.address)
+                    )?.winnings > 0
+                      ? '+ ' +
+                        currency(
+                          gameResultTable?.find((m) =>
+                            compAddr(m.address, user.address)
+                          )?.winnings
+                        )
+                      : '- ' + currency(competition.stake)
+                  }
+                />
+              )}
             </div>
           </div>
           <div className="flex flex-col w-full  ">

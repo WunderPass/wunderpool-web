@@ -34,6 +34,7 @@ export default function BetsList(props) {
                       competition={comp}
                       user={user}
                       isSortById={isSortById}
+                      isHistory={isHistory}
                       {...props}
                     />
                   );
