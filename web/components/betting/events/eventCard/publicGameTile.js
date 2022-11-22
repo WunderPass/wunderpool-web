@@ -92,7 +92,7 @@ export default function EventCardPublicGameTile({
             </div>
           </div>
           <div className="flex flex-row">
-            <p className="font-semibold ml-1.5">
+            <div className="font-semibold ml-1.5">
               <div className="flex flex-row items-center justify-center">
                 <GoPerson className="text-base text-casama-blue mb-0.5 mr-1" />
                 {matchingCompetition
@@ -104,7 +104,7 @@ export default function EventCardPublicGameTile({
                     )}`
                   : '0 / 50'}
               </div>
-            </p>
+            </div>
           </div>
         </div>
 
