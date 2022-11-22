@@ -1,41 +1,43 @@
 import { Typography, Skeleton, Divider } from '@mui/material';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { compAddr } from '../../../services/memberHelpers';
 import { currency } from '/services/formatter';
 
 function BettingBox(props) {
   const { user, bettingService, isHistory } = props;
-  const [totalPotSize, totalMoneyStake, openBets] = useMemo(() => {
-    return isHistory
-      ? bettingService.isReady
-        ? [
-            bettingService.userHistoryCompetitions?.reduce(
-              (accum, comp) =>
-                accum +
-                  comp.members.find((m) => compAddr(m.address, user.address))
-                    ?.profit || 0,
-              0
-            ),
-            bettingService.userHistoryCompetitions?.reduce(
-              (accum, comp) => accum + comp.stake,
-              0
-            ),
-            bettingService.userHistoryCompetitions?.length,
-          ]
-        : [0, 0, 0]
-      : bettingService.isReady
-      ? [
-          bettingService.userCompetitions?.reduce(
-            (accum, comp) => accum + comp.stake * comp.members?.length,
-            0
-          ),
-          bettingService.userCompetitions?.reduce(
-            (accum, comp) => accum + comp.stake,
-            0
-          ),
-          bettingService.userCompetitions?.length,
-        ]
-      : [0, 0, 0];
+  const [profits, setProfits] = useState(0);
+  const [moneyAtStake, setMoneyAtStake] = useState(0);
+  const [openBets, setOpenBets] = useState(0);
+
+  const calculateValues = (bettingServ) => {
+    let profit = 0;
+    let moneyAtStake = 0;
+    isHistory
+      ? bettingServ.userHistoryCompetitions.map((comp) => {
+          moneyAtStake = moneyAtStake + comp.stake;
+          profit =
+            profit +
+            comp.members.find((m) => compAddr(m.address, user.address))?.profit;
+        })
+      : bettingServ.userCompetitions.map((comp) => {
+          moneyAtStake = moneyAtStake + comp.stake;
+          comp.members?.length > 1
+            ? (profit = profit + comp.stake * (comp.members?.length - 2))
+            : (profit = profit + comp.stake * (comp.members?.length - 1));
+        });
+
+    setOpenBets(
+      isHistory
+        ? bettingServ.userHistoryCompetitions.length
+        : bettingServ.userCompetitions.length
+    );
+    setMoneyAtStake(moneyAtStake);
+    setProfits(profit);
+  };
+
+  useEffect(() => {
+    if (!bettingService.isReady) return;
+    calculateValues(bettingService);
   }, [
     isHistory,
     bettingService.isReady,
@@ -64,20 +66,20 @@ function BettingBox(props) {
                   <div className="flex  flex-row justify-between items-center gap-2">
                     <Typography className="text-xl">Money Bet</Typography>
                     <Typography className="text-2xl font-semibold">
-                      {currency(totalMoneyStake)}
+                      {currency(moneyAtStake)}
                     </Typography>
                   </div>
                   <Divider className="opacity-80 my-4" />
                   <div className="flex flex-row justify-between items-center gap-2">
                     <Typography className="text-xl">
-                      {totalPotSize >= 0 ? 'Profit' : 'Losses'}
+                      {profits >= 0 ? 'Profit' : 'Losses'}
                     </Typography>
                     <Typography
                       className={`text-2xl ${
-                        totalPotSize >= 0 ? 'text-green-600' : 'text-red-600'
+                        profits >= 0 ? 'text-green-600' : 'text-red-600'
                       } font-semibold`}
                     >
-                      {currency(Math.abs(totalPotSize))}
+                      {currency(profits)}
                     </Typography>
                   </div>
                 </>
@@ -86,14 +88,14 @@ function BettingBox(props) {
                   <div className="flex  flex-row justify-between items-center gap-2">
                     <Typography className="text-xl">Money at Stake</Typography>
                     <Typography className="text-2xl font-semibold">
-                      {currency(totalMoneyStake)}
+                      {currency(moneyAtStake)}
                     </Typography>
                   </div>
                   <Divider className="opacity-80 my-4" />
                   <div className="flex flex-row justify-between items-center gap-2">
                     <Typography className="text-xl">Possible Profit</Typography>
                     <Typography className="text-2xl text-green-600 font-semibold">
-                      {currency(totalPotSize)}
+                      {currency(profits)}
                     </Typography>
                   </div>
                 </>

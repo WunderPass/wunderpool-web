@@ -122,7 +122,6 @@ export default function PoolHeader(props) {
     if (link != '') {
       makePublic(address, link)
         .then((res) => {
-          console.log(res);
           handleSuccess('Pool is now Public');
           setLoading(false);
         })

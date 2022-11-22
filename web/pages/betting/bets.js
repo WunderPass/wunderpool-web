@@ -71,7 +71,6 @@ export default function Bets(props) {
                   }}
                 >
                   <StyledTabs
-                    textColor=""
                     value={value}
                     onChange={handleChange}
                     variant="fullWidth"
