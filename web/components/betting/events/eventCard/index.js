@@ -75,7 +75,6 @@ export default function EventCard(props) {
       })
         .then(() => {
           user.fetchUsdBalance();
-          reset();
           setShowSuccess(true);
         })
         .catch((err) => {
@@ -98,7 +97,6 @@ export default function EventCard(props) {
       })
         .then(() => {
           user.fetchUsdBalance();
-          reset();
           setShowSuccess(true);
         })
         .catch((err) => {
@@ -127,7 +125,6 @@ export default function EventCard(props) {
     })
       .then(() => {
         user.fetchUsdBalance();
-        reset();
         setShowSuccess(true);
       })
       .catch((err) => {
@@ -255,6 +252,7 @@ export default function EventCard(props) {
       <MagicMomentDialog
         open={showSuccess}
         setOpen={setShowSuccess}
+        reset={reset}
         guessOne={guessOne}
         guessTwo={guessTwo}
         event={event}
