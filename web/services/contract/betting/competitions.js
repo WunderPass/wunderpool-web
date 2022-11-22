@@ -3,7 +3,6 @@ import { usdc } from '../../formatter';
 import { versionLookup } from '../init';
 import { joinPool } from '../pools';
 import { approveUSDC } from '../token';
-import { registerGame, registerParticipant } from './games';
 
 async function createCompetition({
   name,
@@ -51,9 +50,7 @@ export async function createSingleCompetition({
   stake,
   creator,
   isPublic,
-  prediction,
   invitations = [],
-  afterPoolCreate = async () => {},
 }) {
   try {
     const competitionId = await createCompetition({
@@ -65,8 +62,6 @@ export async function createSingleCompetition({
       stake,
       isPublic,
     });
-
-    await afterPoolCreate();
 
     const competition = await new Promise((res, rej) => {
       let retry = 0;
@@ -88,34 +83,18 @@ export async function createSingleCompetition({
       }, 1000);
     });
 
-    console.log(competition);
-    const game = competition.games[0];
-
-    await registerParticipant(
-      competitionId,
-      game.id,
-      prediction,
-      creator,
-      event.version
-    );
-
-    return game;
+    return { competitionId, gameId: competition.games[0].id };
   } catch (error) {
     throw error;
   }
 }
 
 export async function joinSingleCompetition({
-  competitionId,
-  gameId,
-  prediction,
   userAddress,
-  event,
   stake,
   secret = '',
   poolAddress,
   poolVersion,
-  afterPoolJoin = async () => {},
 }) {
   try {
     try {
@@ -131,14 +110,6 @@ export async function joinSingleCompetition({
         throw error;
       }
     }
-    await afterPoolJoin();
-    await registerParticipant(
-      competitionId,
-      gameId,
-      prediction,
-      userAddress,
-      event.version
-    );
     return true;
   } catch (error) {
     throw error;
