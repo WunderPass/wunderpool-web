@@ -2,24 +2,16 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { compAddr } from '../services/memberHelpers';
-import * as qs from 'qs';
 
-export default function useBettingService(
-  userAddress,
-  handleError = () => {},
-  props
-) {
+export default function useBettingService(userAddress) {
   const [competitions, setCompetitions] = useState([]);
   const [userCompetitions, setUserCompetitions] = useState([]);
   const [userHistoryCompetitions, setUserHistoryCompetitions] = useState([]);
   const [publicCompetitions, setPublicCompetitions] = useState([]);
   const [events, setEvents] = useState([]);
-  const [liveEvents, setLiveEvents] = useState([]);
-  const [historicEvents, setHistoricEvents] = useState([]);
 
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
-  qs = require('qs');
 
   const getCompetitions = async () => {
     await axios({
@@ -61,30 +53,10 @@ export default function useBettingService(
     });
   };
 
-  //TODO SORT THIS BY USER ?
-  const getHistoricEvents = async () => {
-    await axios({
-      url: `/api/betting/events/listed`,
-    }).then((res) => {
-      setHistoricEvents(res.data);
-    });
-  };
-
-  //TODO SORT THIS BY USER ?
-  const getLiveEvents = async () => {
-    await axios({
-      url: `/api/betting/events/live`,
-    }).then((res) => {
-      setLiveEvents(res.data);
-    });
-  };
-
   const initialize = async () => {
     await getCompetitions();
     await getEvents();
     await getHistory();
-    await getLiveEvents();
-    await getHistoricEvents();
   };
 
   useEffect(() => {
@@ -102,8 +74,6 @@ export default function useBettingService(
     userCompetitions,
     userHistoryCompetitions,
     events,
-    liveEvents,
-    historicEvents,
     isReady,
   };
 }

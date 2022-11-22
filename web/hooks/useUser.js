@@ -104,10 +104,10 @@ export default function useUser() {
     setUserName(userName);
   };
 
-  const fetchPools = () => {
+  const fetchPools = (speedy = false) => {
     return new Promise((resolve, reject) => {
       if (!address) return;
-      fetchUserPools(address)
+      fetchUserPools(address, speedy)
         .then((pools) => {
           setPools(pools);
           resolve(pools);
@@ -356,7 +356,7 @@ export default function useUser() {
   useEffect(async () => {
     if (address) {
       await fetchUsdBalance();
-      await fetchPools();
+      await fetchPools(router?.asPath != '/investing/pools');
       await fetchWhitelistedPools();
       await getUserData();
       setIsReady(true);

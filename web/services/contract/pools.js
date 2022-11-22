@@ -139,7 +139,12 @@ export function getPoolAddressFromTx(txHash, version = null) {
   });
 }
 
-export async function formatAsset(asset) {
+export async function formatAsset(asset, speedy = false) {
+  if (speedy) {
+    return {
+      address,
+    };
+  }
   const address = asset.asset_infos.currency_contract_address;
   const token =
     (await getCachedItemDB(address)) ||
@@ -182,7 +187,15 @@ export async function formatAsset(asset) {
   };
 }
 
-export async function formatMembers(members, totalSupply) {
+export async function formatMembers(members, totalSupply, speedy = false) {
+  if (speedy) {
+    return members.map((mem) => ({
+      address: mem.members_address,
+      tokens: mem.pool_shares_balance,
+      shares: mem.pool_shares_balance,
+      share: (mem.pool_shares_balance * 100) / totalSupply,
+    }));
+  }
   const resolvedMembers = (
     await axios({
       method: 'POST',
@@ -204,6 +217,7 @@ export async function formatMembers(members, totalSupply) {
       );
 
       member.wunderId = user?.wunder_id;
+      member.userName = user?.handle;
       member.firstName = user?.firstname;
       member.lastName = user?.lastname;
       return member;
@@ -239,11 +253,13 @@ function formatShareholderAgreement(shareholderAgreement) {
   };
 }
 
-export async function formatPool(pool, user = null) {
+export async function formatPool(pool, user = null, speedy = false) {
   try {
     const tokens = await Promise.all(
       pool.pool_assets
-        ? pool.pool_assets.map(async (asset) => await formatAsset(asset))
+        ? pool.pool_assets.map(
+            async (asset) => await formatAsset(asset, speedy)
+          )
         : []
     );
     const usdBalance = pool.pool_treasury.act_balance;
@@ -258,7 +274,8 @@ export async function formatPool(pool, user = null) {
 
     const members = await formatMembers(
       pool.pool_members,
-      governanceToken.totalSupply
+      governanceToken.totalSupply,
+      speedy
     );
 
     const userShare = user
@@ -294,7 +311,7 @@ export async function formatPool(pool, user = null) {
   }
 }
 
-export function fetchUserPools(userAddress) {
+export function fetchUserPools(userAddress, speedy = false) {
   return new Promise(async (resolve, reject) => {
     axios({ url: `/api/pools/userPools?address=${userAddress}` })
       .then(async (res) => {
@@ -302,7 +319,8 @@ export function fetchUserPools(userAddress) {
           res.data
             .filter((pool) => pool.active)
             .map(
-              async (pool) => await formatPool(pool, userAddress.toLowerCase())
+              async (pool) =>
+                await formatPool(pool, userAddress.toLowerCase(), speedy)
             )
         );
         resolve(pools.filter((p) => p));

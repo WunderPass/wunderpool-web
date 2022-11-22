@@ -127,20 +127,17 @@ export default function DashboardCompetitionCard(props) {
             <Typography className="text-xl sm:text-3xl font-bold mx-3  text-gray-800 text-center my-1 sm:my-3 w-full ml-2">
               {game.event.shortName}
             </Typography>
-            <div>
-              {competition.isPublic ? (
-                <Chip
-                  className="bg-white text-casama-blue"
-                  size="medium"
-                  label="Public"
-                />
-              ) : (
-                <Chip
-                  className="bg-white text-casama-blue"
-                  size="medium"
-                  label="Private"
-                />
-              )}
+            <div className="flex flex-col items-end gap-3">
+              <Chip
+                className="bg-white text-casama-blue"
+                size="medium"
+                label={competition.isPublic ? 'Public' : 'Private'}
+              />
+              <Chip
+                className="bg-casama-blue text-white"
+                size="medium"
+                label={currency(competition.stake)}
+              />
             </div>
           </div>
           <div className="flex flex-col w-full  ">
