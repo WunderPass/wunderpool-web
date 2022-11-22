@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
     const resp = await axios({
       method: 'post',
-      url: 'https://identity-service.wunderpass.org/v3/requestGasFunds',
+      url: 'https://identity-service.wunderpass.org/v4/requestGasFunds',
       headers: headers,
     });
     res.status(200).json({ resp: resp.data });
