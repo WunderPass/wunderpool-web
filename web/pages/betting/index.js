@@ -3,12 +3,11 @@ import { Container, Skeleton, Typography } from '@mui/material';
 import EventsList from '/components/betting/events/list';
 import CustomHeader from '/components/general/utils/customHeader';
 import DropDown from '/components/general/utils/dropDown';
-import axios from 'axios';
 import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 
 export default function Betting(props) {
-  const { user, bettingService } = props;
+  const { bettingService } = props;
   const [showSideBar, setShowSideBar] = useState(true);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
   const [isSortById, setIsSortById] = useState(false);
@@ -119,7 +118,7 @@ export default function Betting(props) {
                     />
                   </div>
 
-                  {user.isReady ? (
+                  {bettingService.isReady ? (
                     <EventsList
                       className="mx-4"
                       eventTypeSort={eventTypeSort}
