@@ -205,72 +205,74 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
   if (!metamaskInstalled) return null;
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
-      <Collapse in={signUpRequired}>
-        <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex flex-col justify-center items-center gap-4 w-full">
-            <h6>Please Sign Up to use Casama</h6>
-            <div className="flex flex-row gap-4 ">
-              <div className="w-full">
-                <input
-                  className="textfield py-4 px-3 "
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                  }}
-                />
-                <Error msg={errors.firstName} />
+    signUpRequired != null && (
+      <div className="flex flex-col justify-center items-center w-full">
+        <Collapse in={signUpRequired}>
+          <form className="w-full" onSubmit={handleSubmit}>
+            <div className="flex flex-col justify-center items-center gap-4 w-full">
+              <h6>Please Sign Up to use Casama</h6>
+              <div className="flex flex-row gap-4 ">
+                <div className="w-full">
+                  <input
+                    className="textfield py-4 px-3 "
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                    }}
+                  />
+                  <Error msg={errors.firstName} />
+                </div>
+                <div className="w-full">
+                  <input
+                    className="textfield py-4 px-3"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                    }}
+                  />
+                  <Error msg={errors.lastName} />
+                </div>
               </div>
               <div className="w-full">
                 <input
                   className="textfield py-4 px-3"
-                  placeholder="Last Name"
-                  value={lastName}
+                  placeholder="Email"
+                  type="email"
+                  value={email}
                   onChange={(e) => {
-                    setLastName(e.target.value);
+                    setEmail(e.target.value);
                   }}
                 />
-                <Error msg={errors.lastName} />
+                <Error msg={errors.email} />
               </div>
+              <Error msg={creationError} />
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex text-center items-center justify-center w-full bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
+              >
+                {loading ? 'Loading...' : 'Sign Up'}
+              </button>
             </div>
-            <div className="w-full">
-              <input
-                className="textfield py-4 px-3"
-                placeholder="Email"
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-              <Error msg={errors.email} />
+          </form>
+        </Collapse>
+        <Collapse className="w-full" in={!signUpRequired}>
+          <button
+            className="flex my-2 w-full p-1 pt-1.5 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"
+            onClick={loginWithWetaMask}
+          >
+            <div className="pl-1 ">
+              {/* You cannot change height and width with hot reload */}
+              <MetaMaskLogo width={40} height={40} />
             </div>
-            <Error msg={creationError} />
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex text-center items-center justify-center w-full bg-casama-blue hover:bg-casama-dark-blue text-white rounded-lg px-5 py-2 font-medium text-md"
-            >
-              {loading ? 'Loading...' : 'Sign Up'}
-            </button>
-          </div>
-        </form>
-      </Collapse>
-      <Collapse className="w-full" in={!signUpRequired}>
-        <button
-          className="flex my-2 w-full p-1 pt-1.5 px-2 items-center justify-start text-center text-casama-blue rounded-xl border-casama-blue border-2"
-          onClick={loginWithWetaMask}
-        >
-          <div className="pl-1 ">
-            {/* You cannot change height and width with hot reload */}
-            <MetaMaskLogo width={40} height={40} />
-          </div>
-          <div className="pl-2 ">
-            {loading ? 'Connecting...' : 'Connect with MetaMask'}
-          </div>
-        </button>
-      </Collapse>
-    </div>
+            <div className="pl-2 ">
+              {loading ? 'Connecting...' : 'Connect with MetaMask'}
+            </div>
+          </button>
+        </Collapse>
+      </div>
+    )
   );
 }

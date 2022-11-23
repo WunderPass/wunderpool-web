@@ -23,7 +23,7 @@ export function ParticipantTableRow({
       <div>
         <Avatar
           wunderId={wunderId}
-          tooltip={userName}
+          tooltip={userName ? userName : 'user'}
           text={userName ? userName : '0X'}
         />
       </div>

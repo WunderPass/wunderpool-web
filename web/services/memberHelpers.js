@@ -19,7 +19,7 @@ export function showWunderIdsAsIcons(arr, amount = 3) {
           shiftRight
           wunderId={wunderId}
           text={userName ? userName : '0X'}
-          tooltip={userName}
+          tooltip={userName ? userName : 'user'}
           i={i}
         />
       ))}
