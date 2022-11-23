@@ -28,6 +28,28 @@ export default function useBettingService(userAddress) {
     });
   };
 
+  const reFetchCompetition = (id, timeout = 0) => {
+    try {
+      setTimeout(async () => {
+        const { data } = await axios({
+          url: `/api/betting/competitions/show`,
+          params: { id },
+        });
+        setCompetitions((comps) =>
+          comps.map((c) => (c.id == data.id ? data : c))
+        );
+        setUserCompetitions((comps) =>
+          comps.map((c) => (c.id == data.id ? data : c))
+        );
+        setPublicCompetitions((comps) =>
+          comps.map((c) => (c.id == data.id ? data : c))
+        );
+      }, timeout);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getHistory = async () => {
     await axios({
       url: `/api/betting/competitions`,
@@ -73,6 +95,7 @@ export default function useBettingService(userAddress) {
     publicCompetitions,
     userCompetitions,
     userHistoryCompetitions,
+    reFetchCompetition,
     events,
     isReady,
   };

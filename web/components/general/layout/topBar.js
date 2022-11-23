@@ -133,7 +133,8 @@ export default function TopBar(props) {
                                 : null
                             }
                             wunderId={user.wunderId}
-                            text={user.userName || '0X'}
+                            tooltip={user.userName}
+                            text={user.userName || user.firstName || '0X'}
                             i={1}
                           />
                         )}
@@ -198,6 +199,7 @@ export default function TopBar(props) {
                           : null
                       }
                       wunderId={user.wunderId}
+                      tooltip={user.userName}
                       text={user.userName || user.firstName || '0X'}
                       i={1}
                     />

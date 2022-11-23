@@ -37,6 +37,8 @@ export default function PayPalButton(props) {
           setRedirectUrl(res?.data?.redirectUrl);
         });
       }, 800);
+    } else {
+      setRedirectUrl(null);
     }
   }, [user.wunderId, amount]);
 

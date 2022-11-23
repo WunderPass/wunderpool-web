@@ -88,7 +88,7 @@ export default function WalletBalance(props) {
             </div>
           </button>
           <a
-            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=polygon&productsAvailed=SELL&&walletAddress=${user.address}&defaultCryptoAmount=52&isAutoFillUserData=true&userData=${userData}redirectURL=https://app.casama.io/balance`}
+            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&networks=polygon&defaultCryptoCurrency=USDC&productsAvailed=SELL&&walletAddress=${user.address}&isAutoFillUserData=true&themeColor=5F45FD&hideMenu=true&redirectURL=https://app.casama.io/balance`}
             target="_blank"
             className="w-1/2 sm:w-1/4"
           >

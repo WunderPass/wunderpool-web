@@ -13,6 +13,7 @@ export default function EventCardPredicitionInput(props) {
           <div>{(event?.teamHome?.name).substr(0, 3)}</div>
           <div className="w-20">
             <input
+              togglable="false"
               disabled={loading}
               inputMode="numeric"
               className="textfield text-center py-1 px-3"
@@ -25,6 +26,7 @@ export default function EventCardPredicitionInput(props) {
           <div>{(event?.teamAway?.name).substr(0, 3)}</div>
           <div className="w-20">
             <input
+              togglable="false"
               disabled={loading}
               inputMode="numeric"
               className="textfield text-center py-1 px-3"

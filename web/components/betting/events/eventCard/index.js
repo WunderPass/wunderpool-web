@@ -16,7 +16,6 @@ import { useMemo } from 'react';
 
 export default function EventCard(props) {
   const { event, bettingService, user, handleError } = props;
-  const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
@@ -38,6 +37,11 @@ export default function EventCard(props) {
   const mustClickAgain = useMemo(
     () => joiningCompetitionId && joiningGameId,
     [joiningCompetitionId, joiningGameId]
+  );
+
+  const eventCompetitions = bettingService.publicCompetitions.filter(
+    (comp) =>
+      comp.games.length == 1 && comp.games.find((g) => g.event.id == event.id)
   );
 
   const placeBet = async () => {
@@ -142,6 +146,10 @@ export default function EventCard(props) {
         user.address,
         event.version
       );
+      bettingService.reFetchCompetition(
+        competitionId || joiningCompetitionId,
+        3000
+      );
       user.fetchUsdBalance();
       setShowSuccess(true);
       setLoadingText(null);
@@ -171,15 +179,10 @@ export default function EventCard(props) {
     });
   };
 
-  useEffect(() => {
-    setEventCompetitions(
-      bettingService.publicCompetitions.filter(
-        (comp) =>
-          comp.games.length == 1 &&
-          comp.games.find((g) => g.event.id == event.id)
-      )
-    );
-  }, [bettingService.isReady]);
+  const handleToggle = (e) => {
+    if (e.target.getAttribute('togglable') == 'false') return;
+    setShowDetails(!showDetails);
+  };
 
   return (
     <>
@@ -190,7 +193,7 @@ export default function EventCard(props) {
         }`}
         ref={cardRef}
       >
-        <div onClick={() => setShowDetails(true)}>
+        <div onClick={(e) => handleToggle(e)}>
           <Header event={event} />
           <div className="mt-6">
             <TransactionFrame open={loading} text={loadingText} />
@@ -203,6 +206,7 @@ export default function EventCard(props) {
                   <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-3">
                     Click here to Confirm your Bet on Chain
                     <button
+                      togglable="false"
                       disabled={loading}
                       className="btn-casama py-2 px-3 text-lg"
                       onClick={() =>

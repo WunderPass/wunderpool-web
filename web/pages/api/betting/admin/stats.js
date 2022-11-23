@@ -28,6 +28,21 @@ function getPotSize(comps, state) {
   );
 }
 
+function getTopTen(comps) {
+  const betsPerUser = {};
+  comps.forEach((c) =>
+    c.games.forEach((g) =>
+      g.participants.forEach(
+        (p) => (betsPerUser[p.address] = (betsPerUser[p.address] || 0) + 1)
+      )
+    )
+  );
+  return Object.entries(betsPerUser)
+    .map(([address, bets]) => ({ address, bets }))
+    .sort((a, b) => b.bets - a.bets)
+    .slice(0, 10);
+}
+
 export default async function handler(req, res) {
   try {
     const headers = {
@@ -40,7 +55,6 @@ export default async function handler(req, res) {
       params: { states: 'HISTORIC,LIVE,UPCOMING' },
       headers,
     });
-    console.log('bims');
 
     const competitions = data.map(formatCompetition);
     const uniqueUsers = [
@@ -52,6 +66,7 @@ export default async function handler(req, res) {
           .flat()
       ),
     ];
+
     const membersPerGame = competitions.map((c) => c.members.length);
 
     const stats = {
@@ -66,6 +81,9 @@ export default async function handler(req, res) {
         upcoming: getPotSize(competitions, 'UPCOMING'),
       },
       uniqueUsers: uniqueUsers.length,
+      totalBets: sum(
+        competitions.map((c) => sum(c.games.map((g) => g.participants.length)))
+      ),
       feesEarned:
         sum(competitions.map((c) => c.stake * c.members.length)) * 0.049,
       membersPerGame: {
@@ -84,6 +102,7 @@ export default async function handler(req, res) {
           )
         ),
       },
+      topTen: getTopTen(competitions),
     };
 
     res.status(200).json(stats);
