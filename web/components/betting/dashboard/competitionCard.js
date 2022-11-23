@@ -89,6 +89,16 @@ export default function DashboardCompetitionCard(props) {
     return new Date(date.getTime() + minutes * 60000);
   }
 
+  const handleToggle = (e) => {
+    console.log(
+      'e.target.getAttribute("togglable")',
+      e.target.getAttribute('togglable')
+    );
+    console.log('e.target', e.target);
+    if (e.target.getAttribute('togglable') == 'false') return;
+    setShowDetails(!showDetails);
+  };
+
   useEffect(() => {
     if (!isSortById) return;
     setShowDetails(true);
@@ -118,7 +128,7 @@ export default function DashboardCompetitionCard(props) {
           : 'container-gray pb-16 w-full cursor-pointer'
       }
     >
-      <div onClick={() => setShowDetails(true)}>
+      <div togglable="true" onClick={(e) => handleToggle(e)}>
         <div className="flex flex-col items-between gap-2 w-full onClick={() => setShowDetails(true)} ">
           <div className="flex flex-row w-full mb-4 ">
             <div className="flex flex-col">
@@ -225,16 +235,22 @@ export default function DashboardCompetitionCard(props) {
             <Collapse in={showDetails}>
               <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
                 <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
-                  <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2">
-                    <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
-                      <p className="mx-2 ">
+                  <div
+                    togglable="false"
+                    className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2"
+                  >
+                    <div
+                      togglable="false"
+                      className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate z-10 ..."
+                    >
+                      <p togglable="false" className="mx-2 ">
                         {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
                           ? 'Winner Takes It All'
                           : 'Proportional'}
                       </p>
 
-                      <div className="mt-2">
-                        <PayoutRuleInfoButton />
+                      <div togglable="false" className="mt-2">
+                        <PayoutRuleInfoButton togglable="false" />
                       </div>
                     </div>
                     <Divider className="my-1" />
