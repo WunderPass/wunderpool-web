@@ -15,6 +15,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useMemo } from 'react';
+import { compAddr, getNameFor } from '../../services/memberHelpers';
+import Avatar from '../../components/general/members/avatar';
 
 const admins = [
   '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
@@ -104,6 +106,7 @@ export default function AdminBettingPage(props) {
   const router = useRouter();
   const [historicData, setHistoricData] = useState(null);
   const [liveData, setLiveData] = useState(null);
+  const [resolvedTopTen, setResolvedTopTen] = useState(null);
   const [timeFrame, setTimeFrame] = useState(1);
 
   const compareData = useMemo(() => {
@@ -131,6 +134,19 @@ export default function AdminBettingPage(props) {
         url: '/api/betting/admin/stats',
       });
       setLiveData(data);
+      axios({
+        method: 'post',
+        url: '/api/users/find',
+        data: { addresses: data.topTen.map(({ address }) => address) },
+      }).then(({ data: resolved }) => {
+        setResolvedTopTen(
+          data.topTen.map(({ address, bets }) => ({
+            address,
+            bets,
+            ...resolved.find((u) => compAddr(u.wallet_address, address)),
+          }))
+        );
+      });
     } catch (error) {
       console.log(error);
     }
@@ -270,6 +286,16 @@ export default function AdminBettingPage(props) {
               </p>
             </div>
             <div className="container-gray w-full flex flex-col justify-between">
+              <h3 className="text-2xl mb-2 text-center">Total Bets</h3>
+              <p className="text-3xl text-center text-casama-blue">
+                {liveData.totalBets}
+                <Diff
+                  live={liveData.totalBets}
+                  historic={compareData?.totalBets}
+                />
+              </p>
+            </div>
+            <div className="container-gray w-full flex flex-col justify-between">
               <h3 className="text-2xl mb-2 text-center">Fees Earned</h3>
               <p className="text-3xl text-center text-casama-blue">
                 {currency(liveData.feesEarned)}
@@ -280,6 +306,8 @@ export default function AdminBettingPage(props) {
                 />
               </p>
             </div>
+          </div>
+          <div className="flex flex-wrap sm:flex-nowrap gap-3">
             <div className="container-gray w-full flex flex-col justify-between">
               <h3 className="text-2xl mb-2 text-center">Members per Game</h3>
               <p className="text-3xl text-center text-casama-blue">
@@ -398,6 +426,39 @@ export default function AdminBettingPage(props) {
               </div>
             </div>
           </div>
+          {resolvedTopTen && (
+            <div className="w-full">
+              <h3 className="text-2xl mb-2 text-center">🐳 Whales</h3>
+              {resolvedTopTen.map((usr, i) => {
+                return (
+                  <div
+                    key={`participant-${usr.address}`}
+                    className="container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full"
+                  >
+                    <p className="pl-3">#{i + 1}</p>
+                    <div>
+                      <Avatar
+                        wunderId={usr.wunder_id}
+                        tooltip={usr.handle}
+                        text={usr.handle ? usr.handle : '0X'}
+                        i={i}
+                      />
+                    </div>
+                    <div className="flex items-center justify-start truncate flex-grow">
+                      <div className="truncate">
+                        {usr.firstname && usr.lastname
+                          ? `${usr.firstname} ${usr.lastname}`
+                          : usr.handle || usr.address}
+                      </div>
+                    </div>
+                    <div className="flex flex-row justify-end items-center text-xl">
+                      <p className="text-casama-blue">{usr.bets} Bets</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </Stack>
       ) : (
         <h2 className="text-center text-2xl">Ladet...</h2>
