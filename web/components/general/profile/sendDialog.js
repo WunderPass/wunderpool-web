@@ -13,6 +13,8 @@ import { MdOutlineQrCodeScanner } from 'react-icons/md';
 import { transferUsdc } from '/services/contract/token';
 import { currency } from '/services/formatter';
 import { waitForTransaction } from '/services/contract/provider';
+import axios from 'axios';
+import { getNameFor } from '../../../services/memberHelpers';
 
 export default function SendDialog(props) {
   const { open, setOpen, user, handleError } = props;
@@ -52,6 +54,19 @@ export default function SendDialog(props) {
         setWaitingForTx(true);
         setLoading(false);
         setTrx(res);
+        axios({
+          method: 'POST',
+          url: '/api/users/notifyTransfer',
+          data: {
+            to: selectedUser?.email,
+            firstName: selectedUser?.firstName || selectedUser?.handle,
+            sender: getNameFor(user),
+            amount: Number(amount),
+            txHash: res,
+          },
+        })
+          .then(console.log)
+          .catch((err) => console.log(err));
         waitForTransaction(res).then((tx) => {
           setWaitingForTx(false);
           setTrxSent(true);
@@ -71,6 +86,7 @@ export default function SendDialog(props) {
       setIsAddressTouched(false);
       setIsAddressValid(false);
     } else {
+      address != selectedUser?.address && setSelectedUser(null);
       setIsAddressTouched(true);
       setIsAddressValid(addressRegex.test(address));
     }
@@ -78,7 +94,7 @@ export default function SendDialog(props) {
 
   useEffect(() => {
     if (!selectedUser) return;
-    setAddress(selectedUser.address);
+    setAddress(selectedUser?.address);
   }, [selectedUser]);
 
   useEffect(() => {
