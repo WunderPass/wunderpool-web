@@ -99,16 +99,14 @@ export default function EventCardPublicGameTile({
                   ? `${Math.max(
                       0,
                       participants?.length
-                    )} / ${maxMembersAccordingToStake(
-                      matchingCompetition?.stake
-                    )}`
-                  : '0 / 50'}
+                    )} / ${maxMembersAccordingToStake(stake)}`
+                  : '0 /' + `${maxMembersAccordingToStake(stake)}`}
               </div>
             </div>
           </div>
         </div>
 
-        {participants?.length >= 20 ? (
+        {participants?.length >= maxMembersAccordingToStake(stake) ? (
           <button
             disabled
             className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"

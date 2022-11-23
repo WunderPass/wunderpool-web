@@ -46,6 +46,10 @@
       color: rgb(34, 197, 94);
     }
 
+    .underline {
+      text-decoration-line: underline;
+    }
+
     .font-bold {
       font-weight: 700;
     }
@@ -97,8 +101,7 @@
       padding-right: 0.75rem;
     }
 
-    .m-0 {
-      margin: 0;
+    .y 2 margin: 0;
     }
 
     .m-2 {
@@ -212,7 +215,7 @@
 </head>
 
 <body class="bg-casama">
-  <div class="bg-casama w-full flex items-center justify-center">
+  <div class="w-full flex items-center justify-center">
     <div class="mx-2 my-5 w-full">
       <div class="card bg-white w-full">
         <div class="p-5">
@@ -220,36 +223,20 @@
             <img src="https://app.casama.io/casama_logo.png" class="w-full mb-5" style="max-width: 100px" />
             <div class="w-full">
               <h1 class="text-casama">Hey Moritz!</h1>
-              <h3>The Competition <span class="text-casama">Argentina vs. Saudi Arabia</span> has officially ended.</h3>
-              <h3>Congrats! You have won <span class="text-casama">$22.50</span>!</h3>
             </div>
+          </div>
+          <h2 class="text-center"><span class="text-casama">Gerwin Fricke</span> just sent you <span
+              class="text-casama">$69.00</span> on
+            Casama!</h2>
+          <div class="my-5 flex justify-center">
+            <a href="https://app.casama.io" class="btn-casama">
+              <h3 class="my-2">Start Betting</h3>
+            </a>
           </div>
           <div class="divider"></div>
-          <h2>Here are the Results:</h2>
-          <div class="flex items-center justify-center mb-5">
-            <div class="bg-gray rounded-xl p-5 shadow-sm">
-              <h2 class="text-casama font-bold text-center m-0">Outcome</h2>
-              <div class="flex items-center justify-center">
-                <img src="https://app.casama.io/api/betting/events/teamImage?id=1434" class="w-16" />
-                <h1 class="mx-5">2:0</h1>
-                <img src="https://app.casama.io/api/betting/events/teamImage?id=27" class="w-16" />
-              </div>
-            </div>
-          </div>
-          <div class="bg-casama text-white rounded-xl p-5 shadow-sm flex items-center justify-between mb-2">
-            <p class="m-0 font-bold">Moritz Löchner</p>
-            <div class="flex">
-              <p class="m-0 pr-3">1:1</p>
-              <p class="m-0 text-green">$ 22.50</p>
-            </div>
-          </div>
-          <div class="bg-gray rounded-xl p-5 shadow-sm flex items-center justify-between mb-2">
-            <p class="m-0 font-bold">Slava Tschurilin</p>
-            <div class="flex">
-              <p class="m-0 pr-3">1:1</p>
-              <p class="m-0 text-red">$ -5.00</p>
-            </div>
-          </div>
+          <p><a class="text-casama underline"
+              href="https://polygonscan.com/tx/0x8752b1bd5c4bf1fc3c1cfbd7cca3ca2dcbff546c8dde81333fa855ec53d04d93">View
+              Transaction on Chain</a></p>
         </div>
       </div>
     </div>

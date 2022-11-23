@@ -35,7 +35,7 @@ export default function BottomBar(props) {
           }}
         >
           <div
-            className={`transition-transform duration-200 ${
+            className={`transition-transform duration-200  ${
               showMenu
                 ? 'translate-y-0 scale-100'
                 : 'pointer-events-none translate-y-full scale-0'
@@ -43,7 +43,7 @@ export default function BottomBar(props) {
           >
             <div className={`w-full text-white py-5 px-3`}>
               <div className="flex flex-row justify-between items-center w-full bg-casama-blue p-3 rounded-2xl relative">
-                <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-full w-[500px]">
+                <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-full w-[500px] ">
                   <Image src={DropIcon} layout="responsive" />
                 </div>
 
