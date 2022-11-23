@@ -19,6 +19,7 @@ export function htmlWrapper(body) {
       .text-casama {color: #5F45FD;}
       .text-red {color: rgb(239, 68, 68);}
       .text-green {color: rgb(34, 197, 94);}
+      .underline {text-decoration-line: underline;}
       .font-bold {font-weight: 700;}
       .btn-casama {background: #5F45FD;color: white;border-radius: 10px;padding: 10px 16px;transition: background 200ms ease;}
       .btn-casama:hover {background: #492ef9;}

@@ -48,24 +48,24 @@ export function sendCompetitionEndedMail({
               <div class="w-full flex flex-col sm:flex-row-reverse items-center justify-between">
                 <img src="https://app.casama.io/casama_logo.png" class="w-full mb-5" style="max-width: 100px" />
                 <div class="w-full">
-                  <h3 class="text-casama">Hey ${firstName}!</h3>
-                  <h4>The Competition <span class="text-casama">${
+                  <h1 class="text-casama">Hey ${firstName}!</h1>
+                  <h3>The Competition <span class="text-casama">${
                     teamHome.name
-                  } vs. ${teamAway.name}</span> has officially ended.</h4>
-                  <h4>${
+                  } vs. ${teamAway.name}</span> has officially ended.</h3>
+                  <h3>${
                     profit > 0
                       ? `Congrats! You have won <span class="text-casama">${currency(
                           profit
                         )}</span>!`
                       : `Unfortunately, your bet did not win this time.`
-                  }</h4>
+                  }</h3>
                 </div>
               </div>
               <div class="divider"></div>
-              <h3>Here are the Results:</h3>
+              <h2>Here are the Results:</h2>
               <div class="flex items-center justify-center mb-5">
               <div class="bg-gray rounded-xl p-5 shadow-sm">
-                <h3 class="text-casama font-bold text-center m-0">Outcome</h3>
+                <h2 class="text-casama font-bold text-center m-0">Outcome</h2>
                 <div class="flex items-center justify-center">
                   <img src="https://app.casama.io/api/betting/events/teamImage?id=${
                     teamHome.id
@@ -89,7 +89,7 @@ export function sendCompetitionEndedMail({
   `);
   return sendMail({
     to,
-    subject: `Competition ${teamHome.name} vs. ${teamAway.name} has ended`,
+    subject: `⚽️ Competition ${teamHome.name} vs. ${teamAway.name} has ended`,
     text,
     html,
   });

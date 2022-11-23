@@ -120,6 +120,7 @@ async function switchChain() {
 }
 
 export default function LoginWithMetaMask({ onSuccess, handleError }) {
+  const [metamaskInstalled, setMetamaskInstalled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [signUpRequired, setSignUpRequired] = useState(false);
   const [address, setAddress] = useState('');
@@ -196,6 +197,12 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setMetamaskInstalled(window?.ethereum?.isMetaMask);
+  }, []);
+
+  if (!metamaskInstalled) return null;
 
   return (
     <div className="flex flex-col justify-center items-center w-full">

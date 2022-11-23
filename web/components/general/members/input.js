@@ -68,16 +68,14 @@ export default function MemberInput({
                 spacing={2}
                 sx={{ width: '100%' }}
               >
-                <Avatar wunderId={option.handle} text={option.handle} />
-                <div>
-                  <Typography
-                    variant="subtitle1"
-                    whiteSpace="nowrap"
-                    textOverflow="ellipsis"
-                    overflow="hidden"
-                  >
-                    {getNameFor(option)}
-                  </Typography>
+                <div className="aspect-square">
+                  <Avatar wunderId={option.wunderId} text={option.handle} />
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <p className="truncate">{getNameFor(option)}</p>
+                  <p className="font-light text-gray-500 truncate">
+                    {option.handle}
+                  </p>
                 </div>
               </Stack>
             </li>
