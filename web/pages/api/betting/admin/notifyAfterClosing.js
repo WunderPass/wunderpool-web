@@ -32,13 +32,13 @@ export default async function handler(req, res) {
       );
     }
 
-    if (notified.includes(req.query.id)) {
+    if (notified.includes(req.body.id)) {
       res.status(200).send('Notified Users');
       return;
     }
 
     const { data } = await axios({
-      url: `${process.env.BETTING_SERVICE}/competitions/${req.query.id}`,
+      url: `${process.env.BETTING_SERVICE}/competitions/${req.body.id}`,
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${process.env.BETTING_SERVICE_CLIENT_TOKEN}`,
@@ -62,7 +62,9 @@ export default async function handler(req, res) {
       };
     });
 
-    users.map((user) => {
+    const winners = members.filter((m) => m.email && m.profit > 0);
+
+    winners.map((user) => {
       return sendCompetitionEndedMail({
         to: user.email,
         firstName: user.firstname || user.handle,
@@ -72,7 +74,7 @@ export default async function handler(req, res) {
         members,
       });
     });
-    notified.push(req.query.id);
+    notified.push(req.body.id);
     fs.writeFileSync(
       './data/notifiedAfterClosing.json',
       JSON.stringify(notified)
