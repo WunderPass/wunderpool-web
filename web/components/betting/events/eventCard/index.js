@@ -179,6 +179,16 @@ export default function EventCard(props) {
     });
   };
 
+  const handleToggle = (e) => {
+    console.log(
+      'e.target.getAttribute("togglable")',
+      e.target.getAttribute('togglable')
+    );
+    console.log('e.target', e.target);
+    if (e.target.getAttribute('togglable') == 'false') return;
+    setShowDetails(!showDetails);
+  };
+
   return (
     <>
       <div
@@ -188,7 +198,7 @@ export default function EventCard(props) {
         }`}
         ref={cardRef}
       >
-        <div onClick={() => setShowDetails(true)}>
+        <div onClick={(e) => handleToggle(e)}>
           <Header event={event} />
           <div className="mt-6">
             <TransactionFrame open={loading} text={loadingText} />
@@ -201,6 +211,7 @@ export default function EventCard(props) {
                   <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-3">
                     Click here to Confirm your Bet on Chain
                     <button
+                      togglable="false"
                       disabled={loading}
                       className="btn-casama py-2 px-3 text-lg"
                       onClick={() =>
