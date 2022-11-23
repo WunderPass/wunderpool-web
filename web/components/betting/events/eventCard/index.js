@@ -180,11 +180,6 @@ export default function EventCard(props) {
   };
 
   const handleToggle = (e) => {
-    console.log(
-      'e.target.getAttribute("togglable")',
-      e.target.getAttribute('togglable')
-    );
-    console.log('e.target', e.target);
     if (e.target.getAttribute('togglable') == 'false') return;
     setShowDetails(!showDetails);
   };
