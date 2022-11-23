@@ -107,7 +107,7 @@ export default function TopUpAlert(props) {
               gap={1}
               flexWrap="wrap"
             >
-              {[5, 10, 50, 100].map((val, i) => {
+              {[5, 10, 50].map((val, i) => {
                 return (
                   <button
                     className="btn-casama py-2 px-3 flex-grow"
@@ -125,7 +125,11 @@ export default function TopUpAlert(props) {
               type="number"
               margin="dense"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) =>
+                setAmount(
+                  Math.max(0, Math.min(50, Number(e.target.value))) || ''
+                )
+              }
               placeholder="Custom Amount"
               fullWidth
               InputProps={{
@@ -173,7 +177,7 @@ export default function TopUpAlert(props) {
             <a
               //https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238 = QUERY PARAMS
               // href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&cryptoCurrencyCode=USDC&defaultNetwork=polygon&walletAddress=${user.address}&redirectURL=https://app.casama.io/pools`}
-              href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&walletAddress=${user.address}&redirectURL=https://app.casama.io/betting`}
+              href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=polygon&defaultPaymentMethod=credit_debit_card&fiatCurrency=EUR&defaultCryptoCurrency=USDC&cryptoCurrencyCode=USDC&productsAvailed=BUY&&walletAddress=${user.address}&themeColor=5F45FD&hideMenu=true&redirectURL=https://app.casama.io/betting`}
               target="_blank"
             >
               <button className="btn-casama-white p-2 w-full">

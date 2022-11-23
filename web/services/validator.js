@@ -11,5 +11,5 @@ export function validatePhone(number) {
 }
 
 export function validateUserName(userName) {
-  return /^[a-zA-Z0-9]*$/.test(userName);
+  return /^[a-zA-Z0-9-\.]*$/.test(userName);
 }

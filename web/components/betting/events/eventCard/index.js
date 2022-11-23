@@ -16,7 +16,6 @@ import { useMemo } from 'react';
 
 export default function EventCard(props) {
   const { event, bettingService, user, handleError } = props;
-  const [eventCompetitions, setEventCompetitions] = useState([]);
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
@@ -38,6 +37,11 @@ export default function EventCard(props) {
   const mustClickAgain = useMemo(
     () => joiningCompetitionId && joiningGameId,
     [joiningCompetitionId, joiningGameId]
+  );
+
+  const eventCompetitions = bettingService.publicCompetitions.filter(
+    (comp) =>
+      comp.games.length == 1 && comp.games.find((g) => g.event.id == event.id)
   );
 
   const placeBet = async () => {
@@ -142,6 +146,10 @@ export default function EventCard(props) {
         user.address,
         event.version
       );
+      bettingService.reFetchCompetition(
+        competitionId || joiningCompetitionId,
+        3000
+      );
       user.fetchUsdBalance();
       setShowSuccess(true);
       setLoadingText(null);
@@ -170,16 +178,6 @@ export default function EventCard(props) {
         : params;
     });
   };
-
-  useEffect(() => {
-    setEventCompetitions(
-      bettingService.publicCompetitions.filter(
-        (comp) =>
-          comp.games.length == 1 &&
-          comp.games.find((g) => g.event.id == event.id)
-      )
-    );
-  }, [bettingService.isReady]);
 
   return (
     <>

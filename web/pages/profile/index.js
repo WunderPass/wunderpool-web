@@ -425,8 +425,7 @@ export default function Profile(props) {
               your funds.
             </Alert>
             <div className="bg-gray-100 border-gray-300 border-2 rounded-xl p-3 my-3">
-              {seedPhrase ||
-                'XXXXX XXXX XXXXXX XXXXXX XXX XXXXXX XXXXX XXXXX XXXX XXXXXXXXX XXXXX XXXXX'}
+              {seedPhrase || '●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●'}
             </div>
             <div className="w-full">
               <button
