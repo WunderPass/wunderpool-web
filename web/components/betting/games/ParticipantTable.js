@@ -30,7 +30,7 @@ export default function ParticipantTable({ participants, stake, user }) {
                 <div>
                   <Avatar
                     wunderId={wunderId}
-                    tooltip={userName}
+                    tooltip={userName ? userName : 'user'}
                     text={userName ? userName : '0X'}
                     i={i}
                   />

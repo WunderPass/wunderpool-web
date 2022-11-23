@@ -427,24 +427,25 @@ export default function LoginWithCasama({ onSuccess, toggleSignup }) {
   return (
     <>
       <Collapse in={!createNewUser} className="w-full">
-        {loginWithSeed ? (
-          <SeedPhraseForm
-            setCreateNewUser={setCreateNewUser}
-            setAddress={setAddress}
-            seedPhrase={seedPhrase}
-            setSeedPhrase={setSeedPhrase}
-            password={password}
-            setPassword={setPassword}
-            onSuccess={onSuccess}
-            setLoginWithSeed={setLoginWithSeed}
-          />
-        ) : (
-          <CredentialsForm
-            setLoginWithSeed={setLoginWithSeed}
-            toggleSignup={toggleSignup}
-            onSuccess={onSuccess}
-          />
-        )}
+        {loginWithSeed != null &&
+          (loginWithSeed ? (
+            <SeedPhraseForm
+              setCreateNewUser={setCreateNewUser}
+              setAddress={setAddress}
+              seedPhrase={seedPhrase}
+              setSeedPhrase={setSeedPhrase}
+              password={password}
+              setPassword={setPassword}
+              onSuccess={onSuccess}
+              setLoginWithSeed={setLoginWithSeed}
+            />
+          ) : (
+            <CredentialsForm
+              setLoginWithSeed={setLoginWithSeed}
+              toggleSignup={toggleSignup}
+              onSuccess={onSuccess}
+            />
+          ))}
       </Collapse>
       <Collapse in={createNewUser}>
         <p className="text-casama-blue font-bold">
