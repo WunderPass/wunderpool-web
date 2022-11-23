@@ -19,6 +19,7 @@ export default function EventCardSubmitButton({
   return (
     <div className="flex items-center justify-center w-full">
       <button
+        togglable="false"
         disabled={loading}
         className="btn-casama w-full py-1 text-lg my-2"
         onClick={placeBet}

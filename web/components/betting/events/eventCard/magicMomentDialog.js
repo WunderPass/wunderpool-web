@@ -100,12 +100,14 @@ export default function MagicMomentDialog({
           <p className="text-center">Your Bet was placed successfully!</p>
           <div className="w-full flex flex-col sm:flex-row gap-3">
             <button
+              togglable="false"
               className="w-full py-3 px-5 btn-default"
               onClick={() => router.push('/betting/bets')}
             >
               View My Bet
             </button>
             <button
+              togglable="false"
               className="w-full py-3 px-5 btn-casama"
               onClick={() => {
                 reset();

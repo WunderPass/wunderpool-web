@@ -108,6 +108,7 @@ export default function EventCardPublicGameTile({
 
         {participants?.length >= maxMembersAccordingToStake(stake) ? (
           <button
+            togglable="false"
             disabled
             className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
           >
@@ -117,6 +118,7 @@ export default function EventCardPublicGameTile({
             compAddr(part.address, user.address)
           ) ? (
           <button
+            togglable="false"
             disabled
             className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
           >
@@ -133,6 +135,7 @@ export default function EventCardPublicGameTile({
           />
         ) : (
           <button
+            togglable="false"
             onClick={() =>
               toggleSelectedCompetition({
                 stake,

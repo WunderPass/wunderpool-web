@@ -56,6 +56,7 @@ export default function EventCardCustomGameTile({
             />
             {!showCustomInput && (
               <button
+                togglable="false"
                 className={`btn-casama w-full py-1 text-lg my-2 ${
                   selectedCompetition.stake == undefined
                     ? 'opacity-100'

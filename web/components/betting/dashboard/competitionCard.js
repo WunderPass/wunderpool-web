@@ -220,18 +220,6 @@ export default function DashboardCompetitionCard(props) {
               </div>
             </div>
 
-            {/* <button onClick={() => setShowDetails(!showDetails)}>
-            {showDetails ? (
-              <p className="underline text-casama-blue font-ligth">
-                Hide Details
-              </p>
-            ) : (
-              <p className="underline text-casama-blue font-ligth">
-                Show Details
-              </p>
-            )}
-          </button> */}
-
             <Collapse in={showDetails}>
               <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
                 <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
@@ -351,20 +339,6 @@ export default function DashboardCompetitionCard(props) {
           </div>
         </div>
       </div>
-      {showDetails && !loading && (
-        <div className="flex flex-row justify-center items-center mt-5">
-          <button
-            onClick={() => {
-              setShowDetails(false);
-            }}
-          >
-            <div className="flex flex-row items-center justify-center">
-              <div className="underline text-casama-blue ">Hide Details</div>
-              <BsFillArrowUpSquareFill className="text-casama-blue text-xl mx-2" />
-            </div>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
