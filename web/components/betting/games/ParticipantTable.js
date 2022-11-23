@@ -60,10 +60,14 @@ export default function ParticipantTable({ participants, stake, user }) {
       {participants
         .sort((a, b) => b.winnings || 0 - a.winnings || 0)
         .map(
-          (
-            { address, prediction, winnings, userName, wunderId, profileName },
-            i
-          ) => {
+          ({
+            address,
+            prediction,
+            winnings,
+            userName,
+            wunderId,
+            profileName,
+          }) => {
             return (
               <ParticipantTableRow
                 key={`participant-${address}`}
