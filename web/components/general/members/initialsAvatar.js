@@ -67,7 +67,7 @@ export default function InitialsAvatar(props) {
       break;
   }
 
-  const names = text.match(/([A-Za-z]+)(-| |_)([A-Za-z]+)/)?.slice(1, 4);
+  const names = text.match(/([A-Za-z]+)(-| |_|\.)([A-Za-z]+)/)?.slice(1, 4);
   const initials = names
     ? `${names?.[0]?.[0]}${names?.[2]?.[0]}`
     : text.slice(0, 2);
