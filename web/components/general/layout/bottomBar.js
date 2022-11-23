@@ -35,7 +35,7 @@ export default function BottomBar(props) {
           }}
         >
           <div
-            className={`transition-transform duration-200 ${
+            className={`transition-transform duration-200  ${
               showMenu
                 ? 'translate-y-0 scale-100'
                 : 'pointer-events-none translate-y-full scale-0'
@@ -43,25 +43,10 @@ export default function BottomBar(props) {
           >
             <div className={`w-full text-white py-5 px-3`}>
               <div className="flex flex-row justify-between items-center w-full bg-casama-blue p-3 rounded-2xl relative">
-                <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-full w-[500px]">
+                <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-full w-[500px] ">
                   <Image src={DropIcon} layout="responsive" />
                 </div>
-                {/* //profile pic + link */}
-                {/* <Link href="/profile">
-                  <div className="flex items-center justify-center ml-2 mr-4 ">
-                    <Avatar
-                      loginMethod={user.loginMethod}
-                      walletConnectUrl={
-                        user.walletConnectMeta?.icons
-                          ? user.walletConnectMeta?.icons[0]
-                          : null
-                      }
-                      wunderId={user.wunderId}
-                      text={user.userName || user.firstName || '0X'}
-                      i={1}
-                    />
-                  </div>
-                </Link> */}
+
                 <button onClick={() => toggleMenuButton()}>
                   <Link href="/profile">
                     <div className="flex flex-col items-center justify-center ml-9 cursor-pointer">
@@ -110,7 +95,7 @@ export default function BottomBar(props) {
               <button onClick={() => toggleMenuButton()}>
                 <Link className="" href="/betting">
                   <div className="flex flex-col items-center justify-center ">
-                    <ImUngroup className="text-2xl" />
+                    <ImUngroup className="text-2xl mb-1 mt-1.5" />
                     <div>All Games</div>
                   </div>
                 </Link>
