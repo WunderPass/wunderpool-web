@@ -92,14 +92,12 @@ export default function BottomBar(props) {
               </button>
             </div>{' '}
             <div className="flex flex-col items-center justify-center w-1/3 mr-8 cursor-pointer">
-              <button onClick={() => toggleMenuButton()}>
-                <Link className="" href="/betting">
-                  <div className="flex flex-col items-center justify-center ">
-                    <ImUngroup className="text-2xl mb-1 mt-1.5" />
-                    <div>All Games</div>
-                  </div>
-                </Link>
-              </button>
+              <Link className="" href="/betting">
+                <div className="flex flex-col items-center justify-center ">
+                  <ImUngroup className="text-2xl mb-1 mt-1.5" />
+                  <div>All Games</div>
+                </div>
+              </Link>
             </div>
           </div>
           <div
