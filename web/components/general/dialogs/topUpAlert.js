@@ -107,7 +107,7 @@ export default function TopUpAlert(props) {
               gap={1}
               flexWrap="wrap"
             >
-              {[5, 10, 50, 100].map((val, i) => {
+              {[5, 10, 50].map((val, i) => {
                 return (
                   <button
                     className="btn-casama py-2 px-3 flex-grow"
@@ -125,7 +125,11 @@ export default function TopUpAlert(props) {
               type="number"
               margin="dense"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) =>
+                setAmount(
+                  Math.max(0, Math.min(50, Number(e.target.value))) || ''
+                )
+              }
               placeholder="Custom Amount"
               fullWidth
               InputProps={{
