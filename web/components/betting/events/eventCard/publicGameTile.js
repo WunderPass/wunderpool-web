@@ -99,10 +99,8 @@ export default function EventCardPublicGameTile({
                   ? `${Math.max(
                       0,
                       participants?.length
-                    )} / ${maxMembersAccordingToStake(
-                      matchingCompetition?.stake
-                    )}`
-                  : '0 / 50'}
+                    )} / ${maxMembersAccordingToStake(stake)}`
+                  : '0 /' + `${maxMembersAccordingToStake(stake)}`}
               </div>
             </div>
           </div>
