@@ -123,14 +123,14 @@ export default function DashboardCompetitionCard(props) {
   }, [isLive]);
 
   return (
-    <div className="container-gray pb-16 w-full cursor-pointer relative">
+    <div className="container-gray w-full cursor-pointer relative">
       <div ref={scrollToRef} className="absolute -top-16" />
       <div onClick={handleToggle}>
-        <div className="flex flex-col items-between gap-2 w-full onClick={() => setShowDetails(true)} ">
-          <div className="flex flex-row w-full mb-4 ">
+        <div className="flex flex-col items-between gap-2 w-full">
+          <div className="flex flex-row w-full mb-4">
             <div className="flex flex-col">
-              <div className="flex flex-col h-full ">
-                <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue " />
+              <div className="flex flex-col h-full">
+                <MdSportsSoccer className="text-4xl sm:text-5xl text-casama-blue" />
                 <IconButton
                   className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                   onClick={handleShareCompetition}
@@ -139,7 +139,7 @@ export default function DashboardCompetitionCard(props) {
                 </IconButton>
               </div>
             </div>
-            <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0  text-gray-800 text-center my-1 sm:my-3 w-full">
+            <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full">
               {game.event.shortName}
             </Typography>
 
@@ -156,19 +156,19 @@ export default function DashboardCompetitionCard(props) {
               />
             </div>
           </div>
-          <div className="flex flex-col w-full  ">
+          <div className="flex flex-col w-full">
             <div className="flex flex-col w-full justify-center items-center">
               <div className="flex flex-col w-full ml-2">
                 {/* ICONS */}
                 <div className="flex flex-row justify-between items-center text-center w-full">
-                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                  <div className="flex flex-col justify-center items-center text-center w-5/12">
                     <img
                       src={`/api/betting/events/teamImage?id=${game.event.teamHome.id}`}
                       className="w-16 mb-2"
                     />
                   </div>
                   <p className="text-3xl font-semibold">vs</p>
-                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
+                  <div className="flex flex-col justify-center items-center text-center w-5/12">
                     <img
                       src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
                       className="w-16 mb-2"
@@ -177,14 +177,14 @@ export default function DashboardCompetitionCard(props) {
                 </div>
 
                 {/* NAMEN */}
-                <div className="flex flex-row justify-between items-center text-center mb-2 w-full ">
-                  <div className="flex flex-row justify-center items-center text-center w-5/12 ">
-                    <p className="text-xl sm:text-2xl font-semibold ">
+                <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
+                  <div className="flex flex-row justify-center items-center text-center w-5/12">
+                    <p className="text-xl sm:text-2xl font-semibold">
                       {game.event.teamHome?.name || game.event?.teamHome}
                     </p>
                   </div>
-                  <div className="flex flex-col justify-center items-center text-center w-5/12 ">
-                    <p className="text-xl sm:text-2xl font-semibold ">
+                  <div className="flex flex-col justify-center items-center text-center w-5/12">
+                    <p className="text-xl sm:text-2xl font-semibold">
                       {game.event.teamAway?.name || game.event?.teamAway}
                     </p>
                   </div>
@@ -221,7 +221,7 @@ export default function DashboardCompetitionCard(props) {
                       togglable="false"
                       className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate z-10 ..."
                     >
-                      <p togglable="false" className="mx-2 ">
+                      <p togglable="false" className="mx-2">
                         {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
                           ? 'Winner Takes It All'
                           : 'Proportional'}
@@ -238,7 +238,7 @@ export default function DashboardCompetitionCard(props) {
                       <p className="ml-2">{`${game.participants.length}`}</p>
                     </div>
                   </div>
-                  <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
+                  <div className="flex flex-col container-white-p-0 p-2 px-4 text-right">
                     <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                       <p>Entry:</p>
                       <p className="ml-2">{`${currency(stake)}`}</p>
@@ -267,11 +267,11 @@ export default function DashboardCompetitionCard(props) {
                       Result
                     </p>
                     <div className="flex flex-row justify-center items-center w-full mb-3">
-                      <p className="w-5/12 text-center text-base sm:text-xl px-2 ">
+                      <p className="w-5/12 text-center text-base sm:text-xl px-2">
                         {game.event.teamHome.name}
                       </p>
 
-                      <div className="w-2/12 flex flex-row justify-center ">
+                      <div className="w-2/12 flex flex-row justify-center">
                         <p className="font-semibold text-xl sm:text-2xl">
                           {game.event?.outcome[0] || 0}
                         </p>
@@ -288,7 +288,7 @@ export default function DashboardCompetitionCard(props) {
                 ) : (
                   <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
                     {new Date(game.event.startTime) < new Date() && (
-                      <div className="absolute top-2 right-3 flex items-center gap-1 ">
+                      <div className="absolute top-2 right-3 flex items-center gap-1">
                         {/* <div>
                         <SoccerTimer
                           start={Number(new Date())}

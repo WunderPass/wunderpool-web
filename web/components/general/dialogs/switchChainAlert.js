@@ -35,6 +35,20 @@ export default function SwitchChainAlert({ user }) {
     return null;
   };
 
+  const switchChain = async () => {
+    if (user.loginMethod == 'MetaMask') {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x89' }],
+      });
+    } else if (user.loginMethod == 'WalletConnect') {
+      await window.walletConnect.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x89' }],
+      });
+    }
+  };
+
   return (
     <Dialog
       fullWidth
@@ -50,6 +64,9 @@ export default function SwitchChainAlert({ user }) {
           <Alert severity="info">
             Please Switch Chain to Polygon to Proceed
           </Alert>
+          <button onClick={switchChain} className="btn-casama px-3 py-2">
+            Switch Chain
+          </button>
         </Stack>
       </DialogContent>
     </Dialog>

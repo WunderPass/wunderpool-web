@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import Avatar from '/components/general/members/avatar';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import AdminMenu from './navComponents/adminMenu';
 
 export default function TopBar(props) {
   const { user } = props;
@@ -103,6 +104,7 @@ export default function TopBar(props) {
                           Pools
                         </li>
                       </Link>
+                      {user.isAdmin && <AdminMenu />}
                     </div>
                     <div className="flex flex-row items-center justify-end ">
                       <div className="flex px-3 ">
