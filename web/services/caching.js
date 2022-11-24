@@ -50,7 +50,7 @@ export async function deleteItemDB(key) {
   return cached;
 }
 
-export async function cacheImage(key, blob, validFor = 60) {
+export async function cacheImage(key, blob, validFor = 600) {
   if (typeof indexedDB == 'undefined') return blob;
   const lowKey = key.toLowerCase();
   const cached = await getCachedImage(lowKey);

@@ -182,17 +182,13 @@ export default function EventCard(props) {
   const handleToggle = (e) => {
     if (e.target.getAttribute('togglable') == 'false') return;
     setShowDetails(!showDetails);
+    setTimeout(() => scrollIntoView(), 50);
   };
 
   return (
     <>
-      <div
-        id={`${event.name}`}
-        className={`container-white pb-16 ${
-          showDetails ? '' : 'cursor-pointer'
-        }`}
-        ref={cardRef}
-      >
+      <div className="container-white pb-16 cursor-pointer relative">
+        <div ref={cardRef} className="absolute -top-12" />
         <div onClick={(e) => handleToggle(e)}>
           <Header event={event} />
           <div className="mt-6">

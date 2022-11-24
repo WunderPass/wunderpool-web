@@ -11,9 +11,12 @@ import axios from 'axios';
 import { calculateWinnings } from '/services/bettingHelpers';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
-import { BsFillArrowUpSquareFill } from 'react-icons/bs';
-import ParticipantTable from '../games/ParticipantTable';
-import { compAddr } from '../../../services/memberHelpers';
+import ParticipantTable, {
+  ParticipantTableRow,
+} from '../games/ParticipantTable';
+import { compAddr, getNameFor } from '../../../services/memberHelpers';
+import { IoIosArrowDown } from 'react-icons/io';
+import { useRef } from 'react';
 
 export default function DashboardCompetitionCard(props) {
   const {
@@ -29,6 +32,7 @@ export default function DashboardCompetitionCard(props) {
   const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
+  const scrollToRef = useRef(null);
   const stake = competition.stake;
   const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
@@ -92,6 +96,9 @@ export default function DashboardCompetitionCard(props) {
   const handleToggle = (e) => {
     if (e.target.getAttribute('togglable') == 'false') return;
     setShowDetails(!showDetails);
+    scrollToRef.current.scrollIntoView({
+      behavior: 'smooth',
+    });
   };
 
   useEffect(() => {
@@ -116,14 +123,9 @@ export default function DashboardCompetitionCard(props) {
   }, [isLive]);
 
   return (
-    <div
-      className={
-        showDetails
-          ? 'container-gray pb-16 w-full'
-          : 'container-gray pb-16 w-full cursor-pointer'
-      }
-    >
-      <div togglable="true" onClick={(e) => handleToggle(e)}>
+    <div className="container-gray pb-16 w-full cursor-pointer relative">
+      <div ref={scrollToRef} className="absolute -top-16" />
+      <div onClick={handleToggle}>
         <div className="flex flex-col items-between gap-2 w-full onClick={() => setShowDetails(true)} ">
           <div className="flex flex-row w-full mb-4 ">
             <div className="flex flex-col">
@@ -152,31 +154,6 @@ export default function DashboardCompetitionCard(props) {
                 size="medium"
                 label={currency(competition.stake)}
               />
-
-              {isHistory && (
-                <Chip
-                  className={
-                    gameResultTable?.find((m) =>
-                      compAddr(m.address, user.address)
-                    )?.winnings > 0
-                      ? 'bg-green-500 text-white'
-                      : 'bg-red-500 text-white'
-                  }
-                  size="medium"
-                  label={
-                    gameResultTable?.find((m) =>
-                      compAddr(m.address, user.address)
-                    )?.winnings > 0
-                      ? '+ ' +
-                        currency(
-                          gameResultTable?.find((m) =>
-                            compAddr(m.address, user.address)
-                          )?.winnings
-                        )
-                      : '- ' + currency(competition.stake)
-                  }
-                />
-              )}
             </div>
           </div>
           <div className="flex flex-col w-full  ">
@@ -215,6 +192,24 @@ export default function DashboardCompetitionCard(props) {
               </div>
             </div>
 
+            <Collapse in={!showDetails}>
+              <ParticipantTableRow
+                user={user}
+                address={'Your Bet'}
+                wunderId={user.wunderId}
+                userName={user.userName}
+                profileName={getNameFor(user)}
+                prediction={
+                  gameResultTable.find((p) => compAddr(p.address, user.address))
+                    ?.prediction
+                }
+                winnings={
+                  gameResultTable.find((p) => compAddr(p.address, user.address))
+                    ?.winnings
+                }
+                stake={stake}
+              />
+            </Collapse>
             <Collapse in={showDetails}>
               <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 mt-6">
                 <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
@@ -321,12 +316,23 @@ export default function DashboardCompetitionCard(props) {
                   </div>
                 )}
               </div>
-              <ParticipantTable
-                participants={gameResultTable}
-                stake={stake}
-                user={user}
-              />
+              {showDetails && (
+                <ParticipantTable
+                  participants={gameResultTable}
+                  stake={stake}
+                  user={user}
+                />
+              )}
             </Collapse>
+            <div className="flex justify-center text-3xl text-casama-blue">
+              <div
+                className={`transition-transform ${
+                  showDetails ? 'rotate-180' : ''
+                }`}
+              >
+                <IoIosArrowDown />
+              </div>
+            </div>
             <TransactionDialog
               open={loading}
               onClose={() => setLoading(false)}

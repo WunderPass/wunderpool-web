@@ -3,13 +3,14 @@ import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
 import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
 import { FaTwitter, FaTelegramPlane } from 'react-icons/fa';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ReactGA from 'react-ga';
 import CustomHeader from '/components/general/utils/customHeader';
 ReactGA.initialize(process.env.GA_TRACKING_CODE);
 
 function Home(props) {
   const { user, handleError } = props;
+  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
 
   const handleSuccess = ({ wunderId, address, loginMethod }) => {
@@ -21,6 +22,10 @@ function Home(props) {
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
   });
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (user.loggedIn) {
@@ -45,24 +50,28 @@ function Home(props) {
                   to save all gas fees and get free credits.
                 </p>
                 <div className="w-full max-w-sm">
-                  <AuthenticateWithCasama onSuccess={handleSuccess} />
+                  {loaded && (
+                    <AuthenticateWithCasama onSuccess={handleSuccess} />
+                  )}
                 </div>
-                <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 max-w-xs w-full">
-                  <div className="my-2 w-72 items-center mb-2">
-                    <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-8">
-                      Already have a wallet?
-                    </p>
-                  </div>
+                {loaded && (
+                  <div className="flex flex-col items-center justify-between mb-12 lg:mb-4 max-w-xs w-full">
+                    <div className="my-2 w-72 items-center mb-2">
+                      <p className="text-gray-400 text-sm my-2 mb-1 lg:mb-1 mt-8">
+                        Already have a wallet?
+                      </p>
+                    </div>
 
-                  <LoginWithMetaMask
-                    onSuccess={handleSuccess}
-                    handleError={handleError}
-                  />
-                  <LoginWithWalletConnect
-                    onSuccess={handleSuccess}
-                    handleError={handleError}
-                  />
-                </div>
+                    <LoginWithMetaMask
+                      onSuccess={handleSuccess}
+                      handleError={handleError}
+                    />
+                    <LoginWithWalletConnect
+                      onSuccess={handleSuccess}
+                      handleError={handleError}
+                    />
+                  </div>
+                )}
                 <div className="flex flex-row justify-center lg:my-2">
                   <a
                     href="https://twitter.com/casama_io"
