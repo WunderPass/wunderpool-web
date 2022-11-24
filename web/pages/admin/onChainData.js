@@ -11,20 +11,10 @@ import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import { initDistributor } from '../../services/contract/betting/init';
-import { compAddr, getNameFor } from '../../services/memberHelpers';
+import { compAddr } from '../../services/memberHelpers';
 import axios from 'axios';
 import { currency } from '../../services/formatter';
 import ParticipantTable from '../../components/betting/games/ParticipantTable';
-
-const admins = [
-  '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
-  '0xac4c7c8c3a2cfffd889c1fb78b7468e281032284', // Despot
-  '0x1a8459f9ddecabe92281ebdfa62874010a53fdc6', // Gerwin
-  '0x097bf9d9a2c838e12fe153e4d7f83b48adb572c6', // Slava
-  '0x466274eefdd3265e3d8085933e69890f33023048', // Max
-];
-
-// await searchMembers({ address: owner })
 
 function formatEvent({
   endDate,
@@ -129,12 +119,12 @@ export default function AdminOnChainData(props) {
   };
 
   useEffect(() => {
-    if (router.isReady && user.address) {
-      if (!admins.includes(user.address.toLowerCase())) {
+    if (router.isReady && user.isReady) {
+      if (!user.isAdmin) {
         router.push('/pools');
       }
     }
-  }, [user.address, router.isReady]);
+  }, [user.isReady, router.isReady]);
 
   return (
     <Container maxWidth="xl" className="mt-5">
