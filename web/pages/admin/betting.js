@@ -11,10 +11,10 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { registerEvent } from '/services/contract/betting/events';
 import { MdSportsSoccer } from 'react-icons/md';
-import { determineGame } from '/services/contract/betting/games';
 import { IoMdRefresh } from 'react-icons/io';
 import { AiFillUpCircle, AiOutlineDownCircle } from 'react-icons/ai';
 import Link from 'next/link';
+import { resolveEvent } from '../../services/contract/betting/events';
 
 function TimeFrame({ start, end }) {
   const startHour = String(start.getHours()).padStart(2, '0');
@@ -38,62 +38,75 @@ function TimeFrame({ start, end }) {
 
 function EventCard({
   event,
-  gameCount,
+  competitions,
   fetchEvents,
   fetchCompetitions,
   handleSuccess,
   handleError,
 }) {
+  const [homeScore, setHomeScore] = useState('');
+  const [awayScore, setAwayScore] = useState('');
   const [loading, setLoading] = useState(false);
 
   const settleAllGames = async () => {
-    // setLoading(true);
-    // axios({ url: '/api/betting/games' }).then(async (res) => {
-    //   const openGames = res.data.filter(
-    //     (g) => event.id == g.eventId && g.version == event.version && !g.closed
-    //   );
-    //   var closedGames = await Promise.all(
-    //     openGames.map(async (game) => {
-    //       return await determineGame(game.id, game.version)
-    //         .then((res) => {
-    //           handleSuccess(`Closed Game "${game.name}"`);
-    //         })
-    //         .catch((err) => {
-    //           handleError(err);
-    //         })
-    //         .then(() => {
-    //           setLoading(false);
-    //         });
-    //     })
-    //   );
-    //   return closedGames;
-    // });
-    handleError('NOT IMPLEMENTED');
+    return (
+      await Promise.all(
+        competitions.map(async (comp) => {
+          return await Promise.all(
+            comp.games
+              .filter((g) => g.event.id == event.id)
+              .map(async (g) => {
+                try {
+                  await axios({
+                    method: 'POST',
+                    url: '/api/betting/games/close',
+                    data: { competitionId: comp.id, gameId: g.id },
+                  });
+                  return true;
+                } catch (error) {
+                  return false;
+                }
+              })
+          );
+        })
+      )
+    ).flat();
   };
 
   const handleResolve = () => {
-    // setLoading(true);
-    // resolveEvent(event.id)
-    //   .then((res) => {
-    //     handleSuccess(`Resolved Event "${event.name}"`);
-    //     fetchEvents(false);
-    //     fetchCompetitions();
-    //   })
-    //   .catch((err) => {
-    //     handleError(err);
-    //   })
-    //   .then(() => {
-    //     setLoading(false);
-    //     settleAllGames();
-    //   });
-    handleError('NOT IMPLEMENTED');
+    setLoading(true);
+    resolveEvent(event.id, homeScore, awayScore)
+      .then((res) => {
+        handleSuccess(`Resolved Event "${event.name}"`);
+        fetchEvents(false);
+        fetchCompetitions();
+      })
+      .catch((err) => {
+        handleError(err);
+      })
+      .then(() => {
+        settleAllGames()
+          .then((res) => {
+            handleSuccess(
+              `Settled ${res.filter((b) => b).length}/${
+                competitions.length
+              } Games`
+            );
+          })
+          .catch((err) => {
+            handleError(err);
+          })
+          .then(() => {
+            setLoading(false);
+          });
+      });
   };
 
   return (
     <Paper className="p-3 my-2 rounded-xl relative">
-      {gameCount > 0 && (
+      {competitions.length > 0 && (
         <p className="absolute top-3 right-3 text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] h-6 rounded-full bg-red-500 text-white">
-          {gameCount}
+          {competitions.length}
         </p>
       )}
       <div className="flex flex-col sm:flex-row items-center gap-2">
@@ -105,13 +118,43 @@ function EventCard({
               start={new Date(event.startTime)}
               end={new Date(event.endTime)}
             />
-            <button
-              className="btn-casama py-1 px-2 w-full sm:w-auto"
-              onClick={handleResolve}
-              disabled={loading || event.endDate > Number(new Date())}
-            >
-              Resolve
-            </button>
+            {event.state == 'CLOSED_FOR_BETTING' && (
+              <div className="flex self-end gap-1">
+                <div className="w-20">
+                  <input
+                    togglable="false"
+                    disabled={loading}
+                    inputMode="numeric"
+                    className="textfield text-center py-1 px-3"
+                    value={homeScore}
+                    onChange={(e) => setHomeScore(e.target.value)}
+                  />
+                </div>
+                :
+                <div className="w-20">
+                  <input
+                    togglable="false"
+                    disabled={loading}
+                    inputMode="numeric"
+                    className="textfield text-center py-1 px-3"
+                    value={awayScore}
+                    onChange={(e) => setAwayScore(e.target.value)}
+                  />
+                </div>
+                <button
+                  className="btn-casama py-1 px-2 w-full sm:w-auto"
+                  onClick={handleResolve}
+                  disabled={
+                    !homeScore ||
+                    !awayScore ||
+                    loading ||
+                    event.endDate > Number(new Date())
+                  }
+                >
+                  Resolve & Settle
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -178,12 +221,16 @@ function CompetitionCard({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const handleClose = () => {
+  const handleClose = (gameId) => {
     setLoading(true);
-    determineGame(game.id, game.version)
+    axios({
+      method: 'POST',
+      url: '/api/betting/games/close',
+      data: { competitionId: competition.id, gameId },
+    })
       .then((res) => {
         console.log(res);
-        handleSuccess(`Closed Game "${game.name}"`);
+        handleSuccess(`Closed Game "${competition.name}"`);
         fetchCompetitions();
       })
       .catch((err) => {
@@ -218,13 +265,15 @@ function CompetitionCard({
               </div>
               <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <p>Stake: {competition.stake} $</p>
-                <button
-                  className="btn-casama py-1 px-2 w-full sm:w-auto"
-                  onClick={handleClose}
-                  disabled={loading || !game.event?.resolved}
-                >
-                  Close
-                </button>
+                {game.state != 'HISTORIC' && (
+                  <button
+                    className="btn-casama py-1 px-2 w-full sm:w-auto"
+                    onClick={() => handleClose(game.id)}
+                    disabled={loading || game.event?.state != 'RESOLVED'}
+                  >
+                    Close
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -246,7 +295,7 @@ export default function AdminBettingPage(props) {
   const [showCompetitions, setShowCompetitions] = useState(false);
 
   const fetchEvents = (fetchListed = false) => {
-    axios({ url: '/api/betting/events/registered' }).then((res) => {
+    axios({ url: '/api/betting/events' }).then((res) => {
       setEvents(
         res.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
       );
@@ -267,10 +316,11 @@ export default function AdminBettingPage(props) {
   };
 
   const fetchCompetitions = () => {
-    axios({ url: '/api/betting/competitions' }).then((res) => {
-      setCompetitions(
-        res.data.filter((comp) => comp.games.find((g) => g.state != 'CLOSED'))
-      );
+    axios({
+      url: '/api/betting/competitions',
+      params: { states: 'LIVE,UPCOMING' },
+    }).then((res) => {
+      setCompetitions(res.data);
     });
   };
 
@@ -328,11 +378,9 @@ export default function AdminBettingPage(props) {
               <EventCard
                 key={`event-${event.version}-${event.id}`}
                 event={event}
-                gameCount={
-                  competitions.filter((comp) =>
-                    comp.games.find((g) => g.event.id == event.id)
-                  ).length
-                }
+                competitions={competitions.filter((comp) =>
+                  comp.games.find((g) => g.event.id == event.id)
+                )}
                 fetchEvents={fetchEvents}
                 fetchCompetitions={fetchCompetitions}
                 {...props}

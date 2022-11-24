@@ -14,12 +14,12 @@ export async function registerEvent(eventId) {
   }
 }
 
-export async function resolveEvent(eventId) {
+export async function resolveEvent(eventId, homeScore, awayScore) {
   try {
     const res = await axios({
       method: 'POST',
       url: '/api/betting/events/resolve',
-      data: { eventId },
+      data: { eventId, homeScore, awayScore },
     });
     return res.data;
   } catch (error) {

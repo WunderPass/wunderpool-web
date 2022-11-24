@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     const { data } = await axios({
       method: 'post',
-      url: `${process.env.BETTING_SERVICE}/competitions/${req.body.competitionId}/games/${req.body.gameId}/close`,
+      url: `${process.env.BETTING_SERVICE}/competitions/${req.body.competitionId}/close`,
       headers,
     });
 

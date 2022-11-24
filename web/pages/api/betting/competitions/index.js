@@ -4,7 +4,7 @@ import { formatCompetition } from '/services/bettingHelpers';
 
 export default async function handler(req, res) {
   try {
-    const { poolAddress, userAddress, competitionId, states } = req.query;
+    const { poolAddress, userAddress, states } = req.query;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -29,10 +29,6 @@ export default async function handler(req, res) {
         competition.members.find((member) =>
           compAddr(member.address, userAddress)
         )
-      );
-    } else if (competitionId) {
-      filteredCompetitions = allCompetitions.filter(
-        (competition) => competition.id == competitionId
       );
     }
     res.status(200).json(filteredCompetitions);
