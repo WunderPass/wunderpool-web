@@ -49,7 +49,7 @@ export default function MagicMomentDialog({
         reset();
         setOpen(false);
       }}
-      PaperProps={{ ref: paperRef, className: 'react-tour-magic-moment' }}
+      PaperProps={{ ref: paperRef }}
       TransitionComponent={Transition}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Success</DialogTitle>

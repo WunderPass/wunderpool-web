@@ -76,6 +76,10 @@ export default function EventCardPublicGameTile({
         selectedCompetition.stake == undefined || selected
           ? 'opacity-100'
           : 'opacity-40'
+      }${
+        selected || (selectedCompetition.stake == undefined && stake == 10)
+          ? ' react-tour-public-game'
+          : ''
       }`}
     >
       <div className="flex flex-col items-center p-2 gap-2">
