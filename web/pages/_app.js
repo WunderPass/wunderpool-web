@@ -18,6 +18,7 @@ import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredA
 import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
 import UseIOS from '/hooks/useIOS';
 import useBettingService from '/hooks/useBettingService';
+import { TourProvider } from '@reactour/tour';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -125,31 +126,39 @@ function WunderPool({ Component, pageProps }) {
       </Head>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={muiTheme}>
-          <Navbar {...appProps} />
-          <div
-            className="w-full mb-20 sm:mb-5"
-            style={{
-              paddingBottom: 'env(safe-area-inset-bottom)',
-            }}
+          <TourProvider
+            disableInteraction
+            showCloseButton={false}
+            onClickMask={({ setIsOpen, setCurrentStep, currentStep, steps }) =>
+              setCurrentStep(currentStep + 1)
+            }
           >
-            <Component {...appProps} />
-          </div>
-          <ToastContainer
-            position="top-right"
-            autoClose={8000}
-            style={{ marginTop: 'env(safe-area-inset-top)' }}
-          />
-          <TopUpAlert
-            open={user.topUpRequired && user.notifications.length == 0}
-            setOpen={user.setTopUpRequired}
-            user={user}
-          />
-          <SwitchChainAlert user={user} />
-          <PasswordRequiredAlert
-            passwordRequired={user.passwordRequired}
-            user={user}
-          />
-          <BackupSeedPhraseAlert user={user} />
+            <Navbar {...appProps} />
+            <div
+              className="w-full mb-20 sm:mb-5"
+              style={{
+                paddingBottom: 'env(safe-area-inset-bottom)',
+              }}
+            >
+              <Component {...appProps} />
+            </div>
+            <ToastContainer
+              position="top-right"
+              autoClose={8000}
+              style={{ marginTop: 'env(safe-area-inset-top)' }}
+            />
+            <TopUpAlert
+              open={user.topUpRequired && user.notifications.length == 0}
+              setOpen={user.setTopUpRequired}
+              user={user}
+            />
+            <SwitchChainAlert user={user} />
+            <PasswordRequiredAlert
+              passwordRequired={user.passwordRequired}
+              user={user}
+            />
+            <BackupSeedPhraseAlert user={user} />
+          </TourProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </>
