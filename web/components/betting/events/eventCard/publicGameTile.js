@@ -143,7 +143,7 @@ export default function EventCardPublicGameTile({
                 matchingCompetition,
               })
             }
-            className="btn-casama  p-1 text-lg w-full"
+            className="btn-casama p-1 text-lg w-full"
           >
             $ {stake}
           </button>

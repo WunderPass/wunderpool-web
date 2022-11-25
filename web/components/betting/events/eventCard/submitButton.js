@@ -17,7 +17,7 @@ export default function EventCardSubmitButton({
       : ' a Tie';
 
   return (
-    <div className="flex items-center justify-center w-full">
+    <div className="react-tour-place-bet-btn flex items-center justify-center w-full">
       <button
         togglable="false"
         disabled={loading}

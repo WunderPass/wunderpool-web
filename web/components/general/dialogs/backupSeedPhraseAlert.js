@@ -74,10 +74,12 @@ export default function BackupSeedPhraseAlert(props) {
   useEffect(() => {
     if (
       user.usdBalance &&
-      user.usdBalance > 5 &&
+      user.usdBalance > 20 &&
       user.confirmedBackup == false
     ) {
       setOpen(Boolean(localStorage.getItem('seedPhrase')));
+    } else {
+      setOpen(false);
     }
   }, [user.usdBalance, user.confirmedBackup]);
 
