@@ -18,7 +18,7 @@ import PasswordRequiredAlert from '/components/general/dialogs/passwordRequiredA
 import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseAlert';
 import UseIOS from '/hooks/useIOS';
 import useBettingService from '/hooks/useBettingService';
-import { TourProvider } from '@reactour/tour';
+import ReactourProvider from '../components/general/utils/reactourProvider';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -126,13 +126,7 @@ function WunderPool({ Component, pageProps }) {
       </Head>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={muiTheme}>
-          <TourProvider
-            disableInteraction
-            showCloseButton={false}
-            onClickMask={({ setIsOpen, setCurrentStep, currentStep, steps }) =>
-              setCurrentStep(currentStep + 1)
-            }
-          >
+          <ReactourProvider>
             <Navbar {...appProps} />
             <div
               className="w-full mb-20 sm:mb-5"
@@ -158,7 +152,7 @@ function WunderPool({ Component, pageProps }) {
               user={user}
             />
             <BackupSeedPhraseAlert user={user} />
-          </TourProvider>
+          </ReactourProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </>

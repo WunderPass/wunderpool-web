@@ -4,7 +4,6 @@ import {
   Typography,
   Dialog,
   DialogContent,
-  DialogTitle,
   Slide,
   Stack,
 } from '@mui/material';
@@ -33,7 +32,7 @@ function WelcomeDialog({ setIsOpen }) {
         <Stack spacing={2}>
           <img src="/casama_logo.png" className="w-20 mx-auto" />
           <h1 className="text-2xl text-center font-semibold">
-            Welcome to Casama
+            Welcome on Casama
           </h1>
           <p className="text-center text-casama-blue">
             At Casama you can bet on Sports Events with your friends. To see how
@@ -192,79 +191,141 @@ export default function Onboarding(props) {
   const [guessTwo, setGuessTwo] = useState('');
   const [showDetails, setShowDetails] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const router = useRouter();
+  const [selectedCompetition, setSelectedCompetition] = useState({});
 
-  const { isOpen, currentStep, steps, setSteps, setIsOpen, setCurrentStep } =
-    useTour();
+  const { setSteps, setIsOpen, setCurrentStep } = useTour();
 
   useEffect(() => {
     setSteps([
       {
         selector: '.react-tour-all-games',
         content:
-          'This is the All Games Tab. Here you can find all Upcoming Games and place your Bets',
+          'This is the All Games Tab. Here you can find all Upcoming Games and place your Bets.',
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(false);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
         selector: '.react-tour-my-bets',
         content:
-          'Once you placed a Bet, you can find an Overview of your upcoming and historic Bets in this Tab',
+          'Once you placed a Bet, you can find an Overview of your upcoming and historic Bets in this Tab.',
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(false);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
         selector: '.react-tour-user-balance',
         content:
-          'This is your Account Balance on Casama. Tapping here will show your options to Send, receive, deposit or withdraw funds',
+          'This is your Account Balance on Casama. Tapping here will show your options to send, receive, deposit or withdraw funds.',
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(false);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
         selector: '.react-tour-event-card',
         content:
-          "Let's place your first bet. Conveniently, there is a Competition for tomorrow. Click on the highlighted section above to see all betting options. (No worries, this is not a real Game and only for testing purposes)",
+          "Let's place your first bet. Click on the highlighted section above to see all betting options. (No worries, this is not a real Game and only for testing purposes)",
         stepInteraction: true,
         resizeObservables: ['.react-tour-event-card'],
-        action: () => setShowDetails(false),
-        actionAfter: () => setShowDetails(true),
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(false);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
         selector: '.react-tour-public-games',
         content:
-          'You can choose how much you want to bet - $5, $10, or $50. For each tier, you can see how much is currently in the pot, how many spots are left and a preview of how your competitors bet',
+          'You can choose how much you want to bet - $5, $10, or $50. For each tier, you can see how much is currently in the pot, how many spots are left and a preview of how your competitors bet.',
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(true);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
         selector: '.react-tour-private-games',
         content:
           'You also have the option to start a private Competition and invite your friends to have a more private experience.',
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(true);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
         selector: '.react-tour-public-games',
         content:
-          'Choose an amount and enter your prediction to place your first bet',
+          'Choose an amount and enter your score prediction to place your first bet.',
         stepInteraction: true,
         resizeObservables: ['.react-tour-event-card'],
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(true);
+          setSelectedCompetition({});
+          setGuessOne('');
+          setGuessTwo('');
+        },
       },
       {
-        selector: '.react-tour-place-bet-btn',
-        content: 'Click here to place your bet',
+        selector: '.react-tour-public-game',
+        content:
+          'Interesting Choice. Press the Blue Button again to place your bet.',
         stepInteraction: true,
-        action: () => setShowSuccess(false),
-        actionAfter: () => setShowSuccess(true),
+        resizeObservables: ['.react-tour-public-games'],
+        action: () => {
+          setShowSuccess(false);
+          setShowDetails(true);
+          setSelectedCompetition((comp) =>
+            comp.stake ? comp : { public: true, stake: 10 }
+          );
+          setGuessOne((guess) => guess || '2');
+          setGuessTwo((guess) => guess || '0');
+        },
       },
       {
-        selector: '.react-tour-magic-moment',
-        content: 'Congrats! You just placed your first bet',
-        actionAfter: () => router.push('/betting'),
+        selector: 'body',
+        position: 'left',
+        content: 'Congrats! You just placed your first bet.',
+        resizeObservables: ['body'],
+        action: () => {
+          setShowSuccess(true);
+          setShowDetails(true);
+          setSelectedCompetition((comp) =>
+            comp.stake ? comp : { public: true, stake: 10 }
+          );
+          setGuessOne((guess) => guess || '2');
+          setGuessTwo((guess) => guess || '0');
+        },
       },
     ]);
+    setCurrentStep(0);
   }, []);
 
   useEffect(() => {
-    if (guessOne && guessTwo) {
-      setTimeout(() => {
-        setCurrentStep(7);
-      }, 300);
-    }
+    if (guessOne && guessTwo) setCurrentStep((step) => Math.max(7, step));
   }, [guessOne, guessTwo]);
 
   useEffect(() => {
-    if (showDetails) setCurrentStep(4);
+    if (showDetails) setCurrentStep((step) => Math.max(4, step));
   }, [showDetails]);
 
   useEffect(() => {
@@ -307,6 +368,8 @@ export default function Onboarding(props) {
                       setGuessTwo={setGuessTwo}
                       showSuccess={showSuccess}
                       setShowSuccess={setShowSuccess}
+                      selectedCompetition={selectedCompetition}
+                      setSelectedCompetition={setSelectedCompetition}
                       {...props}
                     />
                   </div>

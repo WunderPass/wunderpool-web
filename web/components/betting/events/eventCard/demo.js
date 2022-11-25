@@ -21,9 +21,9 @@ export default function DemoEventCard(props) {
     setGuessTwo,
     showSuccess,
     setShowSuccess,
+    selectedCompetition,
+    setSelectedCompetition,
   } = props;
-
-  const [selectedCompetition, setSelectedCompetition] = useState({});
 
   const [customAmount, setCustomAmount] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
