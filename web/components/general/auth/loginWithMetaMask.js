@@ -187,7 +187,12 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
     if (valid) {
       createUser(firstName, lastName, email)
         .then(({ wunderId }) => {
-          onSuccess({ wunderId, address, loginMethod: 'MetaMask' });
+          onSuccess({
+            wunderId,
+            address,
+            loginMethod: 'MetaMask',
+            newUser: true,
+          });
         })
         .catch((err) => {
           setCreationError(err);

@@ -101,7 +101,12 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
     if (valid) {
       createUser(firstName, lastName, email)
         .then(({ wunderId }) => {
-          onSuccess({ wunderId, address, loginMethod: 'WalletConnect' });
+          onSuccess({
+            wunderId,
+            address,
+            loginMethod: 'WalletConnect',
+            newUser: true,
+          });
         })
         .catch((err) => {
           setCreationError(err);
