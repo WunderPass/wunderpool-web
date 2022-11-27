@@ -26,7 +26,8 @@ export function postAndWaitForTransaction(config) {
           });
       })
       .catch((err) => {
-        reject(err);
+        console.error(err?.response?.data || err);
+        reject(err?.response?.data || err);
       });
   });
 }

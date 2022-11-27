@@ -14,7 +14,7 @@ import { getNameFor } from '/services/memberHelpers';
 import { currency, toFixed } from '/services/formatter';
 import Avatar from '../../components/general/members/avatar';
 
-export default function AdminBettingPage(props) {
+export default function AdminGovTokensPage(props) {
   const { user } = props;
   const router = useRouter();
   const [pools, setPools] = useState([]);

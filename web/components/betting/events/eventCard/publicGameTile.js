@@ -1,31 +1,11 @@
 import { Collapse, Divider } from '@mui/material';
 import { currency } from '../../../../services/formatter';
-import {
-  compAddr,
-  showWunderIdsAsIcons,
-} from '../../../../services/memberHelpers';
+import { compAddr } from '../../../../services/memberHelpers';
 import EventCardPredicitionInput from './predictionInput';
 import EventCardSubmitButton from './submitButton';
 import { GoPerson } from 'react-icons/go';
 import { FaMedal } from 'react-icons/fa';
-
-function sortMembersOnVotes(participants) {
-  let votes = null;
-  if (!participants) return votes;
-  if (participants.length > 0) {
-    votes = [[], [], []];
-    participants.forEach((p) => {
-      if (Number(p.prediction[0]) > Number(p.prediction[1])) {
-        votes[0].push(p);
-      } else if (Number(p.prediction[0]) == Number(p.prediction[1])) {
-        votes[1].push(p);
-      } else if (Number(p.prediction[0]) < Number(p.prediction[1])) {
-        votes[2].push(p);
-      }
-    });
-  }
-  return votes;
-}
+import EventCardVotePreview from './votePreview';
 
 export default function EventCardPublicGameTile({
   selectedCompetition,
@@ -50,7 +30,6 @@ export default function EventCardPublicGameTile({
     (comp) => comp.stake == stake
   );
   const participants = matchingCompetition?.games?.[0]?.participants;
-  const votes = sortMembersOnVotes(participants);
 
   const maxMembersAccordingToStake = (stake) => {
     let maxMembers = 50;
@@ -155,29 +134,7 @@ export default function EventCardPublicGameTile({
       </div>
       <Divider />
       <Collapse in={!selected}>
-        {votes != null && (
-          <div className="w-full flex justify-around p-1 ">
-            <div className="w-full text-center">
-              <p>Home</p>
-              <div className="flex flex-row justify-center items-center ml-2 my-1">
-                {showWunderIdsAsIcons(votes[0], 2)}
-              </div>
-            </div>
-            <div className="w-full text-center">
-              <p>Tie</p>
-              <div className="flex flex-row justify-center items-center ml-2 my-1">
-                {showWunderIdsAsIcons(votes[1], 2)}
-              </div>
-            </div>
-
-            <div className="w-full text-center">
-              <p>Away</p>
-              <div className="flex flex-row justify-center items-center ml-2 my-1">
-                {showWunderIdsAsIcons(votes[2], 2)}
-              </div>
-            </div>
-          </div>
-        )}
+        <EventCardVotePreview participants={participants} />
       </Collapse>
       <Collapse in={selected}>
         <EventCardPredicitionInput
