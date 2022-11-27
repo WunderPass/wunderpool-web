@@ -187,13 +187,13 @@ export default function AdminStatsPage(props) {
           <div className="container-gray">
             <h3 className="text-2xl mb-2 text-center">Number of Games</h3>
             <Divider />
-            <div className="flex items-center justify-around gap-3 text-2xl mt-2">
-              <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-around gap-3 text-2xl mt-2">
+              <div className="flex flex-row sm:flex-col gap-2 items-center justify-between flex-wrap">
                 <div className="flex items-center gap-2">
                   <AiOutlineHistory className="text-casama-blue" />
                   Historic
                 </div>
-                <p className="text-casama-blue">
+                <p className="text-casama-blue flex-grow text-right">
                   {liveData.gameCount.historic}
                   <Diff
                     live={liveData.gameCount.historic}
@@ -201,19 +201,21 @@ export default function AdminStatsPage(props) {
                   />
                 </p>
               </div>
-              <div className="flex flex-col gap-2 items-center">
+              <div className="flex flex-row sm:flex-col gap-2 items-center justify-between flex-wrap">
                 <div className="flex items-center gap-2">
                   <MdLiveTv className="text-casama-blue" />
                   Live
                 </div>
-                <p className="text-casama-blue">{liveData.gameCount.live}</p>
+                <p className="text-casama-blue flex-grow text-right">
+                  {liveData.gameCount.live}
+                </p>
               </div>
-              <div className="flex flex-col gap-2 items-center">
+              <div className="flex flex-row sm:flex-col gap-2 items-center justify-between flex-wrap">
                 <div className="flex items-center gap-2">
                   <AiOutlineDoubleRight className="text-casama-blue" />
                   Upcoming
                 </div>
-                <p className="text-casama-blue">
+                <p className="text-casama-blue flex-grow text-right">
                   {liveData.gameCount.upcoming}
                   <Diff
                     live={liveData.gameCount.upcoming}
@@ -226,13 +228,13 @@ export default function AdminStatsPage(props) {
           <div className="container-gray">
             <h3 className="text-2xl mb-2 text-center">Total Pot</h3>
             <Divider />
-            <div className="flex items-center justify-around gap-3 text-2xl mt-2">
-              <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-around gap-3 text-2xl mt-2">
+              <div className="flex flex-row sm:flex-col gap-2 items-center justify-between flex-wrap">
                 <div className="flex items-center gap-2">
                   <AiOutlineHistory className="text-casama-blue" />
                   Historic
                 </div>
-                <p className="text-casama-blue">
+                <p className="text-casama-blue flex-grow text-right">
                   {currency(liveData.potSize.historic)}
                   <Diff
                     percent
@@ -241,21 +243,21 @@ export default function AdminStatsPage(props) {
                   />
                 </p>
               </div>
-              <div className="flex flex-col gap-2 items-center">
+              <div className="flex flex-row sm:flex-col gap-2 items-center justify-between flex-wrap">
                 <div className="flex items-center gap-2">
                   <MdLiveTv className="text-casama-blue" />
                   Live
                 </div>
-                <p className="text-casama-blue">
+                <p className="text-casama-blue flex-grow text-right">
                   {currency(liveData.potSize.live)}
                 </p>
               </div>
-              <div className="flex flex-col gap-2 items-center">
+              <div className="flex flex-row sm:flex-col gap-2 items-center justify-between flex-wrap">
                 <div className="flex items-center gap-2">
                   <AiOutlineDoubleRight className="text-casama-blue" />
                   Upcoming
                 </div>
-                <p className="text-casama-blue">
+                <p className="text-casama-blue flex-grow text-right">
                   {currency(liveData.potSize.upcoming)}
                   <Diff
                     percent

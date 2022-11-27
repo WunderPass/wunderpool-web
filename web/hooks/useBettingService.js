@@ -51,19 +51,22 @@ export default function useBettingService(userAddress) {
   };
 
   const getHistory = async () => {
-    await axios({
-      url: `/api/betting/competitions`,
-      params: {
-        userAddress: userAddress,
-        states: 'HISTORIC',
-      },
-    }).then(async (res) => {
+    try {
+      const { data } = await axios({
+        url: `/api/betting/competitions`,
+        params: {
+          userAddress: userAddress,
+          states: 'HISTORIC',
+        },
+      });
       setUserHistoryCompetitions(
-        res.data.filter((comp) =>
+        data.filter((comp) =>
           comp.members.find((m) => compAddr(m.address, userAddress))
         )
       );
-    });
+    } catch (error) {
+      console.log('Error fetching History', error);
+    }
   };
 
   //TODO SORT THIS BY USER ?
