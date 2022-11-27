@@ -1,11 +1,18 @@
 export default function EventCardPredicitionInput(props) {
-  const { event, loading, guessOne, guessTwo, setGuessOne, setGuessTwo } =
-    props;
+  const {
+    event,
+    loading,
+    guessOne,
+    guessTwo,
+    setGuessOne,
+    setGuessTwo,
+    color = 'text-casama-blue',
+  } = props;
 
   return (
     <>
-      <div className="flex items-center justify-center text-casama-blue mt-4">
-        <p>Your Prediciton</p>
+      <div className="flex items-center justify-center mt-4">
+        <p className={`${color}`}>Your Prediciton</p>
       </div>
 
       <div className="flex flex-row justify-between w-full mb-3">

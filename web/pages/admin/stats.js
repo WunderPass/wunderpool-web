@@ -93,7 +93,7 @@ function GamesPerMemberTooltip({ active, payload, label }) {
   return null;
 }
 
-export default function AdminBettingPage(props) {
+export default function AdminStatsPage(props) {
   const { user } = props;
   const router = useRouter();
   const [historicData, setHistoricData] = useState(null);
