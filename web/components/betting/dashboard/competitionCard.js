@@ -149,7 +149,9 @@ export default function DashboardCompetitionCard(props) {
 
             <div className="flex flex-col items-end gap-3">
               <Chip
-                className="bg-white text-casama-blue w-full"
+                className={`${
+                  sponsored ? 'bg-gold' : 'bg-white text-casama-blue'
+                } w-full`}
                 size="medium"
                 label={
                   sponsored ? 'Free Roll' : isPublic ? 'Public' : 'Private'
