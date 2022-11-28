@@ -12,12 +12,12 @@ export default async function handler(req, res) {
     const resp = await axios({
       method: 'post',
       url: `${process.env.BETTING_SERVICE}/competitions/freerolls/${competitionId}/members`,
-      data: userAddress,
+      data: { user_address: userAddress },
       headers,
     });
     res.status(200).json(resp.data);
   } catch (error) {
-    console.log(error?.response?.data?.error);
+    console.log(error?.response?.data?.error || error);
     res.status(500).json(error?.response?.data?.error || error);
   }
 }

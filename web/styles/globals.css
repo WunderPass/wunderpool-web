@@ -320,24 +320,129 @@ button:disabled {
 }
 
 .bg-shiny-gold {
-  background-image: linear-gradient(130deg, #E7BB41 48%, rgb(255, 247, 0) 50%, #E7BB41 52%);
+  background-image: linear-gradient(
+    130deg,
+    #e7bb41 48%,
+    rgb(255, 247, 0) 50%,
+    #cda22d 52%
+  );
   background-repeat: repeat-x;
   background-position: 0% 100%;
   background-size: 300% 100%;
-  animation: shine-effect 5s linear infinite;
+  animation: shine-effect 2s linear infinite;
 }
 
 @keyframes shine-effect {
   0% {
-		background-position: 0% 100%;
-	}
-	40% {
-		background-position: 0% 100%;
-	}
-	60% {
-		background-position: -300% 100%;
-	}
+    background-position: -200% 200%;
+  }
+  40% {
+    background-position: 100% 100%;
+  }
+  60% {
+    background-position: 100% 100%;
+  }
   100% {
-		background-position: -300% 100%;
-	}
+    background-position: -200% 200%;
+  }
+}
+/* GOLD CARD */
+
+.bg-gold {
+  font-weight: bold;
+  background-image: linear-gradient(
+    to right,
+    #cb9b51 0,
+    #e9a848 22%,
+    #f6e27a 45%,
+    #f6f2c0 50%,
+    #f6e27a 55%,
+    #e9a848 78%,
+    #cb9b51 100%
+  );
+  background-repeat: repeat-x;
+  background-position: 0% 2000%;
+  background-size: 800% 100%;
+  /*
+  this changes glow  */
+  animation: shine-effect 10s infinite;
+}
+
+.text-gold {
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.inner-border {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.outer-border {
+  border: 2px solid #515151;
+  height: 99%;
+  width: 98%;
+  padding: 6px;
+  margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+  .outer-border {
+    height: 94%;
+  }
+}
+
+.mid-border {
+  border: 6px solid #515151;
+  height: 100%;
+  width: 100%;
+  padding: 6px;
+  margin: auto;
+}
+
+.inner-border {
+  position: relative;
+  border: 2px solid #515151;
+  height: 100%;
+  width: 100%;
+  margin: auto;
+}
+
+/* Decorations */
+.vertical-decoration {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 11em;
+}
+
+@media (min-width: 768px) {
+  .vertical-decoration {
+    width: 12em;
+  }
+}
+
+@media (min-width: 992px) {
+  .vertical-decoration {
+    width: 15em;
+  }
+}
+
+@media (min-width: 1200px) {
+  .vertical-decoration {
+    width: 20em;
+  }
+}
+
+.vertical-decoration.top {
+  top: 0;
+}
+
+.vertical-decoration.bottom {
+  bottom: 0;
+  -webkit-transform: scaleY(-1);
+  transform: scaleY(-1);
 }

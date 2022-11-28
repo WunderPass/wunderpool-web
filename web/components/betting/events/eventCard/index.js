@@ -173,6 +173,7 @@ export default function EventCard(props) {
       return true;
     } catch (error) {
       console.log(error);
+      handleError(error);
       setLoadingText(null);
       setLoading(false);
       return false;

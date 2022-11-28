@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       callbackUrl: callbackUrl,
     };
 
-    let url = 'https://identity-service.wunderpass.org/v3/pay_with_paypal';
+    let url = 'https://identity-service.wunderpass.org/topup/pay_with_paypal';
 
     if (wunderId) {
       url += `/${wunderId}`;
