@@ -349,7 +349,6 @@ button:disabled {
 /* GOLD CARD */
 
 .bg-gold {
-  font-weight: bold;
   background-image: linear-gradient(
     to right,
     #cb9b51 0,
