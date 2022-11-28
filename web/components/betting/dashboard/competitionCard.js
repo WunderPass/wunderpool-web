@@ -33,7 +33,10 @@ export default function DashboardCompetitionCard(props) {
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const scrollToRef = useRef(null);
-  const stake = competition.stake;
+
+  const { stake, sponsored, payoutRule, isPublic, maxMembers } =
+    competition || {};
+
   const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
     ? new Date(game.event.startTime) < new Date() &&
@@ -41,7 +44,7 @@ export default function DashboardCompetitionCard(props) {
     : false;
 
   const handleShareCompetition = () => {
-    if (competition.isPublic || inviteLink) {
+    if (isPublic || inviteLink) {
       handleShare(
         inviteLink ||
           `${window.location.origin}/betting/join/${competition.id}`,
@@ -79,9 +82,10 @@ export default function DashboardCompetitionCard(props) {
       setGameResultTable(
         calculateWinnings(
           game,
-          competition.stake,
+          sponsored ? stake / maxMembers : stake,
           game.event.outcome,
-          competition.payoutRule
+          payoutRule,
+          sponsored
         )
       );
     } else {
@@ -147,12 +151,14 @@ export default function DashboardCompetitionCard(props) {
               <Chip
                 className="bg-white text-casama-blue w-full"
                 size="medium"
-                label={competition.isPublic ? 'Public' : 'Private'}
+                label={
+                  sponsored ? 'Free Roll' : isPublic ? 'Public' : 'Private'
+                }
               />
               <Chip
                 className="bg-casama-blue text-white w-full"
                 size="medium"
-                label={currency(competition.stake)}
+                label={currency(stake)}
               />
             </div>
           </div>
@@ -207,7 +213,7 @@ export default function DashboardCompetitionCard(props) {
                   gameResultTable.find((p) => compAddr(p.address, user.address))
                     ?.winnings
                 }
-                stake={stake}
+                stake={sponsored ? 0 : stake}
               />
             </Collapse>
             <Collapse in={showDetails}>
@@ -222,7 +228,7 @@ export default function DashboardCompetitionCard(props) {
                       className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate z-10 ..."
                     >
                       <p togglable="false" className="mx-2">
-                        {competition.payoutRule == 'WINNER_TAKES_IT_ALL'
+                        {payoutRule == 'WINNER_TAKES_IT_ALL'
                           ? 'Winner Takes It All'
                           : 'Proportional'}
                       </p>
@@ -241,14 +247,19 @@ export default function DashboardCompetitionCard(props) {
                   <div className="flex flex-col container-white-p-0 p-2 px-4 text-right">
                     <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                       <p>Entry:</p>
-                      <p className="ml-2">{`${currency(stake)}`}</p>
+                      <p className="ml-2">{`${
+                        sponsored ? 'Free' : currency(stake)
+                      }`}</p>
                     </div>
                     <Divider className="my-1" />
                     <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
                       <p>Pot:</p>
-                      <p className="ml-2">{` ${currency(
-                        stake * game.participants.length
-                      )} `}</p>
+                      <p className="ml-2">
+                        {currency(
+                          (sponsored ? stake / maxMembers : stake) *
+                            game.participants.length
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -319,7 +330,7 @@ export default function DashboardCompetitionCard(props) {
               {showDetails && (
                 <ParticipantTable
                   participants={gameResultTable}
-                  stake={stake}
+                  stake={sponsored ? 0 : stake}
                   user={user}
                 />
               )}

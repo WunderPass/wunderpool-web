@@ -1,7 +1,7 @@
 import { Collapse, Divider } from '@mui/material';
 import { useState } from 'react';
 import { joinFreeRollCompetition } from '../../../../services/contract/betting/competitions';
-import { currency } from '../../../../services/formatter';
+import { currency, pluralize } from '../../../../services/formatter';
 import { compAddr } from '../../../../services/memberHelpers';
 import EventCardPredicitionInput from './predictionInput';
 import EventCardVotePreview from './votePreview';
@@ -17,6 +17,7 @@ export default function EventCardFreeRollTile({
   setLoading,
   scrollIntoView,
   setLoadingText,
+  registerBet,
   handleError,
   user,
 }) {
@@ -25,8 +26,8 @@ export default function EventCardFreeRollTile({
   const alreadyJoined = competition.games?.[0]?.participants?.find((p) =>
     compAddr(p.address, user.address)
   );
-
-  const noSpotsLeft = competition.members.length >= competition.maxMembers;
+  const spotsLeft = competition.maxMembers - competition.members.length;
+  const noSpotsLeft = spotsLeft <= 0;
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -37,15 +38,16 @@ export default function EventCardFreeRollTile({
         competitionId: competition.id,
         userAddress: user.address,
       });
-    } catch (error) {
-      handleError(error);
+      await registerBet(competition.id, competition.games[0].id);
+    } catch (joinError) {
+      handleError(joinError);
     }
     setLoading(false);
   };
 
   return (
     <>
-      <div className="rounded-xl flex flex-col py-3 bg-gold text-gold text-3xl">
+      <div className="rounded-xl flex flex-col py-3 bg-gold text-gold text-xl sm:text-3xl">
         <div class="outer-border">
           <div class="mid-border">
             <div class="inner-border">
@@ -60,25 +62,24 @@ export default function EventCardFreeRollTile({
                 ></img>
               </div>
               <div className="p-3 z-20">
-                <h1 className="text-4xl text-center font-bold text-gray-900">
+                <h1 className="text-2xl sm:text-4xl text-center font-bold text-gray-900">
                   Free Roll Competition
                 </h1>
                 <p className="text-center text-super">
-                  Join for <b>free</b> with a Chance to win{' '}
-                  <b className="text-4xl font-super">
+                  Join for <b>free</b> with a Chance to win up to{' '}
+                  <b className="text-2xl sm:text-4xl font-super">
                     {currency(competition.stake)}
                   </b>
                   !
                 </p>
                 {noSpotsLeft ? (
                   <p className="text-center">
-                    No Spots Left.{' '}
-                    {alreadyJoined ? '' : 'Try your luck next time'}
+                    No Spots Left.
+                    {alreadyJoined ? '' : ' Try your luck next time'}
                   </p>
                 ) : (
                   <p className="text-center">
-                    <b>{competition.maxMembers - competition.members.length}</b>{' '}
-                    Spots left
+                    <b>{spotsLeft}</b> {pluralize(spotsLeft, 'Spot')} left
                   </p>
                 )}
                 {!noSpotsLeft && (
@@ -95,7 +96,7 @@ export default function EventCardFreeRollTile({
                           className="self-center bg-black rounded-xl text-white py-2 px-3"
                           onClick={() => setSelected(true)}
                         >
-                          Place Bet {alreadyJoined ? ' (Joined)' : ''}
+                          {alreadyJoined ? 'Already Joined' : 'Place Bet'}
                         </button>
                       </div>
                     </Collapse>

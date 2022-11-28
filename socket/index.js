@@ -89,14 +89,20 @@ function handleSubscribe(request, response, next) {
 }
 
 function handleBettingNotification(request, response, next) {
-  const body = request.body || {};
-  if (body.type && body.state && body.entity) {
-    notifyClients(`${body.type}_${body.state}`, {
-      data: JSON.stringify(body.entity),
-    });
-    response.status(200).send('OK');
+  if (
+    request.headers['authorization'] == `Bearer ${process.env.SOKCET_TOKEN}`
+  ) {
+    const body = request.body || {};
+    if (body.type && body.state && body.entity) {
+      notifyClients(`${body.type}_${body.state}`, {
+        data: JSON.stringify(body.entity),
+      });
+      response.status(200).send('OK');
+    } else {
+      response.status(400).send('Invalid Request');
+    }
   } else {
-    response.status(400).send('Invalid Request');
+    response.status(401).send('Unauthorized');
   }
 }
 
