@@ -49,7 +49,7 @@ export default function EventCard(props) {
       comp.games.find((g) => g.id && g.event.id == event.id)
   );
 
-  const freeRoll = eventCompetitions.find((comp) => comp.sponsored);
+  const freeRoll = eventCompetitions.find((comp) => !comp.sponsored);
 
   const poolRequiresBet = eventCompetitions.find(
     (c) =>

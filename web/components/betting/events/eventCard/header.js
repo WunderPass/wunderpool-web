@@ -22,7 +22,7 @@ export default function EventCardHeader({ event, specialEvent }) {
       <div className="text-gray-500 text-base h-auto sm:h-14">
         {event.shortName}
         {specialEvent && (
-          <span className="bg-casama-blue text-white animate-pulse rounded-md ml-2 py-1 px-2 whitespace-nowrap">
+          <span className="bg-gold text-white animate-pulse rounded-md ml-2 py-1 px-3 whitespace-nowrap">
             Special Event
           </span>
         )}

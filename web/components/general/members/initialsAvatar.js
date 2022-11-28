@@ -67,10 +67,15 @@ export default function InitialsAvatar(props) {
       break;
   }
 
-  const names = text.match(/([A-Za-z]+)(-| |_|\.)([A-Za-z]+)/)?.slice(1, 4);
-  const initials = names
-    ? `${names?.[0]?.[0]}${names?.[2]?.[0]}`
-    : text.slice(0, 2);
+  let initials;
+  if (text.match(/^[A-Za-z]+/)) {
+    const names = text.match(/([A-Za-z]+)(-| |_|\.)([A-Za-z]+)/)?.slice(1, 4);
+    initials = names
+      ? `${names?.[0]?.[0]}${names?.[2]?.[0]}`
+      : text.slice(0, 2);
+  } else {
+    initials = text;
+  }
 
   return (
     <div className={className}>
