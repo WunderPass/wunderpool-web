@@ -1,7 +1,7 @@
 import { Collapse, Divider } from '@mui/material';
 import { useState } from 'react';
 import { joinFreeRollCompetition } from '../../../../services/contract/betting/competitions';
-import { currency } from '../../../../services/formatter';
+import { currency, pluralize } from '../../../../services/formatter';
 import { compAddr } from '../../../../services/memberHelpers';
 import EventCardPredicitionInput from './predictionInput';
 import EventCardVotePreview from './votePreview';
@@ -15,6 +15,7 @@ export default function EventCardFreeRollTile({
   setLoading,
   scrollIntoView,
   setLoadingText,
+  registerBet,
   handleError,
   user,
 }) {
@@ -23,8 +24,8 @@ export default function EventCardFreeRollTile({
   const alreadyJoined = competition.games?.[0]?.participants?.find((p) =>
     compAddr(p.address, user.address)
   );
-
-  const noSpotsLeft = competition.members.length >= competition.maxMembers;
+  const spotsLeft = competition.maxMembers - competition.members.length;
+  const noSpotsLeft = spotsLeft <= 0;
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -35,8 +36,9 @@ export default function EventCardFreeRollTile({
         competitionId: competition.id,
         userAddress: user.address,
       });
-    } catch (error) {
-      handleError(error);
+      await registerBet(competition.id, competition.games[0].id);
+    } catch (joinError) {
+      handleError(joinError);
     }
     setLoading(false);
   };
@@ -47,7 +49,7 @@ export default function EventCardFreeRollTile({
         Free Roll Competition
       </h1>
       <p className="text-center">
-        Join for <b>free</b> with a Chance to win{' '}
+        Join for <b>free</b> with a Chance to win up to{' '}
         <b>{currency(competition.stake)}</b>!
       </p>
       {noSpotsLeft ? (
@@ -56,13 +58,16 @@ export default function EventCardFreeRollTile({
         </p>
       ) : (
         <p className="text-center">
-          <b>{competition.maxMembers - competition.members.length}</b> Spots
-          left
+          <b>{spotsLeft}</b> {pluralize(spotsLeft, 'Spot')} left
         </p>
       )}
-      {!noSpotsLeft && (
+      <Divider className="w-full mt-3" />
+      {noSpotsLeft ? (
+        <EventCardVotePreview
+          participants={competition.games[0].participants}
+        />
+      ) : (
         <>
-          <Divider className="w-full mt-3" />
           <Collapse in={!selected}>
             <div className="w-full flex flex-col">
               <EventCardVotePreview
@@ -71,10 +76,10 @@ export default function EventCardFreeRollTile({
               <button
                 togglable="false"
                 disabled={alreadyJoined}
-                className="self-center bg-black rounded-xl text-white py-2 px-3"
+                className="self-center bg-black rounded-xl text-white py-2 px-3 mt-3"
                 onClick={() => setSelected(true)}
               >
-                Place Bet {alreadyJoined ? ' (Joined)' : ''}
+                {alreadyJoined ? 'Already Joined' : 'Place Bet'}
               </button>
             </div>
           </Collapse>

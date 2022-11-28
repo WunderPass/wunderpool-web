@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AiOutlineDoubleRight, AiOutlineHistory } from 'react-icons/ai';
 import { MdLiveTv } from 'react-icons/md';
-import { currency, toFixed } from '../../services/formatter';
+import { currency, pluralize, toFixed } from '../../services/formatter';
 import {
   LineChart,
   Line,
@@ -30,10 +30,6 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('de', {
     dateStyle: 'short',
   });
-}
-
-function pluralize(num, word) {
-  return Number(num) == 1 ? word : word == 'is' ? 'are' : `${word}s`;
 }
 
 function Diff({ live, historic, percent }) {

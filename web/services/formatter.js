@@ -130,3 +130,7 @@ export function formatTokenBalance(balance) {
   if (float > 0.00001) return formatNumber(float, { precision: 7 });
   return formatNumber(float, { precision: 8 });
 }
+
+export function pluralize(num, word) {
+  return Number(num) == 1 ? word : word == 'is' ? 'are' : `${word}s`;
+}

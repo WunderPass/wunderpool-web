@@ -125,6 +125,7 @@ export async function createFreeRollCompetition({
   payoutRule,
   stake,
   isPublic,
+  maxMembers,
 }) {
   try {
     const res = await axios({
@@ -138,6 +139,7 @@ export async function createFreeRollCompetition({
         payoutRule,
         stake,
         isPublic,
+        maxMembers,
       },
     });
     return res.data;

@@ -20,11 +20,12 @@ import { joinSingleCompetition } from '/services/contract/betting/competitions';
 import { useRouter } from 'next/router';
 import TransactionFrame from '/components/general/utils/transactionFrame';
 import { registerParticipant } from '../../../services/contract/betting/games';
+import { joinFreeRollCompetition } from '../../../services/contract/betting/competitions';
 
 export default function JoinGameCard(props) {
   const { competition, game, handleSuccess, user, handleError, handleInfo } =
     props;
-  const stake = competition?.competition?.stake;
+  const { stake, sponsored, maxMembers } = competition?.competition || {};
   const router = useRouter();
 
   const handleLogin = (data) => {
@@ -151,20 +152,25 @@ export default function JoinGameCard(props) {
                 <Divider className="my-1" />
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-center truncate my-1 ...">
-                  {showWunderIdsAsIcons(competition?.competition.members, 7)}
+                  {showWunderIdsAsIcons(game?.participants, 7)}
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right ">
                 <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Entry:</p>
-                  <p className="ml-2">{`${currency(stake)}`}</p>
+                  <p className="ml-2">{`${
+                    sponsored ? 'Free' : currency(stake)
+                  }`}</p>
                 </div>
                 <Divider className="my-1" />
                 <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">
                   <p>Pot:</p>
-                  <p className="ml-2">{` ${currency(
-                    stake * game.participants.length
-                  )} `}</p>
+                  <p className="ml-2">
+                    {currency(
+                      (sponsored ? stake / maxMembers : stake) *
+                        game.participants.length
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -209,6 +215,7 @@ export default function JoinGameCard(props) {
                       ? game.event.startTime
                       : game.event.endTime
                   }
+                  size="large"
                 />
               </div>
             )}
@@ -283,6 +290,9 @@ function TopUpRequired(props) {
 
 function InputJoinAmount(props) {
   const { game, competition, secret, user, handleError } = props;
+  const { stake, poolAddress, sponsored, maxMembers } =
+    competition?.competition || {};
+
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
   const [loading, setLoading] = useState(null);
@@ -294,13 +304,20 @@ function InputJoinAmount(props) {
     setLoading(true);
     setLoadingText('Joining Competition...');
     try {
-      await joinSingleCompetition({
-        userAddress: user.address,
-        stake: competition.competition?.stake,
-        poolAddress: competition.competition?.poolAddress,
-        poolVersion: 'ETA',
-        secret,
-      });
+      if (sponsored) {
+        await joinFreeRollCompetition({
+          competitionId: competition.competition.id,
+          userAddress: user.address,
+        });
+      } else {
+        await joinSingleCompetition({
+          userAddress: user.address,
+          stake: stake,
+          poolAddress: poolAddress,
+          poolVersion: 'ETA',
+          secret,
+        });
+      }
       if (user.loginMethod == 'Casama') {
         await registerBet();
       } else {
@@ -309,7 +326,7 @@ function InputJoinAmount(props) {
       }
     } catch (error) {
       setLoading(false);
-      handleError('Competition could not be joined');
+      handleError(error);
     }
   };
 
@@ -327,7 +344,7 @@ function InputJoinAmount(props) {
       user.fetchUsdBalance();
       router.push('/betting/bets');
     } catch (error) {
-      console.log(error);
+      handleError(error);
       setLoadingText(null);
       setLoading(false);
     }
@@ -363,7 +380,7 @@ function InputJoinAmount(props) {
             className="btn-casama px-5 py-2 text-xl"
             onClick={placeBet}
           >
-            Bet {currency(competition.competition?.stake)} on{' '}
+            Bet {currency(sponsored ? stake / maxMembers : stake)} on{' '}
             {guessOne > guessTwo
               ? game.event.teamHome?.name
               : guessOne < guessTwo

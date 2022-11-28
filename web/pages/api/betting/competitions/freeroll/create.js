@@ -12,6 +12,7 @@ export default async function handler(req, res) {
       payoutRule,
       stake,
       isPublic,
+      maxMembers = 50,
     } = req.body;
 
     const data = new FormData();
@@ -30,6 +31,7 @@ export default async function handler(req, res) {
           stake_decimals: 6,
           stake_currency: 'USDC',
           stake_currency_address: usdcAddress,
+          max_members: (Number(maxMembers) || 50) + 1,
         },
         public: isPublic,
       }),
