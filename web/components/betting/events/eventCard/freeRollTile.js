@@ -5,6 +5,8 @@ import { currency } from '../../../../services/formatter';
 import { compAddr } from '../../../../services/memberHelpers';
 import EventCardPredicitionInput from './predictionInput';
 import EventCardVotePreview from './votePreview';
+import ButtonPic from '../../../../public/buttonFreeRoll.png';
+import CasamaIcon from '/public/casama_logo_white.png';
 
 export default function EventCardFreeRollTile({
   competition,
@@ -81,7 +83,7 @@ export default function EventCardFreeRollTile({
                 )}
                 {!noSpotsLeft && (
                   <>
-                    <Divider className="w-full mt-3" />
+                    <Divider className="w-full mt-3" />{' '}
                     <Collapse in={!selected}>
                       <div className="w-full flex flex-col mt-4 ">
                         <EventCardVotePreview
