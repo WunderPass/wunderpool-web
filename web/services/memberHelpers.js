@@ -26,8 +26,7 @@ export function showWunderIdsAsIcons(arr, amount = 3) {
       {arr && arr.length > amount && (
         <InitialsAvatar
           shiftRight
-          //text={`+${arr.length - amount}`}
-          text={`+212`}
+          text={`+${arr.length - amount}`}
           color={'powder'}
         />
       )}
