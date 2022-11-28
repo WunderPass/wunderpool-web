@@ -12,6 +12,7 @@ import Avatar from '/components/general/members/avatar';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import AdminMenu from './navComponents/adminMenu';
+import ReactourTarget from '../utils/reactourTarget';
 
 export default function TopBar(props) {
   const { user } = props;
@@ -71,28 +72,38 @@ export default function TopBar(props) {
                 <div className="w-full">
                   <ul className="flex flex-row justify-between items-center w-full">
                     <div className="hidden sm:flex flex-row justify-start gap-1">
-                      <Link href={`/betting`}>
-                        <li
-                          className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
-                            router.pathname == '/betting'
-                              ? 'bg-casama-light-blue'
-                              : ''
-                          }`}
-                        >
-                          All Games
-                        </li>
-                      </Link>
-                      <Link href={`/betting/bets`}>
-                        <li
-                          className={`px-4 py-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
-                            router.pathname == '/betting/bets'
-                              ? 'bg-casama-light-blue'
-                              : ''
-                          }`}
-                        >
-                          My Bets
-                        </li>
-                      </Link>
+                      <ReactourTarget name="all-games" from="sm">
+                        <div>
+                          <Link href={`/betting`}>
+                            <li
+                              className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
+                                ['/betting', '/onboarding'].includes(
+                                  router.pathname
+                                )
+                                  ? 'bg-casama-light-blue'
+                                  : ''
+                              }`}
+                            >
+                              All Games
+                            </li>
+                          </Link>
+                        </div>
+                      </ReactourTarget>
+                      <ReactourTarget name="my-bets" from="sm">
+                        <div>
+                          <Link href={`/betting/bets`}>
+                            <li
+                              className={`px-4 py-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
+                                router.pathname == '/betting/bets'
+                                  ? 'bg-casama-light-blue'
+                                  : ''
+                              }`}
+                            >
+                              My Bets
+                            </li>
+                          </Link>
+                        </div>
+                      </ReactourTarget>
                       <Link href={`/investing/pools`}>
                         <li
                           className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
@@ -115,10 +126,14 @@ export default function TopBar(props) {
                       </div>
                       <Link href="/balance">
                         <a className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer">
-                          <div className="flex flex-row pr-1 text-center items-center text-sm ">
-                            <p className="mx-2">{currency(user?.usdBalance)}</p>
-                            <BsFillPlusCircleFill className="text-xl mr-1" />
-                          </div>
+                          <ReactourTarget name="user-balance" from="sm">
+                            <div className="flex flex-row pr-1 text-center items-center text-sm ">
+                              <p className="mx-2">
+                                {currency(user?.usdBalance)}
+                              </p>
+                              <BsFillPlusCircleFill className="text-xl mr-1" />
+                            </div>
+                          </ReactourTarget>
                         </a>
                       </Link>
 
@@ -135,7 +150,6 @@ export default function TopBar(props) {
                                 : null
                             }
                             wunderId={user.wunderId}
-                            tooltip={user.userName}
                             text={user.userName || user.firstName || '0X'}
                             i={1}
                           />
@@ -189,10 +203,7 @@ export default function TopBar(props) {
             <div className="flex sm:hidden w-full items-center justify-between">
               <div className="font-bold flex-grow">
                 <Link href="/profile">
-                  <div
-                    className="flex items-start justify-start ml-2 mr-4 cursor-pointer
-                "
-                  >
+                  <div className="flex items-start justify-start ml-2 mr-4 cursor-pointer">
                     <Avatar
                       loginMethod={user.loginMethod}
                       walletConnectUrl={
@@ -201,7 +212,6 @@ export default function TopBar(props) {
                           : null
                       }
                       wunderId={user.wunderId}
-                      tooltip={user.userName}
                       text={user.userName || user.firstName || '0X'}
                       i={1}
                     />
@@ -217,10 +227,12 @@ export default function TopBar(props) {
               </div>
               <Link href="/balance">
                 <a className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer">
-                  <div className="flex flex-row pr-1 text-center items-center text-sm ">
-                    <p className="mx-2">{currency(user?.usdBalance)}</p>
-                    <BsFillPlusCircleFill className="text-xl mr-1" />
-                  </div>
+                  <ReactourTarget name="user-balance" to="sm">
+                    <div className="flex flex-row pr-1 text-center items-center text-sm ">
+                      <p className="mx-2">{currency(user?.usdBalance)}</p>
+                      <BsFillPlusCircleFill className="text-xl mr-1" />
+                    </div>
+                  </ReactourTarget>
                 </a>
               </Link>
             </div>

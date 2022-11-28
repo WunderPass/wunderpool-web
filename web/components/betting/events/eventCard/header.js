@@ -16,11 +16,16 @@ function toTime(str) {
     : '--:--';
 }
 
-export default function EventCardHeader({ event }) {
+export default function EventCardHeader({ event, specialEvent }) {
   return (
     <div className="flex flex-col items-center justify-center text-center mt-2 ">
-      <div className="opacity-50 text-base h-auto sm:h-14">
+      <div className="text-gray-500 text-base h-auto sm:h-14">
         {event.shortName}
+        {specialEvent && (
+          <span className="bg-casama-blue text-white animate-pulse rounded-md ml-2 py-1 px-2 whitespace-nowrap">
+            Special Event
+          </span>
+        )}
       </div>
       <div className="flex h-auto sm:h-16 flex-row items-center mt-5 justify-between w-full text-lg ">
         <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">

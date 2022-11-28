@@ -20,6 +20,7 @@ import {
 import PasswordRequiredAlert from '../../components/general/dialogs/passwordRequiredAlert';
 import { decryptSeed } from '../../services/crypto';
 import RevealLoginCode from '/components/general/profile/revealLoginCode';
+import { useRouter } from 'next/router';
 
 export default function Profile(props) {
   const { user, handleSuccess, handleError } = props;
@@ -38,6 +39,7 @@ export default function Profile(props) {
 
   const [seedPhrase, setSeedPhrase] = useState(null);
   const [passwordRequired, setPasswordRequired] = useState(false);
+  const router = useRouter();
 
   const handleLogout = () => {
     user.logOut();
@@ -403,11 +405,32 @@ export default function Profile(props) {
           </div>
         </div> */}
       </div>
+      <div className="container-white my-5">
+        <div className="text-left w-full ">
+          <div className="flex flex-row justify-between items-center mt-7">
+            <Typography className="text-lg p-1 font-semibold">
+              Casama Tutorial
+            </Typography>
+          </div>
+          <Divider className="w-full mt-2 mb-4" />
+          <p className="">
+            Click here to see how Casama works in an interactive Demo
+          </p>
+          <div className="w-full">
+            <button
+              onClick={() => router.push('/onboarding')}
+              className="btn-casama px-5 py-2 block mx-auto mt-3"
+            >
+              Start Tutorial
+            </button>
+          </div>
+        </div>
+      </div>
       {user.loginMethod == 'Casama' && (
         <div className="container-white my-5">
           <div className="text-left w-full ">
             <div className="flex flex-row justify-between items-center mt-7">
-              <Typography className="text-lg ml-4  p-1 font-semibold ">
+              <Typography className="text-lg p-1 font-semibold">
                 Seed Phrase
               </Typography>
               {seedPhrase && (
@@ -424,13 +447,15 @@ export default function Profile(props) {
               with access to this Phrase can login to your Account and steal
               your funds.
             </Alert>
-            <div className="bg-gray-100 border-gray-300 border-2 rounded-xl p-3 my-3">
-              {seedPhrase || '●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●'}
-            </div>
+            {seedPhrase && (
+              <div className="bg-gray-100 border-gray-300 border-2 rounded-xl p-3 my-3">
+                {seedPhrase}
+              </div>
+            )}
             <div className="w-full">
               <button
                 onClick={toggleShowSeedPhrase}
-                className="btn-warning px-5 py-2 block mx-auto"
+                className="btn-warning px-5 py-2 block mx-auto mt-3"
               >
                 {seedPhrase ? 'Hide' : 'Reveal'} Seed Phrase
               </button>

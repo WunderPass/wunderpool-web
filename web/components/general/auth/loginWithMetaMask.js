@@ -25,6 +25,8 @@ function validate({ firstName, lastName, email }) {
   }
 
   if (
+    email &&
+    email.length > 0 &&
     !/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
       email
     )
@@ -185,7 +187,12 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
     if (valid) {
       createUser(firstName, lastName, email)
         .then(({ wunderId }) => {
-          onSuccess({ wunderId, address, loginMethod: 'MetaMask' });
+          onSuccess({
+            wunderId,
+            address,
+            loginMethod: 'MetaMask',
+            newUser: true,
+          });
         })
         .catch((err) => {
           setCreationError(err);
@@ -238,7 +245,7 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
               <div className="w-full">
                 <input
                   className="textfield py-4 px-3"
-                  placeholder="Email"
+                  placeholder="Email (Optional)"
                   type="email"
                   value={email}
                   onChange={(e) => {

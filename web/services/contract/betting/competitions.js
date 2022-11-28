@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { postAndWaitForTransaction } from '../../backendApi';
 import { usdc } from '../../formatter';
 import { versionLookup } from '../init';
 import { joinPool } from '../pools';
@@ -113,5 +114,51 @@ export async function joinSingleCompetition({
     return true;
   } catch (error) {
     throw error;
+  }
+}
+
+export async function createFreeRollCompetition({
+  name,
+  version = 'BETA',
+  eventIds,
+  invitations = [],
+  payoutRule,
+  stake,
+  isPublic,
+}) {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: '/api/betting/competitions/freeroll/create',
+      data: {
+        name,
+        version,
+        eventIds,
+        invitations,
+        payoutRule,
+        stake,
+        isPublic,
+      },
+    });
+    return res.data;
+  } catch (createError) {
+    throw 'Creation Failed';
+  }
+}
+
+export async function joinFreeRollCompetition({ competitionId, userAddress }) {
+  try {
+    await postAndWaitForTransaction({
+      url: '/api/betting/competitions/freeroll/join',
+      body: {
+        competitionId,
+        userAddress,
+      },
+    });
+  } catch (createError) {
+    console.log(createError);
+    throw typeof createError == 'string'
+      ? createError
+      : 'Could not Join Competition';
   }
 }

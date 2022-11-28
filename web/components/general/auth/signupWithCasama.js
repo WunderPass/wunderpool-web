@@ -131,7 +131,12 @@ export default function SignUpWithCasama({
     if (valid) {
       createUser(firstName, lastName, email, password, seedPhrase)
         .then(({ wunderId, address }) => {
-          onSuccess({ wunderId, address, loginMethod: 'Casama' });
+          onSuccess({
+            wunderId,
+            address,
+            loginMethod: 'Casama',
+            newUser: true,
+          });
         })
         .catch((err) => {
           setCreationError(err);

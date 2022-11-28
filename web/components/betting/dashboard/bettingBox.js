@@ -9,27 +9,25 @@ function BettingBox(props) {
   const [moneyAtStake, setMoneyAtStake] = useState(0);
   const [openBets, setOpenBets] = useState(0);
 
-  const calculateValues = (bettingServ) => {
+  const calculateValues = () => {
     let profit = 0;
     let moneyAtStake = 0;
     isHistory
-      ? bettingServ.userHistoryCompetitions.map((comp) => {
-          moneyAtStake = moneyAtStake + comp.stake;
-          profit =
-            profit +
-            comp.members.find((m) => compAddr(m.address, user.address))?.profit;
+      ? bettingService.userHistoryCompetitions.map((comp) => {
+          moneyAtStake += comp.stake;
+          profit +=
+            comp.members.find((m) => compAddr(m.address, user.address))
+              ?.profit || 0;
         })
-      : bettingServ.userCompetitions.map((comp) => {
-          moneyAtStake = moneyAtStake + comp.stake;
-          comp.members?.length > 1
-            ? (profit = profit + comp.stake * (comp.members?.length - 2))
-            : (profit = profit + comp.stake * (comp.members?.length - 1));
+      : bettingService.userCompetitions.map((comp) => {
+          moneyAtStake += comp.stake;
+          profit += comp.stake * Math.max(comp.members?.length - 1, 0);
         });
 
     setOpenBets(
       isHistory
-        ? bettingServ.userHistoryCompetitions.length
-        : bettingServ.userCompetitions.length
+        ? bettingService.userHistoryCompetitions.length
+        : bettingService.userCompetitions.length
     );
     setMoneyAtStake(moneyAtStake);
     setProfits(profit);
@@ -37,7 +35,7 @@ function BettingBox(props) {
 
   useEffect(() => {
     if (!bettingService.isReady) return;
-    calculateValues(bettingService);
+    calculateValues();
   }, [
     isHistory,
     bettingService.isReady,

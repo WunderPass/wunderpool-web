@@ -116,6 +116,7 @@ export function formatCompetition(competition) {
     members = [],
     rule,
     public: isPublic,
+    sponsored,
   } = competition;
 
   return {
@@ -124,6 +125,7 @@ export function formatCompetition(competition) {
     version,
     poolAddress: pool_address,
     isPublic,
+    sponsored,
     games: games.map(formatGame)?.filter((g) => g),
     members: members.map(formatMember)?.filter((m) => m),
     payoutRule: rule?.payout_type,

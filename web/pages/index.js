@@ -11,9 +11,11 @@ ReactGA.initialize(process.env.GA_TRACKING_CODE);
 function Home(props) {
   const { user, handleError } = props;
   const [loaded, setLoaded] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
 
-  const handleSuccess = ({ wunderId, address, loginMethod }) => {
+  const handleSuccess = ({ wunderId, address, loginMethod, newUser }) => {
+    setIsNewUser(newUser);
     user.updateLoginMethod(loginMethod);
     user.updateWunderId(wunderId);
     user.updateAddress(address);
@@ -29,7 +31,7 @@ function Home(props) {
 
   useEffect(() => {
     if (user.loggedIn) {
-      router.push('/betting');
+      router.push(isNewUser ? '/onboarding' : '/betting');
     }
   }, [user.loggedIn]);
 

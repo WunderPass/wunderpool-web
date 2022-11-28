@@ -13,6 +13,10 @@ import EventCardCustomGameTile from './customGameTile';
 import MagicMomentDialog from './magicMomentDialog';
 import { registerParticipant } from '../../../../services/contract/betting/games';
 import { useMemo } from 'react';
+import { compAddr } from '../../../../services/memberHelpers';
+import EventCardPredicitionInput from './predictionInput';
+import { currency } from '../../../../services/formatter';
+import EventCardFreeRollTile from './freeRollTile';
 
 export default function EventCard(props) {
   const { event, bettingService, user, handleError } = props;
@@ -41,7 +45,16 @@ export default function EventCard(props) {
 
   const eventCompetitions = bettingService.publicCompetitions.filter(
     (comp) =>
-      comp.games.length == 1 && comp.games.find((g) => g.event.id == event.id)
+      comp.games.length == 1 &&
+      comp.games.find((g) => g.id && g.event.id == event.id)
+  );
+
+  const freeRoll = eventCompetitions.find((comp) => comp.sponsored);
+
+  const poolRequiresBet = eventCompetitions.find(
+    (c) =>
+      c.members.find((m) => compAddr(m.address, user.address)) &&
+      !c.games[0].participants.find((p) => compAddr(p.address, user.address))
   );
 
   const placeBet = async () => {
@@ -58,7 +71,6 @@ export default function EventCard(props) {
       }
     } else {
       setLoading(false);
-      handleError('Betting Pool could not be joined');
     }
   };
 
@@ -98,7 +110,9 @@ export default function EventCard(props) {
           gameId: selectedCompetition.matchingCompetition.games[0].id,
         };
       } catch (error) {
-        console.log(error);
+        handleError(
+          typeof error == 'string' ? error : 'Competition could not be joined'
+        );
         return {};
       }
     } else {
@@ -111,7 +125,9 @@ export default function EventCard(props) {
         });
         return { competitionId, gameId };
       } catch (error) {
-        console.log(error);
+        handleError(
+          typeof error == 'string' ? error : 'Competition could not be joined'
+        );
         return {};
       }
     }
@@ -190,7 +206,7 @@ export default function EventCard(props) {
       <div className="container-white pb-16 cursor-pointer relative">
         <div ref={cardRef} className="absolute -top-12" />
         <div onClick={(e) => handleToggle(e)}>
-          <Header event={event} />
+          <Header event={event} specialEvent={Boolean(freeRoll)} />
           <div className="mt-6">
             <TransactionFrame open={loading} text={loadingText} />
           </div>
@@ -214,21 +230,71 @@ export default function EventCard(props) {
                   </div>
                 </div>
               </Collapse>
+            ) : poolRequiresBet ? (
+              <>
+                <Divider />
+                <div className="my-3">
+                  <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-1">
+                    There seemed to be an Error last time you tried to bet.
+                    Please enter your Bet for the{' '}
+                    {currency(poolRequiresBet.stake)} Competition again.
+                    <div className="w-full max-w-sm">
+                      <EventCardPredicitionInput
+                        event={event}
+                        loading={loading}
+                        guessOne={guessOne}
+                        guessTwo={guessTwo}
+                        setGuessOne={setGuessOne}
+                        setGuessTwo={setGuessTwo}
+                      />
+                    </div>
+                    <button
+                      togglable="false"
+                      disabled={loading}
+                      className="btn-casama py-2 px-3 text-lg w-full max-w-sm"
+                      onClick={() =>
+                        registerBet(
+                          poolRequiresBet.id,
+                          poolRequiresBet.games[0].id
+                        )
+                      }
+                    >
+                      Confirm Bet
+                    </button>
+                  </div>
+                </div>
+              </>
             ) : (
               <Collapse in={showDetails}>
                 <Divider className="mt-6" />
                 <div className="my-5">
-                  <div className="flex justify-center items-center text-semibold sm:text-lg mb-4">
+                  <div className="flex justify-center items-center text-semibold sm:text-lg">
                     Public Betting Games
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-3 mt-4">
+                    {freeRoll && (
+                      <EventCardFreeRollTile
+                        competition={freeRoll}
+                        guessOne={guessOne}
+                        guessTwo={guessTwo}
+                        setGuessOne={setGuessOne}
+                        setGuessTwo={setGuessTwo}
+                        setLoading={setLoading}
+                        scrollIntoView={scrollIntoView}
+                        setLoadingText={setLoadingText}
+                        registerBet={registerBet}
+                        {...props}
+                      />
+                    )}
                     <div className="flex flex-row w-full gap-3 flex-wrap sm:flex-nowrap">
                       {[5, 10, 50].map((stake) => (
                         <EventCardPublicGameTile
                           key={`public-competition-${event.id}-${stake}`}
                           selectedCompetition={selectedCompetition}
                           showCustomInput={showCustomInput}
-                          eventCompetitions={eventCompetitions}
+                          eventCompetitions={eventCompetitions.filter(
+                            (c) => !c.sponsored
+                          )}
                           stake={stake}
                           event={event}
                           user={user}
