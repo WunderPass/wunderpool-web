@@ -10,40 +10,49 @@ function Error({ msg }) {
   ) : null;
 }
 
-function validate({ firstName, lastName, email }) {
-  let valid = true;
-  const errors = {};
+async function checkUsername(handle) {
+  let available = false;
+  let reason = '';
 
-  if (firstName.length < 1) {
-    valid = false;
-    errors.firstName = 'Cant be blank';
+  try {
+    const { data } = await axios({
+      method: 'get',
+      url: `/api/users/checkAvailability?wunderId=${handle}`,
+    });
+
+    available = data.available;
+    reason = data.reason;
+  } catch (userNotFound) {
+    available = true;
+    reason = 'Username available';
   }
 
-  if (lastName.length < 1) {
-    valid = false;
-    errors.lastName = 'Cant be blank';
-  }
-
-  if (
-    email &&
-    email.length > 0 &&
-    !/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
-      email
-    )
-  ) {
-    valid = false;
-    errors.email = 'Invalid Email';
-  }
-
-  return [valid, errors];
+  return [available, reason];
 }
 
-function createUser(firstName, lastName, email) {
+async function validate(handle) {
+  let available = false;
+  let reason = '';
+  const errors = {};
+
+  if (handle.length < 1) {
+    errors.handle = 'Cant be blank';
+  } else {
+    [available, reason] = await checkUsername(handle);
+    errors.handle = reason;
+  }
+
+  return [available, errors];
+}
+
+function createUser(handle) {
   return new Promise(async (resolve, reject) => {
+    let firstName = handle;
+    let lastName = handle;
     const reqData = {
       firstName,
       lastName,
-      email,
+      handle,
     };
     const { signMillis } = useMetaMask();
     try {
@@ -126,9 +135,9 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
   const [signUpRequired, setSignUpRequired] = useState(false);
   const [address, setAddress] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [showError, setShowError] = useState(null);
+  const [handle, setHandle] = useState('');
+
   const [errors, setErrors] = useState({});
   const [creationError, setCreationError] = useState(null);
 
@@ -172,20 +181,16 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const [valid, errors] = validate({
-      firstName,
-      lastName,
-      email,
-    });
+    const [valid, errors] = await validate(handle);
 
     setErrors(errors);
 
     if (valid) {
-      createUser(firstName, lastName, email)
+      createUser(handle)
         .then(({ wunderId }) => {
           onSuccess({
             wunderId,
@@ -222,38 +227,16 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
                 <div className="w-full">
                   <input
                     className="textfield py-4 px-3 "
-                    placeholder="First Name"
-                    value={firstName}
+                    placeholder="Username"
+                    value={handle}
                     onChange={(e) => {
-                      setFirstName(e.target.value);
+                      setHandle(e.target.value);
                     }}
                   />
-                  <Error msg={errors.firstName} />
-                </div>
-                <div className="w-full">
-                  <input
-                    className="textfield py-4 px-3"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => {
-                      setLastName(e.target.value);
-                    }}
-                  />
-                  <Error msg={errors.lastName} />
+                  <Error msg={errors.handle} />
                 </div>
               </div>
-              <div className="w-full">
-                <input
-                  className="textfield py-4 px-3"
-                  placeholder="Email (Optional)"
-                  type="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
-                <Error msg={errors.email} />
-              </div>
+
               <Error msg={creationError} />
               <button
                 type="submit"

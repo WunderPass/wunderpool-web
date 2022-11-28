@@ -10,10 +10,10 @@ export default async function handler(req, res) {
     data.append(
       'user',
       JSON.stringify({
-        firstname: req.body.firstName,
-        lastname: req.body.lastName,
+        firstname: req.body.firstName ? req.body.firstName : req.body.handle,
+        lastname: req.body.lastName == '' ? req.body.handle : req.body.lastName,
         handle: req.body.handle,
-        email: req.body.email,
+        email: req.body.email == '' ? null : req.body.email,
         phone_number: req.body.phoneNumber,
         encrypted_seed_phrase: req.body.seedPhrase,
       }),
