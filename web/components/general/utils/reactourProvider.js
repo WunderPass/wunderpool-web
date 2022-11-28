@@ -14,7 +14,7 @@ function Badge({ children }) {
   );
 }
 
-function Navigation({ steps, currentStep, setIsOpen }) {
+function Navigation({ steps, currentStep, setIsOpen, setCurrentStep }) {
   if (currentStep == steps.length - 1) {
     return (
       <div
@@ -30,11 +30,15 @@ function Navigation({ steps, currentStep, setIsOpen }) {
   return (
     <div className="flex justify-between w-full mt-3">
       <FiArrowLeft
-        className={`text-casama-blue text-2xl ${
+        onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+        className={`text-casama-blue text-2xl cursor-pointer ${
           currentStep == 0 ? 'opacity-0' : ''
         }`}
       />
-      <FiArrowRight className="text-casama-blue text-2xl" />
+      <FiArrowRight
+        onClick={() => setCurrentStep((s) => Math.min(steps.length - 1, s + 1))}
+        className="text-casama-blue text-2xl cursor-pointer"
+      />
     </div>
   );
 }
