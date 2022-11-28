@@ -14,14 +14,16 @@ function BettingBox(props) {
     let moneyAtStake = 0;
     isHistory
       ? bettingService.userHistoryCompetitions.map((comp) => {
-          moneyAtStake += comp.stake;
+          moneyAtStake += comp.sponsored ? 0 : comp.stake;
           profit +=
             comp.members.find((m) => compAddr(m.address, user.address))
               ?.profit || 0;
         })
       : bettingService.userCompetitions.map((comp) => {
-          moneyAtStake += comp.stake;
-          profit += comp.stake * Math.max(comp.members?.length - 1, 0);
+          moneyAtStake += comp.sponsored ? 0 : comp.stake;
+          profit +=
+            comp.stake *
+            (comp.sponsored ? 1 : Math.max(comp.members?.length - 1, 0));
         });
 
     setOpenBets(

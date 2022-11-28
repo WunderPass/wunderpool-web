@@ -68,9 +68,8 @@ export default function EventCardFreeRollTile({
                 <p className="text-center text-super">
                   Join for <b>free</b> with a Chance to win up to{' '}
                   <b className="text-2xl sm:text-4xl font-super">
-                    {currency(competition.stake)}
+                    {currency(competition.stake)}!
                   </b>
-                  !
                 </p>
                 {noSpotsLeft ? (
                   <p className="text-center">
