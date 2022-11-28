@@ -140,8 +140,8 @@ export default function Profile(props) {
         handle: userName,
         firstname: firstName,
         lastname: lastName,
-        email: email,
-        phone_number: number,
+        email: email == '' ? null : email,
+        phone_number: number == '' ? null : number,
       };
 
       await axios({
@@ -353,12 +353,7 @@ export default function Profile(props) {
               <div className="flex w-full justify-center">
                 <button
                   className="btn-casama p-2 mt-3 mb-4 mx-6 w-full md:w-1/2 flex items-center justify-center"
-                  disabled={
-                    uploading ||
-                    !(email || phoneNumber || image) ||
-                    showEmailError ||
-                    showPhoneError
-                  }
+                  disabled={uploading || showEmailError || showPhoneError}
                   onClick={handleSave}
                 >
                   {uploading ? (

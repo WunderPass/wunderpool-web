@@ -63,14 +63,13 @@ export default function EventCardFreeRollTile({
               </div>
               <div className="p-3 z-20">
                 <h1 className="text-2xl sm:text-4xl text-center font-bold text-gray-900">
-                  Free Roll Competition
+                  Freeroll Ticket
                 </h1>
                 <p className="text-center text-super">
-                  Join for <b>free</b> with a Chance to win up to{' '}
                   <b className="text-2xl sm:text-4xl font-super">
                     {currency(competition.stake)}
                   </b>
-                  !
+                  Total Prize Pool!
                 </p>
                 {noSpotsLeft ? (
                   <p className="text-center">
@@ -96,7 +95,7 @@ export default function EventCardFreeRollTile({
                           className="self-center bg-black rounded-xl text-white py-2 px-3"
                           onClick={() => setSelected(true)}
                         >
-                          {alreadyJoined ? 'Already Joined' : 'Place Bet'}
+                          {alreadyJoined ? 'Already Joined' : 'Join for Free'}
                         </button>
                       </div>
                     </Collapse>
@@ -118,7 +117,7 @@ export default function EventCardFreeRollTile({
                           className="self-center bg-black rounded-xl text-white py-2 px-3"
                           onClick={handleSubmit}
                         >
-                          Place Bet
+                          Join for Free
                         </button>
                       </div>
                     </Collapse>
