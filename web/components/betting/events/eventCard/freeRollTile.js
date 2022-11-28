@@ -67,7 +67,7 @@ export default function EventCardFreeRollTile({
                 </h1>
                 <p className="text-center text-super">
                   <b className="text-2xl sm:text-4xl font-super">
-                    {currency(competition.stake)}
+                    {currency(competition.stake)}!
                   </b>
                   Total Prize Pool!
                 </p>
