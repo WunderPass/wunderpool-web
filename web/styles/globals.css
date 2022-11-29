@@ -349,6 +349,8 @@ button:disabled {
 /* GOLD CARD */
 
 .bg-gold {
+  background-image: url(https://i.ibb.co/nrmkm7d/five-bells-washed-out-logo.png),
+    linear-gradient(to right, rgba(58, 61, 62, 1) 0%, rgba(58, 61, 62, 1) 100%);
   background-image: linear-gradient(
     to right,
     #cb9b51 0,
@@ -360,6 +362,7 @@ button:disabled {
     #cb9b51 100%
   );
   background-repeat: repeat-x;
+
   background-position: 0% 2000%;
   background-size: 800% 100%;
   /*
@@ -367,19 +370,54 @@ button:disabled {
   animation: shine-effect 10s infinite;
 }
 
+.bg-soccer {
+  background-image: url(/soccer2.png);
+  height: 100%;
+  width: 100%;
+  background-size: 100% 99.5%;
+  opacity: 30%;
+  z-index: 1;
+}
+
+.bg-soccer2 {
+  /* background-image: url(/soccer2.png); */
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  opacity: 60%;
+  z-index: 1;
+}
+
+.bg-content {
+  opacity: 100%;
+  z-index: 10;
+  position: relative;
+}
+.bg-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
 .text-gold {
-  font-family: 'Times New Roman', serif;
+  /* font-family: 'Times New Roman', serif; */
   letter-spacing: 1px;
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 .inner-border {
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
 
 .outer-border {
+  border-radius: 10px;
   border: 2px solid #515151;
   height: 99%;
   width: 98%;
@@ -394,11 +432,11 @@ button:disabled {
 }
 
 .mid-border {
+  border-radius: 10px;
   border: 6px solid #515151;
   height: 100%;
   width: 100%;
   padding: 6px;
-  margin: auto;
 }
 
 .inner-border {
@@ -406,7 +444,6 @@ button:disabled {
   border: 2px solid #515151;
   height: 100%;
   width: 100%;
-  margin: auto;
 }
 
 /* Decorations */
@@ -415,10 +452,9 @@ button:disabled {
   left: 0;
   right: 0;
   margin: auto;
-  width: 11em;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .vertical-decoration {
     width: 12em;
   }
@@ -434,7 +470,7 @@ button:disabled {
   .vertical-decoration {
     width: 20em;
   }
-}
+} */
 
 .vertical-decoration.top {
   top: 0;

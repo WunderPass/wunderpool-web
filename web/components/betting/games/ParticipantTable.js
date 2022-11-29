@@ -1,6 +1,6 @@
 import { currency } from '/services/formatter';
 import Avatar from '/components/general/members/avatar';
-import { compAddr } from '../../../services/memberHelpers';
+import { compAddr, getNameFor } from '../../../services/memberHelpers';
 
 export function ParticipantTableRow({
   user,

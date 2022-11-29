@@ -36,14 +36,6 @@ export default function JoinCompetitionGame(props) {
     }
   }, [game]);
 
-  // TODO ADD IF BET IS ALREDY FINISHED AN NOT AVAILABLE FOR VOTES
-  // useEffect(() => {
-  //   if (wunderPool.liquidated) {
-  //     handleInfo('This Bet is already resolved');
-  //     router.push('/betting');
-  //   }
-  // }, [wunderPool.liquidated]);
-
   return (
     <>
       <CustomHeader
