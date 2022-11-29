@@ -28,7 +28,7 @@ export default async (req, res) => {
         method: 'post',
         url: `https://identity-service.wunderpass.org/v4/wunderPasses/${fields.wunderId}/image`,
         headers: {
-          authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+          authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
           ...data.getHeaders(),
         },
         data: data,

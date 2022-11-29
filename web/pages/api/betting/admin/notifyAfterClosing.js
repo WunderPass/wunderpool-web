@@ -12,7 +12,7 @@ async function getUsersByAddresses(addresses) {
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/by_network/POLYGON`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
       data: addresses.map((a) => a.toLowerCase()),
     });

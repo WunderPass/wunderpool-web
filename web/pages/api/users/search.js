@@ -8,7 +8,7 @@ export default async function handler(req, res) {
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/${query}`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
     });
     res.status(200).json(resp.data);

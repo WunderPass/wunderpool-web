@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const resp = await axios({
       url: encodeURI(`${process.env.IDENTITY_SERVICE}/v4/contacts/all`),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
     });
     res.status(200).json(resp.data);
