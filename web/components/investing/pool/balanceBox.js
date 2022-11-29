@@ -69,7 +69,7 @@ function BalanceBox(props) {
   return !loading ? (
     <>
       <div className="sm:h-full sm:max-h-96 ">
-        <div className="flex sm:h-full flex-col justify-between container-white mb-1 m:mr-8 w-full ">
+        <div className="flex sm:h-full flex-col justify-between container-white mb-1 m:mr-8 w-full">
           <div>
             <Typography className="pb-6 font-medium">
               Total Value of Pools

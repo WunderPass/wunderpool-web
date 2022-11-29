@@ -1,4 +1,8 @@
 import {
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Alert,
   AlertTitle,
   CircularProgress,
@@ -21,6 +25,10 @@ import PasswordRequiredAlert from '../../components/general/dialogs/passwordRequ
 import { decryptSeed } from '../../services/crypto';
 import RevealLoginCode from '/components/general/profile/revealLoginCode';
 import { useRouter } from 'next/router';
+import QrCode from '/components/general/utils/qrCode';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { AiOutlineQrcode } from 'react-icons/ai';
+import { MdContentCopy } from 'react-icons/md';
 
 export default function Profile(props) {
   const { user, handleSuccess, handleError } = props;
@@ -36,6 +44,7 @@ export default function Profile(props) {
   const [showPhoneError, setShowPhoneError] = useState(null);
   const [showUserNameError, setShowUserNameError] = useState(false);
   const [dataHasChanged, setDataHasChanged] = useState(false);
+  const [showQrCode, setShowQrCode] = useState(false);
 
   const [seedPhrase, setSeedPhrase] = useState(null);
   const [passwordRequired, setPasswordRequired] = useState(false);
@@ -140,8 +149,8 @@ export default function Profile(props) {
         handle: userName,
         firstname: firstName,
         lastname: lastName,
-        email: email,
-        phone_number: number,
+        email: email == '' ? null : email,
+        phone_number: number == '' ? null : number,
       };
 
       await axios({
@@ -165,6 +174,10 @@ export default function Profile(props) {
 
   const handleSave = async () => {
     await updateUserInfo();
+  };
+
+  const handleClose = () => {
+    setShowQrCode(false);
   };
 
   const uploadToClient = (event) => {
@@ -347,18 +360,62 @@ export default function Profile(props) {
                     Email is not valid!
                   </p>
                 )}
+                <div className="flex flex-row justify-between ">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <label
+                      className={'text-black py-2 px-3 mt-2 font-semibold'}
+                    >
+                      Address
+                    </label>
+                  </div>
+                  <div className="flex flex-row justify-between w-full cursor-disabled">
+                    <CopyToClipboard
+                      text={user?.address}
+                      onCopy={() => handleSuccess('address copied!')}
+                    >
+                      <input
+                        className="textfield py-2 px-3 mx-2 cursor-pointer truncate"
+                        type="address"
+                        autoComplete="address"
+                        value={user?.address}
+                      />
+                    </CopyToClipboard>
+                    <button onClick={() => setShowQrCode(!showQrCode)}>
+                      <AiOutlineQrcode className="text-2xl" />
+                    </button>
+                    <Dialog
+                      PaperProps={{
+                        style: { borderRadius: 12 },
+                      }}
+                      open={showQrCode}
+                      onClose={handleClose}
+                      className="w-full"
+                    >
+                      <DialogTitle>Public address as QrCode</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          <div className="flex items-center justify-center my-6 mt-8">
+                            <div className="">
+                              <QrCode
+                                text={user?.address}
+                                dark="text.primary"
+                                size={7}
+                                {...props}
+                              />
+                            </div>
+                          </div>
+                        </DialogContentText>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
               </div>
             </div>
             {dataHasChanged && (
               <div className="flex w-full justify-center">
                 <button
                   className="btn-casama p-2 mt-3 mb-4 mx-6 w-full md:w-1/2 flex items-center justify-center"
-                  disabled={
-                    uploading ||
-                    !(email || phoneNumber || image) ||
-                    showEmailError ||
-                    showPhoneError
-                  }
+                  disabled={uploading || showEmailError || showPhoneError}
                   onClick={handleSave}
                 >
                   {uploading ? (

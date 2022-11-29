@@ -163,8 +163,8 @@ export default function Pools(props) {
                 <BalanceBox className="w-10" {...props} />
               </div>
 
-              <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
-                <div className="flex flex-row justify-between pb-4 b">
+              <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0  ">
+                <div className="flex flex-row justify-between pb-4 ">
                   <Typography className="subheader subheader-sm font-medium">
                     My Pools
                   </Typography>
