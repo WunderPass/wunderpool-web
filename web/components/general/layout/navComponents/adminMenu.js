@@ -57,6 +57,16 @@ export default function AdminMenu() {
         </MenuItem>
         <MenuItem
           className="text-xl"
+          selected={/\/admin\/rewards/.test(router.pathname)}
+          onClick={() => {
+            router.push('/admin/rewards');
+            handleClose();
+          }}
+        >
+          💎 Rewards
+        </MenuItem>
+        <MenuItem
+          className="text-xl"
           selected={/\/admin\/onChainData/.test(router.pathname)}
           onClick={() => {
             router.push('/admin/onChainData');

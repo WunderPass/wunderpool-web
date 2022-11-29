@@ -152,7 +152,7 @@ export default function useUser() {
   const fetchNotifications = async () => {
     try {
       const { data: rewards } = await axios({
-        url: '/api/users/pendingRewards',
+        url: '/api/users/rewards/pending',
         params: { wunderId },
       });
       setNotifications(
@@ -172,7 +172,7 @@ export default function useUser() {
     try {
       const { signedMessage, signature } = await getSignedMillis();
       await axios({
-        url: '/api/users/claimReward',
+        url: '/api/users/rewards/claim',
         params: { type },
         headers: { signed: signedMessage, signature },
       });
