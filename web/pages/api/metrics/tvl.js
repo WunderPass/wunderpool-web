@@ -47,7 +47,7 @@ async function formatMember(member) {
     ),
     headers: {
       'Content-Type': 'application/json',
-      authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+      authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
     },
     data: [address.toLowerCase()],
   });

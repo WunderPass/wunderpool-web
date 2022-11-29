@@ -50,11 +50,21 @@ export default async function handler(req, res) {
       authorization: `Bearer ${process.env.BETTING_SERVICE_CLIENT_TOKEN}`,
     };
 
-    const { data } = await axios({
-      url: `${process.env.BETTING_SERVICE}/competitions`,
-      params: { states: 'HISTORIC,LIVE,UPCOMING' },
-      headers,
-    });
+    const data = [];
+    let page = 0;
+
+    while (true) {
+      const { data: pageData } = await axios({
+        url: `${process.env.BETTING_SERVICE}/competitions`,
+        params: { states: 'HISTORIC,LIVE,UPCOMING', page: page++ },
+        headers,
+      });
+      if (pageData.length > 0) {
+        data.push(...pageData);
+      } else {
+        break;
+      }
+    }
 
     const competitions = data.map(formatCompetition);
     const uniqueUsers = [

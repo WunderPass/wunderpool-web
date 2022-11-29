@@ -160,7 +160,11 @@ export default function DashboardCompetitionCard(props) {
               <Chip
                 className="bg-casama-blue text-white w-full"
                 size="medium"
-                label={currency(stake)}
+                label={currency(
+                  sponsored
+                    ? (stake / maxMembers) * game.participants.length
+                    : stake
+                )}
               />
             </div>
           </div>

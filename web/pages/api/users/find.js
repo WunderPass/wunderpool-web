@@ -8,7 +8,7 @@ async function getUserByWunderId(wunderId) {
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/${wunderId}`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
     });
     return [200, resp.data.find((u) => u.wunder_id == wunderId)];
@@ -26,7 +26,7 @@ async function getUsersByAddress(address) {
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/by_network/${network}`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
       data: [address.toLowerCase()],
     });
@@ -49,7 +49,7 @@ async function getUsersByAddresses(addresses) {
         `${process.env.IDENTITY_SERVICE}/v4/contacts/filter/by_network/${network}`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
       data: addresses.map((a) => a.toLowerCase()),
     });

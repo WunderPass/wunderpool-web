@@ -3,19 +3,16 @@ import axios from 'axios';
 export default async function handler(req, res) {
   try {
     const type = req.query.type;
-    console.log(req.headers);
     const headers = {
       'Content-Type': 'application/json',
       signed_message: req.headers.signed,
       signature: req.headers.signature,
-      authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+      authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
     };
 
     const { data } = await axios({
       method: 'post',
-      url: encodeURI(
-        `${process.env.IDENTITY_SERVICE}/v4/rewards/claim/${type}`
-      ),
+      url: encodeURI(`${process.env.IDENTITY_SERVICE}/rewards/claim/${type}`),
       headers,
     });
     res.status(200).json(data);

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const isResponse = await axios({
       url: encodeURI(`${process.env.IDENTITY_SERVICE}/v4/exists/${wunderId}`),
       headers: {
-        authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
     });
 
