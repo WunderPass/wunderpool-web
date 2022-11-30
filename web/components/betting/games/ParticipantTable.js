@@ -37,10 +37,14 @@ export function ParticipantTableRow({
       </div>
       {winnings != undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
-          {winnings >= stake ? (
-            <p className="text-green-500">{currency(winnings)}</p>
+          {winnings > stake ? (
+            <p className="text-green-500 whitespace-nowrap">
+              + {currency(winnings)}
+            </p>
           ) : (
-            <p className="text-red-500">{currency(stake - winnings)}</p>
+            <p className="text-red-500 whitespace-nowrap">
+              {stake - winnings == 0 ? '' : '-'} {currency(stake - winnings)}
+            </p>
           )}
         </div>
       )}
@@ -58,7 +62,7 @@ export default function ParticipantTable({ participants, stake, user }) {
       )}
 
       {participants
-        .sort((a, b) => b.winnings || 0 - a.winnings || 0)
+        .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
         .map(
           ({
             address,

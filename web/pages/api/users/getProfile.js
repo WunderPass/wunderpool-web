@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json',
       signed_message: req.headers.signed,
       signature: req.headers.signature,
-      authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+      authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
     };
 
     const resp = await axios({

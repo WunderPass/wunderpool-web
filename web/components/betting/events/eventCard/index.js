@@ -154,6 +154,7 @@ export default function EventCard(props) {
   const registerBet = async (competitionId, gameId) => {
     setLoading(true);
     setLoadingText('Placing your Bet...');
+    let success = false;
     try {
       await registerParticipant(
         competitionId || joiningCompetitionId,
@@ -162,22 +163,20 @@ export default function EventCard(props) {
         user.address,
         event.version
       );
-      bettingService.reFetchCompetition(
-        competitionId || joiningCompetitionId,
-        3000
-      );
-      user.fetchUsdBalance();
+      success = true;
       setShowSuccess(true);
-      setLoadingText(null);
-      setLoading(false);
-      return true;
     } catch (error) {
       console.log(error);
       handleError(error);
-      setLoadingText(null);
-      setLoading(false);
-      return false;
     }
+    user.fetchUsdBalance();
+    bettingService.reFetchCompetition(
+      competitionId || joiningCompetitionId,
+      3000
+    );
+    setLoadingText(null);
+    setLoading(false);
+    return success;
   };
 
   const toggleSelectedCompetition = (params, fromCustom = false) => {

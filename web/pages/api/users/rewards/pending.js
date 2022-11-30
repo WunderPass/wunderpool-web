@@ -6,10 +6,10 @@ export default async function handler(req, res) {
     const { data } = await axios({
       method: 'get',
       url: encodeURI(
-        `${process.env.IDENTITY_SERVICE}/v4/rewards/pendingRewards/${wunderId}`
+        `${process.env.IDENTITY_SERVICE}/rewards/pendingRewards/${wunderId}`
       ),
       headers: {
-        Authorization: `Bearer ${process.env.IS_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
       },
     });
     res.status(200).json(data);
