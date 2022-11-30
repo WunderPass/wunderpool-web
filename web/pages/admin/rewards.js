@@ -44,7 +44,7 @@ function CreateRewardForm({
             await axios({
               method: 'POST',
               url: '/api/users/rewards/admin/create',
-              data: { wunderId, rewardType, description, rewardAmount },
+              data: { wunderId, rewardType, rewardAmount },
             });
             return { wunderId, handle, success: true };
           } catch (error) {
@@ -68,7 +68,7 @@ function CreateRewardForm({
 
   useEffect(() => {
     setDescription(
-      allRewardTypes.find(({ key }) => key == rewardType)?.descriptions?.[0]
+      allRewardTypes.find(({ key }) => key == rewardType)?.description
     );
   }, [rewardType]);
 
@@ -88,24 +88,15 @@ function CreateRewardForm({
             value={rewardType}
             onChange={(e) => setRewardType(e.target.value)}
           >
-            {allRewardTypes.map(({ key }) => {
+            {allRewardTypes.map(({ key, description: des }) => {
               return (
                 <MenuItem key={`reward-type-${key}`} value={key}>
-                  {key}
+                  {key} - {des}
                 </MenuItem>
               );
             })}
           </Select>
         </FormControl>
-        <div>
-          <label>Description</label>
-          <input
-            className="textfield py-4 px-3"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
         <div>
           <label>Reward Amount</label>
           <CurrencyInput
@@ -122,12 +113,7 @@ function CreateRewardForm({
           </div>
         ) : (
           <button
-            disabled={
-              members.length == 0 ||
-              !rewardType ||
-              !description ||
-              !rewardAmount
-            }
+            disabled={members.length == 0 || !rewardType || !rewardAmount}
             className="btn-casama px-3 py-2"
             onClick={handleSubmit}
           >
@@ -216,7 +202,6 @@ export default function AdminRewardsPage(props) {
   const [claimedRewards, setClaimedRewards] = useState(null);
   const [pendingRewards, setPendingRewards] = useState(null);
   const [createReward, setCreateReward] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [isPending, setIsPending] = useState(true);
   const [typeFilter, setTypeFilter] = useState('All');
@@ -229,11 +214,9 @@ export default function AdminRewardsPage(props) {
       );
       return keys.map((key) => ({
         key,
-        descriptions: unique(
-          [...pendingRewards, ...claimedRewards]
-            .filter((r) => r.reward_type == key)
-            .map((r) => r.description)
-        ),
+        description: [...pendingRewards, ...claimedRewards].find(
+          (r) => r.reward_type == key
+        )?.description,
       }));
     } else {
       return [];
