@@ -380,7 +380,7 @@ function InputJoinAmount(props) {
             className="btn-casama px-5 py-2 text-xl"
             onClick={placeBet}
           >
-            Bet {currency(sponsored ? stake / maxMembers : stake)} on{' '}
+            Bet {sponsored ? '' : currency(stake)} on{' '}
             {guessOne > guessTwo
               ? game.event.teamHome?.name
               : guessOne < guessTwo
