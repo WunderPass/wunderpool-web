@@ -8,7 +8,6 @@ export default async function handler(req, res) {
       data: {
         wunder_id: req.body.wunderId,
         reward_type: req.body.rewardType,
-        description: req.body.description,
         reward_amount: req.body.rewardAmount,
       },
       headers: {

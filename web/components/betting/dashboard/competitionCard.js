@@ -45,6 +45,14 @@ export default function DashboardCompetitionCard(props) {
 
   const handleShareCompetition = () => {
     if (isPublic || inviteLink) {
+      console.log(
+        '`${window.location.origin}/betting/join/${competition.id}`',
+        `${competition.id}`
+      );
+      console.log(
+        '`${window.location.origin}/betting/join/${competition.id}`',
+        `${competition.id}`
+      );
       handleShare(
         inviteLink ||
           `${window.location.origin}/betting/join/${competition.id}`,
@@ -162,7 +170,7 @@ export default function DashboardCompetitionCard(props) {
                 size="medium"
                 label={currency(
                   sponsored
-                    ? (stake / maxMembers) * game.participants.length
+                    ? (stake / (maxMembers - 1)) * game.participants.length
                     : stake
                 )}
               />
@@ -262,7 +270,7 @@ export default function DashboardCompetitionCard(props) {
                       <p>Pot:</p>
                       <p className="ml-2">
                         {currency(
-                          (sponsored ? stake / maxMembers : stake) *
+                          (sponsored ? stake / (maxMembers - 1) : stake) *
                             game.participants.length
                         )}
                       </p>
@@ -275,9 +283,11 @@ export default function DashboardCompetitionCard(props) {
                 ) ? (
                   <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
                     {isLive && (
-                      <div className="absolute top-3 right-5 flex items-center gap-1 animate-pulse">
-                        <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                        <div className="text-sm">LIVE</div>
+                      <div className="absolute top-3 right-5 flex items-center gap-1">
+                        <div className="bg-red-500 w-2 h-2 rounded-full animate-pulse"></div>
+                        <div className="text-sm">
+                          {game.event?.minute ? game.event.minute : 'LIVE'}
+                        </div>
                       </div>
                     )}
                     <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
