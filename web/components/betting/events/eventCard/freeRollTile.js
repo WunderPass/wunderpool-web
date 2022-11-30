@@ -78,10 +78,10 @@ export default function EventCardFreeRollTile({
                   <p className="flex flex-row justify-center items-center text-center font-semibold">
                     <GoPerson className="text-xl text-casama-blue mb-0.5 mr-1" />
                     <b className="font-semibold">
-                      {competition?.maxMembers - spotsLeft}
+                      {competition?.maxMembers - spotsLeft - 1}
                     </b>
                     <p className="mx-1"> / </p>
-                    {competition?.maxMembers}
+                    {competition?.maxMembers - 1}
                   </p>
                 )}
               </div>

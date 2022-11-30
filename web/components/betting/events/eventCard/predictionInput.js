@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default function EventCardPredicitionInput(props) {
   const {
     event,
@@ -9,6 +11,17 @@ export default function EventCardPredicitionInput(props) {
     color = 'text-casama-blue',
   } = props;
 
+  const getCountryIso = async (countryName) => {
+    console.log('countryName', countryName);
+
+    const iso = await axios({
+      url: `/api/betting/metadata/countryIso?name=${countryName}`,
+      // params: { query },
+    });
+    console.log('iso', iso);
+    return 'dwad';
+  };
+
   return (
     <>
       <div className="flex items-center justify-center mt-4">
@@ -18,6 +31,8 @@ export default function EventCardPredicitionInput(props) {
       <div className="flex flex-row justify-between w-full mb-3">
         <div className="w-full flex flex-col items-center justify-center">
           <div>{(event?.teamHome?.name).substr(0, 3)}</div>
+          {/* <div>{getCountryIso(event?.teamHome?.name)}</div> */}
+
           <div className="w-20">
             <input
               togglable="false"
