@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const { name } = req.query;
   let iso;
   let searchField = 'name';
-  let countryJson;
+  let countryJson = [];
 
   try {
     if (fs.existsSync('./data/countries.json')) {
@@ -18,9 +18,9 @@ export default async function handler(req, res) {
         iso = countryJson[i];
       }
     }
-    res.status(200).json(iso.code);
+    res.status(200).json(iso?.code || name.substr(0, 3));
   } catch (error) {
     console.log(error);
-    res.json({ error: error });
+    res.status(500).json({ error: error });
   }
 }
