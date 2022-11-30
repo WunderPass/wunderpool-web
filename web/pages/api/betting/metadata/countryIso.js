@@ -18,8 +18,6 @@ export default async function handler(req, res) {
         iso = countryJson[i];
       }
     }
-    console.log('iso in api', iso.code);
-
     res.status(200).json(iso.code);
   } catch (error) {
     console.log(error);
