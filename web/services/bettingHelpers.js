@@ -16,6 +16,7 @@ export function formatEvent(event) {
     team_home_id,
     team_away,
     team_away_id,
+    minute,
   } = event;
 
   var shortName = event_name.match(/(.*) -.*vs\./)[1];
@@ -30,6 +31,7 @@ export function formatEvent(event) {
     type: event_type,
     startTime: new Date(`${utc_start_time}Z`) || null,
     endTime: new Date(`${utc_end_time}Z`) || null,
+    minute: minute == 'HT' ? 'Halftime' : minute,
     iconUrl: event_icon_url || null,
     state: event_state,
     outcome: outcome.length == 2 ? outcome : [0, 0],
