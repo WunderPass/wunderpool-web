@@ -16,33 +16,33 @@ export default function EventCardPredicitionInput(props) {
   const [awayCountryIso, setAwayCountryIso] = useState(null);
 
   //TODO ASK MORITZ HOW HE WOULD SOLVE THIS SHIT
-  const fetchCountryHomeIso = async (country) => {
-    try {
-      const { data } = await axios({
-        url: `/api/betting/metadata/countryIso?name=${country}`,
-        // params: { query },
-      });
-      setHomeCountryIso(data);
-    } catch (error) {
-      console.log('error', 'gukus');
-    }
-  };
+  // const fetchCountryHomeIso = async (country) => {
+  //   try {
+  //     const { data } = await axios({
+  //       url: `/api/betting/metadata/countryIso?name=${country}`,
+  //       // params: { query },
+  //     });
+  //     setHomeCountryIso(data);
+  //   } catch (error) {
+  //     console.log('error', 'gukus');
+  //   }
+  // };
 
-  const fetchCountryAwayIso = async (country) => {
-    try {
-      const { data } = await axios({
-        url: `/api/betting/metadata/countryIso?name=${country}`,
-        // params: { query },
-      });
-      setAwayCountryIso(data);
-    } catch (error) {
-      console.log('error', 'gukus');
-    }
-  };
+  // const fetchCountryAwayIso = async (country) => {
+  //   try {
+  //     const { data } = await axios({
+  //       url: `/api/betting/metadata/countryIso?name=${country}`,
+  //       // params: { query },
+  //     });
+  //     setAwayCountryIso(data);
+  //   } catch (error) {
+  //     console.log('error', 'gukus');
+  //   }
+  // };
 
   useEffect(() => {
-    fetchCountryHomeIso(event?.teamHome?.name);
-    fetchCountryAwayIso(event?.teamAway?.name);
+    // fetchCountryHomeIso(event?.teamHome?.name);
+    // fetchCountryAwayIso(event?.teamAway?.name);
   }, []);
 
   return (
