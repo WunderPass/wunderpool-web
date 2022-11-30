@@ -162,7 +162,7 @@ export default function DashboardCompetitionCard(props) {
                 size="medium"
                 label={currency(
                   sponsored
-                    ? (stake / maxMembers) * game.participants.length
+                    ? (stake / (maxMembers - 1)) * game.participants.length
                     : stake
                 )}
               />
@@ -262,7 +262,7 @@ export default function DashboardCompetitionCard(props) {
                       <p>Pot:</p>
                       <p className="ml-2">
                         {currency(
-                          (sponsored ? stake / maxMembers : stake) *
+                          (sponsored ? stake / (maxMembers - 1) : stake) *
                             game.participants.length
                         )}
                       </p>
