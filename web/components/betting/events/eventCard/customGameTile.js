@@ -2,6 +2,8 @@ import { Collapse, Divider } from '@mui/material';
 import EventCardPredicitionInput from './predictionInput';
 import EventCardSubmitButton from './submitButton';
 import CustomInput from '/components/general/utils/customInputButton';
+import { GoPerson } from 'react-icons/go';
+import { FaMedal } from 'react-icons/fa';
 
 export default function EventCardCustomGameTile({
   selectedCompetition,
@@ -20,6 +22,22 @@ export default function EventCardCustomGameTile({
 }) {
   return (
     <div className="flex flex-col w-full container-casama-light-p-0 ">
+      <div className="flex flex-row justify-between items-center w-full   mt-2">
+        <div className="flex flex-row mt-1 ml-5">
+          <div className="flex flex-row justify-center items-center ">
+            <FaMedal className="text-base text-yellow-600 mb-0.5 mr-1" />
+            <p className="font-semibold  ">$?.??</p>
+          </div>
+        </div>
+        <div className="flex flex-row mr-5">
+          <div className="font-semibold ml-1.5">
+            <div className="flex flex-row items-center justify-center">
+              <GoPerson className="text-base text-casama-blue mb-0.5 mr-1" />? /
+              ?
+            </div>
+          </div>
+        </div>
+      </div>
       <div className=" w-full p-3">
         {guessOne && guessTwo && showCustomInput ? (
           <EventCardSubmitButton

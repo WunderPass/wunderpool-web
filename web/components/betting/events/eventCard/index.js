@@ -269,7 +269,9 @@ export default function EventCard(props) {
                 <Divider className="mt-6" />
                 <div className="my-5">
                   <div className="flex justify-center items-center text-semibold sm:text-lg">
-                    Public Betting Games
+                    <p className="text-xl text-casama-blue font-medium">
+                      Public Betting Games
+                    </p>
                   </div>
                   <div className="flex flex-col gap-3 mt-4">
                     {freeRoll && (
@@ -314,26 +316,11 @@ export default function EventCard(props) {
                 <Divider />
                 <div className="flex flex-col justify-center items-center mt-5">
                   <div className=" flex-col text-semibold sm:text-lg text-center mb-4">
-                    <p>Create a private Betting Game</p>
+                    <p className="text-xl text-casama-blue font-medium">
+                      Create a private Betting Game
+                    </p>
                   </div>
-                  <div className="flex flex-col sm:flex-row w-full gap-5 sm:gap-3 ">
-                    {[5, 10].map((stake) => (
-                      <EventCardPrivateGameTile
-                        key={`private-competition-${event.id}-${stake}`}
-                        selectedCompetition={selectedCompetition}
-                        showCustomInput={showCustomInput}
-                        stake={stake}
-                        event={event}
-                        guessOne={guessOne}
-                        guessTwo={guessTwo}
-                        setGuessOne={setGuessOne}
-                        setGuessTwo={setGuessTwo}
-                        loading={loading}
-                        placeBet={placeBet}
-                        toggleSelectedCompetition={toggleSelectedCompetition}
-                        mustClickAgain={mustClickAgain}
-                      />
-                    ))}
+                  <div className="flex flex-col sm:flex-row w-full gap-5 sm:gap-3 md:w-1/3">
                     <EventCardCustomGameTile
                       selectedCompetition={selectedCompetition}
                       showCustomInput={showCustomInput}

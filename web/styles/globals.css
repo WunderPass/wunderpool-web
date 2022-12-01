@@ -319,19 +319,6 @@ button:disabled {
   @apply w-5 h-5 text-gray-200 animate-spin dark:text-gray-400 fill-white;
 }
 
-.bg-shiny-gold {
-  background-image: linear-gradient(
-    130deg,
-    #e7bb41 48%,
-    rgb(255, 247, 0) 50%,
-    #cda22d 52%
-  );
-  background-repeat: repeat-x;
-  background-position: 0% 100%;
-  background-size: 300% 100%;
-  animation: shine-effect 2s linear infinite;
-}
-
 @keyframes shine-effect {
   0% {
     background-position: -200% 200%;
@@ -346,9 +333,32 @@ button:disabled {
     background-position: -200% 200%;
   }
 }
+
+.bg-casama-shiny {
+  background-image: url(https://i.ibb.co/nrmkm7d/five-bells-washed-out-logo.png),
+    linear-gradient(to right, rgba(58, 61, 62, 1) 0%, rgba(58, 61, 62, 1) 100%);
+  background-image: linear-gradient(
+    to right,
+    #5f45fd 0,
+    #7560ff 22%,
+    #6e7df0 45%,
+    #e4dfff 50%,
+    #6e7df0 55%,
+    #7560ff 78%,
+    #5f45fd 100%
+  );
+  background-repeat: repeat-x;
+  color: white;
+  background-position: 0% 2000%;
+  background-size: 800% 100%;
+  /*
+  this changes glow  */
+  animation: shine-effect 10s infinite;
+}
+
 /* GOLD CARD */
 
-.bg-gold {
+.bg-gold-shiny {
   background-image: url(https://i.ibb.co/nrmkm7d/five-bells-washed-out-logo.png),
     linear-gradient(to right, rgba(58, 61, 62, 1) 0%, rgba(58, 61, 62, 1) 100%);
   background-image: linear-gradient(
@@ -406,80 +416,5 @@ button:disabled {
 }
 
 .text-gold {
-  /* font-family: 'Times New Roman', serif; */
   letter-spacing: 1px;
-  /* font-weight: bold; */
-}
-
-.inner-border {
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.outer-border {
-  border-radius: 10px;
-  border: 2px solid #515151;
-  height: 99%;
-  width: 98%;
-  padding: 6px;
-  margin: 0 auto;
-}
-
-@media (min-width: 992px) {
-  .outer-border {
-    height: 94%;
-  }
-}
-
-.mid-border {
-  border-radius: 10px;
-  border: 6px solid #515151;
-  height: 100%;
-  width: 100%;
-  padding: 6px;
-}
-
-.inner-border {
-  position: relative;
-  border: 2px solid #515151;
-  height: 100%;
-  width: 100%;
-}
-
-/* Decorations */
-.vertical-decoration {
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-}
-
-/* @media (min-width: 768px) {
-  .vertical-decoration {
-    width: 12em;
-  }
-}
-
-@media (min-width: 992px) {
-  .vertical-decoration {
-    width: 15em;
-  }
-}
-
-@media (min-width: 1200px) {
-  .vertical-decoration {
-    width: 20em;
-  }
-} */
-
-.vertical-decoration.top {
-  top: 0;
-}
-
-.vertical-decoration.bottom {
-  bottom: 0;
-  -webkit-transform: scaleY(-1);
-  transform: scaleY(-1);
 }
