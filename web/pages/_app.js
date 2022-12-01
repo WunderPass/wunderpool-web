@@ -19,6 +19,7 @@ import BackupSeedPhraseAlert from '/components/general/dialogs/backupSeedPhraseA
 import UseIOS from '/hooks/useIOS';
 import useBettingService from '/hooks/useBettingService';
 import ReactourProvider from '../components/general/utils/reactourProvider';
+import axios from 'axios';
 
 function WunderPool({ Component, pageProps }) {
   const router = useRouter();
@@ -92,6 +93,10 @@ function WunderPool({ Component, pageProps }) {
 
   useEffect(() => {
     updateWunderId(user.wunderId);
+    const pingInterval = setInterval(() => {
+      axios({ url: '/api/users/ping', params: { wunderId: user.wunderId } });
+    }, 10000);
+    return () => clearInterval(pingInterval);
   }, [user.wunderId]);
 
   useEffect(() => {

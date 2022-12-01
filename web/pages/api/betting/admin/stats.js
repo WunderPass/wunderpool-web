@@ -23,7 +23,13 @@ function getGameCount(comps, state) {
 function getPotSize(comps, state) {
   return sum(
     comps.map((c) =>
-      sum(filterBy(c, state).map((g) => g.participants.length * c.stake))
+      sum(
+        filterBy(c, state).map(
+          (g) =>
+            g.participants.length *
+            (c.sponsored ? c.stake / c.maxMembers : c.stake)
+        )
+      )
     )
   );
 }
@@ -95,7 +101,11 @@ export default async function handler(req, res) {
         competitions.map((c) => sum(c.games.map((g) => g.participants.length)))
       ),
       feesEarned:
-        sum(competitions.map((c) => c.stake * c.members.length)) * 0.049,
+        sum(
+          competitions.map(
+            (c) => c.stake * (c.sponsored ? 1 : c.members.length)
+          )
+        ) * 0.049,
       membersPerGame: {
         count: sum(membersPerGame) / competitions.length,
         data: occurences(membersPerGame),

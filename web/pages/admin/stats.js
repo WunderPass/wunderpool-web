@@ -95,6 +95,7 @@ export default function AdminStatsPage(props) {
   const [historicData, setHistoricData] = useState(null);
   const [liveData, setLiveData] = useState(null);
   const [resolvedTopTen, setResolvedTopTen] = useState(null);
+  const [activeUsers, setActiveUsers] = useState(null);
   const [timeFrame, setTimeFrame] = useState(1);
 
   const compareData = useMemo(() => {
@@ -125,7 +126,7 @@ export default function AdminStatsPage(props) {
       axios({
         method: 'post',
         url: '/api/users/find',
-        data: { addresses: data.topTen.map(({ address }) => address) },
+        data: { addresses: data.topTen?.map(({ address }) => address) || [] },
       }).then(({ data: resolved }) => {
         setResolvedTopTen(
           data.topTen.map(({ address, bets }) => ({
@@ -135,6 +136,17 @@ export default function AdminStatsPage(props) {
           }))
         );
       });
+      axios({
+        method: 'post',
+        url: '/api/users/ping',
+        params: { wunderId: user.wunderId, seconds: 21 },
+      })
+        .then(({ data: users }) => {
+          setActiveUsers(users);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -443,6 +455,29 @@ export default function AdminStatsPage(props) {
                     </div>
                     <div className="flex flex-row justify-end items-center text-xl">
                       <p className="text-casama-blue">{usr.bets} Bets</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {activeUsers && (
+            <div className="w-full">
+              <h3 className="text-2xl mb-2 text-center">
+                Active Users ({activeUsers.length})
+              </h3>
+              {activeUsers.map(({ wunderId, lastActive }, i) => {
+                return (
+                  <div
+                    key={`active-user-${wunderId}`}
+                    className="container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Avatar wunderId={wunderId} text={wunderId} i={i} />
+                      <p>{wunderId}</p>
+                    </div>
+                    <div className="text-casama-blue">
+                      {new Date(lastActive).toLocaleTimeString()}
                     </div>
                   </div>
                 );

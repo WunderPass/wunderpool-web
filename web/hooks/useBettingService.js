@@ -78,18 +78,18 @@ export default function useBettingService(userAddress) {
     });
   };
 
-  const initialize = async () => {
-    await getCompetitions();
-    await getEvents();
-    await getHistory();
-  };
-
-  useEffect(() => {
+  useEffect(async () => {
     if (userAddress || router.asPath == '/betting/events') {
-      setIsReady(false);
-      initialize().then(() => {
-        setIsReady(true);
-      });
+      setIsReady(competitions.length > 0 && events.length > 0);
+      await getCompetitions();
+      await getEvents();
+      setIsReady(true);
+    }
+  }, [userAddress, router.asPath]);
+
+  useEffect(async () => {
+    if (userAddress && router.asPath == '/betting/bets') {
+      getHistory();
     }
   }, [userAddress, router.asPath]);
 
