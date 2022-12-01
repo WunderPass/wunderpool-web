@@ -21,7 +21,7 @@ export default function EventCardSubmitButton({
       <button
         togglable="false"
         disabled={loading}
-        className="btn-casama w-full py-1 text-lg my-2"
+        className="bg-casama-shiny rounded-xl hover:opacity-80 w-full py-1 text-lg my-2"
         onClick={placeBet}
       >
         Bet {amount} on {team}
