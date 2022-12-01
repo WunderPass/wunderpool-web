@@ -27,7 +27,6 @@ export default async function handler(req, res) {
     return;
   } else {
     users[wunderId] = new Date();
-    console.log(users);
     res.status(200).send('OK');
     return;
   }
