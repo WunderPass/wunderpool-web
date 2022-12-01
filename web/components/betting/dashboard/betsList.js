@@ -3,12 +3,22 @@ import { useState, useEffect } from 'react';
 import { Typography, Skeleton } from '@mui/material';
 import Link from 'next/link';
 import DashboardCompetitionCard from '/components/betting/dashboard/competitionCard';
+import CollapsedDashboardCompetitionCard from '/components/betting/dashboard/collapsedCompetitionCard';
+import { useRef } from 'react';
 
 export default function BetsList(props) {
   const { user, bettingService, eventTypeSort, sortId, isSortById, isHistory } =
     props;
   const [loading, setLoading] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const ref = useRef(null);
 
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+    ref.current.scrollIntoView({
+      behavior: 'smooth',
+    });
+  };
   useEffect(() => {
     if (!bettingService.isReady) return;
     setLoading(false);
@@ -29,14 +39,18 @@ export default function BetsList(props) {
               if (isSortById) {
                 if (comp.id == sortId) {
                   return (
-                    <DashboardCompetitionCard
-                      key={`dashboard-competition-card-${comp.id}`}
-                      competition={comp}
-                      user={user}
-                      isSortById={isSortById}
-                      isHistory={isHistory}
-                      {...props}
-                    />
+                    //TODO CHECK
+
+                    <div className="flex flex-row">
+                      <DashboardCompetitionCard
+                        key={`dashboard-competition-card-${comp.id}`}
+                        competition={comp}
+                        user={user}
+                        isSortById={isSortById}
+                        isHistory={isHistory}
+                        {...props}
+                      />
+                    </div>
                   );
                 }
               } else if (
@@ -46,13 +60,18 @@ export default function BetsList(props) {
                 eventTypeSort == 'All Events'
               ) {
                 return (
-                  <DashboardCompetitionCard
-                    key={`dashboard-competition-card-${comp.id}`}
-                    competition={comp}
-                    user={user}
-                    isSortById={isSortById}
-                    {...props}
-                  />
+                  //TODO CHECK
+
+                  <div className="flex flex-row">
+                    <DashboardCompetitionCard
+                      key={`dashboard-competition-card-${comp.id}`}
+                      competition={comp}
+                      user={user}
+                      isSortById={isSortById}
+                      isHistory={isHistory}
+                      {...props}
+                    />
+                  </div>
                 );
               }
             })}
@@ -90,13 +109,17 @@ export default function BetsList(props) {
             if (isSortById) {
               if (comp.id == sortId) {
                 return (
-                  <DashboardCompetitionCard
-                    key={`dashboard-competition-card-${comp.id}`}
-                    competition={comp}
-                    user={user}
-                    isSortById={isSortById}
-                    {...props}
-                  />
+                  //TODO CHECK
+                  <div className="flex flex-row">
+                    <DashboardCompetitionCard
+                      key={`dashboard-competition-card-${comp.id}`}
+                      competition={comp}
+                      user={user}
+                      isSortById={isSortById}
+                      isHistory={isHistory}
+                      {...props}
+                    />
+                  </div>
                 );
               }
             } else if (
@@ -106,13 +129,60 @@ export default function BetsList(props) {
               eventTypeSort == 'All Events'
             ) {
               return (
-                <DashboardCompetitionCard
-                  key={`dashboard-competition-card-${comp.id}`}
-                  competition={comp}
-                  user={user}
-                  isSortById={isSortById}
-                  {...props}
-                />
+                <div
+                  ref={ref}
+                  className="flex flex-row justify-between gap-2  w-full"
+                >
+                  {isCollapsed ? (
+                    <div className="flex flex-row w-full">
+                      <DashboardCompetitionCard
+                        key={`dashboard-competition-card-${comp.id}`}
+                        competition={comp}
+                        user={user}
+                        isSortById={isSortById}
+                        isHistory={isHistory}
+                        {...props}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-row w-1/10">
+                      <CollapsedDashboardCompetitionCard
+                        key={`dashboard-competition-card-${comp.id}`}
+                        competition={comp}
+                        user={user}
+                        isSortById={isSortById}
+                        isHistory={isHistory}
+                        toggleCollapse={toggleCollapse}
+                        {...props}
+                      />
+                    </div>
+                  )}
+
+                  {isCollapsed ? (
+                    <div className="flex flex-row w-1/10">
+                      <CollapsedDashboardCompetitionCard
+                        key={`dashboard-competition-card-${comp.id}`}
+                        competition={comp}
+                        user={user}
+                        isSortById={isSortById}
+                        isHistory={isHistory}
+                        toggleCollapse={toggleCollapse}
+                        {...props}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-row w-full">
+                      <DashboardCompetitionCard
+                        key={`dashboard-competition-card-${comp.id}`}
+                        competition={comp}
+                        user={user}
+                        isSortById={isSortById}
+                        isHistory={isHistory}
+                        {...props}
+                      />
+                    </div>
+                  )}
+                </div>
               );
             }
           })}
