@@ -59,7 +59,7 @@ export default function EventCardFreeRollTile({
         <div className="">
           <div className="flex justify-center items-center p-3 bg-content ">
             <div className="text-black container-casama-light-p-0  rounded-xl w-11/12 sm:w-1/2 my-5">
-              <h1 className="text-2xl py-2 text-gray-700 uppercase text-center bg-gold rounded-t-xl font-semibold mb-2  ">
+              <h1 className="text-2xl py-2 text-gray-700 uppercase text-center bg-gold-shiny rounded-t-xl font-semibold mb-2  ">
                 Freeroll Ticket
               </h1>
               <div className="flex flex-row justify-between items-center px-5">
