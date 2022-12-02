@@ -63,7 +63,7 @@ export default function TopUpAlert(props) {
     setShowAlert(
       !['/balance/topUp/success', '/onboarding'].includes(router.pathname)
     );
-  }, [router.isReady]);
+  }, [router.isReady, router.pathname]);
 
   const handleClose = () => {
     user.updateCheckedTopUp(user.checkedTopUp || checked);

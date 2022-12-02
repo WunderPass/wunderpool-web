@@ -15,8 +15,9 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useMemo } from 'react';
-import { compAddr } from '../../services/memberHelpers';
+import { compAddr, getNameFor } from '../../services/memberHelpers';
 import Avatar from '../../components/general/members/avatar';
+import { RiUserSearchLine } from 'react-icons/ri';
 
 const timeFrames = [
   ['1d', 1],
@@ -52,6 +53,56 @@ function Diff({ live, historic, percent }) {
   } else {
     return null;
   }
+}
+
+function ActiveUserRow({ wunderId, lastActive, handleError }) {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  function formatMember(member) {
+    return {
+      handle: member.handle,
+      firstName: member.firstname,
+      lastName: member.lastname,
+      wunderId: member.wunder_id,
+    };
+  }
+
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios({
+        method: 'post',
+        url: '/api/users/find',
+        data: { wunderId },
+      });
+      setUserData(formatMember(data));
+    } catch (error) {
+      handleError(error);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full">
+      <div className="flex items-center gap-2">
+        <Avatar wunderId={wunderId} text={userData?.handle || wunderId} />
+        <p>{userData ? getNameFor(userData) : wunderId}</p>
+        {!userData && (
+          <button
+            onClick={handleSearch}
+            disabled={loading}
+            className="btn-casama p-1 text-lg"
+          >
+            <RiUserSearchLine />
+          </button>
+        )}
+      </div>
+      <div className="text-casama-blue">
+        {new Date(lastActive).toLocaleTimeString()}
+      </div>
+    </div>
+  );
 }
 
 function MembersPerGameTooltip({ active, payload, label }) {
@@ -117,6 +168,19 @@ export default function AdminStatsPage(props) {
     }
   };
 
+  const fetchActiveUsers = async () => {
+    try {
+      const { data } = await axios({
+        method: 'post',
+        url: '/api/users/ping',
+        params: { wunderId: user.wunderId, seconds: 21 },
+      });
+      setActiveUsers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const fetchData = async () => {
     try {
       const { data } = await axios({
@@ -136,17 +200,6 @@ export default function AdminStatsPage(props) {
           }))
         );
       });
-      axios({
-        method: 'post',
-        url: '/api/users/ping',
-        params: { wunderId: user.wunderId, seconds: 21 },
-      })
-        .then(({ data: users }) => {
-          setActiveUsers(users);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     } catch (error) {
       console.log(error);
     }
@@ -159,11 +212,16 @@ export default function AdminStatsPage(props) {
       } else {
         fetchHistory();
         fetchData();
-        const interval = setInterval(() => {
+        fetchActiveUsers();
+        const dataInterval = setInterval(() => {
           fetchData();
         }, 60000);
+        const userInterval = setInterval(() => {
+          fetchActiveUsers();
+        }, 11000);
         return () => {
-          clearInterval(interval);
+          clearInterval(dataInterval);
+          clearInterval(userInterval);
         };
       }
     }
@@ -468,18 +526,12 @@ export default function AdminStatsPage(props) {
               </h3>
               {activeUsers.map(({ wunderId, lastActive }, i) => {
                 return (
-                  <div
+                  <ActiveUserRow
                     key={`active-user-${wunderId}`}
-                    className="container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar wunderId={wunderId} text={wunderId} i={i} />
-                      <p>{wunderId}</p>
-                    </div>
-                    <div className="text-casama-blue">
-                      {new Date(lastActive).toLocaleTimeString()}
-                    </div>
-                  </div>
+                    wunderId={wunderId}
+                    lastActive={lastActive}
+                    {...props}
+                  />
                 );
               })}
             </div>

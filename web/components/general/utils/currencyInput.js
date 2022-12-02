@@ -25,7 +25,6 @@ export default function CurrencyInput(props) {
   return (
     <>
       <ReactCurrencyInput
-        intlConfig={{ locale: 'en-US', currency: 'USD' }}
         decimalsLimit={2}
         value={value}
         type="text"

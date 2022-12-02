@@ -2,7 +2,6 @@ import { Backdrop, ClickAwayListener } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import Avatar from '/components/general/members/avatar';
 import { AiOutlineInsertRowBelow } from 'react-icons/ai';
 import { RiGroup2Fill } from 'react-icons/ri';
 import { ImUngroup } from 'react-icons/im';

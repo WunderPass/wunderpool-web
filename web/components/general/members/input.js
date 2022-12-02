@@ -41,7 +41,7 @@ export default function MemberInput({
   return (
     <>
       <Autocomplete
-        className="w-full text-gray-700 my-4 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
+        className="w-full text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:outline-none"
         multiple={multiple}
         loading={loading}
         options={inputTrue ? members : friends}
