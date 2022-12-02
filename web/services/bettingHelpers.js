@@ -250,6 +250,18 @@ const abbreviationLookup = {
   'åland islands': 'ALA',
 };
 
+function formatMinute(minute) {
+  if (minute == 'FT') {
+    return 'Game Ended';
+  } else if (minute == 'HT') {
+    return 'Halftime';
+  } else if (/\+/.test(minute)) {
+    return minute.replace('+', "'+");
+  } else {
+    return `${minute || 0}'`;
+  }
+}
+
 export function formatEvent(event) {
   if (!event) return null;
   const {
@@ -283,7 +295,7 @@ export function formatEvent(event) {
     type: event_type,
     startTime: new Date(`${utc_start_time}Z`) || null,
     endTime: new Date(`${utc_end_time}Z`) || null,
-    minute: minute == 'HT' ? 'Halftime' : `${minute}'`,
+    minute: formatMinute(minute),
     iconUrl: event_icon_url || null,
     state: event_state,
     outcome: outcome.length == 2 ? outcome : [0, 0],
