@@ -58,19 +58,23 @@ export default function EventCard(props) {
   );
 
   const placeBet = async () => {
-    const { competitionId, gameId } = selectedCompetition.public
-      ? await joinPublicCompetition()
-      : await createPrivateCompetition();
-    if (competitionId && gameId) {
-      if (user.loginMethod == 'Casama') {
-        await registerBet(competitionId, gameId);
+    if (new Date() > new Date(event.startTime)) {
+      handleError('Game already started');
+    } else {
+      const { competitionId, gameId } = selectedCompetition.public
+        ? await joinPublicCompetition()
+        : await createPrivateCompetition();
+      if (competitionId && gameId) {
+        if (user.loginMethod == 'Casama') {
+          await registerBet(competitionId, gameId);
+        } else {
+          setLoading(false);
+          setJoiningCompetitionId(competitionId);
+          setJoiningGameId(gameId);
+        }
       } else {
         setLoading(false);
-        setJoiningCompetitionId(competitionId);
-        setJoiningGameId(gameId);
       }
-    } else {
-      setLoading(false);
     }
   };
 
