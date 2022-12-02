@@ -1,122 +1,97 @@
 import { FaMoneyCheck } from 'react-icons/fa';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Typography, Skeleton } from '@mui/material';
 import Link from 'next/link';
 import DashboardCompetitionCard from '/components/betting/dashboard/competitionCard';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+function sortByDate(competitions, desc = false) {
+  return competitions.sort((first, second) => {
+    const firstDate = new Date(first.games[0]?.event?.startTime || 0);
+    const secondDate = new Date(second.games[0]?.event?.startTime || 0);
+    return desc ? firstDate - secondDate : secondDate - firstDate;
+  });
+}
+
+function sortCompetition(
+  competitions,
+  isSortById,
+  sortId,
+  eventTypeSort,
+  desc = false
+) {
+  if (isSortById && sortId) {
+    return competitions.filter((comp) => comp.id == sortId);
+  } else if (eventTypeSort && eventTypeSort != 'All Events') {
+    return sortByDate(
+      competitions.filter((comp) =>
+        comp.games.find((g) => g.event.competitionName == eventTypeSort)
+      ),
+      desc
+    );
+  }
+  return sortByDate(competitions, desc);
+}
 
 export default function BetsList(props) {
   const { user, bettingService, eventTypeSort, sortId, isSortById, isHistory } =
     props;
-  const [loading, setLoading] = useState(true);
+  const [visibleCompetitionLength, setVisibleCompetitionLength] = useState(10);
+
+  const allCompetitions = useMemo(() => {
+    return isHistory
+      ? sortCompetition(
+          bettingService.userHistoryCompetitions,
+          isSortById,
+          sortId,
+          eventTypeSort
+        )
+      : sortCompetition(
+          bettingService.userCompetitions,
+          isSortById,
+          sortId,
+          eventTypeSort,
+          true
+        );
+  }, [
+    isHistory,
+    isSortById,
+    sortId,
+    eventTypeSort,
+    bettingService.userHistoryCompetitions?.length,
+    bettingService.userCompetitions?.length,
+  ]);
+
+  const visibleCompetitions = allCompetitions.slice(
+    0,
+    visibleCompetitionLength
+  );
 
   useEffect(() => {
-    if (!bettingService.isReady) return;
-    setLoading(false);
-  }, [bettingService.isReady]);
+    setVisibleCompetitionLength(10);
+  }, [isHistory]);
 
-  return !loading ? (
-    isHistory ? (
-      bettingService.userHistoryCompetitions.length > 0 ? (
-        <div className={'grid grid-cols-1 gap-5 w-full'}>
-          {bettingService.userHistoryCompetitions
-            .sort(
-              //TODO fix this as soon as comp has more then one game //
-              (a, b) =>
-                new Date(b.games[0]?.event?.startTime || 0) -
-                new Date(a.games[0]?.event?.startTime || 0)
-            )
-            .map((comp, i) => {
-              if (isSortById) {
-                if (comp.id == sortId) {
-                  return (
-                    <DashboardCompetitionCard
-                      key={`dashboard-competition-card-${comp.id}`}
-                      competition={comp}
-                      user={user}
-                      isSortById={isSortById}
-                      isHistory={isHistory}
-                      {...props}
-                    />
-                  );
-                }
-              } else if (
-                comp.games.find(
-                  (g) => g.event.competitionName == eventTypeSort
-                ) ||
-                eventTypeSort == 'All Events'
-              ) {
-                return (
-                  <DashboardCompetitionCard
-                    key={`dashboard-competition-card-${comp.id}`}
-                    competition={comp}
-                    user={user}
-                    isSortById={isSortById}
-                    {...props}
-                  />
-                );
-              }
-            })}
-        </div>
-      ) : (
-        <div className="container-white">
-          <div className="flex flex-col items-center ">
-            <div className="border-solid text-casama-blue rounded-full bg-casama-extra-light-blue p-5 my-2 mt-6 mb-4">
-              <FaMoneyCheck className="text-4xl" />
-            </div>
-            <div className="my-4 mb-10 text-lg text-center">
-              <Typography variant="h7">
-                You have no open Bets currently. Go to the betting site to join
-                or create new bets.
-              </Typography>
-            </div>
-            <Link href="/betting">
-              <button className="btn-casama-white justify-center items-center w-full my-5 py-3.5 px-3 mb-0 text-lg font-semibold ">
-                Check possible Bets
-              </button>
-            </Link>
-          </div>
-        </div>
-      )
-    ) : bettingService.userCompetitions.length > 0 ? (
-      <div className={'grid grid-cols-1 gap-5 w-full'}>
-        {bettingService.userCompetitions
-          .sort(
-            //TODO fix this as soon as comp has more then one game //
-            (a, b) =>
-              new Date(a.games[0]?.event?.startTime || 0) -
-              new Date(b.games[0]?.event?.startTime || 0)
-          )
-          .map((comp, i) => {
-            if (isSortById) {
-              if (comp.id == sortId) {
-                return (
-                  <DashboardCompetitionCard
-                    key={`dashboard-competition-card-${comp.id}`}
-                    competition={comp}
-                    user={user}
-                    isSortById={isSortById}
-                    {...props}
-                  />
-                );
-              }
-            } else if (
-              comp.games.find(
-                (g) => g.event.competitionName == eventTypeSort
-              ) ||
-              eventTypeSort == 'All Events'
-            ) {
-              return (
-                <DashboardCompetitionCard
-                  key={`dashboard-competition-card-${comp.id}`}
-                  competition={comp}
-                  user={user}
-                  isSortById={isSortById}
-                  {...props}
-                />
-              );
-            }
-          })}
-      </div>
+  return bettingService.isReady ? (
+    allCompetitions.length > 0 ? (
+      <InfiniteScroll
+        className="grid grid-cols-1 gap-5 w-full"
+        dataLength={visibleCompetitions.length}
+        next={() => setVisibleCompetitionLength((num) => num + 10)}
+        hasMore={visibleCompetitions.length < allCompetitions.length}
+      >
+        {visibleCompetitions.map((comp, i) => {
+          return (
+            <DashboardCompetitionCard
+              key={`dashboard-competition-card-${comp.id}`}
+              competition={comp}
+              user={user}
+              isSortById={isSortById}
+              isHistory={isHistory}
+              {...props}
+            />
+          );
+        })}
+      </InfiniteScroll>
     ) : (
       <div className="container-white">
         <div className="flex flex-col items-center ">
