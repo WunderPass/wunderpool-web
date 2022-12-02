@@ -27,6 +27,9 @@ function WelcomeDialog({ setIsOpen }) {
       className="rounded-xl"
       open={open}
       TransitionComponent={Transition}
+      PaperProps={{
+        style: { borderRadius: 15 },
+      }}
     >
       <DialogContent>
         <Stack spacing={2}>
@@ -48,6 +51,7 @@ function WelcomeDialog({ setIsOpen }) {
             >
               Skip Tutorial
             </button>
+
             <button
               className="w-full py-3 px-5 btn-casama"
               onClick={() => {

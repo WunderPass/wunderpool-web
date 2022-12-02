@@ -90,6 +90,9 @@ export default function BackupSeedPhraseAlert(props) {
       className="rounded-xl"
       open={open}
       TransitionComponent={Transition}
+      PaperProps={{
+        style: { borderRadius: 15 },
+      }}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Backup Seed Phrase</DialogTitle>
       <DialogContent>

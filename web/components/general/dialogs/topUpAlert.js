@@ -82,10 +82,12 @@ export default function TopUpAlert(props) {
     <Dialog
       fullWidth
       maxWidth="sm"
-      className="rounded-xl"
       open={Boolean(open && showAlert)}
       onClose={handleClose}
       TransitionComponent={Transition}
+      PaperProps={{
+        style: { borderRadius: 15 },
+      }}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>
         <div className="flex justify-end ">
@@ -95,8 +97,8 @@ export default function TopUpAlert(props) {
         </div>{' '}
         <div>Manage Funds</div>
       </DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} className="w-full">
+      <DialogContent className="">
+        <Stack spacing={2} className="w-full ">
           <p>
             The main currency on Casama is USDC on the Polygon Chain. To create
             or join Pools you need to have USDC in your Wallet.

@@ -39,6 +39,9 @@ export default function PasswordRequiredAlert({
       className="rounded-xl"
       open={passwordRequired}
       TransitionComponent={Transition}
+      PaperProps={{
+        style: { borderRadius: 15 },
+      }}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Password Required</DialogTitle>
       <DialogContent>

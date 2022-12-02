@@ -20,16 +20,7 @@ import { BiExpand } from 'react-icons/bi';
 import { useRef } from 'react';
 
 export default function DashboardCompetitionCard(props) {
-  const {
-    competition,
-    handleSuccess,
-    handleError,
-    user,
-    isSortById,
-    isHistory,
-    toggleCollapse,
-  } = props;
-  const [showDetails, setShowDetails] = useState(false);
+  const { competition, user, toggleCollapse } = props;
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -55,18 +46,6 @@ export default function DashboardCompetitionCard(props) {
       setGameResultTable(game.participants);
     }
   }, [game.event?.outcome]);
-
-  function addMinutes(date, minutes) {
-    return new Date(date.getTime() + minutes * 60000);
-  }
-
-  const handleToggle = (e) => {
-    if (e.target.getAttribute('togglable') == 'false') return;
-    setShowDetails(!showDetails);
-    scrollToRef.current.scrollIntoView({
-      behavior: 'smooth',
-    });
-  };
 
   return (
     <div className="flex flex-row gap-2 w-full">
@@ -98,26 +77,22 @@ export default function DashboardCompetitionCard(props) {
             </div>
             <div className="flex flex-row justify-center items-center w-full"></div>
             <div className="flex flex-col w-full">
-              <Collapse in={!showDetails}>
-                <CollapsedParticipantTableRow
-                  user={user}
-                  address={'Your Bet'}
-                  wunderId={user.wunderId}
-                  userName={user.userName}
-                  profileName={getNameFor(user)}
-                  prediction={
-                    gameResultTable.find((p) =>
-                      compAddr(p.address, user.address)
-                    )?.prediction
-                  }
-                  winnings={
-                    gameResultTable.find((p) =>
-                      compAddr(p.address, user.address)
-                    )?.winnings
-                  }
-                  stake={sponsored ? 0 : stake}
-                />
-              </Collapse>
+              <CollapsedParticipantTableRow
+                user={user}
+                address={'Your Bet'}
+                wunderId={user.wunderId}
+                userName={user.userName}
+                profileName={getNameFor(user)}
+                prediction={
+                  gameResultTable.find((p) => compAddr(p.address, user.address))
+                    ?.prediction
+                }
+                winnings={
+                  gameResultTable.find((p) => compAddr(p.address, user.address))
+                    ?.winnings
+                }
+                stake={sponsored ? 0 : stake}
+              />
 
               <div className="flex justify-center text-3xl text-casama-blue">
                 <div className={`transition-transform `}>

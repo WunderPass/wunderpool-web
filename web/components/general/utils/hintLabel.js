@@ -23,7 +23,13 @@ export default function HintLabel({ title, hint, className, htmlFor }) {
           <HelpIcon color="info" fontSize={'inherit'} />
         </IconButton>
       )}
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          style: { borderRadius: 15 },
+        }}
+      >
         <DialogContent>
           <DialogContentText>{hint}</DialogContentText>
         </DialogContent>

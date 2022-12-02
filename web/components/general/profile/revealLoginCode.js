@@ -20,6 +20,9 @@ export default function RevealLoginCode(props) {
         onClose={() => {
           setOpen(false);
         }}
+        PaperProps={{
+          style: { borderRadius: 15 },
+        }}
       >
         <DialogContent
           dividers

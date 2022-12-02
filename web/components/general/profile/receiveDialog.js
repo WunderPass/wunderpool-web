@@ -18,7 +18,7 @@ export default function ReceiveDialog(props) {
   return (
     <Dialog
       PaperProps={{
-        style: { borderRadius: 12 },
+        style: { borderRadius: 15 },
       }}
       open={open}
       onClose={handleClose}

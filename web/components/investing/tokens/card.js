@@ -63,7 +63,13 @@ function TokenInfo({ token, data }) {
                 <IconButton color="info" onClick={() => setInfoDialog(true)}>
                   <InfoIcon fontSize="small" />
                 </IconButton>
-                <Dialog onClose={() => setInfoDialog(false)} open={infoDialog}>
+                <Dialog
+                  onClose={() => setInfoDialog(false)}
+                  open={infoDialog}
+                  PaperProps={{
+                    style: { borderRadius: 15 },
+                  }}
+                >
                   <DialogContent>
                     <DialogContentText>
                       This Token is not verified by Casama. Trading this token

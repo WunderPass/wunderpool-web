@@ -69,7 +69,7 @@ export default function LoginWithWunderPass(props) {
           open={open}
           onClose={dialogClose}
           PaperProps={{
-            style: { borderRadius: 12 },
+            style: { borderRadius: 15 },
           }}
         >
           <iframe

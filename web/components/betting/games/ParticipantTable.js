@@ -75,7 +75,7 @@ export function CollapsedParticipantTableRow({
         <p className="mx-1">:</p>
         <p>{prediction?.[1] ?? '-'}</p>
       </div>
-      {winnings != undefined && (
+      {/* {winnings != undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
           {winnings > stake ? (
             <p className="text-green-500 whitespace-nowrap">
@@ -87,7 +87,7 @@ export function CollapsedParticipantTableRow({
             </p>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

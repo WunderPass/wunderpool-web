@@ -21,7 +21,7 @@ export default function TransactionDialog({ open, onClose, children }) {
       open={!isSafari && open}
       onClose={onClose}
       PaperProps={{
-        style: { borderRadius: 12 },
+        style: { borderRadius: 15 },
       }}
     >
       <div className="flex justify-end mt-4 mr-5">

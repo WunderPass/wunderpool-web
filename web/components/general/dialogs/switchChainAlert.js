@@ -56,6 +56,9 @@ export default function SwitchChainAlert({ user }) {
       className="rounded-xl"
       open={unsupportedChain && loginMethod != 'WunderPass'}
       TransitionComponent={Transition}
+      PaperProps={{
+        style: { borderRadius: 15 },
+      }}
     >
       <div className="flex justify-center mt-3">{renderTitleImage()}</div>
       <DialogTitle sx={{ textAlign: 'center' }}>Unsupported Chain</DialogTitle>

@@ -385,7 +385,7 @@ export default function Profile(props) {
                     </button>
                     <Dialog
                       PaperProps={{
-                        style: { borderRadius: 12 },
+                        style: { borderRadius: 15 },
                       }}
                       open={showQrCode}
                       onClose={handleClose}

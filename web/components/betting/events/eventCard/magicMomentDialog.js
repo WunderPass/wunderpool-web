@@ -49,7 +49,10 @@ export default function MagicMomentDialog({
         reset();
         setOpen(false);
       }}
-      PaperProps={{ ref: paperRef }}
+      PaperProps={{
+        ref: paperRef,
+        style: { borderRadius: 15 },
+      }}
       TransitionComponent={Transition}
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Success</DialogTitle>

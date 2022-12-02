@@ -48,7 +48,7 @@ export default function FundPoolDialog(props) {
       open={open}
       onClose={handleClose}
       PaperProps={{
-        style: { borderRadius: 12 },
+        style: { borderRadius: 15 },
       }}
     >
       <DialogTitle>Send USD to Pool</DialogTitle>

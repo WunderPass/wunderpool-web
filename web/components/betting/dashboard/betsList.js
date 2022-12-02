@@ -5,27 +5,56 @@ import Link from 'next/link';
 import DashboardCompetitionCard from '/components/betting/dashboard/competitionCard';
 import CollapsedDashboardCompetitionCard from '/components/betting/dashboard/collapsedCompetitionCard';
 import { useRef } from 'react';
+import BetsRow from '/components/betting/dashboard/betsRow';
 
 export default function BetsList(props) {
   const { user, bettingService, eventTypeSort, sortId, isSortById, isHistory } =
     props;
   const [loading, setLoading] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const ref = useRef(null);
+  const [myBetsRows, setMyBetsRows] = useState([[]]);
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-    ref.current.scrollIntoView({
-      behavior: 'smooth',
-    });
-  };
   useEffect(() => {
     if (!bettingService.isReady) return;
     setLoading(false);
   }, [bettingService.isReady]);
 
+  const stackRelatedCompetitions = () => {
+    let rows = [[]];
+    console.log('rows before', rows);
+
+    bettingService.userCompetitions
+      .sort(
+        //TODO fix this as soon as comp has more then one game //
+        (a, b) =>
+          new Date(b.games[0]?.event?.startTime || 0) -
+          new Date(a.games[0]?.event?.startTime || 0)
+      )
+      .map((comp, i) => {
+        rows.map((row, j) => {
+          console.log('rows', rows);
+
+          console.log('row', row);
+          console.log('j', j);
+          if (rows.length < 2) return;
+          if (row[j].name == comp.name) {
+            row[j].push(comp);
+            return;
+          }
+        });
+        rows.push(comp);
+      });
+    setMyBetsRows(rows);
+    console.log('rows', rows);
+  };
+
+  useEffect(() => {
+    stackRelatedCompetitions();
+  }, []);
+
   return !loading ? (
     isHistory ? (
+      //HISTORY
       bettingService.userHistoryCompetitions.length > 0 ? (
         <div className={'grid grid-cols-1 gap-5 w-full'}>
           {bettingService.userHistoryCompetitions
@@ -96,7 +125,8 @@ export default function BetsList(props) {
           </div>
         </div>
       )
-    ) : bettingService.userCompetitions.length > 0 ? (
+    ) : //MY BETS
+    bettingService.userCompetitions.length > 0 ? (
       <div className={'grid grid-cols-1 gap-5 w-full'}>
         {bettingService.userCompetitions
           .sort(
@@ -129,60 +159,16 @@ export default function BetsList(props) {
               eventTypeSort == 'All Events'
             ) {
               return (
-                <div
-                  ref={ref}
-                  className="flex flex-row justify-between gap-2  w-full"
-                >
-                  {isCollapsed ? (
-                    <div className="flex flex-row w-full">
-                      <DashboardCompetitionCard
-                        key={`dashboard-competition-card-${comp.id}`}
-                        competition={comp}
-                        user={user}
-                        isSortById={isSortById}
-                        isHistory={isHistory}
-                        {...props}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex flex-row w-1/10">
-                      <CollapsedDashboardCompetitionCard
-                        key={`dashboard-competition-card-${comp.id}`}
-                        competition={comp}
-                        user={user}
-                        isSortById={isSortById}
-                        isHistory={isHistory}
-                        toggleCollapse={toggleCollapse}
-                        {...props}
-                      />
-                    </div>
-                  )}
-
-                  {isCollapsed ? (
-                    <div className="flex flex-row w-1/10">
-                      <CollapsedDashboardCompetitionCard
-                        key={`dashboard-competition-card-${comp.id}`}
-                        competition={comp}
-                        user={user}
-                        isSortById={isSortById}
-                        isHistory={isHistory}
-                        toggleCollapse={toggleCollapse}
-                        {...props}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex flex-row w-full">
-                      <DashboardCompetitionCard
-                        key={`dashboard-competition-card-${comp.id}`}
-                        competition={comp}
-                        user={user}
-                        isSortById={isSortById}
-                        isHistory={isHistory}
-                        {...props}
-                      />
-                    </div>
-                  )}
-                </div>
+                <BetsRow
+                  key={`dashboard-competition-card-${comp.id}`}
+                  competition={comp}
+                  user={user}
+                  isSortById={isSortById}
+                  isHistory={isHistory}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                  {...props}
+                />
               );
             }
           })}

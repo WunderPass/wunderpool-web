@@ -134,7 +134,7 @@ export default function InviteLinkButton(props) {
         open={open}
         onClose={handleClose}
         PaperProps={{
-          style: { borderRadius: 12 },
+          style: { borderRadius: 15 },
         }}
       >
         <DialogTitle>Generate Invite Link</DialogTitle>
