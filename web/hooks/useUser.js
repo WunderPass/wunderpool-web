@@ -396,11 +396,12 @@ export default function useUser() {
 
   useEffect(() => {
     if (!isReady) return;
-    if (Number(usdBalance) < 1 && !checkedTopUp && notifications.length == 0) {
-      setTopUpRequired(true);
-    } else {
-      setTopUpRequired(false);
-    }
+    // if (Number(usdBalance) < 1 && !checkedTopUp && notifications.length == 0) {
+    //   setTopUpRequired(true);
+    // } else {
+    //   setTopUpRequired(false);
+    // }
+    setTopUpRequired(false);
   }, [notifications, isReady, usdBalance]);
 
   useEffect(() => {
