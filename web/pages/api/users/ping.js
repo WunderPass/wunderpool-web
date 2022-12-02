@@ -25,9 +25,11 @@ export default async function handler(req, res) {
         : 'FORBIDDEN'
     );
     return;
-  } else {
+  } else if (wunderId) {
     users[wunderId] = new Date();
     res.status(200).send('OK');
     return;
   }
+  res.status(200).send('OK');
+  return;
 }
