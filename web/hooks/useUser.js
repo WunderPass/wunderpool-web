@@ -20,6 +20,7 @@ const admins = [
   '0x1a8459f9ddecabe92281ebdfa62874010a53fdc6', // Gerwin
   '0x097bf9d9a2c838e12fe153e4d7f83b48adb572c6', // Slava
   '0x466274eefdd3265e3d8085933e69890f33023048', // Max
+  '0x3c782466d0560b05928515cf31def4ff308b947a', // Max2
 ];
 
 export default function useUser() {
