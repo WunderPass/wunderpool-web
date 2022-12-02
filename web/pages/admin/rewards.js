@@ -29,7 +29,6 @@ function CreateRewardForm({
 }) {
   const [members, setMembers] = useState([]);
   const [rewardType, setRewardType] = useState('');
-  const [description, setDescription] = useState('');
   const [rewardAmount, setRewardAmount] = useState('');
 
   const [loading, setLoading] = useState(null);
@@ -65,12 +64,6 @@ function CreateRewardForm({
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    setDescription(
-      allRewardTypes.find(({ key }) => key == rewardType)?.description
-    );
-  }, [rewardType]);
 
   return (
     <div className="my-5">
@@ -286,8 +279,9 @@ export default function AdminRewardsPage(props) {
           <CreateRewardForm allRewardTypes={allRewardTypes} {...props} />
         </Collapse>
         <h3 className="text-xl">{isPending ? 'Pending' : 'Claimed'} Rewards</h3>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2">
           <Select
+            fullWidth
             value={isPending}
             onChange={(e) => setIsPending(e.target.value)}
           >
@@ -295,6 +289,7 @@ export default function AdminRewardsPage(props) {
             <MenuItem value={false}>Claimed</MenuItem>
           </Select>
           <Select
+            fullWidth
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
           >
@@ -314,11 +309,13 @@ export default function AdminRewardsPage(props) {
             user={user}
           />
         </div>
-        <RewardTable
-          rewards={isPending ? pendingRewards : claimedRewards}
-          typeFilter={typeFilter}
-          wunderIdFilter={wunderIdFilter}
-        />
+        <div className="max-w-full overflow-x-scroll">
+          <RewardTable
+            rewards={isPending ? pendingRewards : claimedRewards}
+            typeFilter={typeFilter}
+            wunderIdFilter={wunderIdFilter}
+          />
+        </div>
       </div>
     </Container>
   );
