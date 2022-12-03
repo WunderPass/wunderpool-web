@@ -18,6 +18,8 @@ import { createFilterOptions } from '@mui/material/Autocomplete';
 import { MdSportsSoccer } from 'react-icons/md';
 import CurrencyInput from '/components/general/utils/currencyInput';
 import MemberInput from '../../components/general/members/input';
+import { currency } from '../../services/formatter';
+import { usdcBalanceOf } from '../../services/contract/token';
 
 function EventInput({ events, setEvent }) {
   const filterOptions = createFilterOptions({
@@ -103,6 +105,7 @@ export default function AdminFreeRollsPage(props) {
   const router = useRouter();
   const [events, setEvents] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [backendWalletBalance, setBackendWalletBalance] = useState(0);
 
   const [event, setEvent] = useState({});
   const [name, setName] = useState('');
@@ -147,6 +150,9 @@ export default function AdminFreeRollsPage(props) {
         router.push('/betting');
       } else {
         fetchEvents();
+        usdcBalanceOf('0xc556d65Aa057cec0c6C4163c1E1E99506745fA65').then(
+          setBackendWalletBalance
+        );
       }
     }
   }, [user.isReady, router.isReady]);
@@ -158,6 +164,9 @@ export default function AdminFreeRollsPage(props) {
           <h1 className="text-xl font-semibold text-center">
             Free Roll Manager
           </h1>
+          <h3 className="text-lg font-semibold">
+            Available Budget: {currency(backendWalletBalance)}
+          </h3>
           <EventInput events={events} setEvent={setEvent} />
           {event && event.id && (
             <div className="mt-5 flex flex-col gap-3">
