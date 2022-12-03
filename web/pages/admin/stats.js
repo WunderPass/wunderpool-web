@@ -177,7 +177,7 @@ export default function AdminStatsPage(props) {
       const { data } = await axios({
         method: 'post',
         url: '/api/users/ping',
-        params: { wunderId: user.wunderId, seconds: 21 },
+        params: { wunderId: user.wunderId, seconds: 60 },
       });
       setActiveUsers(data);
     } catch (error) {
