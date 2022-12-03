@@ -7,26 +7,31 @@ const admins = [
   'm-loechner',
 ];
 export default async function handler(req, res) {
-  const { wunderId, seconds } = req.query;
+  const { wunderId, handle, seconds } = req.query;
   if (req.method === 'POST') {
     const allowed = admins.includes(wunderId);
     res.status(allowed ? 200 : 401).send(
       allowed
         ? Object.entries(users)
             .filter(
-              ([_, lastActive]) =>
+              ([_, { lastActive }]) =>
                 new Date(Number(new Date()) - Number(seconds) * 1000) <
                 new Date(lastActive)
             )
-            .map(([id, lastActive]) => ({
+            .map(([id, { lastActive, handle, url }]) => ({
               wunderId: id,
               lastActive,
+              handle,
+              url,
             }))
         : 'FORBIDDEN'
     );
     return;
   } else if (wunderId) {
-    users[wunderId] = new Date();
+    try {
+      const url = req.headers?.referer;
+      users[wunderId] = { lastActive: new Date(), handle, url };
+    } catch (error) {}
     res.status(200).send('OK');
     return;
   }

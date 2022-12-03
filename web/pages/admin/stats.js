@@ -55,13 +55,13 @@ function Diff({ live, historic, percent }) {
   }
 }
 
-function ActiveUserRow({ wunderId, lastActive, handleError }) {
+function ActiveUserRow({ wunderId, lastActive, handle, url, handleError }) {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   function formatMember(member) {
     return {
-      handle: member.handle,
+      handle: member.handle || handle,
       firstName: member.firstname,
       lastName: member.lastname,
       wunderId: member.wunder_id,
@@ -84,9 +84,12 @@ function ActiveUserRow({ wunderId, lastActive, handleError }) {
   };
 
   return (
-    <div className="container-white-p-0 p-2 flex flex-row items-center justify-between gap-2 my-2 w-full">
-      <div className="flex items-center gap-2">
-        <Avatar wunderId={wunderId} text={userData?.handle || wunderId} />
+    <div className="container-white-p-0 p-2 flex flex-col sm:flex-row items-center justify-between gap-2 my-2 w-full">
+      <div className="w-full flex items-center gap-2 justify-start">
+        <Avatar
+          wunderId={wunderId}
+          text={userData?.handle || handle || wunderId}
+        />
         <p>{userData ? getNameFor(userData) : wunderId}</p>
         {!userData && (
           <button
@@ -98,8 +101,9 @@ function ActiveUserRow({ wunderId, lastActive, handleError }) {
           </button>
         )}
       </div>
-      <div className="text-casama-blue">
-        {new Date(lastActive).toLocaleTimeString()}
+      <div className="w-full sm:w-1/2 text-casama-blue flex gap-2 justify-between sm:justify-end">
+        <p className="truncate">{url.replace(window?.origin, '')}</p>
+        <p>{new Date(lastActive).toLocaleTimeString()}</p>
       </div>
     </div>
   );
@@ -524,12 +528,14 @@ export default function AdminStatsPage(props) {
               <h3 className="text-2xl mb-2 text-center">
                 Active Users ({activeUsers.length})
               </h3>
-              {activeUsers.map(({ wunderId, lastActive }, i) => {
+              {activeUsers.map(({ wunderId, lastActive, handle, url }, i) => {
                 return (
                   <ActiveUserRow
                     key={`active-user-${wunderId}`}
                     wunderId={wunderId}
                     lastActive={lastActive}
+                    handle={handle}
+                    url={url}
                     {...props}
                   />
                 );

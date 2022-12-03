@@ -16,6 +16,7 @@ import CurrencyInput from '/components/general/utils/currencyInput';
 import MemberInput from '../../components/general/members/input';
 import { currency, pluralize } from '../../services/formatter';
 import { useMemo } from 'react';
+import { usdcBalanceOf } from '../../services/contract/token';
 
 function unique(array) {
   return array && array?.length > 0 ? [...new Set(array)] : [];
@@ -161,7 +162,7 @@ function RewardTable({ rewards, typeFilter, wunderIdFilter }) {
   if (filteredRewards.length == 0)
     return <p className="text-center text-2xl">No Results</p>;
   return (
-    <table className="table-auto rounded-xl overflow-hidden">
+    <table className="w-full table-auto rounded-xl overflow-hidden">
       <thead className="bg-casama-extra-light-blue">
         <tr className="text-left">
           <th className="p-2">Type</th>
@@ -195,6 +196,7 @@ export default function AdminRewardsPage(props) {
   const [claimedRewards, setClaimedRewards] = useState(null);
   const [pendingRewards, setPendingRewards] = useState(null);
   const [createReward, setCreateReward] = useState(false);
+  const [backendWalletBalance, setBackendWalletBalance] = useState(null);
 
   const [isPending, setIsPending] = useState(true);
   const [typeFilter, setTypeFilter] = useState('All');
@@ -259,6 +261,9 @@ export default function AdminRewardsPage(props) {
         router.push('/betting');
       } else {
         fetchRewards();
+        usdcBalanceOf('0x097bf9d9a2c838e12fe153e4d7f83b48adb572c6').then(
+          setBackendWalletBalance
+        );
       }
     }
   }, [user.isReady, router.isReady]);
@@ -275,6 +280,23 @@ export default function AdminRewardsPage(props) {
             Create
           </span>
         </h1>
+        <div>
+          <h3 className="text-lg font-semibold">
+            Available Budget:{' '}
+            {backendWalletBalance ? currency(backendWalletBalance) : '...'}
+          </h3>
+          <h3 className="text-lg font-semibold">
+            After All Claims:{' '}
+            {backendWalletBalance && pendingRewards
+              ? currency(
+                  backendWalletBalance -
+                    pendingRewards
+                      ?.map((r) => r.reward_amount)
+                      .reduce((a, b) => a + b, 0)
+                )
+              : '...'}
+          </h3>
+        </div>
         <Collapse in={createReward}>
           <CreateRewardForm allRewardTypes={allRewardTypes} {...props} />
         </Collapse>
