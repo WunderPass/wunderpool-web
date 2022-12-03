@@ -117,7 +117,10 @@ export default function JoinGameCard(props) {
                 </div>
               </div>
               {user?.loggedIn &&
-                (user?.usdBalance < 3 ? (
+                (user?.usdBalance <
+                (competition?.competition?.sponsored
+                  ? 0
+                  : competition?.competition?.stake) ? (
                   <div className="flex flex-col justify-center items-center w-full mb-4">
                     <TopUpRequired {...props} />
                   </div>
