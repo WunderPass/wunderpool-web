@@ -94,7 +94,10 @@ function WunderPool({ Component, pageProps }) {
   useEffect(() => {
     updateWunderId(user.wunderId);
     const pingInterval = setInterval(() => {
-      axios({ url: '/api/users/ping', params: { wunderId: user.wunderId } });
+      axios({
+        url: '/api/users/ping',
+        params: { wunderId: user.wunderId, handle: user.userName },
+      });
     }, 10000);
     return () => clearInterval(pingInterval);
   }, [user.wunderId]);
