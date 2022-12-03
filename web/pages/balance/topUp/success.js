@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
 import { waitForTransaction } from '/services/contract/provider';
+import { getNameFor } from '../../../services/memberHelpers';
 
 export default function BalanceTopUpSuccess(props) {
   const { user } = props;
@@ -34,7 +35,7 @@ export default function BalanceTopUpSuccess(props) {
         axios({
           method: 'post',
           url: '/api/discord/topUp',
-          data: { wunderId: user?.wunderId },
+          data: { wunderId: getNameFor(user) },
         })
           .then(console.log)
           .catch(console.log);

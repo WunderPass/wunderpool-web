@@ -34,6 +34,20 @@ export default async function handler(req, res) {
       headers: headers,
     });
     try {
+      axios({
+        method: 'post',
+        url: 'https://app.wunderpass.org/discord_bot/signup',
+        data: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          handle: req.body.handle,
+          service: 'Casama',
+        },
+      });
+    } catch (discordError) {
+      console.log(discordError);
+    }
+    try {
       sendSignUpMail({ to: req.body.email, firstName: req.body.firstName });
     } catch (mailError) {
       console.log(mailError);
