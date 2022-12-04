@@ -45,14 +45,6 @@ export default function DashboardCompetitionCard(props) {
 
   const handleShareCompetition = () => {
     if (isPublic || inviteLink) {
-      console.log(
-        '`${window.location.origin}/betting/join/${competition.id}`',
-        `${competition.id}`
-      );
-      console.log(
-        '`${window.location.origin}/betting/join/${competition.id}`',
-        `${competition.id}`
-      );
       handleShare(
         inviteLink ||
           `${window.location.origin}/betting/join/${competition.id}`,
