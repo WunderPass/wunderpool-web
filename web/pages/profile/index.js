@@ -500,7 +500,7 @@ export default function Profile(props) {
             </div>
             <Divider className="w-full mt-2 mb-4" />
             <Alert severity="warning" className="items-center">
-              <AlertTitle>Kepp your Seed Phrase to yourself!</AlertTitle> Anyone
+              <AlertTitle>Keep your Seed Phrase to yourself!</AlertTitle> Anyone
               with access to this Phrase can login to your Account and steal
               your funds.
             </Alert>
