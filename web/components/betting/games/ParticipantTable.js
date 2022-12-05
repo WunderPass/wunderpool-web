@@ -58,12 +58,13 @@ export default function ParticipantTable({
   user,
   hideImages = false,
   hideLoosers = false,
+  headerText = 'Participants',
 }) {
   return (
     <div className="">
       {participants.length > 0 && (
         <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
-          Participants :
+          {headerText}:
         </div>
       )}
 

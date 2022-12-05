@@ -316,6 +316,7 @@ function ClosedCompetitionCard({
   const [screenshotMode, setScreenshotMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const screenshotRef = useRef(null);
+  const testImg = useRef(null);
 
   const {
     stake,
@@ -370,7 +371,9 @@ function ClosedCompetitionCard({
       return;
     }
     try {
-      const dataUrl = await toPng(screenshotRef.current, { cacheBust: true });
+      const dataUrl = await toPng(screenshotRef.current, {
+        includeQueryParams: true,
+      });
       if (navigator.share) {
         const imageObj = new File(
           [await (await fetch(dataUrl)).arrayBuffer()],
@@ -387,78 +390,155 @@ function ClosedCompetitionCard({
         link.click();
       }
     } catch (error) {
+      handleError(error);
       console.log(error);
     }
     setScreenshotMode(false);
   }, [screenshotMode, screenshotRef.current]);
 
   return (
-    <Paper ref={screenshotRef} className="p-3 my-2 rounded-xl relative">
-      {members.length > 0 && (
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
-          <p className="text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] w-auto h-6 rounded-full bg-red-500 text-white">
-            {members.length}
-          </p>
-          <button className="btn-casama py-1 px-2" onClick={handleShareResults}>
-            <FiShare />
-          </button>
-          {showMailButton && (
-            <button
-              className="btn-casama py-1 px-2"
-              onClick={handleNotify}
-              disabled={loading}
-            >
-              <BiMailSend />
-            </button>
-          )}
-        </div>
-      )}
-      <Link href={`/betting/${poolAddress}`}>
-        <a className="text-lg font-medium">{name}</a>
-      </Link>
-      {games.map((game) => {
-        return (
-          <div
-            key={`game-${id}-${game.id}`}
-            className="flex flex-col sm:flex-row items-center gap-2 w-full"
-          >
-            <MdSportsSoccer className="text-5xl text-casama-blue" />
-            <div className="flex-grow flex flex-col w-full">
-              <div className="sm:mr-10">
-                <p className="text-casama-blue">{game.event?.shortName}</p>
-                <p>
-                  Status: {game.state} / {game.event.state}
-                </p>
-              </div>
-              <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                <p>Stake: {stake} $</p>
-              </div>
+    <>
+      <Paper
+        ref={screenshotRef}
+        className={`p-3 rounded-xl relative bg-gray-100 flex-col gap-3 ${
+          screenshotMode ? 'flex' : 'hidden'
+        }`}
+      >
+        <h1 className="font-semibold text-center text-lg">{name}</h1>
+        <div className="flex flex-col w-full ml-2">
+          {/* ICONS */}
+          <div className="flex flex-row justify-between items-center text-center w-full">
+            <div className="flex flex-col justify-center items-center text-center w-5/12">
+              <img
+                src={`/api/betting/events/teamImage?id=${firstGame.event.teamHome.id}`}
+                className="w-16 mb-2"
+              />
+            </div>
+            <p className="text-3xl font-semibold">vs</p>
+            <div className="flex flex-col justify-center items-center text-center w-5/12">
+              <img
+                src={`/api/betting/events/teamImage?id=${firstGame.event.teamAway.id}`}
+                className="w-16 mb-2"
+              />
             </div>
           </div>
-        );
-      })}
-      <Collapse in={showMembers || screenshotMode}>
-        {(showMembers || screenshotMode) && (
-          <ParticipantTable
-            participants={gameResults}
-            stake={sponsored ? 0 : stake}
-            user={user}
-            hideImages={screenshotMode}
-            hideLoosers={screenshotMode}
-          />
-        )}
-      </Collapse>
-      <div
-        onClick={() => setShowMembers((show) => !show)}
-        className="flex justify-center text-3xl text-casama-blue cursor-pointer"
-      >
-        <div
-          className={`transition-transform ${showMembers ? 'rotate-180' : ''}`}
-        >
-          <IoIosArrowDown />
+
+          {/* NAMEN */}
+          <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
+            <div className="flex flex-row justify-center items-center text-center w-5/12">
+              <p className="text-xl sm:text-2xl font-semibold">
+                {firstGame.event.teamHome?.name || firstGame.event?.teamHome}
+              </p>
+            </div>
+            <div className="flex flex-col justify-center items-center text-center w-5/12">
+              <p className="text-xl sm:text-2xl font-semibold">
+                {firstGame.event.teamAway?.name || firstGame.event?.teamAway}
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-    </Paper>
+        <div className="container-transparent-clean bg-casama-light text-white w-full flex flex-col justify-center items-center relative">
+          <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
+            Result
+          </p>
+          <div className="flex flex-row justify-center items-center w-full mb-3">
+            <p className="w-5/12 text-center text-base sm:text-xl px-2">
+              {firstGame.event.teamHome.name}
+            </p>
+
+            <div className="w-2/12 flex flex-row justify-center">
+              <p className="font-semibold text-xl sm:text-2xl">
+                {firstGame.event?.outcome[0] || 0}
+              </p>
+              <p className="px-1 text-xl sm:text-2xl">:</p>
+              <p className="font-semibold text-xl sm:text-2xl">
+                {firstGame.event?.outcome[1] || 0}
+              </p>
+            </div>
+            <p className="w-5/12 text-center text-base sm:text-xl px-2">
+              {firstGame.event.teamAway.name}
+            </p>
+          </div>
+        </div>
+        <ParticipantTable
+          participants={gameResults}
+          stake={sponsored ? 0 : stake}
+          user={user}
+          hideImages
+          hideLoosers
+          headerText="Winners"
+        />
+      </Paper>
+      <Paper className="p-3 my-2 rounded-xl relative">
+        {members.length > 0 && (
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
+            <p className="text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] w-auto h-6 rounded-full bg-red-500 text-white">
+              {members.length}
+            </p>
+            <button
+              className="btn-casama py-1 px-2"
+              onClick={handleShareResults}
+            >
+              <FiShare />
+            </button>
+            {showMailButton && (
+              <button
+                className="btn-casama py-1 px-2"
+                onClick={handleNotify}
+                disabled={loading}
+              >
+                <BiMailSend />
+              </button>
+            )}
+          </div>
+        )}
+        <Link href={`/betting/${poolAddress}`}>
+          <a className="text-lg font-medium">{name}</a>
+        </Link>
+        {games.map((game) => {
+          return (
+            <div
+              key={`game-${id}-${game.id}`}
+              className="flex flex-col sm:flex-row items-center gap-2 w-full"
+            >
+              <MdSportsSoccer className="text-5xl text-casama-blue" />
+              <div className="flex-grow flex flex-col w-full">
+                <div className="sm:mr-10">
+                  <p className="text-casama-blue">{game.event?.shortName}</p>
+                  <p>
+                    Status: {game.state} / {game.event.state}
+                  </p>
+                </div>
+                <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                  <p>Stake: {stake} $</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <Collapse in={showMembers}>
+          {showMembers && (
+            <ParticipantTable
+              participants={gameResults}
+              stake={sponsored ? 0 : stake}
+              user={user}
+            />
+          )}
+        </Collapse>
+        <div
+          onClick={() => setShowMembers((show) => !show)}
+          className="flex justify-center text-3xl text-casama-blue cursor-pointer"
+        >
+          <div
+            className={`transition-transform ${
+              showMembers ? 'rotate-180' : ''
+            }`}
+          >
+            <IoIosArrowDown />
+          </div>
+        </div>
+      </Paper>
+    </>
   );
 }
 
