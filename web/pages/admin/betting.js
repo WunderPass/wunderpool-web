@@ -345,7 +345,7 @@ function ClosedCompetitionCard({
       const { data: winners } = await axios({
         method: 'POST',
         url: '/api/betting/admin/notifyAfterClosing',
-        data: { competitionId: competition.id },
+        data: { id: competition.id },
       });
       handleSuccess(
         `Notified ${winners.length} ${pluralize(
