@@ -6,6 +6,7 @@ import EventCardSubmitButton from './submitButton';
 import { GoPerson } from 'react-icons/go';
 import { FaMedal } from 'react-icons/fa';
 import EventCardVotePreview from './votePreview';
+import Link from 'next/link';
 
 export default function EventCardPublicGameTile({
   selectedCompetition,
@@ -89,23 +90,22 @@ export default function EventCardPublicGameTile({
           </div>
         </div>
 
-        {participants?.length >= maxMembersAccordingToStake(stake) ? (
+        {participants?.find((part) => compAddr(part.address, user.address)) ? (
+          <Link href={`/betting/bets?sortId=${matchingCompetition.id}`}>
+            <button
+              togglable="false"
+              className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
+            >
+              View Competition
+            </button>
+          </Link>
+        ) : participants?.length >= maxMembersAccordingToStake(stake) ? (
           <button
             togglable="false"
             disabled
             className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
           >
             $ {stake} (No Spots Left)
-          </button>
-        ) : participants?.find((part) =>
-            compAddr(part.address, user.address)
-          ) ? (
-          <button
-            togglable="false"
-            disabled
-            className="btn-casama px-4 sm:px-6 py-1 text-lg w-full"
-          >
-            $ {stake} (Joined)
           </button>
         ) : guessOne && guessTwo && selected ? (
           <EventCardSubmitButton

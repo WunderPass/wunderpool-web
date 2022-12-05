@@ -102,14 +102,15 @@ export function currency(num, options = {}) {
   } = options;
 
   const sym = symbol || localeOptions[locale]?.symbol || '$';
-  const formattedNum = formatNumber(num, {
+  const isPositive = Number(num) >= 0;
+  const formattedNum = formatNumber(Math.abs(Number(num)), {
     locale,
     seperator,
     decimalSeperator,
     precision,
   });
 
-  return `${sym}${formattedNum}`;
+  return `${isPositive ? '' : '- '}${sym}${formattedNum}`;
 }
 
 export function formatTokenBalance(balance) {
