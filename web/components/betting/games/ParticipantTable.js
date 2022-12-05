@@ -11,6 +11,7 @@ export function ParticipantTableRow({
   prediction,
   winnings,
   stake,
+  hideImages,
 }) {
   return (
     <div
@@ -22,7 +23,7 @@ export function ParticipantTableRow({
     >
       <div>
         <Avatar
-          wunderId={wunderId}
+          wunderId={hideImages ? '' : wunderId}
           tooltip={userName ? userName : 'user'}
           text={userName ? userName : '0X'}
         />
@@ -51,8 +52,13 @@ export function ParticipantTableRow({
     </div>
   );
 }
-
-export default function ParticipantTable({ participants, stake, user }) {
+export default function ParticipantTable({
+  participants,
+  stake,
+  user,
+  hideImages = false,
+  hideLoosers = false,
+}) {
   return (
     <div className="">
       {participants.length > 0 && (
@@ -61,7 +67,7 @@ export default function ParticipantTable({ participants, stake, user }) {
         </div>
       )}
 
-      {participants
+      {(hideLoosers ? participants.filter((p) => p.winnings > 0) : participants)
         .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
         .map(
           ({
@@ -83,6 +89,7 @@ export default function ParticipantTable({ participants, stake, user }) {
                 prediction={prediction}
                 winnings={winnings}
                 stake={stake}
+                hideImages={hideImages}
               />
             );
           }

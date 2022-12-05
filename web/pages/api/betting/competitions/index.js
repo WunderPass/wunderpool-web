@@ -4,7 +4,7 @@ import { formatCompetition } from '/services/bettingHelpers';
 
 export default async function handler(req, res) {
   try {
-    const { poolAddress, userAddress, states, sponsored, page, size } =
+    const { poolAddress, userAddress, states, sponsored, page, size, sort } =
       req.query;
 
     const headers = {
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
     const { data } = await axios({
       url: `${process.env.BETTING_SERVICE}/competitions`,
-      params: { states, userAddress, page, size, sponsored },
+      params: { states, userAddress, page, size, sponsored, sort },
       headers,
     });
 
