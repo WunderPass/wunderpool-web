@@ -316,7 +316,6 @@ function ClosedCompetitionCard({
   const [screenshotMode, setScreenshotMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const screenshotRef = useRef(null);
-  const testImg = useRef(null);
 
   const {
     stake,
@@ -400,74 +399,82 @@ function ClosedCompetitionCard({
     <>
       <div
         ref={screenshotRef}
-        className={`p-3 bg-gray-100 flex-col justify-center gap-3 w-full max-w-md aspect-[9/16] ${
+        className={`p-3 bg-gray-100 flex-col justify-around gap-3 w-full max-w-md aspect-[9/16] ${
           screenshotMode ? 'flex' : 'hidden'
         }`}
       >
-        <h1 className="font-semibold text-center text-lg">{name}</h1>
-        <div className="flex flex-col w-full ml-2">
-          {/* ICONS */}
-          <div className="flex flex-row justify-between items-center text-center w-full">
-            <div className="flex flex-col justify-center items-center text-center w-5/12">
-              <img
-                src={`/api/betting/events/teamImage?id=${firstGame.event.teamHome.id}`}
-                className="w-16 mb-2"
-              />
+        <img src="/casama.svg" className="w-2/3 mx-auto" />
+        <div className="flex flex-col gap-3">
+          <h1 className="font-semibold text-center text-lg">{name}</h1>
+          <div className="flex flex-col w-full ml-2">
+            {/* ICONS */}
+            <div className="flex flex-row justify-between items-center text-center w-full">
+              <div className="flex flex-col justify-center items-center text-center w-5/12">
+                <img
+                  src={`/api/betting/events/teamImage?id=${firstGame.event.teamHome.id}`}
+                  className="w-20 mb-2"
+                />
+              </div>
+              <p className="text-3xl font-semibold">vs</p>
+              <div className="flex flex-col justify-center items-center text-center w-5/12">
+                <img
+                  src={`/api/betting/events/teamImage?id=${firstGame.event.teamAway.id}`}
+                  className="w-20 mb-2"
+                />
+              </div>
             </div>
-            <p className="text-3xl font-semibold">vs</p>
-            <div className="flex flex-col justify-center items-center text-center w-5/12">
-              <img
-                src={`/api/betting/events/teamImage?id=${firstGame.event.teamAway.id}`}
-                className="w-16 mb-2"
-              />
-            </div>
-          </div>
 
-          {/* NAMEN */}
-          <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
-            <div className="flex flex-row justify-center items-center text-center w-5/12">
-              <p className="text-xl sm:text-2xl font-semibold">
-                {firstGame.event.teamHome?.name || firstGame.event?.teamHome}
-              </p>
-            </div>
-            <div className="flex flex-col justify-center items-center text-center w-5/12">
-              <p className="text-xl sm:text-2xl font-semibold">
-                {firstGame.event.teamAway?.name || firstGame.event?.teamAway}
-              </p>
+            {/* NAMEN */}
+            <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
+              <div className="flex flex-row justify-center items-center text-center w-5/12">
+                <p className="text-xl sm:text-2xl font-semibold">
+                  {firstGame.event.teamHome?.name || firstGame.event?.teamHome}
+                </p>
+              </div>
+              <div className="flex flex-col justify-center items-center text-center w-5/12">
+                <p className="text-xl sm:text-2xl font-semibold">
+                  {firstGame.event.teamAway?.name || firstGame.event?.teamAway}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="rounded-xl bg-casama-blue text-white w-full flex flex-col justify-center items-center">
-          <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
-            Result
-          </p>
-          <div className="flex flex-row justify-center items-center w-full mb-3">
-            <p className="w-5/12 text-center text-base sm:text-xl px-2">
-              {firstGame.event.teamHome.name}
+          <div className="rounded-xl bg-casama-blue text-white w-full flex flex-col justify-center items-center">
+            <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
+              Result
             </p>
+            <div className="flex flex-row justify-center items-center w-full mb-3">
+              <p className="w-5/12 text-center text-base sm:text-xl px-2">
+                {firstGame.event.teamHome.name}
+              </p>
 
-            <div className="w-2/12 flex flex-row justify-center">
-              <p className="font-semibold text-xl sm:text-2xl">
-                {firstGame.event?.outcome[0] || 0}
-              </p>
-              <p className="px-1 text-xl sm:text-2xl">:</p>
-              <p className="font-semibold text-xl sm:text-2xl">
-                {firstGame.event?.outcome[1] || 0}
+              <div className="w-2/12 flex flex-row justify-center">
+                <p className="font-semibold text-xl sm:text-2xl">
+                  {firstGame.event?.outcome[0] || 0}
+                </p>
+                <p className="px-1 text-xl sm:text-2xl">:</p>
+                <p className="font-semibold text-xl sm:text-2xl">
+                  {firstGame.event?.outcome[1] || 0}
+                </p>
+              </div>
+              <p className="w-5/12 text-center text-base sm:text-xl px-2">
+                {firstGame.event.teamAway.name}
               </p>
             </div>
-            <p className="w-5/12 text-center text-base sm:text-xl px-2">
-              {firstGame.event.teamAway.name}
-            </p>
           </div>
+          <ParticipantTable
+            participants={gameResults}
+            stake={sponsored ? 0 : stake}
+            user={user}
+            hideImages
+            hideLoosers
+            headerText="Winners"
+          />
         </div>
-        <ParticipantTable
-          participants={gameResults}
-          stake={sponsored ? 0 : stake}
-          user={user}
-          hideImages
-          hideLoosers
-          headerText="Winners"
-        />
+        <div className="flex justify-center">
+          <h6 className="text-xl text-center text-casama-blue font-bold bg-white p-3 rounded-xl whitespace-nowrap">
+            🔗 app.casama.io
+          </h6>
+        </div>
       </div>
       <Paper className="p-3 my-2 rounded-xl relative">
         {members.length > 0 && (
