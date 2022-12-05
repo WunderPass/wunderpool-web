@@ -345,7 +345,7 @@ function ClosedCompetitionCard({
       const { data: winners } = await axios({
         method: 'POST',
         url: '/api/betting/admin/notifyAfterClosing',
-        data: { competitionId: competition.id },
+        data: { id: competition.id },
       });
       handleSuccess(
         `Notified ${winners.length} ${pluralize(
@@ -398,9 +398,9 @@ function ClosedCompetitionCard({
 
   return (
     <>
-      <Paper
+      <div
         ref={screenshotRef}
-        className={`p-3 rounded-xl relative bg-gray-100 flex-col gap-3 ${
+        className={`p-3 bg-gray-100 flex-col justify-center gap-3 w-full max-w-md aspect-[9/16] ${
           screenshotMode ? 'flex' : 'hidden'
         }`}
       >
@@ -437,7 +437,7 @@ function ClosedCompetitionCard({
             </div>
           </div>
         </div>
-        <div className="container-transparent-clean bg-casama-light text-white w-full flex flex-col justify-center items-center relative">
+        <div className="rounded-xl bg-casama-blue text-white w-full flex flex-col justify-center items-center">
           <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
             Result
           </p>
@@ -468,7 +468,7 @@ function ClosedCompetitionCard({
           hideLoosers
           headerText="Winners"
         />
-      </Paper>
+      </div>
       <Paper className="p-3 my-2 rounded-xl relative">
         {members.length > 0 && (
           <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
