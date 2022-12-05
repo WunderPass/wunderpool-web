@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { registerEvent } from '/services/contract/betting/events';
 import { MdSportsSoccer } from 'react-icons/md';
 import { IoIosArrowDown, IoMdRefresh } from 'react-icons/io';
@@ -20,6 +20,8 @@ import { BiMailSend } from 'react-icons/bi';
 import fs from 'fs';
 import ParticipantTable from '../../components/betting/games/ParticipantTable';
 import { calculateWinnings } from '../../services/bettingHelpers';
+import { FiShare } from 'react-icons/fi';
+import { toPng } from 'html-to-image';
 
 function TimeFrame({ start, end }) {
   const startHour = String(start.getHours()).padStart(2, '0');
@@ -311,7 +313,10 @@ function ClosedCompetitionCard({
     !notifiedCompetitions.includes(competition.id)
   );
   const [showMembers, setShowMembers] = useState(false);
+  const [screenshotMode, setScreenshotMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const screenshotRef = useRef(null);
+
   const {
     stake,
     sponsored,
@@ -355,13 +360,51 @@ function ClosedCompetitionCard({
     setLoading(false);
   };
 
+  const handleShareResults = () => {
+    setScreenshotMode(true);
+  };
+
+  useEffect(() => {
+    if (!screenshotMode) return;
+    if (screenshotRef.current === null) {
+      return;
+    }
+    toPng(screenshotRef.current, { cacheBust: true })
+      .then((dataUrl) => {
+        if (navigator.share) {
+          const filesArray = [
+            new File([dataUrl], 'results.png', {
+              type: 'image/png',
+              lastModified: new Date().getTime(),
+            }),
+          ];
+          const shareData = {
+            files: filesArray,
+          };
+          navigator.share(shareData);
+        } else {
+          const link = document.createElement('a');
+          link.download = 'results.png';
+          link.href = dataUrl;
+          link.click();
+        }
+        setScreenshotMode(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [screenshotMode, screenshotRef.current]);
+
   return (
-    <Paper className="p-3 my-2 rounded-xl relative">
+    <Paper ref={screenshotRef} className="p-3 my-2 rounded-xl relative">
       {members.length > 0 && (
         <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
           <p className="text-lg flex items-center justify-center font-medium px-2 min-w-[2.5rem] w-auto h-6 rounded-full bg-red-500 text-white">
             {members.length}
           </p>
+          <button className="btn-casama py-1 px-2" onClick={handleShareResults}>
+            <FiShare />
+          </button>
           {showMailButton && (
             <button
               className="btn-casama py-1 px-2"
@@ -397,12 +440,14 @@ function ClosedCompetitionCard({
           </div>
         );
       })}
-      <Collapse in={showMembers}>
-        {showMembers && (
+      <Collapse in={showMembers || screenshotMode}>
+        {(showMembers || screenshotMode) && (
           <ParticipantTable
             participants={gameResults}
             stake={sponsored ? 0 : stake}
             user={user}
+            hideImages={screenshotMode}
+            hideLoosers={screenshotMode}
           />
         )}
       </Collapse>
