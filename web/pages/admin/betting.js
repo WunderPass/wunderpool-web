@@ -364,35 +364,32 @@ function ClosedCompetitionCard({
     setScreenshotMode(true);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (!screenshotMode) return;
     if (screenshotRef.current === null) {
       return;
     }
-    toPng(screenshotRef.current, { cacheBust: true })
-      .then((dataUrl) => {
-        if (navigator.share) {
-          const filesArray = [
-            new File([dataUrl], 'results.png', {
-              type: 'image/png',
-              lastModified: new Date().getTime(),
-            }),
-          ];
-          const shareData = {
-            files: filesArray,
-          };
-          navigator.share(shareData);
-        } else {
-          const link = document.createElement('a');
-          link.download = 'results.png';
-          link.href = dataUrl;
-          link.click();
-        }
-        setScreenshotMode(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const dataUrl = await toPng(screenshotRef.current, { cacheBust: true });
+      if (navigator.share) {
+        const imageObj = new File(
+          [await (await fetch(dataUrl)).arrayBuffer()],
+          'results.png',
+          { type: 'image/png' }
+        );
+        navigator.share({
+          files: [imageObj],
+        });
+      } else {
+        const link = document.createElement('a');
+        link.download = 'results.png';
+        link.href = dataUrl;
+        link.click();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setScreenshotMode(false);
   }, [screenshotMode, screenshotRef.current]);
 
   return (
