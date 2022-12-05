@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import { Typography, Skeleton } from '@mui/material';
 import Link from 'next/link';
 import DashboardCompetitionCard from '/components/betting/dashboard/competitionCard';
-import CollapsedDashboardCompetitionCard from '/components/betting/dashboard/collapsedCompetitionCard';
-import { useRef } from 'react';
 import BetsRow from '/components/betting/dashboard/betsRow';
 
 export default function BetsList(props) {
@@ -20,9 +18,7 @@ export default function BetsList(props) {
   }, [bettingService.isReady]);
 
   const stackRelatedCompetitions = () => {
-    let rows = [[]];
-    console.log('rows before', rows);
-
+    let rows = [];
     bettingService.userCompetitions
       .sort(
         //TODO fix this as soon as comp has more then one game //
@@ -30,22 +26,23 @@ export default function BetsList(props) {
           new Date(b.games[0]?.event?.startTime || 0) -
           new Date(a.games[0]?.event?.startTime || 0)
       )
-      .map((comp, i) => {
-        rows.map((row, j) => {
-          console.log('rows', rows);
-
-          console.log('row', row);
-          console.log('j', j);
-          if (rows.length < 2) return;
-          if (row[j].name == comp.name) {
-            row[j].push(comp);
-            return;
+      .map((comp) => {
+        let exists = false;
+        let row = [];
+        rows.map((row, i) => {
+          if (row[0].name == comp.name) {
+            rows[i].push(comp);
+            exists = true;
+            console.log('rows i', rows[i]);
           }
         });
-        rows.push(comp);
+        if (!exists) {
+          row.push(comp);
+          rows.push(row);
+        }
       });
     setMyBetsRows(rows);
-    console.log('rows', rows);
+    console.log('rows end', rows);
   };
 
   useEffect(() => {
@@ -159,14 +156,12 @@ export default function BetsList(props) {
               eventTypeSort == 'All Events'
             ) {
               return (
-                <BetsRow
-                  key={`dashboard-competition-card-${comp.id}`}
-                  competition={comp}
+                <DashboardCompetitionCard
+                  key={`dashboard-competition-card-${competition.id}`}
+                  competition={competition}
                   user={user}
                   isSortById={isSortById}
                   isHistory={isHistory}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
                   {...props}
                 />
               );

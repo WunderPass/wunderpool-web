@@ -52,46 +52,6 @@ export function ParticipantTableRow({
   );
 }
 
-export function CollapsedParticipantTableRow({
-  user,
-  address,
-  wunderId,
-  userName,
-  profileName,
-  prediction,
-  winnings,
-  stake,
-}) {
-  return (
-    <div
-      className={`${
-        compAddr(address, user.address)
-          ? 'container-casama-p-0'
-          : 'container-white-p-0'
-      } p-2 flex flex-row items-center justify-between gap-2 my-2 w-full`}
-    >
-      <div className="flex flex-row justify-center my-1.5 items-center text-xl w-full">
-        <p>{prediction?.[0] ?? '-'}</p>
-        <p className="mx-1">:</p>
-        <p>{prediction?.[1] ?? '-'}</p>
-      </div>
-      {/* {winnings != undefined && (
-        <div className=" min-w-[5rem] text-right text-xl">
-          {winnings > stake ? (
-            <p className="text-green-500 whitespace-nowrap">
-              + {currency(winnings)}
-            </p>
-          ) : (
-            <p className="text-red-500 whitespace-nowrap">
-              {stake - winnings == 0 ? '' : '-'} {currency(stake - winnings)}
-            </p>
-          )}
-        </div>
-      )} */}
-    </div>
-  );
-}
-
 export default function ParticipantTable({ participants, stake, user }) {
   return (
     <div className="">
