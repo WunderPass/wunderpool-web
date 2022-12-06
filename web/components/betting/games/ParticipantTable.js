@@ -1,13 +1,12 @@
 import { currency } from '/services/formatter';
 import Avatar from '/components/general/members/avatar';
-import { compAddr, getNameFor } from '../../../services/memberHelpers';
+import { compAddr } from '../../../services/memberHelpers';
 
 export function ParticipantTableRow({
   user,
   address,
   wunderId,
   userName,
-  profileName,
   prediction,
   winnings,
   stake,
@@ -29,7 +28,7 @@ export function ParticipantTableRow({
         />
       </div>
       <div className="flex items-center justify-start truncate flex-grow">
-        <div className="truncate">{profileName || userName || address}</div>
+        <div className="truncate">{userName || address}</div>
       </div>
       <div className="flex flex-row justify-end items-center text-xl">
         <p>{prediction?.[0] ?? '-'}</p>
@@ -70,31 +69,21 @@ export default function ParticipantTable({
 
       {(hideLoosers ? participants.filter((p) => p.winnings > 0) : participants)
         .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
-        .map(
-          ({
-            address,
-            prediction,
-            winnings,
-            userName,
-            wunderId,
-            profileName,
-          }) => {
-            return (
-              <ParticipantTableRow
-                key={`participant-${address}`}
-                user={user}
-                address={address}
-                wunderId={wunderId}
-                userName={userName}
-                profileName={profileName}
-                prediction={prediction}
-                winnings={winnings}
-                stake={stake}
-                hideImages={hideImages}
-              />
-            );
-          }
-        )}
+        .map(({ address, prediction, winnings, userName, wunderId }) => {
+          return (
+            <ParticipantTableRow
+              key={`participant-${address}`}
+              user={user}
+              address={address}
+              wunderId={wunderId}
+              userName={userName}
+              prediction={prediction}
+              winnings={winnings}
+              stake={stake}
+              hideImages={hideImages}
+            />
+          );
+        })}
     </div>
   );
 }
