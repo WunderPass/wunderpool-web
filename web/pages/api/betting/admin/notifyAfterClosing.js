@@ -73,6 +73,7 @@ export default async function handler(req, res) {
         teamAway: competition.games[0].event.teamAway,
         outcome: competition.games[0].event.outcome,
         members,
+        stake: competition.sponsored ? 0 : competition.stake,
       });
     });
     notified.push(req.body.id);

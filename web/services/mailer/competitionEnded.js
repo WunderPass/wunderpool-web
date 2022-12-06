@@ -1,7 +1,7 @@
 import { htmlWrapper, sendMail } from '.';
 import { currency } from '/services/formatter';
 
-function renderMember(member, to) {
+function renderMember(member, to, stake) {
   return member.prediction?.[0] == undefined
     ? ''
     : `
@@ -17,7 +17,7 @@ function renderMember(member, to) {
       }</p>
         <p class="m-0 ${
           member.profit > 0 ? 'text-green' : 'text-red'
-        }">${currency(member.profit)}</p>
+        }">${currency(member.profit + stake)}</p>
       </div>
     </div>
   `;
@@ -30,13 +30,14 @@ export function sendCompetitionEndedMail({
   teamAway,
   outcome,
   members,
+  stake,
 }) {
   const profit = members.find((m) => m.email == to)?.profit || 0;
   const text = `Hey ${firstName}! The Competition ${teamHome.name} vs. ${
     teamAway.name
   } has officially ended. ${
     profit > 0
-      ? `Congrats! You have won ${currency(profit)}!`
+      ? `Congrats! You have won ${currency(profit + stake)}!`
       : `Unfortunately, your bet did not win this time.`
   }`;
   const html = htmlWrapper(`
@@ -55,7 +56,7 @@ export function sendCompetitionEndedMail({
                   <h3>${
                     profit > 0
                       ? `Congrats! You have won <span class="text-casama">${currency(
-                          profit
+                          profit + stake
                         )}</span>!`
                       : `Unfortunately, your bet did not win this time.`
                   }</h3>
@@ -79,7 +80,7 @@ export function sendCompetitionEndedMail({
               </div>
               ${members
                 .sort((a, b) => b.profit - a.profit)
-                .map((member) => renderMember(member, to))
+                .map((member) => renderMember(member, to, stake))
                 .join('')}
             </div>
           </div>
