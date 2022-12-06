@@ -21,6 +21,7 @@ import { useRouter } from 'next/router';
 import TransactionFrame from '/components/general/utils/transactionFrame';
 import { registerParticipant } from '../../../services/contract/betting/games';
 import { joinFreeRollCompetition } from '../../../services/contract/betting/competitions';
+import { transakRampOnLink } from '../../../services/transak';
 
 export default function JoinGameCard(props) {
   const { competition, game, handleSuccess, user, handleError, handleInfo } =
@@ -281,7 +282,7 @@ function TopUpRequired(props) {
       {redirectUrl && (
         <a
           className="w-full"
-          href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&productsAvailed=BUY&network=polygon&cryptoCurrencyCode=USDC&walletAddress=${user.address}&defaultCryptoAmount=50&redirectURL=https://app.wunderpass.org/balance`}
+          href={transakRampOnLink({ address: user.address, amount: 50 })}
           target="_blank"
         >
           <button className="btn-casama p-3  w-full">Deposit now</button>

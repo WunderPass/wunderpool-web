@@ -19,6 +19,7 @@ import { FaGooglePay } from 'react-icons/fa';
 import PayPalButton from '../utils/payPalButton';
 import { useRouter } from 'next/router';
 import { AiFillCloseCircle } from 'react-icons/ai';
+import { transakRampOnLink } from '../../../services/transak';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -178,8 +179,7 @@ export default function TopUpAlert(props) {
             </div>
             <a
               //https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238 = QUERY PARAMS
-              // href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&cryptoCurrencyCode=USDC&defaultNetwork=polygon&walletAddress=${user.address}&redirectURL=https://app.casama.io/pools`}
-              href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=polygon&defaultPaymentMethod=credit_debit_card&fiatCurrency=EUR&defaultCryptoCurrency=USDC&cryptoCurrencyCode=USDC&productsAvailed=BUY&&walletAddress=${user.address}&themeColor=5F45FD&hideMenu=true&redirectURL=https://app.casama.io/betting`}
+              href={transakRampOnLink({ address: user.address, amount: 50 })}
               target="_blank"
             >
               <button className="btn-casama-white p-2 w-full">
