@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ParticipantTable from '/components/betting/games/ParticipantTable';
 import { calculateWinnings } from '/services/bettingHelpers';
 import { toPng } from 'html-to-image';
@@ -13,7 +13,6 @@ export default function ShareCompetitionCard({
   const [titleImgLoaded, setTitleImgLoaded] = useState(false);
   const [teamHomeImgLoaded, setTeamHomeImgLoaded] = useState(false);
   const [teamAwayImgLoaded, setTeamAwayImgLoaded] = useState(false);
-  const screenshotRef = useRef(null);
 
   const { stake, sponsored, payoutRule, maxMembers, name } = competition || {};
 
@@ -28,16 +27,18 @@ export default function ShareCompetitionCard({
 
   useEffect(async () => {
     if (!screenshotMode) return;
-    if (screenshotRef.current === null) return;
     if (titleImgLoaded && teamHomeImgLoaded && teamAwayImgLoaded) {
       try {
-        const dataUrl = await toPng(screenshotRef.current, {
-          includeQueryParams: true,
-        });
+        const dataUrl = await toPng(
+          document.getElementById(`share-competition-${competition.id}`),
+          {
+            includeQueryParams: true,
+          }
+        );
         if (navigator.share) {
           const imageObj = new File(
             [await (await fetch(dataUrl)).arrayBuffer()],
-            'results.png',
+            `${name}.png`,
             { type: 'image/png' }
           );
           navigator.share({
@@ -45,7 +46,7 @@ export default function ShareCompetitionCard({
           });
         } else {
           const link = document.createElement('a');
-          link.download = 'results.png';
+          link.download = `${name}.png`;
           link.href = dataUrl;
           link.click();
         }
@@ -55,17 +56,11 @@ export default function ShareCompetitionCard({
       }
       setScreenshotMode(false);
     }
-  }, [
-    screenshotMode,
-    screenshotRef.current,
-    titleImgLoaded,
-    teamHomeImgLoaded,
-    teamAwayImgLoaded,
-  ]);
+  }, [screenshotMode, titleImgLoaded, teamHomeImgLoaded, teamAwayImgLoaded]);
 
   return (
     <div
-      ref={screenshotRef}
+      id={`share-competition-${competition.id}`}
       className={`p-3 bg-gray-100 flex-col justify-around gap-3 w-full max-w-md aspect-[9/16] ${
         screenshotMode ? 'flex' : 'hidden'
       }`}
