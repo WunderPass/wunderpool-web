@@ -1,5 +1,13 @@
 const axios = require('axios');
 
+const ERRORS = [
+  {
+    name: 'UnsupportedNicknameFormatException',
+    message: 'Username Invalid',
+  },
+  { name: 'HandleAlreadyExistsException', message: 'Username already taken' },
+];
+
 export default async function handler(req, res) {
   try {
     const data = {
@@ -25,8 +33,21 @@ export default async function handler(req, res) {
       headers: headers,
     });
     res.status(200).json(resp.data);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
+  } catch (err) {
+    let errorMessage = err?.response?.data?.error;
+    let errorClass = err?.response?.data?.errorClass || '';
+
+    ERRORS.forEach((errorObj) => {
+      if (errorClass.match(errorObj.name)) {
+        errorMessage = errorObj.message;
+      }
+    });
+    console.log(
+      'USER UPDATE ERROR',
+      err?.response?.data || err?.response || err
+    );
+    res
+      .status(err?.response?.data?.status || 500)
+      .json(errorMessage || 'Request Invalid');
   }
 }
