@@ -299,13 +299,12 @@ function InputJoinAmount(props) {
       if (user.loginMethod == 'Casama') {
         await registerBet();
       } else {
-        setLoading(false);
         setMustClickAgain(true);
       }
     } catch (error) {
-      setLoading(false);
       handleError(error);
     }
+    setLoading(false);
   };
 
   const registerBet = async () => {
@@ -323,9 +322,9 @@ function InputJoinAmount(props) {
       router.push('/betting/bets');
     } catch (error) {
       handleError(error);
-      setLoadingText(null);
-      setLoading(false);
     }
+    setLoadingText(null);
+    setLoading(false);
   };
 
   return (
