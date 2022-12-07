@@ -97,7 +97,7 @@ export default function Profile(props) {
         setUploading(false);
         setDataHasChanged(false);
       } catch (error) {
-        handleError(error?.response?.data?.error || error);
+        handleError(error);
         setUploading(false);
         setDataHasChanged(false);
       }
@@ -162,13 +162,16 @@ export default function Profile(props) {
         },
         data: reqData,
       });
-      await uploadToServer();
       handleSuccess('Your profile was saved!');
       user.getUserData();
     } catch (error) {
       console.log(error);
-      handleError(error?.response?.data?.error || error);
-      setUploading(true);
+      handleError(error);
+    }
+    try {
+      await uploadToServer();
+    } catch (error) {
+      console.log('IMAGE', error);
     }
   };
 

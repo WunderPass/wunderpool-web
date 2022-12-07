@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import useMetaMask from '/hooks/useMetaMask';
 import MetaMaskLogo from '/components/general/utils/metaMaskLogo';
 import axios from 'axios';
+import { getEnsName } from '../../../services/contract/provider';
 
 function Error({ msg }) {
   return msg ? (
@@ -10,50 +11,8 @@ function Error({ msg }) {
   ) : null;
 }
 
-async function checkUsername(handle) {
-  let available = false;
-  let reason = '';
-
-  try {
-    const { data } = await axios({
-      method: 'get',
-      url: `/api/users/checkAvailability?wunderId=${handle}`,
-    });
-
-    available = data.available;
-    reason = data.reason;
-  } catch (userNotFound) {
-    available = true;
-    reason = 'Username available';
-  }
-
-  return [available, reason];
-}
-
-async function validate(handle) {
-  let available = false;
-  let reason = '';
-  const errors = {};
-
-  if (handle.length < 1) {
-    errors.handle = 'Cant be blank';
-  } else {
-    [available, reason] = await checkUsername(handle);
-    errors.handle = reason;
-  }
-
-  return [available, errors];
-}
-
 function createUser(handle) {
   return new Promise(async (resolve, reject) => {
-    let firstName = handle;
-    let lastName = handle;
-    const reqData = {
-      firstName,
-      lastName,
-      handle,
-    };
     const { signMillis } = useMetaMask();
     try {
       const { signedMessage, signature } = await signMillis();
@@ -62,7 +21,7 @@ function createUser(handle) {
       const { data } = await axios({
         method: 'post',
         url: '/api/users/create',
-        data: reqData,
+        data: { handle },
         headers: headers,
       });
       const wunderId = data.wunder_id;
@@ -75,10 +34,7 @@ function createUser(handle) {
         reject('Wallet Creation Failed. Please try again later');
       }
     } catch (err) {
-      console.log(err);
-      reject(
-        err?.response?.data?.error?.message || err?.response?.data?.error || err
-      );
+      reject(err?.response?.data || 'Request Invalid');
     }
   });
 }
@@ -135,10 +91,8 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
   const [signUpRequired, setSignUpRequired] = useState(false);
   const [address, setAddress] = useState('');
-  const [showError, setShowError] = useState(null);
   const [handle, setHandle] = useState('');
 
-  const [errors, setErrors] = useState({});
   const [creationError, setCreationError] = useState(null);
 
   const loginWithWetaMask = async () => {
@@ -168,6 +122,8 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
             setSignUpRequired(true);
           }
         } catch (userNotFound) {
+          const ensName = await getEnsName(address);
+          setHandle(ensName || '');
           setSignUpRequired(true);
         }
 
@@ -185,29 +141,21 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
     e.preventDefault();
     setLoading(true);
 
-    const [valid, errors] = await validate(handle);
-
-    setErrors(errors);
-
-    if (valid) {
-      createUser(handle)
-        .then(({ wunderId }) => {
-          onSuccess({
-            wunderId,
-            address,
-            loginMethod: 'MetaMask',
-            newUser: true,
-          });
-        })
-        .catch((err) => {
-          setCreationError(err);
-        })
-        .then(() => {
-          setLoading(false);
+    createUser(handle)
+      .then(({ wunderId }) => {
+        onSuccess({
+          wunderId,
+          address,
+          loginMethod: 'MetaMask',
+          newUser: true,
         });
-    } else {
-      setLoading(false);
-    }
+      })
+      .catch((err) => {
+        setCreationError(err);
+      })
+      .then(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -233,7 +181,6 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
                       setHandle(e.target.value);
                     }}
                   />
-                  <Error msg={errors.handle} />
                 </div>
               </div>
 

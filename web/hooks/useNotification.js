@@ -8,7 +8,9 @@ export default function useNotification() {
     } else if (typeof msg == 'string') {
       return msg;
     } else if (typeof msg == 'object') {
-      if (msg?.error?.error?.body) {
+      if (msg?.response?.data) {
+        return stringifyError(msg.response.data);
+      } else if (msg?.error?.error?.body) {
         return stringifyError(JSON.parse(msg.error.error.body));
       } else if (msg?.message && typeof msg.message == 'string') {
         return msg.message;
