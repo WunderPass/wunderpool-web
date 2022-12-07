@@ -1,4 +1,11 @@
-import { Typography, IconButton, Divider, Collapse, Chip } from '@mui/material';
+import {
+  Typography,
+  IconButton,
+  Divider,
+  Collapse,
+  Badge,
+  Chip,
+} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
@@ -37,7 +44,7 @@ export default function DashboardCompetitionCard(props) {
   const { stake, sponsored, payoutRule, isPublic, maxMembers } =
     competition || {};
 
-  const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
+  const game = (liveCompetition || competition).games[0]; //TODO Only assume Single Competitions as of now
   const isLive = game?.event?.startTime
     ? new Date(game.event.startTime) < new Date() &&
       new Date(game.event.endTime) > new Date()
@@ -136,6 +143,7 @@ export default function DashboardCompetitionCard(props) {
 
   return (
     <div className="flex flex-row gap-2 w-full">
+      {console.log('HALÖÖÖ')}
       <div className="container-gray w-full cursor-pointer relative ">
         <div ref={scrollToRef} className="absolute -top-16" />
         <div onClick={handleToggle}>

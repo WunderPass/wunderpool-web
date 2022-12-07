@@ -9,7 +9,6 @@ export default function BetsList(props) {
   const { user, bettingService, eventTypeSort, sortId, isSortById, isHistory } =
     props;
   const [loading, setLoading] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [myBetsRows, setMyBetsRows] = useState([[]]);
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function BetsList(props) {
           if (row[0].name == comp.name) {
             rows[i].push(comp);
             exists = true;
-            console.log('rows i', rows[i]);
           }
         });
         if (!exists) {
@@ -42,11 +40,34 @@ export default function BetsList(props) {
         }
       });
     setMyBetsRows(rows);
-    console.log('rows end', rows);
   };
 
+  const groupByEventId = (items, key) =>
+    items.reduce(
+      (result, item) => ({
+        ...result,
+        [item.games[0].event[key]]: [
+          ...(result[item.games[0].event[key]] || []),
+          item,
+        ],
+      }),
+      {}
+    );
+
   useEffect(() => {
+    let userCompetitions = bettingService.userCompetitions.sort(
+      //TODO fix this as soon as comp has more then one game //
+      (a, b) =>
+        new Date(b.games[0]?.event?.startTime || 0) -
+        new Date(a.games[0]?.event?.startTime || 0)
+    );
+
+    console.log(
+      'userCompetitions[0].games[0].event["id"]',
+      userCompetitions[0].games[0].event['id']
+    );
     stackRelatedCompetitions();
+    groupByEventId(userCompetitions, 'id');
   }, []);
 
   return !loading ? (
@@ -123,7 +144,52 @@ export default function BetsList(props) {
         </div>
       )
     ) : //MY BETS
-    bettingService.userCompetitions.length > 0 ? (
+    myBetsRows.length > 0 ? (
+      <div className={'grid grid-cols-1 gap-5 w-full'}>
+        {console.log('myBetsRows', myBetsRows)}
+        {myBetsRows.map((row) => {
+          row.map((comp, i) => {
+            console.log('comp rows', comp);
+            if (isSortById) {
+              if (comp.id == sortId) {
+                return (
+                  <div className="flex flex-row">
+                    <BetsRow
+                      key={`dashboard-competition-card-${comp.id}`}
+                      competition={comp}
+                      user={user}
+                      isSortById={isSortById}
+                      isHistory={isHistory}
+                      rows={myBetsRows}
+                      {...props}
+                    />
+                  </div>
+                );
+              }
+            } else if (
+              comp.games.find(
+                (g) => g.event.competitionName == eventTypeSort
+              ) ||
+              eventTypeSort == 'All Events'
+            ) {
+              return (
+                <>
+                  {console.log('guckus')}{' '}
+                  <BetsRow
+                    key={`dashboard-competition-card-${comp.id}`}
+                    competition={comp}
+                    user={user}
+                    isSortById={isSortById}
+                    isHistory={isHistory}
+                    rows={myBetsRows}
+                    {...props}
+                  />
+                </>
+              );
+            }
+          });
+        })}
+        {/* myBetsRows.length > 0 ? (
       <div className={'grid grid-cols-1 gap-5 w-full'}>
         {bettingService.userCompetitions
           .sort(
@@ -133,6 +199,7 @@ export default function BetsList(props) {
               new Date(b.games[0]?.event?.startTime || 0)
           )
           .map((comp, i) => {
+            console.log('comp', comp);
             if (isSortById) {
               if (comp.id == sortId) {
                 return (
@@ -156,17 +223,18 @@ export default function BetsList(props) {
               eventTypeSort == 'All Events'
             ) {
               return (
-                <DashboardCompetitionCard
-                  key={`dashboard-competition-card-${competition.id}`}
-                  competition={competition}
+                <BetsRow
+                  key={`dashboard-competition-card-${comp.id}`}
+                  competition={comp}
                   user={user}
                   isSortById={isSortById}
                   isHistory={isHistory}
+                  rows={myBetsRows}
                   {...props}
                 />
               );
             }
-          })}
+          })} */}
       </div>
     ) : (
       <div className="container-white">
