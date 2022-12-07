@@ -5,6 +5,7 @@ import WalletConnectIcon from '/public/images/walletconnect.png';
 import axios from 'axios';
 import { Collapse } from '@mui/material';
 import useWalletConnect from '/hooks/useWalletConnect';
+import { getEnsName } from '../../../services/contract/provider';
 
 function Error({ msg }) {
   return msg ? (
@@ -12,41 +13,8 @@ function Error({ msg }) {
   ) : null;
 }
 
-function validate({ firstName, lastName, email }) {
-  let valid = true;
-  const errors = {};
-
-  if (firstName.length < 1) {
-    valid = false;
-    errors.firstName = 'Cant be blank';
-  }
-
-  if (lastName.length < 1) {
-    valid = false;
-    errors.lastName = 'Cant be blank';
-  }
-
-  if (
-    email &&
-    email.length > 0 &&
-    !/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
-      email
-    )
-  ) {
-    valid = false;
-    errors.email = 'Invalid Email';
-  }
-
-  return [valid, errors];
-}
-
-function createUser(firstName, lastName, email) {
+function createUser(handle) {
   return new Promise(async (resolve, reject) => {
-    const reqData = {
-      firstName,
-      lastName,
-      email,
-    };
     const { signMillis } = useWalletConnect();
     try {
       const { signedMessage, signature } = await signMillis();
@@ -55,7 +23,7 @@ function createUser(firstName, lastName, email) {
       const { data } = await axios({
         method: 'post',
         url: '/api/users/create',
-        data: reqData,
+        data: { handle },
         headers: headers,
       });
       const wunderId = data.wunder_id;
@@ -68,10 +36,7 @@ function createUser(firstName, lastName, email) {
         reject('Wallet Creation Failed. Please try again later');
       }
     } catch (err) {
-      console.log(err);
-      reject(
-        err?.response?.data?.error?.message || err?.response?.data?.error || err
-      );
+      reject(err?.response?.data || 'Request Invalid');
     }
   });
 }
@@ -80,43 +45,28 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
   const [loading, setLoading] = useState(false);
   const [signUpRequired, setSignUpRequired] = useState(false);
   const [address, setAddress] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [errors, setErrors] = useState({});
+  const [handle, setHandle] = useState('');
   const [creationError, setCreationError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const [valid, errors] = validate({
-      firstName,
-      lastName,
-      email,
-    });
-
-    setErrors(errors);
-
-    if (valid) {
-      createUser(firstName, lastName, email)
-        .then(({ wunderId }) => {
-          onSuccess({
-            wunderId,
-            address,
-            loginMethod: 'WalletConnect',
-            newUser: true,
-          });
-        })
-        .catch((err) => {
-          setCreationError(err);
-        })
-        .then(() => {
-          setLoading(false);
+    createUser(handle)
+      .then(({ wunderId }) => {
+        onSuccess({
+          wunderId,
+          address,
+          loginMethod: 'WalletConnect',
+          newUser: true,
         });
-    } else {
-      setLoading(false);
-    }
+      })
+      .catch((err) => {
+        setCreationError(err);
+      })
+      .then(() => {
+        setLoading(false);
+      });
   };
 
   const loginWithWalletConnect = async () => {
@@ -158,6 +108,8 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
           setSignUpRequired(true);
         }
       } catch (userNotFound) {
+        const ensName = await getEnsName(accounts[0]);
+        setHandle(ensName || '');
         setSignUpRequired(true);
       }
       setLoading(false);
@@ -170,45 +122,19 @@ export default function LoginWithWalletConnect({ onSuccess, handleError }) {
   return (
     signUpRequired != null && (
       <div className="flex flex-col justify-center items-center max-w-xs w-full">
-        <Collapse in={signUpRequired}>
+        <Collapse in={signUpRequired} className="w-full">
           <form className="w-full" onSubmit={handleSubmit}>
             <div className="flex flex-col justify-center items-center gap-4 w-full">
               <h6>Please Sign Up to use Casama</h6>
-              <div className="flex flex-row gap-4 ">
-                <div className="w-full">
-                  <input
-                    className="textfield py-4 px-3 "
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={(e) => {
-                      setFirstName(e.target.value);
-                    }}
-                  />
-                  <Error msg={errors.firstName} />
-                </div>
-                <div className="w-full">
-                  <input
-                    className="textfield py-4 px-3"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => {
-                      setLastName(e.target.value);
-                    }}
-                  />
-                  <Error msg={errors.lastName} />
-                </div>
-              </div>
               <div className="w-full">
                 <input
-                  className="textfield py-4 px-3"
-                  placeholder="Email (Optional)"
-                  type="email"
-                  value={email}
+                  className="textfield py-4 px-3 "
+                  placeholder="Username"
+                  value={handle}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setHandle(e.target.value);
                   }}
                 />
-                <Error msg={errors.email} />
               </div>
               <Error msg={creationError} />
               <button

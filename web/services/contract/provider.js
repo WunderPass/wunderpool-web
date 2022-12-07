@@ -8,11 +8,18 @@ export const wsProvider = ethers.providers.AlchemyProvider.getWebSocketProvider(
   process.env.BLOCKCHAIN_NAME,
   process.env.ALCHEMY_API_KEY
 );
-export const ethProvider =
-  ethers.providers.AlchemyProvider.getWebSocketProvider(
-    'homestead',
-    process.env.ALCHEMY_API_KEY
-  );
+export const ethProvider = new ethers.providers.AlchemyProvider(
+  'homestead',
+  process.env.ALCHEMY_API_KEY
+);
+
+export async function getEnsName(address) {
+  try {
+    return await ethProvider.lookupAddress(address);
+  } catch (error) {
+    return null;
+  }
+}
 
 export function waitForTransaction(txHash) {
   return new Promise((resolve, reject) => {
