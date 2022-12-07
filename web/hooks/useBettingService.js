@@ -57,6 +57,8 @@ export default function useBettingService(userAddress) {
         params: {
           userAddress: userAddress,
           states: 'HISTORIC',
+          sort: 'endTimestamp,desc',
+          size: 150,
         },
       });
       setUserHistoryCompetitions(
