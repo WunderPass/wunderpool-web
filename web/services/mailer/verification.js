@@ -1,14 +1,7 @@
 import { htmlWrapper, sendMail } from '.';
-import { currency } from '/services/formatter';
 
-export function sendTransferReceiverMail({
-  to,
-  firstName,
-  sender,
-  amount,
-  txHash,
-}) {
-  const text = `${sender} sent you ${currency(amount)} 💸`;
+export function sendVerificationMail({ to, firstName, code }) {
+  const text = `Verify your Email on Casama`;
   const html = htmlWrapper(`
     <body class="bg-casama" style="margin: 0;padding: 0;box-sizing: border-box;font-family: Arial, Helvetica, sans-serif;background: #5F45FD;">
       <div class="w-full flex items-center justify-center" style="width: 100%;display: flex;align-items: center;justify-content: center;">
@@ -22,24 +15,13 @@ export function sendTransferReceiverMail({
                 </div>
               </div>
               <h2 class="text-center" style="text-align: center;">
-                <span class="text-casama" style="color: #5F45FD;">${sender}</span>
-                just sent you 
-                <span class="text-casama" style="color: #5F45FD;">${currency(
-                  amount
-                )}</span> 
-                on Casama!
+                Verify your email <span class="text-casama" style="color: #5F45FD;">${to}</span> and get a $ 5.00 bonus!
               </h2>
               <div class="my-5 flex justify-center" style="margin-top: 1.25rem;margin-bottom: 1.25rem;display: flex;justify-content: center;">
-                <a href="https://app.casama.io" class="btn-casama" style="text-decoration: none;background: #5F45FD;color: white;border-radius: 10px;padding: 10px 16px;transition: background 200ms ease;">
-                  <h3 class="my-2" style="margin-top: 0.5rem;margin-bottom: 0.5rem;">Start Betting</h3>
+                <a href="https://app.casama.io/profile/verify/email?code=${code}" class="btn-casama" style="text-decoration: none;background: #5F45FD;color: white;border-radius: 10px;padding: 10px 16px;transition: background 200ms ease;">
+                  <h3 class="my-2" style="margin-top: 0.5rem;margin-bottom: 0.5rem;">Verify Email</h3>
                 </a>
               </div>
-              <div class="divider" style="width: 100%;height: 1px;background: rgb(179, 179, 179);"></div>
-              <p>
-                <a class="text-casama underline" href="https://polygonscan.com/tx/${txHash}" style="text-decoration: none;color: #5F45FD;text-decoration-line: underline;">
-                  View Transaction on Chain
-                </a>
-              </p>
             </div>
           </div>
         </div>
@@ -48,7 +30,7 @@ export function sendTransferReceiverMail({
   `);
   return sendMail({
     to,
-    subject: `${sender} sent you ${currency(amount)} on Casama!`,
+    subject: 'Verify your Email on Casama',
     text,
     html,
   });

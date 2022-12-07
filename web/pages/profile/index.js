@@ -54,6 +54,19 @@ export default function Profile(props) {
     user.logOut();
   };
 
+  const handleVerificationRequest = async () => {
+    try {
+      const { signedMessage, signature } = await user.getSignedMillis();
+      await axios({
+        url: '/api/users/verify/requestMail',
+        params: { wunderId: user.wunderId },
+        headers: { signed: signedMessage, signature },
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   const toggleShowSeedPhrase = () => {
     if (seedPhrase) {
       setSeedPhrase(null);
@@ -466,8 +479,8 @@ export default function Profile(props) {
         </div> */}
       </div>
       <div className="container-white my-5">
-        <div className="text-left w-full ">
-          <div className="flex flex-row justify-between items-center mt-7">
+        <div className="text-left w-full">
+          <div className="flex flex-row justify-between items-center">
             <Typography className="text-lg p-1 font-semibold">
               Casama Tutorial
             </Typography>
@@ -482,6 +495,31 @@ export default function Profile(props) {
               className="btn-casama px-5 py-2 block mx-auto mt-3"
             >
               Start Tutorial
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="container-white my-5">
+        <div className="text-left w-full ">
+          <div className="flex flex-row justify-between items-center">
+            <Typography className="text-lg p-1 font-semibold">
+              Verify your Email
+            </Typography>
+          </div>
+          <Divider className="w-full mt-2 mb-4" />
+          <p className="">
+            As an early User of Casama, we will give you a bonus of{' '}
+            <span className="text-casama-blue">$ 5.00</span>.
+          </p>
+          <div className="w-full">
+            <button
+              disabled={!user.email}
+              onClick={handleVerificationRequest}
+              className="btn-casama px-5 py-2 block mx-auto mt-3"
+            >
+              {user.email
+                ? 'Send Verification Email'
+                : 'Please update your Email above'}
             </button>
           </div>
         </div>
