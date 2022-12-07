@@ -7,12 +7,15 @@ import { GiPayMoney } from 'react-icons/gi';
 import { GiReceiveMoney } from 'react-icons/gi';
 import { currency } from '/services/formatter';
 import TopUpAlert from '../dialogs/topUpAlert';
+import RampOffDialog from './RampOffDialog';
+import { transakRampOffLink } from '../../../services/transak';
 
 export default function WalletBalance(props) {
   const { user } = props;
   const [receiveDialog, setReceiveDialog] = useState(false);
   const [sendDialog, setSendDialog] = useState(false);
   const [openTopUp, setOpenTopUp] = useState(false);
+  const [openRampOff, setOpenRampOff] = useState(false);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -88,7 +91,10 @@ export default function WalletBalance(props) {
             </div>
           </button>
           <a
-            href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&networks=polygon&defaultCryptoCurrency=USDC&productsAvailed=SELL&&walletAddress=${user.address}&isAutoFillUserData=true&themeColor=5F45FD&hideMenu=true&redirectURL=https://app.casama.io/balance`}
+            href={transakRampOffLink({
+              amount: user.usdBalance,
+              address: user.address,
+            })}
             target="_blank"
             className="w-1/2 sm:w-1/4"
           >
@@ -99,6 +105,17 @@ export default function WalletBalance(props) {
               <p className="btn-circle-text-light">Withdraw</p>
             </div>
           </a>
+          {/* <button
+            className="w-1/2 sm:w-1/4"
+            onClick={() => setOpenRampOff(true)}
+          >
+            <div className="flex w-full flex-col gap-3 justify-center items-center">
+              <div className="btn-circle-light">
+                <GiReceiveMoney className=" text-xl" />
+              </div>
+              <p className="btn-circle-text-light">Withdraw</p>
+            </div>
+          </button> */}
         </div>
       </div>
       <ReceiveDialog
@@ -107,7 +124,8 @@ export default function WalletBalance(props) {
         {...props}
       />
       <TopUpAlert open={openTopUp} setOpen={setOpenTopUp} {...props} />
-      <SendDialog setOpen={setSendDialog} open={sendDialog} {...props} />
+      <SendDialog open={sendDialog} setOpen={setSendDialog} {...props} />
+      <RampOffDialog open={openRampOff} setOpen={setOpenRampOff} {...props} />
     </div>
   );
 }

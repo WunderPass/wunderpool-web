@@ -1,3 +1,5 @@
+import { compAddr } from './memberHelpers';
+
 const abbreviationLookup = {
   afghanistan: 'AFG',
   albania: 'ALB',
@@ -461,4 +463,16 @@ export function calculateWinnings(game, stake, result, payoutRule) {
     return { ...participant, points };
   });
   return calculatePayout(payoutRule, results, stake);
+}
+
+export function userIsParticipant(competition, gameId, userAddress) {
+  return Boolean(
+    competition?.games.find(
+      (game) =>
+        game.id == gameId &&
+        game.participants.find((participant) =>
+          compAddr(participant.address, userAddress)
+        )
+    )
+  );
 }

@@ -13,6 +13,7 @@ import { getNameFor } from '/services/memberHelpers';
 import LoginWithMetaMask from '/components/general/auth/loginWithMetaMask';
 import LoginWithWalletConnect from '/components/general/auth/loginWithWalletConnect';
 import AuthenticateWithCasama from '/components/general/auth/authenticateWithCasama';
+import { transakRampOnLink } from '../../../../services/transak';
 
 function InfoBlock({ label, value }) {
   return (
@@ -87,7 +88,7 @@ function TopUpRequired(props) {
       {redirectUrl && (
         <a
           className="w-full"
-          href={`${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&productsAvailed=BUY&network=polygon&cryptoCurrencyCode=USDC&walletAddress=${user.address}&defaultCryptoAmount=50&redirectURL=https://app.wunderpass.org/balance`}
+          href={transakRampOnLink({ address: user.address, amount: 50 })}
           target="_blank"
         >
           <button className="btn-casama p-3 w-full">Deposit now</button>
