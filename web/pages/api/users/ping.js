@@ -6,6 +6,7 @@ const admins = [
   's-tschurilin',
   'm-loechner',
 ];
+
 export default async function handler(req, res) {
   const { wunderId, handle, seconds } = req.query;
   if (req.method === 'POST') {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 
 const Timer = (props) => {
-  const { start, end, size, text = 'Days Left', bar } = props;
+  const { start, end, size, text = 'Days', bar } = props;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {
@@ -18,9 +18,11 @@ const Timer = (props) => {
     if (days >= 1) {
       return `${Math.round(millis / 60 / 60 / 24)}`;
     } else if (millis >= 1) {
-      return `${formatDecimals(hours)}:${formatDecimals(
-        minutes
-      )}:${formatDecimals(seconds)}`;
+      if (hours >= 1) {
+        return hours;
+      } else {
+        return `${formatDecimals(minutes)}:${formatDecimals(seconds)}`;
+      }
     } else {
       return '00:00:00';
     }
@@ -45,37 +47,23 @@ const Timer = (props) => {
   }, [timer]);
 
   return (
-    <div className="flex-col justify-end items-center">
-      <div>
-        <div
-          className={
-            size == 'large'
-              ? 'text-3xl ml-1'
-              : size == 'medium'
-              ? 'text-xl ml-1'
-              : 'text-base ml-1'
-          }
-        >
+    <div className="flex-col justify-end items-center w-full ">
+      <div className="flex flex-col w-full justify-center items-center">
+        <div className="flex sm:text-3xl text-xl justify-center items-center w-16 ">
           {formattedDate(timer)}
         </div>
-        <div className="flex flex-row opacity-50">
+        <div className="flex flex-row opacity-50 w-full">
           {timer >= 86400 ? (
-            <>
-              <Typography className="text-xs mr-1">{text}</Typography>
-            </>
+            <div className="sm:text-sm flex flex-row text-xs justify-center items-center w-full">
+              <Typography className="text-xs ">{text}</Typography>
+            </div>
+          ) : timer >= 3600 ? (
+            <div className="sm:text-sm flex flex-row text-xs justify-center items-center w-full">
+              <div>Hours</div>
+            </div>
           ) : (
-            <div
-              className={
-                size == 'large'
-                  ? 'text-sm flex flex-row'
-                  : size == 'medium'
-                  ? 'text-xs flex flex-row'
-                  : 'text-xs flex flex-row'
-              }
-            >
-              <div className="mr-1">Hours</div>
-              <div className="mx-1">Minutes</div>
-              <div className="ml-1">Seconds</div>
+            <div className="sm:text-sm flex flex-row text-xs justify-center items-center w-full">
+              <div>Minutes</div>
             </div>
           )}
         </div>
