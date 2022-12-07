@@ -281,14 +281,14 @@ export default function usePool(
   const determinePoolBettingCompetitions = async () => {
     try {
       updateLoadingState('bets', false);
-      const games = (
+      const competitions = (
         await axios({
           url: '/api/betting/competitions',
-          params: { poolAddress: poolAddress, states: ['UPCOMING', 'LIVE'] },
+          params: { poolAddress, states: 'HISTORIC,UPCOMING,LIVE' },
         })
-      ).data;
+      ).data.content;
 
-      setBettingCompetitions(games);
+      setBettingCompetitions(competitions);
       updateLoadingState('bets');
     } catch (error) {
       handleError('Could not load Games');

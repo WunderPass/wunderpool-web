@@ -18,7 +18,9 @@ export default async function handler(req, res) {
       headers,
     });
 
-    const allCompetitions = data.map(formatCompetition);
+    const { content, ...pageData } = data;
+
+    const allCompetitions = content.map(formatCompetition);
     let filteredCompetitions = allCompetitions;
 
     if (poolAddress) {
@@ -32,7 +34,7 @@ export default async function handler(req, res) {
         )
       );
     }
-    res.status(200).json(filteredCompetitions);
+    res.status(200).json({ content: filteredCompetitions, pageData });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
