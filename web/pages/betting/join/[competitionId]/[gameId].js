@@ -1,40 +1,30 @@
 import { Container } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import useCompetition from '/hooks/useCompetition';
 import JoinGameCard from '/components/betting/games/joinGameCard';
 import CustomHeader from '/components/general/utils/customHeader';
-import { useMemo } from 'react';
+import { userIsParticipant } from '../../../../services/bettingHelpers';
 
 export default function JoinCompetitionGame(props) {
   const router = useRouter();
-  const { user, metaTagInfo, handleInfo, handleError } = props;
-  const competition = useCompetition(router.query.competitionId, user);
-  const game = useMemo(
-    () =>
-      competition.isReady
-        ? competition?.games?.find((g) => g.id == router.query.gameId)
-        : null,
-    [competition.isReady]
-  );
+  const { competition, game, user, metaTagInfo, handleInfo } = props;
 
   const loginCallback = () => {
-    router.push(`/betting/bets?sortId=${competition.competition?.id}`);
+    router.push(`/betting/bets?sortId=${competition?.id}`);
   };
 
   useEffect(() => {
-    if (competition.isReady) {
-      if (game) {
-        if (competition.isGameParticipant(game.id)) {
-          handleInfo('You already placed a bet for this game');
-          loginCallback();
-        }
-      } else {
-        handleInfo('This Bet does not exist');
-        router.push('/betting');
+    if (!user.address) return;
+    if (game?.id) {
+      if (userIsParticipant(competition, game.id, user.address)) {
+        handleInfo('You already placed a bet for this game');
+        loginCallback();
       }
+    } else {
+      handleInfo('This Bet does not exist');
+      router.push('/betting');
     }
-  }, [game]);
+  }, [game?.id, user?.address]);
 
   return (
     <>
@@ -47,17 +37,15 @@ export default function JoinCompetitionGame(props) {
         className="flex flex-col justify-center items-center gap-3"
         maxWidth="xl"
       >
-        {competition.isReady && (
-          <div className="flex flex-col my-8 w-full ">
-            <JoinGameCard
-              game={game}
-              competition={competition}
-              secret={router.query.secret}
-              user={user}
-              {...props}
-            />
-          </div>
-        )}
+        <div className="flex flex-col my-8 w-full ">
+          <JoinGameCard
+            game={game}
+            competition={competition}
+            secret={router.query.secret}
+            user={user}
+            {...props}
+          />
+        </div>
       </Container>
     </>
   );
@@ -72,7 +60,9 @@ export async function getServerSideProps(context) {
         `https://app.casama.io/api/betting/competitions/show?id=${competitionId}`
       )
     ).json();
-    const event = data?.games?.find((g) => g.id == gameId)?.event;
+    const game = data?.games?.find((g) => g.id == gameId);
+    const event = game?.event;
+
     if (
       event.teamHome?.name &&
       event.teamAway?.name &&
@@ -81,6 +71,8 @@ export async function getServerSideProps(context) {
     ) {
       return {
         props: {
+          competition: data,
+          game,
           metaTagInfo: {
             title: `Casama - Bet on ${event.teamHome.name} vs. ${event.teamAway.name}`,
             description: event.name,
@@ -91,6 +83,8 @@ export async function getServerSideProps(context) {
     } else {
       return {
         props: {
+          competition: data,
+          game,
           metaTagInfo: {
             title: 'Casama - Betting with Friends',
             imageUrl: `/api/betting/metadata/ogImage`,
@@ -102,6 +96,7 @@ export async function getServerSideProps(context) {
     console.log(error);
     return {
       props: {
+        competition: {},
         metaTagInfo: {
           title: 'Casama - Betting with Friends',
           imageUrl: `/api/betting/metadata/ogImage`,

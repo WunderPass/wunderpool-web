@@ -24,34 +24,14 @@ import { joinFreeRollCompetition } from '../../../services/contract/betting/comp
 import { transakRampOnLink } from '../../../services/transak';
 
 export default function JoinGameCard(props) {
-  const { competition, game, handleSuccess, user, handleError, handleInfo } =
-    props;
-  const { stake, sponsored, maxMembers } = competition?.competition || {};
-  const router = useRouter();
+  const { competition, game, handleSuccess, user, handleError } = props;
+  const { stake, sponsored, maxMembers, payoutRule } = competition || {};
 
   const handleLogin = (data) => {
     user.updateLoginMethod(data.loginMethod);
     user.updateWunderId(data.wunderId);
     user.updateAddress(data.address);
   };
-
-  const loginCallback = () => {
-    router.push(`/betting/bets?sortId=${competition.competition?.id}`);
-  };
-
-  useEffect(() => {
-    if (user.loggedIn) {
-      if (game) {
-        if (competition.isGameParticipant(game.id)) {
-          handleInfo('You already placed a bet for this game');
-          loginCallback();
-        }
-      } else {
-        handleInfo('This Bet does not exist');
-        router.push('/betting');
-      }
-    }
-  }, [user.address]);
 
   return (
     <div className="container-gray pb-16 w-full">
@@ -64,8 +44,7 @@ export default function JoinGameCard(props) {
                 className="container-round-transparent items-center justify-center bg-white p-2 sm:p-3 ml-0 mt-2 "
                 onClick={() =>
                   handleShare(
-                    'https://app.casama.io/betting/join/' +
-                      competition?.competition.id,
+                    'https://app.casama.io/betting/join/' + competition?.id,
                     `Look at this Bet: `,
                     handleSuccess
                   )
@@ -118,10 +97,7 @@ export default function JoinGameCard(props) {
                 </div>
               </div>
               {user?.loggedIn &&
-                (user?.usdBalance <
-                (competition?.competition?.sponsored
-                  ? 0
-                  : competition?.competition?.stake) ? (
+                (user?.usdBalance < (sponsored ? 0 : stake) ? (
                   <div className="flex flex-col justify-center items-center w-full mb-4">
                     <TopUpRequired {...props} />
                   </div>
@@ -143,8 +119,7 @@ export default function JoinGameCard(props) {
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-4">
                 <div className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate ...">
                   <p className="mx-2 ">
-                    {competition?.competition.payoutRule ==
-                    'WINNER_TAKES_IT_ALL'
+                    {payoutRule == 'WINNER_TAKES_IT_ALL'
                       ? 'Winner Takes It All'
                       : 'Proportional'}
                   </p>
@@ -294,8 +269,7 @@ function TopUpRequired(props) {
 
 function InputJoinAmount(props) {
   const { game, competition, secret, user, handleError } = props;
-  const { stake, poolAddress, sponsored, maxMembers } =
-    competition?.competition || {};
+  const { stake, poolAddress, sponsored } = competition || {};
 
   const [guessOne, setGuessOne] = useState('');
   const [guessTwo, setGuessTwo] = useState('');
@@ -310,7 +284,7 @@ function InputJoinAmount(props) {
     try {
       if (sponsored) {
         await joinFreeRollCompetition({
-          competitionId: competition.competition.id,
+          competitionId: competition.id,
           userAddress: user.address,
         });
       } else {
@@ -339,7 +313,7 @@ function InputJoinAmount(props) {
     setLoadingText('Placing your Bet...');
     try {
       await registerParticipant(
-        competition.competition?.id,
+        competition?.id,
         game.id,
         [guessOne, guessTwo],
         user.address,
