@@ -13,6 +13,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import AdminMenu from './navComponents/adminMenu';
 import ReactourTarget from '../utils/reactourTarget';
+import { FiLogOut } from 'react-icons/fi';
+import { MdPersonOutline } from 'react-icons/md';
+import { FaWallet } from 'react-icons/fa';
 
 export default function TopBar(props) {
   const { user } = props;
@@ -159,37 +162,70 @@ export default function TopBar(props) {
                   </ul>
                   {open && (
                     <div>
-                      <ul className="flex flex-col justify-between absolute top-16 w-1/8 bg-casama-blue right-0 border-t-2 border-t-white pl-8 pr-3 shadow-xl text-right">
-                        <motion.li
-                          initial={animateFrom}
-                          animate={animateTo}
-                          transition={{ delay: 0.1 }}
-                        >
-                          <div className="px-2 py-1">
-                            <Link
-                              href={
-                                user.loginMethod == 'WunderPass'
-                                  ? 'https://app.wunderpass.org/profile'
-                                  : '/profile'
-                              }
-                            >
-                              Profile
-                            </Link>
-                          </div>
-                        </motion.li>
-
-                        <motion.li
-                          initial={animateFrom}
-                          animate={animateTo}
-                          transition={{ delay: 0.15 }}
-                        >
-                          <button
-                            className="px-2 pb-2 py-1 hover:text-[#ff0000]"
-                            onClick={user?.logOut}
+                      <ul className="flex flex-col absolute top-16 mt-1 w-36 bg-casama-blue right-0 mr-2  shadow-xl text-right rounded-xl">
+                        <div className="hover:bg-casama-light rounded-t-xl">
+                          <motion.li
+                            initial={animateFrom}
+                            animate={animateTo}
+                            transition={{ delay: 0.05 }}
                           >
-                            Log out
-                          </button>
-                        </motion.li>
+                            <div className="cursor-pointer mx-4 mt-3 mb-2">
+                              <Link
+                                href={
+                                  user.loginMethod == 'WunderPass'
+                                    ? 'https://app.wunderpass.org/balance'
+                                    : '/balance'
+                                }
+                              >
+                                <div className="flex flex-row items-center justify-between ">
+                                  <FaWallet className="text-xl mb-1 ml-0.5" />
+                                  Wallet
+                                </div>
+                              </Link>
+                            </div>
+                          </motion.li>
+                        </div>
+                        <div className="hover:bg-casama-light ">
+                          <motion.li
+                            initial={animateFrom}
+                            animate={animateTo}
+                            transition={{ delay: 0.1 }}
+                          >
+                            <div className="cursor-pointer mx-4 mb-2 mt-2">
+                              <Link
+                                href={
+                                  user.loginMethod == 'WunderPass'
+                                    ? 'https://app.wunderpass.org/profile'
+                                    : '/profile'
+                                }
+                              >
+                                <div className="flex flex-row items-center justify-between ">
+                                  <MdPersonOutline className="text-2xl mb-1" />
+                                  Profile
+                                </div>
+                              </Link>
+                            </div>
+                          </motion.li>
+                        </div>{' '}
+                        <div className="hover:bg-casama-light rounded-b-xl">
+                          <motion.li
+                            initial={animateFrom}
+                            animate={animateTo}
+                            transition={{ delay: 0.15 }}
+                          >
+                            <div className="cursor-pointer mx-4 mb-2 mt-2">
+                              <button
+                                className=" hover:text-red-500 w-full "
+                                onClick={user?.logOut}
+                              >
+                                <div className="flex flex-row justify-between items-center w-full ">
+                                  <FiLogOut className="text-xl ml-0.5" />
+                                  <p>Log out</p>
+                                </div>
+                              </button>
+                            </div>
+                          </motion.li>
+                        </div>
                       </ul>
                     </div>
                   )}
