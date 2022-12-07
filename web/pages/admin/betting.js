@@ -484,13 +484,13 @@ export default function AdminBettingPage(props) {
       url: '/api/betting/competitions',
       params: { states: 'LIVE,UPCOMING' },
     }).then((res) => {
-      setCompetitions(res.data);
+      setCompetitions(res.data?.content);
     });
     axios({
       url: '/api/betting/competitions',
       params: { states: 'HISTORIC', sort: 'endTimestamp,desc', size: 50 },
     }).then((res) => {
-      setClosedCompetitions(res.data);
+      setClosedCompetitions(res.data?.content);
     });
   };
 

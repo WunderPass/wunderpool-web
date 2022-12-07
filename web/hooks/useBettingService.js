@@ -17,14 +17,14 @@ export default function useBettingService(userAddress) {
     await axios({
       url: `/api/betting/competitions`,
       params: { states: 'LIVE,UPCOMING' },
-    }).then(async (res) => {
-      setCompetitions(res.data);
+    }).then(({ data }) => {
+      setCompetitions(data?.content);
       setUserCompetitions(
-        res.data.filter((comp) =>
+        data?.content.filter((comp) =>
           comp.members.find((m) => compAddr(m.address, userAddress))
         )
       );
-      setPublicCompetitions(res.data.filter((comp) => comp.isPublic));
+      setPublicCompetitions(data?.content.filter((comp) => comp.isPublic));
     });
   };
 
@@ -62,7 +62,7 @@ export default function useBettingService(userAddress) {
         },
       });
       setUserHistoryCompetitions(
-        data.filter((comp) =>
+        data?.content?.filter((comp) =>
           comp.members.find((m) => compAddr(m.address, userAddress))
         )
       );
