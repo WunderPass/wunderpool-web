@@ -62,6 +62,7 @@ export default function Profile(props) {
         params: { wunderId: user.wunderId },
         headers: { signed: signedMessage, signature },
       });
+      handleSuccess('Email has been sent!');
     } catch (error) {
       handleError(error);
     }
