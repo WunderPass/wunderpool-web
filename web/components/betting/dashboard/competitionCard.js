@@ -179,7 +179,56 @@ export default function DashboardCompetitionCard(props) {
                       className="w-16 mb-2"
                     />
                   </div>
-                  <p className="text-3xl font-semibold">vs</p>
+
+                  <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
+                    {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
+                      game.event.state
+                    ) ? (
+                      <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
+                        {isLive && (
+                          <div className="absolute top-3 right-5 flex items-center gap-1">
+                            <div className="bg-red-500 w-2 h-2 rounded-full animate-pulse"></div>
+                            <div className="text-sm">
+                              {game.event?.minute ? game.event.minute : 'LIVE'}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex flex-row justify-center items-center my-2">
+                          <div className=" flex flex-row justify-center text-xl sm:text-3xl">
+                            <p className="font-semibold ">
+                              {game.event?.outcome[0] || 0}
+                            </p>
+                            <p className="px-2  "> : </p>
+                            <p className="font-semibold ">
+                              {game.event?.outcome[1] || 0}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
+                        {new Date(game.event.startTime) < new Date() && (
+                          <div className="flex justify-end items-center gap-1 ">
+                            <div className="flex flex-row justify-end animate-pulse ">
+                              <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                              <div className="text-sm">LIVE</div>
+                            </div>
+                          </div>
+                        )}
+
+                        <Timer
+                          start={Number(new Date())}
+                          end={
+                            new Date(game.event.startTime) > new Date()
+                              ? game.event.startTime
+                              : game.event.endTime
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex flex-col justify-center items-center text-center w-5/12">
                     <img
                       src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
@@ -195,6 +244,7 @@ export default function DashboardCompetitionCard(props) {
                       {game.event.teamHome?.name || game.event?.teamHome}
                     </p>
                   </div>
+                  <div className="flex sm:w-2/12 w-3/12"></div>
                   <div className="flex flex-col justify-center items-center text-center w-5/12">
                     <p className="text-xl sm:text-2xl font-semibold">
                       {game.event.teamAway?.name || game.event?.teamAway}
@@ -269,71 +319,6 @@ export default function DashboardCompetitionCard(props) {
                     </div>
                   </div>
                 </div>
-
-                {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
-                  game.event.state
-                ) ? (
-                  <div className="container-transparent-clean p-1 py-3  bg-casama-light text-white sm:w-4/5 w-full flex flex-col justify-center items-center relative">
-                    {isLive && (
-                      <div className="absolute top-3 right-5 flex items-center gap-1">
-                        <div className="bg-red-500 w-2 h-2 rounded-full animate-pulse"></div>
-                        <div className="text-sm">
-                          {game.event?.minute ? game.event.minute : 'LIVE'}
-                        </div>
-                      </div>
-                    )}
-                    <p className="mb-4 sm:mb-5 pb-1 sm:pb-2 mt-1 text-xl sm:text-2xl font-medium border-b border-gray-400 w-11/12 text-center">
-                      Result
-                    </p>
-                    <div className="flex flex-row justify-center items-center w-full mb-3">
-                      <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                        {game.event.teamHome.name}
-                      </p>
-
-                      <div className="w-2/12 flex flex-row justify-center">
-                        <p className="font-semibold text-xl sm:text-2xl">
-                          {game.event?.outcome[0] || 0}
-                        </p>
-                        <p className="px-1 text-xl sm:text-2xl">:</p>
-                        <p className="font-semibold text-xl sm:text-2xl">
-                          {game.event?.outcome[1] || 0}
-                        </p>
-                      </div>
-                      <p className="w-5/12 text-center text-base sm:text-xl px-2">
-                        {game.event.teamAway.name}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="container-transparent-clean p-1 py-5 sm:w-2/3 w-full bg-casama-light text-white 0 flex flex-col justify-center items-center relative">
-                    {new Date(game.event.startTime) < new Date() && (
-                      <div className="absolute top-2 right-3 flex items-center gap-1">
-                        {/* <div>
-                        <SoccerTimer
-                          start={Number(new Date())}
-                          end={Number(addMinutes(new Date(), 90))}
-                        />
-                        {console.log(new Date())}
-                        {console.log(addMinutes(new Date(), 90))}
-                      </div> */}
-
-                        <div className="flex flex-row animate-pulse">
-                          <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                          <div className="text-sm">LIVE</div>
-                        </div>
-                      </div>
-                    )}
-                    <Timer
-                      start={Number(new Date())}
-                      end={
-                        new Date(game.event.startTime) > new Date()
-                          ? game.event.startTime
-                          : game.event.endTime
-                      }
-                      size="large"
-                    />
-                  </div>
-                )}
               </div>
               {showDetails && (
                 <ParticipantTable
