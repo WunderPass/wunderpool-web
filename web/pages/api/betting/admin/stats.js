@@ -60,13 +60,13 @@ export default async function handler(req, res) {
     let page = 0;
 
     while (true) {
-      const { data: pageData } = await axios({
+      const { data: competitionData } = await axios({
         url: `${process.env.BETTING_SERVICE}/competitions`,
         params: { states: 'HISTORIC,LIVE,UPCOMING', page: page++ },
         headers,
       });
-      if (pageData.length > 0) {
-        data.push(...pageData);
+      if (competitionData.content.length > 0) {
+        data.push(...competitionData.content);
       } else {
         break;
       }
