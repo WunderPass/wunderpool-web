@@ -257,7 +257,11 @@ function TopUpRequired(props) {
       {redirectUrl && (
         <a
           className="w-full"
-          href={transakRampOnLink({ address: user.address, amount: 50 })}
+          href={transakRampOnLink({
+            address: user.address,
+            amount: 50,
+            redirectUrl,
+          })}
           target="_blank"
         >
           <button className="btn-casama p-3  w-full">Deposit now</button>

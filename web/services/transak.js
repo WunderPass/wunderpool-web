@@ -3,8 +3,9 @@ export function transakRampOnLink({
   crypto = 'USDC',
   amount,
   address,
+  redirectUrl = 'https://app.casama.io/betting',
 }) {
-  return `${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=${network}&defaultPaymentMethod=credit_debit_card&fiatCurrency=EUR&defaultCryptoCurrency=${crypto}&cryptoCurrencyCode=${crypto}&fiatAmount=${amount}&productsAvailed=BUY&&walletAddress=${address}&themeColor=5F45FD&hideMenu=true&redirectURL=https://app.casama.io/betting`;
+  return `${process.env.TRANSAK_URL}${process.env.TRANSAK_API_KEY}&network=${network}&defaultPaymentMethod=credit_debit_card&fiatCurrency=EUR&defaultCryptoCurrency=${crypto}&cryptoCurrencyCode=${crypto}&fiatAmount=${amount}&productsAvailed=BUY&&walletAddress=${address}&themeColor=5F45FD&hideMenu=true&redirectURL=${redirectUrl}`;
 }
 
 export function transakRampOffLink({
