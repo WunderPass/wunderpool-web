@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { CgClose } from 'react-icons/cg';
 import { BiCheck } from 'react-icons/bi';
+import Link from 'next/link';
+import { BrowserView, MobileView } from 'react-device-detect';
 
 export default function AchievementsCard(props) {
   const {
@@ -17,9 +19,11 @@ export default function AchievementsCard(props) {
     button,
     progress,
     maxProgress,
-    finished,
     callToAction,
+    isButton,
   } = props;
+
+  let challengeCompleted = progress == maxProgress;
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -35,7 +39,13 @@ export default function AchievementsCard(props) {
   }));
 
   return (
-    <div className="container-white my-5 sm:my-10">
+    <div
+      className={
+        challengeCompleted
+          ? 'container-white my-5 sm:my-10 opacity-40'
+          : 'container-white my-5 sm:my-10'
+      }
+    >
       <div className="flex flex-row items-stretch text-left w-full ">
         <div className="w-full">
           <div className="flex flex-row justify-between items-center">
@@ -45,33 +55,54 @@ export default function AchievementsCard(props) {
             {description}
             <span className="text-casama-blue"> {bonus}</span>.
           </p>
-          <Divider className="w-full mt-2 mb-4" />
-          <div className="flex flex-row items-center justify-between">
-            <Grid spacing={1} container>
-              <Grid xs item>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={(progress / maxProgress) * 100}
-                />
+
+          <BrowserView>
+            <Divider className="w-full mt-2 mb-4" />
+            <div className="flex flex-row items-center justify-between">
+              <Grid spacing={1} container>
+                <Grid xs item>
+                  <BorderLinearProgress
+                    variant="determinate"
+                    value={(progress / maxProgress) * 100}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-            <div className="flex justify-end  w-12">
-              {progress} / {maxProgress}
+              <div className="flex justify-end  w-12">
+                {progress} / {maxProgress}
+              </div>
             </div>
-          </div>
-          <button className="btn-casama px-5 mt-5 py-2  w-full">
-            {button}
-          </button>
+            {isButton ? (
+              <button
+                disabled={challengeCompleted}
+                onClick={callToAction}
+                className="btn-casama px-5 mt-5 py-2  w-full"
+              >
+                {button}
+              </button>
+            ) : (
+              <Link href={challengeCompleted ? '' : callToAction}>
+                <div
+                  className={
+                    challengeCompleted
+                      ? 'cursor-disabled flex justify-center items-center btn-casama px-5 mt-5 py-2 w-full'
+                      : 'flex justify-center items-center btn-casama px-5 mt-5 py-2 w-full'
+                  }
+                >
+                  {button}
+                </div>
+              </Link>
+            )}
+          </BrowserView>
         </div>
         <div className="flex flex-row items-center">
           <Divider
             orientation="vertical"
             variant="middle"
             flexItem
-            className="mx-2 sm:mx-6"
+            className="mx-3 sm:mx-6"
           />
 
-          {!finished ? (
+          {!challengeCompleted ? (
             <div className="container-round-transparent bg-gray-400 p-2.5 opacity-40">
               <CgClose className="text-3xl sm:text-5xl" />
             </div>
@@ -82,6 +113,43 @@ export default function AchievementsCard(props) {
           )}
         </div>
       </div>
+      <MobileView>
+        <Divider className="w-full mt-2 mb-4" />
+        <div className="flex flex-row items-center justify-between">
+          <Grid spacing={1} container>
+            <Grid xs item>
+              <BorderLinearProgress
+                variant="determinate"
+                value={(progress / maxProgress) * 100}
+              />
+            </Grid>
+          </Grid>
+          <div className="flex justify-end  w-12">
+            {progress} / {maxProgress}
+          </div>
+        </div>
+        {isButton ? (
+          <button
+            disabled={challengeCompleted}
+            onClick={callToAction}
+            className="btn-casama px-5 mt-5 py-2  w-full"
+          >
+            {button}
+          </button>
+        ) : (
+          <Link href={challengeCompleted ? '' : callToAction}>
+            <div
+              className={
+                challengeCompleted
+                  ? 'cursor-disabled flex justify-center items-center btn-casama px-5 mt-5 py-2 w-full'
+                  : 'flex justify-center items-center btn-casama px-5 mt-5 py-2 w-full'
+              }
+            >
+              {button}
+            </div>
+          </Link>
+        )}
+      </MobileView>
     </div>
   );
 }

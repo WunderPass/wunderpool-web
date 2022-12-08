@@ -22,6 +22,10 @@ function Home(props) {
   };
 
   useEffect(() => {
+    localStorage.setItem('referralId', JSON.stringify(router.query?.referral));
+  }, [router.query]);
+
+  useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
   });
 

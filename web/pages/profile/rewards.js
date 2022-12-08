@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import EmailVerificationCard from '../../components/general/profile/emailVerificationCard';
 import fs from 'fs';
 import AchievementsCard from '/components/rewards/achievementsCard';
+import { useHistory } from 'react-router-dom';
 
 export default function RewardsPage(props) {
   const { user, handleError } = props;
@@ -58,6 +59,8 @@ function LoadingPage() {
 }
 
 function RewardsSection() {
+  const inviteFriends = () => {};
+
   return (
     <div className="container-gray ">
       <h1 className="text-3xl font-semibold">Reward Challenges</h1>
@@ -71,8 +74,10 @@ function RewardsSection() {
         button={'Invite Friends'}
         progress={3}
         maxProgress={3}
-        finished={true}
+        callToAction={inviteFriends}
+        isButton={true}
       />
+
       <AchievementsCard
         title={'"Bet & Win"'}
         description={'Win 1 Betting game to unlock this achievement and get '}
@@ -80,7 +85,8 @@ function RewardsSection() {
         button={'Bet on games'}
         progress={0}
         maxProgress={1}
-        finished={false}
+        callToAction={'/betting'}
+        isButton={false}
       />
     </div>
   );
