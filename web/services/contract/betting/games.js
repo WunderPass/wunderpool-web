@@ -4,6 +4,7 @@ import useWeb3 from '/hooks/useWeb3';
 import { connectContract, gasPrice } from '../init';
 import { distributorAddress, initDistributor } from './init';
 import { postAndWaitForTransaction } from '../../backendApi';
+import * as ga from '/lib/google-analytics';
 
 export async function registerGame(
   name,
@@ -101,6 +102,11 @@ export async function registerParticipant(
         prediction,
         signature,
       },
+    });
+    ga.event({
+      action: 'betting',
+      category: 'game',
+      label: 'Place Bet',
     });
   } catch (error) {
     console.log(error);

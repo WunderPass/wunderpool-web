@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import ReactGA from 'react-ga';
 import CustomHeader from '/components/general/utils/customHeader';
 ReactGA.initialize(process.env.GA_TRACKING_CODE);
+import * as ga from '/lib/google-analytics';
 
 function Home(props) {
   const { user, handleError } = props;
@@ -15,6 +16,11 @@ function Home(props) {
   const router = useRouter();
 
   const handleSuccess = ({ wunderId, address, loginMethod, newUser }) => {
+    ga.event({
+      action: 'conversion',
+      category: newUser ? 'signup' : 'login',
+      label: loginMethod,
+    });
     setIsNewUser(newUser);
     user.updateLoginMethod(loginMethod);
     user.updateWunderId(wunderId);
