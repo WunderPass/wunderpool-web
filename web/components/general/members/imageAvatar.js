@@ -1,18 +1,18 @@
 import { Tooltip } from '@mui/material';
 
 export default function ImageAvatar(props) {
-  const { imageUrl, tooltip, shiftRight } = props;
+  const { imageUrl, tooltip, shiftRight, special } = props;
   return (
     <>
       {tooltip ? (
         <Tooltip title={tooltip}>
           <div
-            className={`avatar ${
+            className={`avatar ${special ? 'special' : ''} ${
               shiftRight ? '-ml-2' : ''
             } min-h-[2.5rem] bg-white`}
           >
             <img
-              className="object-cover min-w-full min-h-full"
+              className="p-[2px] rounded-full object-cover min-w-full min-h-full max-h-full max-w-full"
               src={imageUrl}
             />
           </div>
@@ -25,7 +25,10 @@ export default function ImageAvatar(props) {
           type="file"
           name="profilePicture"
         >
-          <img className="object-cover min-w-full min-h-full" src={imageUrl} />
+          <img
+            className="p-[2px] rounded-full object-cover min-w-full min-h-full max-h-full max-w-full"
+            src={imageUrl}
+          />
         </div>
       )}
     </>

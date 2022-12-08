@@ -1,8 +1,10 @@
 import { Tooltip, Typography } from '@mui/material';
 
 export default function InitialsAvatar(props) {
-  const { tooltip, text, color, shiftRight } = props;
-  let className = `initials-avatar ${shiftRight ? '-ml-2 ' : ' '}`;
+  const { tooltip, text, color, shiftRight, special } = props;
+  let className = `initials-avatar ${special ? 'special' : ''} ${
+    shiftRight ? '-ml-2 ' : ' '
+  }`;
 
   switch (color) {
     case 'red':

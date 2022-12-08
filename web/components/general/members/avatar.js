@@ -3,6 +3,19 @@ import InitialsAvatar from '/components/general/members/initialsAvatar';
 import { useState, useEffect } from 'react';
 import { cacheImageByURL } from '/services/caching';
 
+const winners = [
+  'e-eickhoff', // e-eickhoff
+  'WUNDER_OfkhzVSuvR5z9', // Manja Bennewitz
+  't-romulo', // t-romulo
+  'a-sors', // Amélie Sors
+  'a-fricke', // a-fricke
+  'WUNDER_YAHIltc7ZPdAB', // Mariandy Lennon
+  'WUNDER_oC7AXudPwD9kH', // Robert Boer
+  'g-roeder', // g-roeder
+  'j-conde', // j-conde
+  'WUNDER_zLGrZJuo3rJdC', // pele santos
+];
+
 export default function Avatar(props) {
   const {
     shiftRight = false,
@@ -40,12 +53,14 @@ export default function Avatar(props) {
 
   return imageUrl ? (
     <ImageAvatar
+      special={winners.includes(wunderId)}
       imageUrl={imageUrl}
       tooltip={tooltip}
       shiftRight={shiftRight}
     />
   ) : (
     <InitialsAvatar
+      special={winners.includes(wunderId)}
       tooltip={tooltip}
       text={text}
       color={['lime', 'pink', 'yellow', 'red', 'blue'][i % 5]}
