@@ -163,7 +163,10 @@ export default function TopBar(props) {
                   {open && (
                     <div>
                       <ul className="flex flex-col absolute top-16 mt-1 w-36 bg-casama-blue right-0 mr-2  shadow-xl text-right rounded-xl">
-                        <div className="hover:bg-casama-light rounded-t-xl">
+                        <div
+                          onClick={() => setOpen(false)}
+                          className="hover:bg-casama-light rounded-t-xl"
+                        >
                           <motion.li
                             initial={animateFrom}
                             animate={animateTo}
@@ -185,7 +188,10 @@ export default function TopBar(props) {
                             </div>
                           </motion.li>
                         </div>
-                        <div className="hover:bg-casama-light ">
+                        <div
+                          onClick={() => setOpen(false)}
+                          className="hover:bg-casama-light "
+                        >
                           <motion.li
                             initial={animateFrom}
                             animate={animateTo}
