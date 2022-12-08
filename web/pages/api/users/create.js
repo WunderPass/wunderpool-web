@@ -1,5 +1,7 @@
+import { sendVerificationMail } from '../../../services/mailer/verification';
 import { sendSignUpMail } from '/services/mailer/signUp';
 
+const fs = require('fs');
 const axios = require('axios');
 const FormData = require('form-data');
 
@@ -60,6 +62,29 @@ export default async function handler(req, res) {
         to: req.body.email,
         firstName: req.body.firstName || req.body.handle,
       });
+    } catch (mailError) {
+      console.log(mailError);
+    }
+    try {
+      const code = resp.data?.contactDetails?.email_verification_code;
+      if (code && req.body.email) {
+        let notified = [];
+        if (fs.existsSync('./data/verificationMailsSent.json')) {
+          notified = JSON.parse(
+            fs.readFileSync('./data/verificationMailsSent.json', 'utf8')
+          );
+        }
+        notified.push(wunderId);
+        fs.writeFileSync(
+          './data/verificationMailsSent.json',
+          JSON.stringify(notified)
+        );
+        sendVerificationMail({
+          to: req.body.email,
+          firstName: req.body.firstName || req.body.handle,
+          code,
+        });
+      }
     } catch (mailError) {
       console.log(mailError);
     }

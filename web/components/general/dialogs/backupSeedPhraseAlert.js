@@ -101,7 +101,7 @@ export default function BackupSeedPhraseAlert(props) {
           </p>
           <p>
             Be aware that without your Seed Phrase you{' '}
-            <b>will loose access to your Account</b> if your device is lost or
+            <b>will lose access to your Account</b> if your device is lost or
             stolen.
           </p>
           <div className="container-gray flex flex-col gap-3">

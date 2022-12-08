@@ -2,6 +2,16 @@ import axios from 'axios';
 import { compAddr } from '../../../../services/memberHelpers';
 import { formatCompetition } from '/services/bettingHelpers';
 
+const admins = [
+  '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
+  '0xac4c7c8c3a2cfffd889c1fb78b7468e281032284', // Despot
+  '0x1a8459f9ddecabe92281ebdfa62874010a53fdc6', // Gerwin
+  '0x097bf9d9a2c838e12fe153e4d7f83b48adb572c6', // Slava
+  '0x466274eefdd3265e3d8085933e69890f33023048', // Max
+  '0x3c782466d0560b05928515cf31def4ff308b947a', // Max2
+  '0xe732f335f354b3918e8e38c957471a4b991abdc1', // Holy Jesus
+];
+
 function sum(array) {
   return array.reduce((a, b) => a + b, 0);
 }
@@ -51,6 +61,7 @@ function getTopTen(comps) {
 
 export default async function handler(req, res) {
   try {
+    const ignoreAdmins = req.query.ignoreAdmins == 'true';
     const headers = {
       'Content-Type': 'application/json',
       authorization: `Bearer ${process.env.BETTING_SERVICE_CLIENT_TOKEN}`,
@@ -72,7 +83,21 @@ export default async function handler(req, res) {
       }
     }
 
-    const competitions = data.map(formatCompetition);
+    const allCompetitions = data.map(formatCompetition);
+    const competitions = ignoreAdmins
+      ? allCompetitions.map((c) => ({
+          ...c,
+          games: c.games.map((g) => ({
+            ...g,
+            participants: g.participants.filter(
+              (p) => !admins.includes(p.address.toLowerCase())
+            ),
+          })),
+          members: c.members.filter(
+            (m) => !admins.includes(m.address.toLowerCase())
+          ),
+        }))
+      : allCompetitions;
     const uniqueUsers = [
       ...new Set(
         competitions

@@ -63,6 +63,7 @@ function CountUp({ val, min, max, formatter = Math.round }) {
 
   useEffect(() => {
     if (val) {
+      setValue(min);
       clearInterval(interval);
     } else {
       setInterval(() => {
@@ -182,6 +183,7 @@ export default function AdminStatsPage(props) {
   const [resolvedTopTen, setResolvedTopTen] = useState(null);
   const [activeUsers, setActiveUsers] = useState(null);
   const [timeFrame, setTimeFrame] = useState(1);
+  const [ignoreAdmins, setIgnoreAdmins] = useState(false);
 
   const compareData = useMemo(() => {
     const lookupDate = new Date(new Date() - timeFrame * 86400000);
@@ -219,6 +221,7 @@ export default function AdminStatsPage(props) {
     try {
       const { data } = await axios({
         url: '/api/betting/admin/stats',
+        params: { ignoreAdmins },
       });
       setLiveData(data);
       axios({
@@ -244,6 +247,7 @@ export default function AdminStatsPage(props) {
       if (!user.isAdmin) {
         router.push('/pools');
       } else {
+        setLiveData(null);
         fetchHistory();
         fetchData();
         fetchActiveUsers();
@@ -259,7 +263,7 @@ export default function AdminStatsPage(props) {
         };
       }
     }
-  }, [user.isReady, router.isReady]);
+  }, [user.isReady, router.isReady, ignoreAdmins]);
 
   return (
     <Container maxWidth="xl" className="mt-5">
@@ -268,7 +272,13 @@ export default function AdminStatsPage(props) {
       </h1>
       <Stack spacing={2}>
         <div className="self-end">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              className="btn-casama px-3 py-1"
+              onClick={() => setIgnoreAdmins(!ignoreAdmins)}
+            >
+              {ignoreAdmins ? 'Show All' : 'Ignore Admins'}
+            </button>
             {timeFrames.map(([text, days]) => {
               return (
                 <a

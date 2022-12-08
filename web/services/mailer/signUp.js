@@ -37,7 +37,7 @@ export function sendSignUpMail({ to, firstName }) {
                   Phrase, you can gain Access to your Wallet, i.e. your Funds.
                 </p>
                 <p>
-                  Be aware that without your Seed Phrase you <b>will loose access to your Account</b> if your device is
+                  Be aware that without your Seed Phrase you <b>will lose access to your Account</b> if your device is
                   lost or stolen.
                 </p>
                 <div class="flex items-center" style="display: flex;align-items: center;">
