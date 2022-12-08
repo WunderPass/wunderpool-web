@@ -26,7 +26,9 @@ export default async (req, res) => {
       data.append('image', fs.createReadStream(files['image'].filepath));
       axios({
         method: 'post',
-        url: `https://identity-service.wunderpass.org/v4/wunderPasses/${fields.wunderId}/image`,
+        url: encodeURI(
+          `https://identity-service.wunderpass.org/v4/wunderPasses/${fields.wunderId}/image`
+        ),
         headers: {
           authorization: `Bearer ${process.env.IS_SERVICE_CLIENT_TOKEN}`,
           ...data.getHeaders(),
