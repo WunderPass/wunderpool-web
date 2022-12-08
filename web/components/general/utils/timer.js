@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 
 const Timer = (props) => {
-  const { start, end, size, text = 'Days', bar } = props;
+  const { start, end, size, text = 'Days', bar, setTimerLoading } = props;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {
@@ -16,15 +16,17 @@ const Timer = (props) => {
     const days = Math.floor(millis / 60 / 60 / 24);
 
     if (days >= 1) {
+      setTimerLoading(false);
       return `${Math.round(millis / 60 / 60 / 24)}`;
     } else if (millis >= 1) {
+      setTimerLoading(false);
       if (hours >= 1) {
         return hours;
       } else {
         return `${formatDecimals(minutes)}:${formatDecimals(seconds)}`;
       }
     } else {
-      return '00:00:00';
+      return '00:00';
     }
   };
 
