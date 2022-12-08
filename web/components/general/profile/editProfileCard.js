@@ -102,15 +102,13 @@ export default function EditProfileCard(props) {
     setUploading(true);
     try {
       const { signedMessage, signature } = await user.getSignedMillis();
-      const number = phoneNumber == '' ? null : phoneNumber;
-      console.log({ signedMessage, signature });
       const reqData = {
         wunderId: user.wunderId,
         handle: userName,
         firstname: firstName,
         lastname: lastName,
-        email: email == '' ? null : email,
-        phone_number: number == '' ? null : number,
+        email: email || null,
+        phone_number: phoneNumber || null,
       };
 
       await axios({
