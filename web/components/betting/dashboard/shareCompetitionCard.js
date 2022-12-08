@@ -134,7 +134,7 @@ export default function ShareCompetitionCard({
           stake={sponsored ? 0 : stake}
           user={user}
           hideImages
-          hideLoosers
+          hideLosers
           headerText="Winners"
         />
       </div>

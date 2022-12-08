@@ -56,7 +56,7 @@ export default function ParticipantTable({
   stake,
   user,
   hideImages = false,
-  hideLoosers = false,
+  hideLosers = false,
   headerText = 'Participants',
 }) {
   return (
@@ -67,7 +67,7 @@ export default function ParticipantTable({
         </div>
       )}
 
-      {(hideLoosers ? participants.filter((p) => p.winnings > 0) : participants)
+      {(hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
         .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
         .map(({ address, prediction, winnings, userName, wunderId }) => {
           return (
