@@ -1,12 +1,10 @@
 import { Container } from '@mui/material';
-import fs from 'fs';
-import EmailVerificationCard from '../../components/general/profile/emailVerificationCard';
 import StartTutorialCard from '../../components/general/profile/startTutorialCard';
 import SeedPhraseCard from '../../components/general/profile/seedPhraseCard';
 import EditProfileCard from '../../components/general/profile/editProfileCard';
 
 export default function Profile(props) {
-  const { user, wunderIdsNotified } = props;
+  const { user } = props;
 
   const handleLogout = () => {
     user.logOut();
@@ -16,7 +14,6 @@ export default function Profile(props) {
     <Container className="mt-5" maxWidth="lg">
       <EditProfileCard {...props} />
       <StartTutorialCard />
-      <EmailVerificationCard wunderIdsNotified={wunderIdsNotified} {...props} />
       {user.loginMethod == 'Casama' && <SeedPhraseCard />}
       <div className="flex items-center justify-center mt-5">
         <button
@@ -28,14 +25,4 @@ export default function Profile(props) {
       </div>
     </Container>
   );
-}
-
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      wunderIdsNotified: JSON.parse(
-        fs.readFileSync('./data/verificationMailsSent.json', 'utf8')
-      ),
-    },
-  };
 }
