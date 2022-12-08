@@ -38,7 +38,7 @@ export default function EmailVerificationCard({
         </div>
         <Divider className="w-full mt-2 mb-4" />
         <p className="">
-          As an early User of Casama, we will give you a bonus of{' '}
+          As an early user of Casama, we will give you a bonus of{' '}
           <span className="text-casama-blue">$ 5.00</span>.
         </p>
         <div className="w-full">
@@ -50,7 +50,7 @@ export default function EmailVerificationCard({
             {verificationMailSent
               ? 'Check your Inbox'
               : user.email
-              ? 'Send Verification Email'
+              ? 'Verify Email'
               : 'Please update your Email above'}
           </button>
         </div>

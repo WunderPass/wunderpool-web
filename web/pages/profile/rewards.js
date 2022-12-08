@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import EmailVerificationCard from '../../components/general/profile/emailVerificationCard';
 import fs from 'fs';
+import AchievementsCard from '/components/rewards/achievementsCard';
 
 export default function RewardsPage(props) {
   const { user, handleError } = props;
@@ -30,18 +31,18 @@ export default function RewardsPage(props) {
 
   if (user.loginMethod == 'Casama') {
     return (
-      <Container className="mt-5" maxWidth="lg">
+      <div className="sm:mt-8">
         <div className="flex flex-col items-center justify-center gap-3">
-          <h1 className="text-3xl font-semibold">Rewards</h1>
+          {/* <h1 className="text-3xl font-semibold">Rewards</h1> */}
           {loading ? (
             <LoadingPage />
-          ) : emailVerified ? (
+          ) : !emailVerified ? ( //TODO CHANGE BACK
             <RewardsSection />
           ) : (
             <AccountUnverified {...props} />
           )}
         </div>
-      </Container>
+      </div>
     );
   }
   return <RewardsNotAvailable />;
@@ -58,9 +59,30 @@ function LoadingPage() {
 
 function RewardsSection() {
   return (
-    <>
-      <p>Insert Rewards here :)</p>
-    </>
+    <div className="container-gray ">
+      <h1 className="text-3xl font-semibold">Reward Challenges</h1>
+
+      <AchievementsCard
+        title={'"Make money, not friends"'}
+        description={
+          'Invite 3 friends. Once they verify their email and place one bet you get'
+        }
+        bonus={'$5.00'}
+        button={'Invite Friends'}
+        progress={3}
+        maxProgress={3}
+        finished={true}
+      />
+      <AchievementsCard
+        title={'"Bet & Win"'}
+        description={'Win 1 Betting game to unlock this achievement and get '}
+        bonus={'$5.00'}
+        button={'Bet on games'}
+        progress={0}
+        maxProgress={1}
+        finished={false}
+      />
+    </div>
   );
 }
 

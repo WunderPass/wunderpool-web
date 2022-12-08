@@ -257,7 +257,7 @@ button:disabled {
 }
 
 .container-transparent-clean {
-  @apply border-solid  rounded-xl  shadow-sm;
+  @apply border-solid rounded-xl shadow-sm;
 }
 
 .container-gray {
