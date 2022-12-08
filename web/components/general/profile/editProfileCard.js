@@ -315,17 +315,14 @@ export default function EditProfileCard(props) {
                   Address
                 </label>
               </div>
-              <div className="flex flex-row justify-between w-full cursor-disabled">
+              <div className="flex flex-row justify-between w-full">
                 <CopyToClipboard
                   text={user?.address}
                   onCopy={() => handleSuccess('address copied!')}
                 >
-                  <input
-                    className="textfield py-2 px-3 mx-2 cursor-pointer truncate"
-                    type="address"
-                    autoComplete="address"
-                    value={user?.address}
-                  />
+                  <div className="textfield py-2 px-3 mx-2 flex items-center cursor-copy">
+                    {user?.address}
+                  </div>
                 </CopyToClipboard>
                 <button onClick={() => setShowQrCode(!showQrCode)}>
                   <AiOutlineQrcode className="text-2xl" />
