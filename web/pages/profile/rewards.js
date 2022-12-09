@@ -6,9 +6,10 @@ import EmailVerificationCard from '../../components/general/profile/emailVerific
 import fs from 'fs';
 import AchievementsCard from '/components/rewards/achievementsCard';
 import { useHistory } from 'react-router-dom';
+import { handleShare } from '/services/shareLink';
 
 export default function RewardsPage(props) {
-  const { user, handleError } = props;
+  const { user, handleError, handleSuccess } = props;
   const [loading, setLoading] = useState(true);
   const [emailVerified, setEmailVerified] = useState(null);
 
@@ -34,11 +35,10 @@ export default function RewardsPage(props) {
     return (
       <div className="sm:mt-8">
         <div className="flex flex-col items-center justify-center gap-3">
-          {/* <h1 className="text-3xl font-semibold">Rewards</h1> */}
           {loading ? (
             <LoadingPage />
-          ) : !emailVerified ? ( //TODO CHANGE BACK
-            <RewardsSection />
+          ) : emailVerified ? (
+            <RewardsSection user={user} {...props} />
           ) : (
             <AccountUnverified {...props} />
           )}
@@ -58,8 +58,15 @@ function LoadingPage() {
   );
 }
 
-function RewardsSection() {
-  const inviteFriends = () => {};
+function RewardsSection(props) {
+  const { user, handleSuccess } = props;
+  const inviteFriends = () => {
+    handleShare(
+      `http://localhost:3001?referrer=${user.referrerId}`,
+      `You copied your invite Link!`,
+      handleSuccess
+    );
+  };
 
   return (
     <div className="container-gray ">
@@ -72,21 +79,10 @@ function RewardsSection() {
         }
         bonus={'$5.00'}
         button={'Invite Friends'}
-        progress={3}
+        progress={0}
         maxProgress={3}
         callToAction={inviteFriends}
         isButton={true}
-      />
-
-      <AchievementsCard
-        title={'"Bet & Win"'}
-        description={'Win 1 Betting game to unlock this achievement and get '}
-        bonus={'$5.00'}
-        button={'Bet on games'}
-        progress={0}
-        maxProgress={1}
-        callToAction={'/betting'}
-        isButton={false}
       />
     </div>
   );
