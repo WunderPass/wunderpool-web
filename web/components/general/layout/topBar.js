@@ -107,17 +107,17 @@ export default function TopBar(props) {
                           </Link>
                         </div>
                       </ReactourTarget>
-                      <Link href={`/investing/pools`}>
+                      {/* <Link href="/profile/rewards">
                         <li
                           className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
-                            router.pathname == '/investing/pools'
+                            router.pathname == '/profile/rewards'
                               ? 'bg-casama-light-blue'
                               : ''
                           }`}
                         >
-                          Pools
+                          Rewards
                         </li>
-                      </Link>
+                      </Link> */}
                       {user.isAdmin && <AdminMenu />}
                     </div>
                     <div className="flex flex-row items-center justify-end ">

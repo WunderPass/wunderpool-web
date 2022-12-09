@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { AiOutlineInsertRowBelow } from 'react-icons/ai';
-import { RiGroup2Fill } from 'react-icons/ri';
 import { ImUngroup } from 'react-icons/im';
 import { FaWallet } from 'react-icons/fa';
 import Link from 'next/link';
@@ -12,6 +11,7 @@ import DropIcon from '/assets/icons/drop.svg';
 import Image from 'next/image';
 import { CgProfile } from 'react-icons/cg';
 import ReactourTarget from '../utils/reactourTarget';
+import { GiAchievement } from 'react-icons/gi';
 
 export default function BottomBar(props) {
   const { user } = props;
@@ -64,10 +64,10 @@ export default function BottomBar(props) {
                   </Link>
                 </button>
                 <button onClick={() => toggleMenuButton()}>
-                  <Link href="/investing/pools">
+                  <Link href="/profile/rewards">
                     <div className="flex flex-col items-center justify-center mr-9 cursor-pointer">
-                      <RiGroup2Fill className="text-2xl" />
-                      <div>Pools</div>
+                      <GiAchievement className="text-2xl" />
+                      <div>Rewards</div>
                     </div>
                   </Link>
                 </button>

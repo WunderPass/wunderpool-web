@@ -4,6 +4,7 @@ import { usdc } from '../../formatter';
 import { versionLookup } from '../init';
 import { joinPool } from '../pools';
 import { approveUSDC } from '../token';
+import * as ga from '/lib/google-analytics';
 
 async function createCompetition({
   name,
@@ -39,6 +40,12 @@ async function createCompetition({
         stake,
         isPublic,
       },
+    });
+    ga.event({
+      action: 'betting',
+      category: `${isPublic ? 'public' : 'private'}_competition`,
+      label: 'Create Competition',
+      value: stake,
     });
     return res.data;
   } catch (createError) {
@@ -111,6 +118,12 @@ export async function joinSingleCompetition({
         throw error;
       }
     }
+    ga.event({
+      action: 'betting',
+      category: `${secret ? 'private' : 'public'}_competition`,
+      label: 'Join Competition',
+      value: stake,
+    });
     return true;
   } catch (error) {
     throw error;
@@ -156,6 +169,12 @@ export async function joinFreeRollCompetition({ competitionId, userAddress }) {
         competitionId,
         userAddress,
       },
+    });
+    ga.event({
+      action: 'betting',
+      category: 'public_competition',
+      label: 'Join Freeroll Competition',
+      value: 0,
     });
   } catch (createError) {
     console.log(createError);
