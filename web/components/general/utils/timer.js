@@ -21,7 +21,7 @@ const Timer = (props) => {
     } else if (millis >= 1) {
       setTimerLoading(false);
       if (hours >= 1) {
-        return hours;
+        return `${hours}:${formatDecimals(minutes)}`;
       } else {
         return `${formatDecimals(minutes)}:${formatDecimals(seconds)}`;
       }
