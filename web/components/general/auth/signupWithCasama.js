@@ -57,6 +57,7 @@ function createUser(firstName, lastName, email, password, givenSeedPhrase) {
   return new Promise((resolve, reject) => {
     const seedPhrase = givenSeedPhrase || BIP39.generateMnemonic();
     const encryptedSeedPhrase = encryptSeed(seedPhrase, password);
+    let code = localStorage.getItem('referrer') || '';
 
     const { privKey, pubKey, address } = generateKeys(seedPhrase.trim());
     encryptKey(privKey, password, true);
@@ -67,6 +68,7 @@ function createUser(firstName, lastName, email, password, givenSeedPhrase) {
       email,
       public_key: pubKey,
       seedPhrase: encryptedSeedPhrase,
+      //TODO code: code,
     };
     const { signedMessage, signature } = signMillis(privKey);
     const headers = { signed: signedMessage, signature: signature };
