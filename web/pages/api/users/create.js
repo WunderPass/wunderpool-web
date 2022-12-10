@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     const resp = await axios({
       method: 'post',
       url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses`,
+      params: { r: req.body.code },
       data: data,
       headers: headers,
     });
