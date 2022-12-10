@@ -28,7 +28,8 @@ function Home(props) {
   };
 
   useEffect(() => {
-    localStorage.setItem('referralId', JSON.stringify(router.query?.referral));
+    if (!router.query?.referrer) return;
+    localStorage.setItem('referrer', JSON.stringify(router.query?.referrer));
   }, [router.query]);
 
   useEffect(() => {
