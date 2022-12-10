@@ -62,8 +62,8 @@ function RewardsSection(props) {
   const { user, handleSuccess } = props;
   const inviteFriends = () => {
     handleShare(
-      `http://localhost:3001?referrer=${user.referrerId}`,
-      `You copied your invite Link!`,
+      `${window.location.origin}?referrer=${user.referrerId}`,
+      `Join Casama, the first social betting platform! Predict the next Sports event right, and win real money.`,
       handleSuccess
     );
   };
