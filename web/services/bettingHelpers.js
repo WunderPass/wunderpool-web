@@ -254,7 +254,7 @@ const abbreviationLookup = {
 
 function formatMinute(minute) {
   if (minute == 'FT') {
-    return 'Game Ended';
+    return '';
   } else if (minute == 'HT') {
     return 'Halftime';
   } else if (/\+/.test(minute)) {

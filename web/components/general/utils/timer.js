@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 
 const Timer = (props) => {
-  const { start, end, size, text = 'Days', bar, setTimerLoading } = props;
+  const {
+    start,
+    end,
+    size,
+    text = 'Days',
+    bar,
+    setTimerLoading = () => {},
+  } = props;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num) => {

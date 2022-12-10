@@ -187,10 +187,14 @@ export default function DashboardCompetitionCard(props) {
                     ) ? (
                       <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
                         {isLive && (
-                          <div className="absolute top-3 right-5 flex items-center gap-1">
-                            <div className="bg-red-500 w-2 h-2 rounded-full animate-pulse"></div>
-                            <div className="text-sm">
-                              {game.event?.minute ? game.event.minute : 'LIVE'}
+                          <div className="flex justify-center items-center  ">
+                            <div className="flex flex-row justify-center animate-pulse ">
+                              <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                              <div className="text-sm">
+                                {game.event?.minute
+                                  ? game.event.minute
+                                  : 'LIVE'}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -211,8 +215,8 @@ export default function DashboardCompetitionCard(props) {
                       <div className={timerLoading ? 'invisible' : ''}>
                         <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
                           {new Date(game.event.startTime) < new Date() && (
-                            <div className="flex justify-end items-center gap-1 ">
-                              <div className="flex flex-row justify-end animate-pulse ">
+                            <div className="flex justify-center items-center gap-1 ">
+                              <div className="flex flex-row justify-center animate-pulse ">
                                 <div className="bg-red-500 w-2 h-2 rounded-full"></div>
                                 <div className="text-sm">LIVE</div>
                               </div>

@@ -37,6 +37,7 @@ export default function useUser() {
   const [topUpRequired, setTopUpRequired] = useState(null);
   const [unsupportedChain, setUnsupportedChain] = useState(false);
   const [friends, setFriends] = useState([]);
+  const [referrerId, setReferrerId] = useState('');
   const [pools, setPools] = useState([]);
   const [whitelistedPools, setWhitelistedPools] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -156,6 +157,23 @@ export default function useUser() {
           amount: reward_amount,
         }))
       );
+    } catch (error) {
+      console.log('Could not Load Notifications', error);
+    }
+  };
+
+  const getReferrerCode = async () => {
+    try {
+      const { signedMessage, signature } = await getSignedMillis();
+
+      const { data } = await axios({
+        url: '/api/users/rewards/getCode',
+        params: { wunderId },
+        headers: { signed: signedMessage, signature },
+      });
+
+      setReferrerId(data.code);
+      console.log('data.code in getreferer', data.code);
     } catch (error) {
       console.log('Could not Load Notifications', error);
     }
@@ -357,6 +375,7 @@ export default function useUser() {
 
   useEffect(async () => {
     if (address) {
+      await getReferrerCode();
       await fetchUsdBalance();
       await fetchPools(router?.asPath != '/investing/pools');
       await fetchWhitelistedPools();
@@ -434,6 +453,7 @@ export default function useUser() {
     pools,
     fetchPools,
     friends,
+    referrerId,
     fetchFriends,
     whitelistedPools,
     fetchWhitelistedPools,
