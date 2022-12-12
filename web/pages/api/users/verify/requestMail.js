@@ -31,7 +31,9 @@ export default async function handler(req, res) {
     };
 
     const { data: profile } = await axios({
-      url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/${wunderId}`,
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/${wunderId}`
+      ),
       headers: headers,
     });
 

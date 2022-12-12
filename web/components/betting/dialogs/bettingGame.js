@@ -4,7 +4,6 @@ import CurrencyInput from '/components/general/utils/currencyInput';
 import { currency } from '/services/formatter';
 import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 import EventInput from '/components/betting/events/input';
-import { registerGame } from '/services/contract/betting/games';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 
 const PayoutRules = [
@@ -59,27 +58,7 @@ export default function BettingGameDialog(props) {
     return wunderPool.members.map((m) => m.tokens).reduce((a, b) => a + b, 0);
   }, [wunderPool.members, wunderPool.usdcBalance]);
 
-  const handleCreate = () => {
-    setLoading(true);
-    registerGame(
-      wunderPool.poolName,
-      stakeInTokens,
-      wunderPool.governanceToken.address,
-      event,
-      payoutRule,
-      wunderPool.poolAddress
-    )
-      .then((res) => {
-        handleSuccess('Created Betting Group');
-        handleOpenClose(true);
-        wunderPool.determineBettingCompetitions();
-      })
-      .catch((err) => {
-        console.log(err);
-        handleError(err);
-      })
-      .then(() => setLoading(false));
-  };
+  const handleCreate = () => {};
 
   const handleInput = (value, float) => {
     setStake(value);

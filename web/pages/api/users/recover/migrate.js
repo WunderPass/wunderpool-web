@@ -16,7 +16,9 @@ export default async function handler(req, res) {
 
     const response = await axios({
       method: 'post',
-      url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/recovery/${userIdentifier}`,
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/recovery/${userIdentifier}`
+      ),
       headers: headers,
       data: data,
     });
