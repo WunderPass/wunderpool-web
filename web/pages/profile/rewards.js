@@ -60,6 +60,27 @@ function LoadingPage() {
 
 function RewardsSection(props) {
   const { user, handleSuccess } = props;
+  const [tellAFriendStats, setTellAFriendStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(async () => {
+    setLoading(true);
+    try {
+      const { signedMessage, signature } = await user.getSignedMillis();
+      const { data } = await axios({
+        url: '/api/users/rewards/stats',
+        params: { wunderId: user.wunderId },
+        headers: { signed: signedMessage, signature },
+      });
+      setTellAFriendStats(data[0]);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      handleError('Rewards currently not available');
+      setLoading(false);
+    }
+  }, [user.wunderId]);
+
   const inviteFriends = () => {
     handleShare(
       `${window.location.origin}?referrer=${user.referrerId}`,
@@ -72,18 +93,22 @@ function RewardsSection(props) {
     <div className="container-gray ">
       <h1 className="text-3xl font-semibold">Reward Challenges</h1>
 
-      <AchievementsCard
-        title={'"Make money, not friends"'}
-        description={
-          'Invite 3 friends. Once they verify their email and place one bet you get'
-        }
-        bonus={'$5.00'}
-        button={'Invite Friends'}
-        progress={0}
-        maxProgress={3}
-        callToAction={inviteFriends}
-        isButton={true}
-      />
+      {loading ? (
+        <></> //TODO add skeleton
+      ) : (
+        <AchievementsCard
+          title={'"Make money, not friends"'}
+          description={
+            'Invite 3 friends. Once they verify their email and place one bet you get'
+          }
+          bonus={'$5.00'}
+          button={'Invite Friends'}
+          progress={tellAFriendStats.count}
+          maxProgress={tellAFriendStats.total}
+          callToAction={inviteFriends}
+          isButton={true}
+        />
+      )}
     </div>
   );
 }
