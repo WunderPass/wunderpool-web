@@ -1,4 +1,4 @@
-import { Container, LinearProgress } from '@mui/material';
+import { Container, LinearProgress, Skeleton } from '@mui/material';
 import axios from 'axios';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -94,7 +94,11 @@ function RewardsSection(props) {
       <h1 className="text-3xl font-semibold">Reward Challenges</h1>
 
       {loading ? (
-        <></> //TODO add skeleton
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          sx={{ height: '100px', borderRadius: 3 }}
+        />
       ) : (
         <AchievementsCard
           title={'"Make money, not friends"'}

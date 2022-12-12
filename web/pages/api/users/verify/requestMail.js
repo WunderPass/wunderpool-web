@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     const firstName = profile?.firstname || profile?.handle;
     const code = profile?.contactDetails?.email_verification_code;
 
+    console.log('profile', profile);
     if (verified) {
       res.status(401).json('Email already verified');
       return;
