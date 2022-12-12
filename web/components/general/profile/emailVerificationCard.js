@@ -40,8 +40,8 @@ export default function EmailVerificationCard({
           </div>
           <Divider className="w-full mt-2 mb-4" />
           <p className="">
-            As an early user of Casama, we will give you a bonus of{' '}
-            <span className="text-casama-blue">$ 5.00</span>.
+            To participate in the rewards challenges you have to verify your
+            email.
           </p>
 
           <div className="w-full">
@@ -51,7 +51,7 @@ export default function EmailVerificationCard({
               className="btn-casama px-5 py-2 block mx-auto mt-3"
             >
               {verificationMailSent
-                ? 'Check your Inbox'
+                ? 'Check your inbox'
                 : user.email
                 ? 'Verify Email'
                 : 'Please update your Email above'}
