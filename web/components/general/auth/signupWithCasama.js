@@ -58,6 +58,7 @@ function createUser(firstName, lastName, email, password, givenSeedPhrase) {
     const seedPhrase = givenSeedPhrase || BIP39.generateMnemonic();
     const encryptedSeedPhrase = encryptSeed(seedPhrase, password);
     let code = localStorage.getItem('referrer');
+    console.log('referrerCode in signup:', code);
 
     const { privKey, pubKey, address } = generateKeys(seedPhrase.trim());
     encryptKey(privKey, password, true);
