@@ -29,7 +29,7 @@ function Home(props) {
 
   useEffect(() => {
     if (!router.query?.referrer) return;
-    localStorage.setItem('referrer', JSON.stringify(router.query?.referrer));
+    localStorage.setItem('referrer', router.query?.referrer);
   }, [router.query]);
 
   useEffect(() => {
