@@ -31,7 +31,9 @@ export default async function handler(req, res) {
     };
 
     const { data: profile } = await axios({
-      url: `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/${wunderId}`,
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/wunderPasses/${wunderId}`
+      ),
       headers: headers,
     });
 
@@ -40,7 +42,6 @@ export default async function handler(req, res) {
     const firstName = profile?.firstname || profile?.handle;
     const code = profile?.contactDetails?.email_verification_code;
 
-    console.log('profile', profile);
     if (verified) {
       res.status(401).json('Email already verified');
       return;

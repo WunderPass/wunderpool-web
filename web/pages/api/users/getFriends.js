@@ -10,7 +10,9 @@ export default async function handler(req, res) {
     };
 
     const response = await axios({
-      url: `${process.env.IDENTITY_SERVICE}/v4/contacts/connected/${ownersWunderId}`,
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/v4/contacts/connected/${ownersWunderId}`
+      ),
       headers: headers,
     });
 

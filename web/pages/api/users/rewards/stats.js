@@ -11,7 +11,9 @@ export default async function handler(req, res) {
     };
 
     const response = await axios({
-      url: `${process.env.IDENTITY_SERVICE}/promoters/${wunderId}/stats`,
+      url: encodeURI(
+        `${process.env.IDENTITY_SERVICE}/promoters/${wunderId}/stats`
+      ),
       headers: headers,
     });
 
