@@ -48,7 +48,6 @@ function CreateRewardForm({
             });
             return { wunderId, handle, success: true };
           } catch (error) {
-            console.log(error);
             return { wunderId, handle, success: false, error };
           }
         })
@@ -60,7 +59,6 @@ function CreateRewardForm({
         } Rewards were created!`
       );
     } catch (error) {
-      console.log(error);
       handleError('Something went wrong. (Look at the console)');
     }
     setLoading(false);
@@ -240,7 +238,6 @@ export default function AdminRewardsPage(props) {
         setPendingRewards(res.data);
       })
       .catch((err) => {
-        console.log(err);
         handleError('Pending Rewards could not be loaded');
       });
     axios({
@@ -250,7 +247,6 @@ export default function AdminRewardsPage(props) {
         setClaimedRewards(res.data);
       })
       .catch((err) => {
-        console.log(err);
         handleError('Claimed Rewards could not be loaded');
       });
   };

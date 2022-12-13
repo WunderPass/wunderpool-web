@@ -135,7 +135,6 @@ export default function AdminFreeRollsPage(props) {
         isPublic,
         maxMembers,
       });
-      console.log(competitionId);
       handleSuccess('FreeRoll was created!');
     } catch (error) {
       console.log(error);

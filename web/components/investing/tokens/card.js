@@ -107,9 +107,7 @@ export default function TokenCard(props) {
       .then((res) => {
         setData(res.data.map((d) => d.price));
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, []);
 
   return (

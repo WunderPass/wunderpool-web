@@ -106,7 +106,6 @@ export default function PoolHeader(props) {
         makePoolPublic(link);
       })
       .catch((err) => {
-        console.log(err);
         handleError(err);
         setLoading(false);
       });
@@ -126,7 +125,6 @@ export default function PoolHeader(props) {
           setLoading(false);
         })
         .catch((err) => {
-          console.log(err);
           handleError(err);
           setLoading(false);
         });

@@ -66,9 +66,7 @@ export default function useBettingService(userAddress) {
           comp.members.find((m) => compAddr(m.address, userAddress))
         )
       );
-    } catch (error) {
-      console.log('Error fetching History', error);
-    }
+    } catch (error) {}
   };
 
   //TODO SORT THIS BY USER ?

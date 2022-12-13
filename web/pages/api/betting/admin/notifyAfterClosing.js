@@ -18,7 +18,6 @@ async function getUsersByAddresses(addresses) {
     });
     return resp.data;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -83,7 +82,6 @@ export default async function handler(req, res) {
     );
     res.status(200).send(winners);
   } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   }
 }

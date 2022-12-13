@@ -48,7 +48,6 @@ export default function PublicPools({ user }) {
       );
       setLoading(false);
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   };

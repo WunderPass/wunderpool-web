@@ -138,9 +138,7 @@ export default function useUser() {
   const fetchFriends = async () => {
     try {
       setFriends(await fetchUserFriends(wunderId));
-    } catch (error) {
-      console.log('Could not Load Friends', error);
-    }
+    } catch (error) {}
   };
 
   const fetchNotifications = async () => {
@@ -173,7 +171,6 @@ export default function useUser() {
       });
 
       setReferrerId(data.code);
-      console.log('data.code in getreferer', data.code);
     } catch (error) {
       console.log('Could not Load Notifications', error);
     }

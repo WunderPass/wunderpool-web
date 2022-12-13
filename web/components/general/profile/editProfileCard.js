@@ -123,7 +123,6 @@ export default function EditProfileCard(props) {
       handleSuccess('Your profile was saved!');
       user.getUserData();
     } catch (error) {
-      console.log(error);
       handleError(error);
     }
     try {
