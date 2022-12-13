@@ -67,9 +67,11 @@ export default function VerifyEmailPage(props) {
                 Email Verified
               </h3>
               <p className="text-center">
-                Check your Notifications{' '}
-                <IoMdNotifications className="text-casama-blue text-xl inline" />{' '}
-                to claim your Welcome Bonus
+                Check out the{' '}
+                <Link href="/profile/rewards">
+                  <a className="btn-casama px-2 py-2">Rewards</a>
+                </Link>{' '}
+                Page to earn cash for achieving Challenges.
               </p>
             </>
           )}
