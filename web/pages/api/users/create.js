@@ -68,7 +68,10 @@ export default async function handler(req, res) {
     }
     try {
       const code = resp.data?.contactDetails?.email_verification_code;
+      console.log('code from contactdeatils:', code);
+
       if (code && req.body.email) {
+        console.log('if code  && req.body.email', code && req.body.email);
         let notified = [];
         if (fs.existsSync('./data/verificationMailsSent.json')) {
           notified = JSON.parse(
