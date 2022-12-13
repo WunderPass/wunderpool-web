@@ -248,7 +248,6 @@ function CompetitionCard({
       data: { competitionId: competition.id, gameId },
     })
       .then((res) => {
-        console.log(res);
         handleSuccess(`Closed Game "${competition.name}"`);
         fetchCompetitions();
       })

@@ -408,7 +408,6 @@ export default function usePool(
           data: { addresses: pool_members.map((m) => m.members_address) },
         })
       ).data;
-      console.log(resolvedMembers);
 
       const formattedMembers = await Promise.all(
         pool_members.map(async (mem) => {

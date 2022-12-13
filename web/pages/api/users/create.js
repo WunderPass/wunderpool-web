@@ -68,6 +68,8 @@ export default async function handler(req, res) {
     }
     try {
       const code = resp.data?.contactDetails?.email_verification_code;
+      const wunderId = resp.data?.wunder_id;
+
       if (code && req.body.email) {
         let notified = [];
         if (fs.existsSync('./data/verificationMailsSent.json')) {

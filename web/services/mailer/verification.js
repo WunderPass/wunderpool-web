@@ -15,7 +15,7 @@ export function sendVerificationMail({ to, firstName, code }) {
                 </div>
               </div>
               <h2 class="text-center" style="text-align: center;">
-                Verify your email <span class="text-casama" style="color: #5F45FD;">${to}</span> and get a $ 5.00 bonus!
+                Verify your email <span class="text-casama" style="color: #5F45FD;">${to}</span> and participate in our rewards challenges!
               </h2>
               <div class="my-5 flex justify-center" style="margin-top: 1.25rem;margin-bottom: 1.25rem;display: flex;justify-content: center;">
                 <a href="https://app.casama.io/profile/verify/email?code=${code}" class="btn-casama" style="text-decoration: none;background: #5F45FD;color: white;border-radius: 10px;padding: 10px 16px;transition: background 200ms ease;">

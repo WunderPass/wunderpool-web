@@ -199,9 +199,7 @@ export default function AdminStatsPage(props) {
         url: '/api/betting/admin/statsHistory',
       });
       setHistoricData(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const fetchActiveUsers = async () => {
@@ -212,9 +210,7 @@ export default function AdminStatsPage(props) {
         params: { wunderId: user.wunderId, seconds: 60 },
       });
       setActiveUsers(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const fetchData = async () => {
@@ -237,9 +233,7 @@ export default function AdminStatsPage(props) {
           }))
         );
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
