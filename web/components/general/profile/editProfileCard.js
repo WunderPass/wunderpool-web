@@ -163,10 +163,6 @@ export default function EditProfileCard(props) {
     user.email,
   ]);
 
-  useEffect(() => {
-    user.getUserData();
-  }, []);
-
   return (
     <div className="container-white-p-0 flex justify-center md:w-full">
       <div className="flex flex-col w-full items-center">

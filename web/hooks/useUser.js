@@ -376,8 +376,7 @@ export default function useUser() {
       await fetchUsdBalance();
       await fetchPools(router?.asPath != '/investing/pools');
       await fetchWhitelistedPools();
-      if (!(firstName && lastName && email && phoneNumber && userName))
-        await getUserData();
+      await getUserData();
       setIsReady(true);
       if (!wunderId) {
         axios({
