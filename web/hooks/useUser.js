@@ -201,7 +201,6 @@ export default function useUser() {
   };
 
   const getUserData = async () => {
-    if (firstName && lastName && email && phoneNumber && userName) return;
     if (!address) return;
 
     try {
@@ -377,7 +376,8 @@ export default function useUser() {
       await fetchUsdBalance();
       await fetchPools(router?.asPath != '/investing/pools');
       await fetchWhitelistedPools();
-      await getUserData();
+      if (!(firstName && lastName && email && phoneNumber && userName))
+        await getUserData();
       setIsReady(true);
       if (!wunderId) {
         axios({
