@@ -4,8 +4,11 @@ import Avatar from '/components/general/members/avatar';
 import InitialsAvatar from '/components/general/members/initialsAvatar';
 
 export function getNameFor(member = {}) {
-  return member.firstName && member.lastName
-    ? `${member.firstName} ${member.lastName}`
+  return (member.firstName || member.firstname) &&
+    (member.lastName || member.lastname)
+    ? `${member.firstName || member.firstname} ${
+        member.lastName || member.lastname
+      }`
     : member.userName || member.handle || member.wunderId || 'External User';
 }
 
