@@ -124,9 +124,6 @@ export default function TopBar(props) {
                       <div className="flex px-3 ">
                         <News {...props} />
                       </div>
-                      <div className="flex px-3 pr-4 pb-0.5">
-                        <PoolInvites {...props} />
-                      </div>
                       <Link href="/balance">
                         <a className="text-lg text-white border-solid border-2 border-white rounded-lg w-fit mx-2 p-0.5 my-2 py-1.5 cursor-pointer">
                           <ReactourTarget name="user-balance" from="sm">
