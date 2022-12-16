@@ -8,7 +8,7 @@ import {
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import axios from 'axios';
 import { fetchUserFriends } from '/services/memberHelpers';
-import { decryptKey, retreiveKey } from '/services/crypto';
+import { decryptKey, retreiveKey, addressFromPrivate } from '/services/crypto';
 import { signMillis } from '/services/sign';
 import useMetaMask from './useMetaMask';
 import useWalletConnect from './useWalletConnect';
@@ -201,7 +201,6 @@ export default function useUser() {
   };
 
   const getUserData = async () => {
-    if (firstName && lastName && email && phoneNumber && userName) return;
     if (!address) return;
 
     try {
@@ -358,6 +357,7 @@ export default function useUser() {
         .catch(() => logOut());
     } else if (loginMethod == 'Casama') {
       const privKey = retreiveKey();
+      setIsAdmin(admins.includes(addressFromPrivate(privKey).toLowerCase()));
       setPasswordRequired(!Boolean(privKey));
       axios({
         url: '/api/users/recover/confirmedBackup',
@@ -377,7 +377,6 @@ export default function useUser() {
       await fetchPools(router?.asPath != '/investing/pools');
       await fetchWhitelistedPools();
       await getUserData();
-      setIsAdmin(admins.includes(address.toLowerCase()));
       setIsReady(true);
       if (!wunderId) {
         axios({
