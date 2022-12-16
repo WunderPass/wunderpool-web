@@ -309,7 +309,11 @@ export default function usePool(
         );
         setPoolProposals(proposals);
       } catch (error) {
-        handleError('Proposals could not be loaded');
+        handleError(
+          'Proposals could not be loaded',
+          user.wunderId,
+          user.userName
+        );
         console.log('ERROR fetching Proposals', error);
       }
       updateLoadingState('proposals');

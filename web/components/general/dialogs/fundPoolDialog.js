@@ -14,7 +14,7 @@ import TransactionFrame from '/components/general/utils/transactionFrame';
 import { fundPool } from '/services/contract/pools';
 
 export default function FundPoolDialog(props) {
-  const { open, setOpen, address, handleSuccess, handleError } = props;
+  const { open, setOpen, address, handleSuccess, handleError, user } = props;
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +32,7 @@ export default function FundPoolDialog(props) {
         handleClose();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
         setLoading(false);
       });
   };

@@ -32,7 +32,7 @@ export default function RampOffDialog(props) {
 
   const handleSubmit = async () => {
     if (Number(amount) > user.usdBalance) {
-      handleError('Insufficient Funds');
+      handleError('Insufficient Funds', user.wunderId, user.userName);
       return;
     }
     setLoading(true);
@@ -57,7 +57,7 @@ export default function RampOffDialog(props) {
         },
       });
     } catch (error) {
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
     setLoading(false);
   };

@@ -62,7 +62,7 @@ export default function JoinPoolDialog(props) {
           }, 2500);
         })
         .catch((err) => {
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
           setLoading(false);
         });
     }, 50);

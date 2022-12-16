@@ -59,7 +59,7 @@ function CreateRewardForm({
         } Rewards were created!`
       );
     } catch (error) {
-      handleError('Something went wrong. (Look at the console)');
+      handleError(error, user.wunderId, user.userName);
     }
     setLoading(false);
   };
@@ -238,7 +238,7 @@ export default function AdminRewardsPage(props) {
         setPendingRewards(res.data);
       })
       .catch((err) => {
-        handleError('Pending Rewards could not be loaded');
+        handleError(err, user.wunderId, user.userName);
       });
     axios({
       url: '/api/users/rewards/admin/claimed',
@@ -247,7 +247,7 @@ export default function AdminRewardsPage(props) {
         setClaimedRewards(res.data);
       })
       .catch((err) => {
-        handleError('Claimed Rewards could not be loaded');
+        handleError(err, user.wunderId, user.userName);
       });
   };
 

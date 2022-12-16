@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import TransactionDialog from '/components/general/utils/transactionDialog';
 
 export default function VotingButtons(props) {
-  const { proposal, wunderPool, handleError } = props;
+  const { proposal, wunderPool, handleError, user } = props;
   const [userHasVoted, setUserHasVoted] = useState(proposal.hasVoted);
   const [signing, setSigning] = useState(false);
 
@@ -19,7 +19,7 @@ export default function VotingButtons(props) {
           wunderPool.determineProposals();
         })
         .catch((err) => {
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
         })
         .then(() => {
           setSigning(false);

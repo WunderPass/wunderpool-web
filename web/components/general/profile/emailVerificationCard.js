@@ -22,7 +22,7 @@ export default function EmailVerificationCard({
       setVerificationMailSent(true);
       handleSuccess('Email has been sent!');
     } catch (error) {
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
   };
 

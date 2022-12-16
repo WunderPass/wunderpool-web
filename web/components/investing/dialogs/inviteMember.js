@@ -24,7 +24,7 @@ export default function InviteMemberDialog(props) {
         handleClose();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
         setLoading(false);
       });
   };
