@@ -41,7 +41,7 @@ export default function EmailVerificationCard({
           <Divider className="w-full mt-2 mb-4" />
           <p className="">
             To participate in the rewards challenges you have to verify your
-            email.
+            email <span className="text-casama-blue">{user.email}</span>.
           </p>
 
           <div className="w-full">
