@@ -42,7 +42,7 @@ export default function EventCardFreeRollTile({
       });
       await registerBet(competition.id, competition.games[0].id);
     } catch (joinError) {
-      handleError(joinError);
+      handleError(joinError, user.wunderId, user.userName);
     }
     setLoading(false);
   };

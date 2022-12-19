@@ -62,7 +62,9 @@ function EventCard({
   fetchCompetitions,
   handleSuccess,
   handleError,
+  props,
 }) {
+  const { user } = props;
   const [homeScore, setHomeScore] = useState('');
   const [awayScore, setAwayScore] = useState('');
   const [loading, setLoading] = useState(false);
@@ -101,7 +103,7 @@ function EventCard({
         fetchCompetitions();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => {
         settleAllGames()
@@ -113,7 +115,7 @@ function EventCard({
             );
           })
           .catch((err) => {
-            handleError(err);
+            handleError(err, user.wunderId, user.userName);
           })
           .then(() => {
             setLoading(false);
@@ -187,7 +189,9 @@ function ListedEventCard({
   handleSuccess,
   handleError,
   removeListedEvent,
+  props,
 }) {
+  const { user } = props;
   const [loading, setLoading] = useState(false);
 
   const handleCreate = () => {
@@ -200,7 +204,7 @@ function ListedEventCard({
         removeListedEvent(event.id);
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
         setLoading(false);
       });
   };
@@ -237,7 +241,9 @@ function CompetitionCard({
   fetchCompetitions,
   handleSuccess,
   handleError,
+  props,
 }) {
+  const { user } = props;
   const [loading, setLoading] = useState(false);
 
   const handleClose = (gameId) => {
@@ -252,7 +258,7 @@ function CompetitionCard({
         fetchCompetitions();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => setLoading(false));
   };
@@ -353,7 +359,7 @@ function ClosedCompetitionCard({
       setShowMailButton(false);
     } catch (error) {
       console.log(error);
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
     setLoading(false);
   };

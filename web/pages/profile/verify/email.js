@@ -28,7 +28,7 @@ export default function VerifyEmailPage(props) {
       } catch (error) {
         console.log(error?.response?.data);
         setError(error?.response?.data);
-        handleError(error);
+        handleError(error, user.wunderId, user.userName);
       }
       setLoading(false);
     }

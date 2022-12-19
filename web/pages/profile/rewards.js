@@ -26,7 +26,11 @@ export default function RewardsPage(props) {
       setEmailVerified(data?.contactDetails?.email_verified);
     } catch (error) {
       console.log(error);
-      handleError('Rewards currently not available');
+      handleError(
+        'Rewards currently not available, ' + error,
+        user.wunderId,
+        user.userName
+      );
     }
     setLoading(false);
   }, [user.loginMethod]);
@@ -76,7 +80,11 @@ function RewardsSection(props) {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      handleError('Rewards currently not available');
+      handleError(
+        'Rewards currently not available, ' + error,
+        user.wunderId,
+        user.userName
+      );
       setLoading(false);
     }
   }, [user.wunderId]);

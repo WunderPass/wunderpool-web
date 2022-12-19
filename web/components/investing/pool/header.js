@@ -16,8 +16,15 @@ import UseAdvancedRouter from '/hooks/useAdvancedRouter';
 import { useRouter } from 'next/router';
 
 export default function PoolHeader(props) {
-  const { name, address, wunderPool, isMobile, handleSuccess, handleError } =
-    props;
+  const {
+    name,
+    address,
+    wunderPool,
+    isMobile,
+    handleSuccess,
+    handleError,
+    user,
+  } = props;
   const {
     usdcBalance,
     isMember,
@@ -106,7 +113,7 @@ export default function PoolHeader(props) {
         makePoolPublic(link);
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
         setLoading(false);
       });
   };
@@ -125,11 +132,15 @@ export default function PoolHeader(props) {
           setLoading(false);
         })
         .catch((err) => {
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
           setLoading(false);
         });
     } else {
-      handleError('Something went wrong, please try again');
+      handleError(
+        'Something went wrong, please try again',
+        user.wunderId,
+        user.userName
+      );
       setLoading(false);
     }
   };

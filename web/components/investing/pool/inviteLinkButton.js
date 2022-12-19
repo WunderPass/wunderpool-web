@@ -87,7 +87,7 @@ function ContentWithoutLink(props) {
 }
 
 export default function InviteLinkButton(props) {
-  const { wunderPool, handleSuccess, handleError } = props;
+  const { wunderPool, handleSuccess, handleError, user } = props;
   const [open, setOpen] = useState(false);
   const [validFor, setValidFor] = useState('');
   const [loading, setLoading] = useState(false);
@@ -112,7 +112,7 @@ export default function InviteLinkButton(props) {
           `${window.location.origin}/investing/pools/join/${wunderPool.poolAddress}?secret=${secret}`
         );
       })
-      .catch((err) => handleError(err))
+      .catch((err) => handleError(err, user.wunderId, user.userName))
       .then(() => setLoading(false));
   };
 

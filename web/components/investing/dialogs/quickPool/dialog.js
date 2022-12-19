@@ -93,7 +93,7 @@ export default function AdvancedPoolDialog(props) {
         .catch((err) => {
           setLoading(false);
           setRetry(true);
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
           setWaitingForPool(false);
         });
     }, 10);

@@ -92,7 +92,7 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
   const [signUpRequired, setSignUpRequired] = useState(false);
   const [address, setAddress] = useState('');
   const [handle, setHandle] = useState('');
-
+  const [wunderId, setWunderId] = useState('');
   const [creationError, setCreationError] = useState(null);
 
   const loginWithWetaMask = async () => {
@@ -116,6 +116,7 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
             data: { address },
           });
           const wunderId = data.wunder_id;
+          setWunderId(wunderId);
           if (wunderId) {
             onSuccess({ wunderId, address: address, loginMethod: 'MetaMask' });
           } else {
@@ -130,10 +131,10 @@ export default function LoginWithMetaMask({ onSuccess, handleError }) {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        handleError(error);
+        handleError(error, wunderId, handle);
       }
     } else {
-      handleError('MetaMask is not installed');
+      handleError('MetaMask is not installed', wunderId, handle);
     }
   };
 

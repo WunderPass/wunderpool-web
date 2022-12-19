@@ -105,7 +105,7 @@ function ActiveUserRow({ wunderId, lastActive, handle, url, handleError }) {
       });
       setUserData(formatMember(data));
     } catch (error) {
-      handleError(error);
+      handleError(error, wunderId, handle);
     }
     setLoading(false);
   };

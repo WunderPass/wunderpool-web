@@ -203,7 +203,11 @@ export default function JoinPool(props) {
           setSigning(false);
           if (err == 'Not On Whitelist') setInvalidLink(true);
           handleError(
-            `Could not join the Pool${typeof err == 'string' ? `: ${err}` : ''}`
+            `Could not join the Pool${
+              typeof err == 'string' ? `: ${err}` : ''
+            }`,
+            user.wunderId,
+            user.userName
           );
         });
     }, 10);

@@ -59,7 +59,7 @@ export default function EventCard(props) {
 
   const placeBet = async () => {
     if (new Date() > new Date(event.startTime)) {
-      handleError('Game already started');
+      handleError('Game already started', user.wunderId, user.userName);
     } else {
       const { competitionId, gameId } = selectedCompetition.public
         ? await joinPublicCompetition()
@@ -115,7 +115,9 @@ export default function EventCard(props) {
         };
       } catch (error) {
         handleError(
-          typeof error == 'string' ? error : 'Competition could not be joined'
+          typeof error == 'string' ? error : 'Competition could not be joined',
+          user.wunderId,
+          user.userName
         );
         return {};
       }
@@ -130,7 +132,9 @@ export default function EventCard(props) {
         return { competitionId, gameId };
       } catch (error) {
         handleError(
-          typeof error == 'string' ? error : 'Competition could not be joined'
+          typeof error == 'string' ? error : 'Competition could not be joined',
+          user.wunderId,
+          user.userName
         );
         return {};
       }
@@ -185,7 +189,7 @@ export default function EventCard(props) {
       setShowSuccess(true);
     } catch (error) {
       console.log(error);
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
     user.fetchUsdBalance();
     bettingService.reFetchCompetition(

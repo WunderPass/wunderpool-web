@@ -138,7 +138,7 @@ export default function AdminFreeRollsPage(props) {
       handleSuccess('FreeRoll was created!');
     } catch (error) {
       console.log(error);
-      handleError('Something went wrong. (Look at the console)');
+      handleError(error, user.wunderId, user.userName);
     }
     setLoading(false);
   };
