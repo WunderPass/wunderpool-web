@@ -113,7 +113,7 @@ function RewardsSection(props) {
           description={
             'Invite 3 friends. Once they verify their email and place one bet you get'
           }
-          bonus={'$5.00'}
+          bonus={'$15.00'}
           button={'Invite Friends'}
           progress={tellAFriendStats.count}
           maxProgress={tellAFriendStats.total}
