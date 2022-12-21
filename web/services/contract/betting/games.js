@@ -5,6 +5,7 @@ import * as ga from '/lib/google-analytics';
 
 export async function registerParticipant(
   competitionId,
+  blockchainId,
   gameId,
   prediction,
   userAddress,
@@ -15,9 +16,9 @@ export async function registerParticipant(
   const address = distributorAddress(version);
   try {
     const { signature } = await sendSignatureRequest(
-      ['uint256', 'address', 'uint256[]'],
-      [gameId, address, prediction],
-      true,
+      ['uint256', 'uint256[]', 'address', 'uint256[][]'],
+      [blockchainId, [gameId], address, [prediction]],
+      false,
       popup
     );
 

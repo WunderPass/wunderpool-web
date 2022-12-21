@@ -40,7 +40,11 @@ export default function EventCardFreeRollTile({
         competitionId: competition.id,
         userAddress: user.address,
       });
-      await registerBet(competition.id, competition.games[0].id);
+      await registerBet(
+        competition.id,
+        competition.blockchainId,
+        competition.games[0].id
+      );
     } catch (joinError) {
       handleError(joinError, user.wunderId, user.userName);
     }

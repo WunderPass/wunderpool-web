@@ -317,6 +317,7 @@ function InputJoinAmount(props) {
     try {
       await registerParticipant(
         competition?.id,
+        competition.blockchainId,
         game.id,
         [guessOne, guessTwo],
         user.address,

@@ -91,7 +91,11 @@ export async function createSingleCompetition({
       }, 1000);
     });
 
-    return { competitionId, gameId: competition.games[0].id };
+    return {
+      competitionId,
+      blockchainId: competition.blockchainId,
+      gameId: competition.games[0].id,
+    };
   } catch (error) {
     throw error;
   }

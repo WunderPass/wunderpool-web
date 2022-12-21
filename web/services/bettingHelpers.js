@@ -389,6 +389,7 @@ export function formatCompetition(competition) {
 
   const {
     competition_id,
+    tournament_id,
     name,
     version,
     pool_address,
@@ -401,6 +402,7 @@ export function formatCompetition(competition) {
 
   return {
     id: competition_id,
+    blockchainId: tournament_id,
     name,
     version,
     poolAddress: pool_address,
