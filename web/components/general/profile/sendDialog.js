@@ -74,7 +74,7 @@ export default function SendDialog(props) {
         });
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => {
         setLoading(false);

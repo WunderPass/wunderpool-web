@@ -329,7 +329,7 @@ export default function ProposalCard(props) {
           }
         })
         .catch((err) => {
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
         })
         .then(() => {
           setSigning(false);

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function useNotification() {
   const stringifyError = (msg) => {
@@ -35,7 +36,18 @@ export default function useNotification() {
     </div>
   );
 
-  const handleError = (msg, opts = {}) => {
+  const handleError = (msg, wunderId, userName, opts = {}) => {
+    axios({
+      method: 'post',
+      url: '/api/discord/errors',
+      data: {
+        error: msg,
+        wunderId: wunderId || 'Unknown',
+        userName: userName || 'Unknown',
+      },
+    })
+      .then(console.log)
+      .catch(console.log);
     toast.error(stringifyError(msg));
   };
 

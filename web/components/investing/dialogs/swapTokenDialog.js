@@ -16,7 +16,7 @@ import TransactionFrame from '/components/general/utils/transactionFrame';
 import { ethers } from 'ethers';
 
 export default function SwapTokenDialog(props) {
-  const { open, setOpen, token, wunderPool, handleError, handleSuccess } =
+  const { open, setOpen, token, wunderPool, handleError, handleSuccess, user } =
     props;
   const { address, decimals, balance, name, symbol, tradable } = token;
   const [amount, setAmount] = useState('');
@@ -51,7 +51,7 @@ export default function SwapTokenDialog(props) {
         handleClose();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => {
         setLoading(false);

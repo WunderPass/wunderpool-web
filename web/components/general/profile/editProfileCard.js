@@ -57,7 +57,7 @@ export default function EditProfileCard(props) {
         setUploading(false);
         setDataHasChanged(false);
       } catch (error) {
-        handleError(error);
+        handleError(error, user.wunderId, user.userName);
         setUploading(false);
         setDataHasChanged(false);
       }

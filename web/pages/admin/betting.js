@@ -62,6 +62,7 @@ function EventCard({
   fetchCompetitions,
   handleSuccess,
   handleError,
+  user,
 }) {
   const [homeScore, setHomeScore] = useState('');
   const [awayScore, setAwayScore] = useState('');
@@ -101,7 +102,7 @@ function EventCard({
         fetchCompetitions();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => {
         settleAllGames()
@@ -113,7 +114,7 @@ function EventCard({
             );
           })
           .catch((err) => {
-            handleError(err);
+            handleError(err, user.wunderId, user.userName);
           })
           .then(() => {
             setLoading(false);
@@ -187,6 +188,7 @@ function ListedEventCard({
   handleSuccess,
   handleError,
   removeListedEvent,
+  user,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -200,7 +202,7 @@ function ListedEventCard({
         removeListedEvent(event.id);
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
         setLoading(false);
       });
   };
@@ -237,6 +239,7 @@ function CompetitionCard({
   fetchCompetitions,
   handleSuccess,
   handleError,
+  user,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -252,7 +255,7 @@ function CompetitionCard({
         fetchCompetitions();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => setLoading(false));
   };
@@ -353,7 +356,7 @@ function ClosedCompetitionCard({
       setShowMailButton(false);
     } catch (error) {
       console.log(error);
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
     setLoading(false);
   };

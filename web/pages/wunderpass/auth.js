@@ -14,7 +14,7 @@ export default function WunderPassAuth(props) {
       user.updateAddress(address);
       router.push('/betting');
     } else {
-      handleError('Log in failed');
+      handleError('Log in failed', user.wunderId, user.userName);
       router.push('/');
     }
   }, [router.isReady]);

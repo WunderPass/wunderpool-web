@@ -21,6 +21,7 @@ export default function SellTokenDialog(props) {
     wunderPool,
     handleError,
     handleSuccess,
+    user,
   } = props;
   const { address, decimals, balance, name, symbol, dollarPrice, tradable } =
     token;
@@ -46,7 +47,7 @@ export default function SellTokenDialog(props) {
           amount
         )
         .catch((err) => {
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
         })
         .then(() => {
           setLoading(false);

@@ -51,7 +51,7 @@ export default function ShareCompetitionCard({
           link.click();
         }
       } catch (error) {
-        handleError(error);
+        handleError(error, user.wunderId, user.userName);
         console.log(error);
       }
       setScreenshotMode(false);

@@ -15,7 +15,7 @@ import { currency, round } from '/services/formatter';
 import ResponsiveDialog from '/components/general/utils/responsiveDialog';
 
 export default function makeProposal(props) {
-  const { open, wunderPool, handleError, handleOpenClose } = props;
+  const { open, wunderPool, handleError, handleOpenClose, user } = props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [proposalName, setProposalName] = useState('');
   const [proposalDescription, setProposalDescription] = useState('');
@@ -68,7 +68,7 @@ export default function makeProposal(props) {
           handleOpenClose(true);
         })
         .catch((err) => {
-          handleError(err);
+          handleError(err, user.wunderId, user.userName);
         })
         .then(() => {
           setLoading(false);

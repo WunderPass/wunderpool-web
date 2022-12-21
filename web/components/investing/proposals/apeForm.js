@@ -15,7 +15,7 @@ import { currency, round } from '/services/formatter';
 import TransactionDialog from '/components/general/utils/transactionDialog';
 
 export default function ApeForm(props) {
-  const { setApe, wunderPool, handleSuccess, handleError } = props;
+  const { setApe, wunderPool, handleSuccess, handleError, user } = props;
   const [tokenAddress, setTokenAddress] = useState('');
   const [tokenName, setTokenName] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
@@ -54,7 +54,7 @@ export default function ApeForm(props) {
         handleClose();
       })
       .catch((err) => {
-        handleError(err);
+        handleError(err, user.wunderId, user.userName);
       })
       .then(() => {
         setLoading(false);

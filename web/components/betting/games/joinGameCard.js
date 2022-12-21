@@ -306,7 +306,7 @@ function InputJoinAmount(props) {
         setMustClickAgain(true);
       }
     } catch (error) {
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
     setLoading(false);
   };
@@ -317,6 +317,7 @@ function InputJoinAmount(props) {
     try {
       await registerParticipant(
         competition?.id,
+        competition.blockchainId,
         game.id,
         [guessOne, guessTwo],
         user.address,
@@ -325,7 +326,7 @@ function InputJoinAmount(props) {
       user.fetchUsdBalance();
       router.push('/betting/bets');
     } catch (error) {
-      handleError(error);
+      handleError(error, user.wunderId, user.userName);
     }
     setLoadingText(null);
     setLoading(false);
