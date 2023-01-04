@@ -92,6 +92,23 @@ export default function TopBar(props) {
                           </Link>
                         </div>
                       </ReactourTarget>
+                      <ReactourTarget name="multi-games" from="sm">
+                        <div>
+                          <Link href={`/betting/multi`}>
+                            <li
+                              className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
+                                ['/betting/multi', '/onboarding'].includes(
+                                  router.pathname
+                                )
+                                  ? 'bg-casama-light-blue'
+                                  : ''
+                              }`}
+                            >
+                              Multi Games
+                            </li>
+                          </Link>
+                        </div>
+                      </ReactourTarget>
                       <ReactourTarget name="my-bets" from="sm">
                         <div>
                           <Link href={`/betting/bets`}>
