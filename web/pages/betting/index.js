@@ -10,6 +10,7 @@ export default function Betting(props) {
   const { bettingService } = props;
   const [showSideBar, setShowSideBar] = useState(true);
   const [eventTypeSort, setEventTypeSort] = useState('All Events');
+  const [format, setFormat] = useState('All Formats');
   const [isSortById, setIsSortById] = useState(false);
   const [sortId, setSortId] = useState(null);
   const { removeQueryParam } = UseAdvancedRouter();
@@ -19,6 +20,10 @@ export default function Betting(props) {
     setEventTypeSort(value);
     setIsSortById(false);
     removeQueryParam('sortId');
+  };
+
+  const pickFormat = (value) => {
+    setFormat(value);
   };
 
   useEffect(() => {
@@ -106,16 +111,27 @@ export default function Betting(props) {
                     <Typography className="text-xl sm:text-3xl font-medium ">
                       Join a betting game
                     </Typography>
-                    <DropDown
-                      list={[
-                        'All Events',
-                        ...bettingService.events.map(
-                          (event) => event.competitionName
-                        ),
-                      ]}
-                      value={eventTypeSort}
-                      setValue={(item) => pickFilter(item)}
-                    />
+                    <div className="flex gap-2">
+                      <DropDown
+                        list={[
+                          'All Events',
+                          ...bettingService.events.map(
+                            (event) => event.competitionName
+                          ),
+                        ]}
+                        value={eventTypeSort}
+                        setValue={(item) => pickFilter(item)}
+                      />
+                      <DropDown
+                        list={[
+                          'All Formats',
+                          'Single Competition',
+                          'Multi Competition',
+                        ]}
+                        value={format}
+                        setValue={(item) => pickFormat(item)}
+                      />
+                    </div>
                   </div>
 
                   {bettingService.isReady ? (
@@ -124,6 +140,7 @@ export default function Betting(props) {
                       eventTypeSort={eventTypeSort}
                       sortId={sortId}
                       isSortById={isSortById}
+                      format={format}
                       {...props}
                     />
                   ) : (
