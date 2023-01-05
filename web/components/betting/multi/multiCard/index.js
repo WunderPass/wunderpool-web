@@ -7,25 +7,22 @@ import {
 } from '/services/contract/betting/competitions';
 import Header from './header';
 import MultiCardFooter from './footer';
-import MultiCardPublicGameTile from './publicGameTile';
-import MultiCardPrivateGameTile from './privateGameTile';
-import MultiCardCustomGameTile from './customGameTile';
 import MagicMomentDialog from './magicMomentDialog';
 import { registerParticipant } from '../../../../services/contract/betting/games';
 import { useMemo } from 'react';
 import { compAddr } from '../../../../services/memberHelpers';
 import MultiCardPredicitionInput from './predictionInput';
+import MultiCardSubmitButton from './submitButton';
 import { currency } from '../../../../services/formatter';
-// import MultiCardFreeRollTile from './freeRollTile';
 
-export default function EventCard(props) {
+export default function MultiCard(props) {
   const { event, bettingService, user, handleError, competition } = props;
   const [loading, setLoading] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
 
-  const [guessOne, setGuessOne] = useState('');
-  const [guessTwo, setGuessTwo] = useState('');
+  const [guessOne, setGuessOne] = useState([]);
+  const [guessTwo, setGuessTwo] = useState([]);
   const [selectedCompetition, setSelectedCompetition] = useState({});
 
   const [customAmount, setCustomAmount] = useState('');
@@ -50,8 +47,6 @@ export default function EventCard(props) {
       comp.games.find((g) => g.id && g.event.id == event.id)
   );
 
-  const freeRoll = eventCompetitions.find((comp) => comp.sponsored);
-
   const poolRequiresBet = eventCompetitions.find(
     (c) =>
       c.members.find((m) => compAddr(m.address, user.address)) &&
@@ -59,25 +54,28 @@ export default function EventCard(props) {
   );
 
   const placeBet = async () => {
-    if (new Date() > new Date(event.startTime)) {
-      handleError('Game already started', user.wunderId, user.userName);
-    } else {
-      const { competitionId, blockchainId, gameId } = selectedCompetition.public
-        ? await joinPublicCompetition()
-        : await createPrivateCompetition();
-      if (competitionId && blockchainId && gameId) {
+    competition.games.map(async (game, i) => {
+      //   const { competitionId, blockchainId, gameId } =
+      //     await joinPublicCompetition();
+
+      if (game.event?.competitionId && game.event?.blockchainId && game.id) {
         if (user.loginMethod == 'Casama') {
-          await registerBet(competitionId, blockchainId, gameId);
+          await registerBet(
+            game.event.competitionId,
+            game.event.blockchainId,
+            game.id,
+            i
+          );
         } else {
           setLoading(false);
-          setJoiningCompetitionId(competitionId);
-          setJoiningBlockchainId(blockchainId);
-          setJoiningGameId(gameId);
+          setJoiningCompetitionId(game.event?.competitionId);
+          setJoiningBlockchainId(game.event?.blockchainId);
+          setJoiningGameId(game.event?.gameId);
         }
       } else {
         setLoading(false);
       }
-    }
+    });
   };
 
   const reset = () => {
@@ -146,26 +144,7 @@ export default function EventCard(props) {
     }
   };
 
-  const createPrivateCompetition = async () => {
-    setLoading(true);
-    scrollIntoView();
-    setLoadingText('Creating Private Competition...');
-    try {
-      const { competitionId, blockchainId, gameId } =
-        await createSingleCompetition({
-          event,
-          stake: selectedCompetition.stake || customAmount,
-          creator: user.address,
-          isPublic: false,
-        });
-      return { competitionId, blockchainId, gameId };
-    } catch (error) {
-      console.log(error);
-      return {};
-    }
-  };
-
-  const registerBet = async (competitionId, blockchainId, gameId) => {
+  const registerBet = async (competitionId, blockchainId, gameId, i) => {
     setLoading(true);
     setLoadingText('Placing your Bet...');
     let success = false;
@@ -179,7 +158,7 @@ export default function EventCard(props) {
           gameId || joiningGameId,
           [6, 9],
           user.address,
-          event.version
+          competition.games[0].event.version
         );
         setGuessOne(6);
         setGuessTwo(9);
@@ -188,9 +167,9 @@ export default function EventCard(props) {
           competitionId || joiningCompetitionId,
           blockchainId,
           gameId || joiningGameId,
-          [guessOne, guessTwo],
+          [guessOne[i], guessTwo[i]],
           user.address,
-          event.version
+          competition.games[0].event.version
         );
       }
       success = true;
@@ -320,6 +299,20 @@ export default function EventCard(props) {
                       setGuessTwo={setGuessTwo}
                     />
                   </div>
+
+                  <div className="flex justify-center items-center w-full">
+                    {guessOne && guessTwo && (
+                      <MultiCardSubmitButton
+                        loading={loading}
+                        placeBet={placeBet}
+                        selectedCompetition={competition}
+                        guessOne={guessOne}
+                        guessTwo={guessTwo}
+                        event={event}
+                      />
+                    )}
+                  </div>
+                  <Divider className="mt-6" />
                 </div>
               </Collapse>
             ))}

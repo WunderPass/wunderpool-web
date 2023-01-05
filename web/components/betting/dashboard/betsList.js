@@ -80,6 +80,8 @@ export default function BetsList(props) {
         hasMore={visibleCompetitions.length < allCompetitions.length}
       >
         {visibleCompetitions.map((comp, i) => {
+          //If competitions has more than 1 game other view
+          //create other view first
           return (
             <DashboardCompetitionCard
               key={`dashboard-competition-card-${comp.id}`}
