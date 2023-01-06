@@ -9,7 +9,6 @@ export default function MulitList(props) {
   return bettingService.isReady ? (
     <div className="grid grid-cols-1 gap-5 w-full">
       {bettingService.competitions.map((competition) => {
-        console.log('competitiongames', competition.games);
         return (
           <MultiCard
             key={`competition-card-${competition.id}`}

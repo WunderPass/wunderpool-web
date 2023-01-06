@@ -22,6 +22,12 @@ export async function registerParticipant(
       popup
     );
 
+    console.log('prediction', prediction);
+    console.log('gameId', gameId);
+    console.log('userAddress', userAddress);
+    console.log('version', version);
+    console.log('blockchainId', blockchainId);
+
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bet',
       body: {
@@ -48,7 +54,8 @@ export async function registerParticipantForMulti(
   blockchainId,
   prediction,
   userAddress,
-  version
+  version,
+  bets
 ) {
   const { openPopup, sendSignatureRequest } = useWeb3();
   const popup = openPopup('sign');
@@ -62,12 +69,12 @@ export async function registerParticipantForMulti(
     );
 
     await postAndWaitForTransaction({
-      url: '/api/betting/competitions/bet',
+      url: '/api/betting/competitions/bets',
       body: {
         competitionId,
         gameId,
         userAddress,
-        prediction,
+        bets,
         signature,
       },
     });

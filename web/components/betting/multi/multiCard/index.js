@@ -8,7 +8,7 @@ import {
 import Header from './header';
 import MultiCardFooter from './footer';
 import MagicMomentDialog from './magicMomentDialog';
-import { registerParticipant } from '../../../../services/contract/betting/games';
+import { registerParticipantForMulti } from '../../../../services/contract/betting/games';
 import { useMemo } from 'react';
 import { compAddr } from '../../../../services/memberHelpers';
 import MultiCardPredicitionInput from './predictionInput';
@@ -54,28 +54,27 @@ export default function MultiCard(props) {
   );
 
   const placeBet = async () => {
-    competition.games.map(async (game, i) => {
-      //   const { competitionId, blockchainId, gameId } =
-      //     await joinPublicCompetition();
+    //  competition.games.map(async (game, i) => {
+    //   const { competitionId, blockchainId, gameId } =
+    //     await joinPublicCompetition();
 
-      if (game.event?.competitionId && game.event?.blockchainId && game.id) {
-        if (user.loginMethod == 'Casama') {
-          await registerBet(
-            game.event.competitionId,
-            game.event.blockchainId,
-            game.id,
-            i
-          );
-        } else {
-          setLoading(false);
-          setJoiningCompetitionId(game.event?.competitionId);
-          setJoiningBlockchainId(game.event?.blockchainId);
-          setJoiningGameId(game.event?.gameId);
-        }
+    if (game.event?.competitionId && game.event?.blockchainId && game.id) {
+      if (user.loginMethod == 'Casama') {
+        await registerBet(
+          game.event.competitionId,
+          game.event.blockchainId,
+          game.id,
+          i
+        );
       } else {
         setLoading(false);
+        setJoiningCompetitionId(game.event?.competitionId);
+        setJoiningBlockchainId(game.event?.blockchainId);
+        setJoiningGameId(game.event?.gameId);
       }
-    });
+    } else {
+      setLoading(false);
+    }
   };
 
   const reset = () => {
@@ -149,29 +148,15 @@ export default function MultiCard(props) {
     setLoadingText('Placing your Bet...');
     let success = false;
     try {
-      if (
-        compAddr(user.address, '0x1a8459f9ddecabe92281ebdfa62874010a53fdc6')
-      ) {
-        await registerParticipant(
-          competitionId || joiningCompetitionId,
-          blockchainId,
-          gameId || joiningGameId,
-          [6, 9],
-          user.address,
-          competition.games[0].event.version
-        );
-        setGuessOne(6);
-        setGuessTwo(9);
-      } else {
-        await registerParticipant(
-          competitionId || joiningCompetitionId,
-          blockchainId,
-          gameId || joiningGameId,
-          [guessOne[i], guessTwo[i]],
-          user.address,
-          competition.games[0].event.version
-        );
-      }
+      await registerParticipantForMulti(
+        competitionId || joiningCompetitionId,
+        blockchainId,
+        gameId || joiningGameId,
+        [guessOne[i], guessTwo[i]],
+        user.address,
+        competition.games[0].event.version
+      );
+
       success = true;
       setShowSuccess(true);
     } catch (error) {

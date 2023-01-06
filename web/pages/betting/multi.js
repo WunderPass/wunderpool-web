@@ -52,7 +52,6 @@ export default function Betting(props) {
                     <Typography className="text-xl sm:text-3xl font-medium ">
                       Join or Create a Multi Competition
                     </Typography>
-                    <button className="btn-casama p-2 px-4">Create</button>
                     {/* <div className="flex gap-2">
                       <DropDown
                         list={[
