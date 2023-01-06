@@ -62,14 +62,6 @@ export async function registerParticipantForMulti(
       false,
       popup
     );
-
-    console.log('prediction', prediction);
-    console.log('gameId', gameId);
-    console.log('userAddress', userAddress);
-    console.log('version', version);
-    console.log('blockchainId', blockchainId);
-    console.log('bets', bets);
-
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bets',
       body: {

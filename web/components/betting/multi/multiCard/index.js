@@ -54,7 +54,16 @@ export default function MultiCard(props) {
       !c.games[0].participants.find((p) => compAddr(p.address, user.address))
   );
 
+  useEffect(() => {
+    if (
+      guessOne.length === competition.games.length &&
+      guessTwo.length === competition.games.length
+    )
+      summarizePredcitions();
+  }, [guessOne, guessTwo]);
+
   const summarizePredcitions = async () => {
+    setBets([]);
     competition.games.map((game, i) => {
       let obj = {
         game_id: game.id,
@@ -66,10 +75,6 @@ export default function MultiCard(props) {
   };
 
   const placeBet = async () => {
-    //  competition.games.map(async (game, i) => {
-    //   const { competitionId, blockchainId, gameId } =
-    //     await joinPublicCompetition();
-    await summarizePredcitions();
     const game = competition.games[0];
     console.log('cosnt game', game);
     if (game.event?.competitionId && game.event?.blockchainId && game.id) {
@@ -304,6 +309,12 @@ export default function MultiCard(props) {
                   <div className="flex justify-center items-center w-full">
                     {guessOne && guessTwo && (
                       <MultiCardSubmitButton
+                        disabled={
+                          !(
+                            guessOne.length === competition.games.length &&
+                            guessTwo.length === competition.games.length
+                          )
+                        }
                         loading={loading}
                         placeBet={placeBet}
                         selectedCompetition={competition}
