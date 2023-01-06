@@ -62,6 +62,15 @@ export async function registerParticipantForMulti(
       false,
       popup
     );
+
+    console.log('prediction', prediction);
+    console.log('gameId', gameId);
+    console.log('userAddress', userAddress);
+    console.log('version', version);
+    console.log('blockchainId', blockchainId);
+    console.log('bets', bets);
+    console.log('competitionId', competitionId);
+
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bets',
       body: {
@@ -78,7 +87,7 @@ export async function registerParticipantForMulti(
       label: 'Place Bet',
     });
   } catch (error) {
-    console.log(error);
+    console.log('thats the erro', error);
     throw error;
   }
 }
