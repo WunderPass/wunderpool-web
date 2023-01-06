@@ -10,6 +10,18 @@ export default function MultiCardPredicitionInput(props) {
     color = 'text-casama-blue',
   } = props;
 
+  const updateFieldChangedOne = (index, e) => {
+    let newArr = [...guessOne];
+    newArr[index] = e.target.value;
+    setGuessOne(newArr);
+  };
+
+  const updateFieldChangedTwo = (index, e) => {
+    let newArr = [...guessTwo];
+    newArr[index] = e.target.value;
+    setGuessTwo(newArr);
+  };
+
   return (
     <div>
       {competition.games.map((game, i) => {
@@ -29,9 +41,7 @@ export default function MultiCardPredicitionInput(props) {
                       inputMode="numeric"
                       className="textfield text-center py-1 px-3"
                       value={guessOne[i]}
-                      onChange={(e) =>
-                        setGuessOne((guessOne) => [...guessOne, e.target.value])
-                      }
+                      onChange={(e) => updateFieldChangedOne(i, e)}
                     />
                   </div>
                 </div>
@@ -47,9 +57,7 @@ export default function MultiCardPredicitionInput(props) {
                       inputMode="numeric"
                       className="textfield text-center py-1 px-3"
                       value={guessTwo[i]}
-                      onChange={(e) =>
-                        setGuessTwo((guessTwo) => [...guessTwo, e.target.value])
-                      }
+                      onChange={(e) => updateFieldChangedTwo(i, e)}
                     />
                   </div>
                 </div>

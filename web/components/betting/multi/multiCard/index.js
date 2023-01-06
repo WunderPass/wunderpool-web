@@ -33,6 +33,7 @@ export default function MultiCard(props) {
   const [joiningGameId, setJoiningGameId] = useState(null);
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [bets, setBets] = useState([]);
 
   const cardRef = useRef(null);
 
@@ -53,18 +54,30 @@ export default function MultiCard(props) {
       !c.games[0].participants.find((p) => compAddr(p.address, user.address))
   );
 
+  const summarizePredcitions = async () => {
+    competition.games.map((game, i) => {
+      let obj = {
+        game_id: game.id,
+        home_score: parseInt(guessOne[i]),
+        away_score: parseInt(guessTwo[i]),
+      };
+      setBets((bets) => [...bets, obj]);
+    });
+  };
+
   const placeBet = async () => {
     //  competition.games.map(async (game, i) => {
     //   const { competitionId, blockchainId, gameId } =
     //     await joinPublicCompetition();
-
+    await summarizePredcitions();
+    const game = competition.games[0];
+    console.log('cosnt game', game);
     if (game.event?.competitionId && game.event?.blockchainId && game.id) {
       if (user.loginMethod == 'Casama') {
         await registerBet(
           game.event.competitionId,
           game.event.blockchainId,
-          game.id,
-          i
+          game.id
         );
       } else {
         setLoading(false);
@@ -143,18 +156,21 @@ export default function MultiCard(props) {
     }
   };
 
-  const registerBet = async (competitionId, blockchainId, gameId, i) => {
+  const registerBet = async (competitionId, blockchainId, gameId) => {
+    console.log('gameID', gameId);
     setLoading(true);
     setLoadingText('Placing your Bet...');
     let success = false;
+    console.log('bets herer', bets);
     try {
       await registerParticipantForMulti(
         competitionId || joiningCompetitionId,
         blockchainId,
         gameId || joiningGameId,
-        [guessOne[i], guessTwo[i]],
+        [guessOne[0], guessTwo[0]],
         user.address,
-        competition.games[0].event.version
+        competition.games[0].event.version,
+        bets
       );
 
       success = true;
