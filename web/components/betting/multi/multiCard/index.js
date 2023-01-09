@@ -42,18 +42,6 @@ export default function MultiCard(props) {
     [joiningCompetitionId, joiningGameId]
   );
 
-  const eventCompetitions = bettingService.publicCompetitions.filter(
-    (comp) =>
-      comp.games.length == 1 &&
-      comp.games.find((g) => g.id && g.event.id == event.id)
-  );
-
-  const poolRequiresBet = eventCompetitions.find(
-    (c) =>
-      c.members.find((m) => compAddr(m.address, user.address)) &&
-      !c.games[0].participants.find((p) => compAddr(p.address, user.address))
-  );
-
   useEffect(() => {
     if (
       guessOne.length === competition.games.length &&
@@ -218,132 +206,91 @@ export default function MultiCard(props) {
 
   return (
     <>
-      <div className="container-white pb-16 cursor-pointer relative">
-        <div ref={cardRef} className="absolute -top-12" />
-        <div onClick={(e) => handleToggle(e)}>
-          <Header competition={competition} />
+      {competition.games.length > 1 && (
+        <div className="container-white pb-16 cursor-pointer relative">
+          <div ref={cardRef} className="absolute -top-12" />
+          <div onClick={(e) => handleToggle(e)}>
+            <Header competition={competition} />
 
-          <div className="mt-6">
-            <TransactionFrame open={loading} text={loadingText} />
-          </div>
-          {!loading &&
-            (mustClickAgain ? (
-              <Collapse in={true}>
-                <Divider className="mt-6" />
-                <div className="my-5">
-                  <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-3">
-                    Click here to Confirm your Bet on Chain
-                    <button
-                      togglable="false"
-                      disabled={loading}
-                      className="btn-casama py-2 px-3 text-lg"
-                      onClick={() =>
-                        registerBet(
-                          joiningCompetitionId,
-                          joiningBlockchainId,
-                          joiningGameId
-                        )
-                      }
-                    >
-                      Confirm my Bet
-                    </button>
+            <div className="mt-6">
+              <TransactionFrame open={loading} text={loadingText} />
+            </div>
+            {!loading &&
+              (mustClickAgain ? (
+                <Collapse in={true}>
+                  <Divider className="mt-6" />
+                  <div className="my-5">
+                    <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-3">
+                      Click here to Confirm your Bet on Chain
+                      <button
+                        togglable="false"
+                        disabled={loading}
+                        className="btn-casama py-2 px-3 text-lg"
+                        onClick={() =>
+                          registerBet(
+                            joiningCompetitionId,
+                            joiningBlockchainId,
+                            joiningGameId
+                          )
+                        }
+                      >
+                        Confirm my Bet
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </Collapse>
-            ) : poolRequiresBet ? (
-              <>
-                <Divider />
-                <div className="my-3">
-                  <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-1">
-                    There seemed to be an Error last time you tried to bet.
-                    Please enter your Bet for the{' '}
-                    {currency(poolRequiresBet.stake)} Competition again.
-                    <div className="w-full max-w-sm">
-                      {/* <EventCardPredicitionInput
+                </Collapse>
+              ) : (
+                <Collapse in={showDetails}>
+                  <Divider className="mt-6" />
+                  <div className="my-5">
+                    <div className="flex justify-center items-center text-semibold sm:text-lg">
+                      <p className="text-xl text-casama-blue font-medium">
+                        Place your bets
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-3 mt-4">
+                      <MultiCardPredicitionInput
+                        competition={competition}
                         event={event}
                         loading={loading}
                         guessOne={guessOne}
                         guessTwo={guessTwo}
                         setGuessOne={setGuessOne}
                         setGuessTwo={setGuessTwo}
-                      /> */}
-                    </div>
-                    <button
-                      togglable="false"
-                      disabled={loading}
-                      className="btn-casama py-2 px-3 text-lg w-full max-w-sm"
-                      onClick={() =>
-                        registerBet(
-                          poolRequiresBet.id,
-                          poolRequiresBet.blockchainId,
-                          poolRequiresBet.games[0].id
-                        )
-                      }
-                    >
-                      Confirm Bet
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <Collapse in={showDetails}>
-                <Divider className="mt-6" />
-                <div className="my-5">
-                  <div className="flex justify-center items-center text-semibold sm:text-lg">
-                    <p className="text-xl text-casama-blue font-medium">
-                      Place your bets
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-3 mt-4">
-                    <MultiCardPredicitionInput
-                      competition={competition}
-                      event={event}
-                      loading={loading}
-                      guessOne={guessOne}
-                      guessTwo={guessTwo}
-                      setGuessOne={setGuessOne}
-                      setGuessTwo={setGuessTwo}
-                    />
-                  </div>
-
-                  <div className="flex justify-center items-center w-full">
-                    {guessOne && guessTwo && (
-                      <MultiCardSubmitButton
-                        disabled={
-                          !(
-                            guessOne.length === competition.games.length &&
-                            guessTwo.length === competition.games.length
-                          )
-                        }
-                        loading={loading}
-                        placeBet={placeBet}
-                        selectedCompetition={competition}
-                        guessOne={guessOne}
-                        guessTwo={guessTwo}
-                        event={event}
                       />
-                    )}
+                    </div>
+
+                    <div className="flex justify-center items-center w-full">
+                      {guessOne && guessTwo && (
+                        <MultiCardSubmitButton
+                          disabled={
+                            !(
+                              guessOne.length === competition.games.length &&
+                              guessTwo.length === competition.games.length
+                            )
+                          }
+                          loading={loading}
+                          placeBet={placeBet}
+                          selectedCompetition={competition}
+                          guessOne={guessOne}
+                          guessTwo={guessTwo}
+                          event={event}
+                        />
+                      )}
+                    </div>
+                    <Divider className="mt-6" />
                   </div>
-                  <Divider className="mt-6" />
-                </div>
-              </Collapse>
-            ))}
-        </div>
-        {/* {showDetails && !loading && !mustClickAgain && (
+                </Collapse>
+              ))}
+          </div>
+          {/* {showDetails && !loading && !mustClickAgain && (
           <EventCardFooter
             scrollIntoView={scrollIntoView}
             setShowDetails={setShowDetails}
           />
         )} */}
-      </div>
-      {/* <MagicMomentDialog
-        open={showSuccess}
-        setOpen={setShowSuccess}
-        reset={reset}
-        guessOne={guessOne}
-        guessTwo={guessTwo}
-        event={event}
-      /> */}
+        </div>
+      )}
     </>
   );
 }
