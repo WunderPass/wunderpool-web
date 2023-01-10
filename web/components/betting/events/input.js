@@ -29,7 +29,7 @@ export default function EventInput(props) {
       getOptionLabel={(option) => {
         return option.name;
       }}
-      filterOptions={filterOptions}
+      Options={filterOptions}
       onChange={handleChange}
       renderInput={(params) => (
         <TextField

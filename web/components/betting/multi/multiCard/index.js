@@ -5,6 +5,7 @@ import {
   createSingleCompetition,
   joinSingleCompetition,
 } from '/services/contract/betting/competitions';
+import Body from './body';
 import Header from './header';
 import MultiCardFooter from './footer';
 import MagicMomentDialog from './magicMomentDialog';
@@ -182,22 +183,6 @@ export default function MultiCard(props) {
     return success;
   };
 
-  const toggleSelectedCompetition = (params, fromCustom = false) => {
-    setShowCustomInput(fromCustom);
-
-    setSelectedCompetition((comp) => {
-      if (
-        comp.stake != params.stake &&
-        params.stake &&
-        Number(params.stake) > user.usdBalance
-      )
-        user.setTopUpRequired(true);
-      return comp.stake == params.stake && comp.public == params.public
-        ? {}
-        : params;
-    });
-  };
-
   const handleToggle = (e) => {
     if (e.target.getAttribute('togglable') == 'false') return;
     setShowDetails(!showDetails);
@@ -241,14 +226,19 @@ export default function MultiCard(props) {
                 </Collapse>
               ) : (
                 <Collapse in={showDetails}>
-                  <Divider className="mt-6" />
-                  <div className="my-5">
-                    <div className="flex justify-center items-center text-semibold sm:text-lg">
-                      <p className="text-xl text-casama-blue font-medium">
-                        Place your bets
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-3 mt-4">
+                  <Body
+                    competition={competition}
+                    guessOne={guessOne}
+                    guessTwo={guessTwo}
+                    setGuessOne={setGuessOne}
+                    setGuessTwo={setGuessTwo}
+                  />
+                  <div className="flex flex-col justify-center items-center w-full">
+                    <p>(Fill out all tips to place your bets)</p>
+
+                    <div className="flex items-center justify-center mb-5 w-full">
+                      <div className="flex justify-center items-center text-semibold sm:text-lg"></div>
+                      {/* <div className="flex flex-col gap-3 mt-4">
                       <MultiCardPredicitionInput
                         competition={competition}
                         event={event}
@@ -258,27 +248,27 @@ export default function MultiCard(props) {
                         setGuessOne={setGuessOne}
                         setGuessTwo={setGuessTwo}
                       />
+                    </div> */}
+                      <div className="flex justify-center items-center sm:w-1/2 w-full">
+                        {guessOne && guessTwo && (
+                          <MultiCardSubmitButton
+                            disabled={
+                              !(
+                                guessOne.length === competition.games.length &&
+                                guessTwo.length === competition.games.length
+                              )
+                            }
+                            loading={loading}
+                            placeBet={placeBet}
+                            selectedCompetition={competition}
+                            guessOne={guessOne}
+                            guessTwo={guessTwo}
+                            event={event}
+                          />
+                        )}
+                      </div>
+                      <Divider className="mt-6" />
                     </div>
-
-                    <div className="flex justify-center items-center w-full">
-                      {guessOne && guessTwo && (
-                        <MultiCardSubmitButton
-                          disabled={
-                            !(
-                              guessOne.length === competition.games.length &&
-                              guessTwo.length === competition.games.length
-                            )
-                          }
-                          loading={loading}
-                          placeBet={placeBet}
-                          selectedCompetition={competition}
-                          guessOne={guessOne}
-                          guessTwo={guessTwo}
-                          event={event}
-                        />
-                      )}
-                    </div>
-                    <Divider className="mt-6" />
                   </div>
                 </Collapse>
               ))}
