@@ -61,29 +61,30 @@ export default function ParticipantTable({
 }) {
   return (
     <div className="">
-      {participants.length > 0 && (
+      {participants && participants.length > 0 && (
         <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
           {headerText}:
         </div>
       )}
 
-      {(hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
-        .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
-        .map(({ address, prediction, winnings, userName, wunderId }) => {
-          return (
-            <ParticipantTableRow
-              key={`participant-${address}`}
-              user={user}
-              address={address}
-              wunderId={wunderId}
-              userName={userName}
-              prediction={prediction}
-              winnings={winnings}
-              stake={stake}
-              hideImages={hideImages}
-            />
-          );
-        })}
+      {participants &&
+        (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
+          .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
+          .map(({ address, prediction, winnings, userName, wunderId }) => {
+            return (
+              <ParticipantTableRow
+                key={`participant-${address}`}
+                user={user}
+                address={address}
+                wunderId={wunderId}
+                userName={userName}
+                prediction={prediction}
+                winnings={winnings}
+                stake={stake}
+                hideImages={hideImages}
+              />
+            );
+          })}
     </div>
   );
 }

@@ -57,7 +57,7 @@ export default function MultiCard(props) {
       let obj = {
         game_id: game.id,
         home_score: parseInt(guessOne[i]),
-        away_score: parseInt(guessTwo[i]),
+        guest_score: parseInt(guessTwo[i]),
       };
       setBets((bets) => [...bets, obj]);
     });

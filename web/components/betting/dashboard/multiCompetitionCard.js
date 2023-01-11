@@ -209,7 +209,6 @@ export default function DashboardCompetitionCard(props) {
                   <p>Pot:</p>
                   <p className="ml-2">
                     {currency(
-                      //TODO ADD ALL GAMES
                       (sponsored ? stake / (maxMembers - 1) : stake) *
                         game.participants.length
                     )}
