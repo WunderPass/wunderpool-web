@@ -4,6 +4,7 @@ import { Typography, Skeleton } from '@mui/material';
 import Link from 'next/link';
 import DashboardCompetitionCard from '/components/betting/dashboard/competitionCard';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import MultiCompetitionCard from '/components/betting/dashboard/multiCompetitionCard';
 
 function sortByDate(competitions, desc = false) {
   return competitions.sort((first, second) => {
@@ -47,7 +48,7 @@ export default function BetsList(props) {
           eventTypeSort
         )
       : sortCompetition(
-          bettingService.userCompetitions,
+          bettingService.competitions, //TODO Change this back to userCompetitions
           isSortById,
           sortId,
           eventTypeSort,
@@ -79,10 +80,22 @@ export default function BetsList(props) {
         next={() => setVisibleCompetitionLength((num) => num + 10)}
         hasMore={visibleCompetitions.length < allCompetitions.length}
       >
+        {console.log('visibleCompetitions', visibleCompetitions)}
         {visibleCompetitions.map((comp, i) => {
           //If competitions has more than 1 game other view
           //create other view first
-          return (
+          console.log('comp', comp);
+
+          return comp.games.length > 1 ? (
+            <MultiCompetitionCard
+              key={`dashboard-competition-card-${comp.id}`}
+              competition={comp}
+              user={user}
+              isSortById={isSortById}
+              isHistory={isHistory}
+              {...props}
+            />
+          ) : (
             <DashboardCompetitionCard
               key={`dashboard-competition-card-${comp.id}`}
               competition={comp}

@@ -1,4 +1,7 @@
+import { format } from 'crypto-js';
+import { useEffect, useState } from 'react';
 import MultiCardPredicitionInput from './predictionInput';
+require('core-js/actual/array/group-by');
 
 function toDate(str) {
   return str
@@ -20,10 +23,33 @@ function toTime(str) {
 
 export default function MultitCardBody(props) {
   const { competition, guessOne, guessTwo, setGuessOne, setGuessTwo } = props;
+  const [gamesSortedByDate, setGamesSortedByDate] = useState([]);
+
+  const formatCompetition = (comp) => {
+    console.log('games', comp.games);
+    const sorted = comp.games
+      .sort((a, b) =>
+        a.event.startTime < b.event.startTime
+          ? -1
+          : a.event.startTime > b.event.startTime
+          ? 1
+          : 0
+      )
+      .groupBy((game) => {
+        return game.event.startTime;
+      });
+
+    console.log('games afta', sorted);
+    setGamesSortedByDate(sorted);
+  };
+
+  useEffect(() => {
+    formatCompetition(competition);
+  }, [competition]);
 
   return (
     <div className="flex flex-col items-center justify-center text-center my-5">
-      {competition.games
+      {competition.games //TODO add groupBy according to date
         .sort((a, b) =>
           a.event.startTime < b.event.startTime
             ? -1
@@ -32,7 +58,6 @@ export default function MultitCardBody(props) {
             : 0
         )
         .map((game, i) => {
-          console.log('time', game.event.startTime);
           return (
             <div className="container-gray flex h-auto  flex-row items-center mt-5 justify-between w-full text-lg py-14">
               <div className=" flex flex-col justify-center items-center w-full">

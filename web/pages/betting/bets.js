@@ -60,7 +60,7 @@ export default function Bets(props) {
                 </div>
               </div>
             </div>
-
+            {console.log('betting serv', bettingService)}
             <div className="sm:flex sm:flex-row ">
               <div className="w-full pr-1 mb-2 mt-8 sm:mb-0 sm:mt-0">
                 <Box
