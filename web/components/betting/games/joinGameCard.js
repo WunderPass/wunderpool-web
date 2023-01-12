@@ -286,6 +286,7 @@ function InputJoinAmount(props) {
     setLoading(true);
     setLoadingText('Joining Competition...');
     try {
+      console.log('competitionid in placebet', competition.id);
       if (sponsored) {
         await joinFreeRollCompetition({
           competitionId: competition.id,

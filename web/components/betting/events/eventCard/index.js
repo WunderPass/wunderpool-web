@@ -271,6 +271,7 @@ export default function EventCard(props) {
                   <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-1">
                     There seemed to be an Error last time you tried to bet.
                     Please enter your Bet for the{' '}
+                    {console.log('poolRequiresBet', poolRequiresBet)}
                     {currency(poolRequiresBet.stake)} Competition again.
                     <div className="w-full max-w-sm">
                       <EventCardPredicitionInput
@@ -288,7 +289,7 @@ export default function EventCard(props) {
                       className="btn-casama py-2 px-3 text-lg w-full max-w-sm"
                       onClick={() =>
                         registerBet(
-                          poolRequiresBet.id,
+                          poolRequiresBet.competitionId,
                           poolRequiresBet.blockchainId,
                           poolRequiresBet.games[0].id
                         )

@@ -21,6 +21,12 @@ export async function registerParticipant(
       false,
       popup
     );
+    console.log('userAddress', userAddress);
+    console.log('version', version);
+    console.log('blockchainId', blockchainId);
+    console.log('prediction', prediction);
+    console.log('competitionId', competitionId);
+    console.log('gameId', gameId);
 
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bet',
@@ -46,8 +52,7 @@ export async function registerParticipant(
 export async function registerParticipantForMulti(
   competitionId,
   blockchainId,
-  gameId,
-  prediction,
+  gameIds,
   userAddress,
   version,
   bets
@@ -55,27 +60,35 @@ export async function registerParticipantForMulti(
   const { openPopup, sendSignatureRequest } = useWeb3();
   const popup = openPopup('sign');
   const address = distributorAddress(version);
+
+  let predictions = [];
+  bets.map((bet) => {
+    let prediction = [];
+    prediction.push(bet.home_score);
+    prediction.push(bet.guest_score);
+    predictions.push(prediction);
+  });
+
+  console.log('prediction', predictions);
+  console.log('gameIds', gameIds);
+  console.log('userAddress', userAddress);
+  console.log('version', version);
+  console.log('blockchainId', blockchainId);
+  console.log('predictions', predictions);
+  console.log('competitionId', competitionId);
   try {
     const { signature } = await sendSignatureRequest(
       ['uint256', 'uint256[]', 'address', 'uint256[][]'],
-      [blockchainId, [gameId], address, [prediction]],
+      [blockchainId, gameIds, address, predictions],
       false,
       popup
     );
-
-    console.log('prediction', prediction);
-    console.log('gameId', gameId);
-    console.log('userAddress', userAddress);
-    console.log('version', version);
-    console.log('blockchainId', blockchainId);
-    console.log('bets', bets);
-    console.log('competitionId', competitionId);
 
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bets',
       body: {
         competitionId,
-        gameId,
+        gameId: gameIds,
         userAddress,
         bets,
         signature,

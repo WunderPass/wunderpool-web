@@ -34,6 +34,8 @@ export default async function handler(req, res) {
         )
       );
     }
+
+    console.log('allComp', allCompetitions);
     res.status(200).json({ content: filteredCompetitions, pageData });
   } catch (error) {
     console.log(error);

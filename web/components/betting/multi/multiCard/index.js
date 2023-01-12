@@ -8,7 +8,7 @@ import {
 import Body from './body';
 import Header from './header';
 import MultiCardFooter from './footer';
-import MagicMomentDialog from './magicMomentDialog';
+import MagicMomentMultiDialog from './magicMomentMultiDialog';
 import { registerParticipantForMulti } from '../../../../services/contract/betting/games';
 import { useMemo } from 'react';
 import { compAddr } from '../../../../services/memberHelpers';
@@ -54,30 +54,36 @@ export default function MultiCard(props) {
   const summarizePredcitions = async () => {
     setBets([]);
     competition.games.map((game, i) => {
-      let obj = {
-        game_id: game.id,
-        home_score: parseInt(guessOne[i]),
-        guest_score: parseInt(guessTwo[i]),
-      };
-      setBets((bets) => [...bets, obj]);
+      if (game.state === 'UPCOMING') {
+        let obj = {
+          game_id: game.id,
+          home_score: parseInt(guessOne[i]),
+          guest_score: parseInt(guessTwo[i]),
+        };
+        setBets((bets) => [...bets, obj]);
+      }
     });
   };
 
   const placeBet = async () => {
     const game = competition.games[0];
-    console.log('cosnt game', game);
-    if (game.event?.competitionId && game.event?.blockchainId && game.id) {
+    var gameIds = [];
+    competition.games.map((game) => {
+      if (game.state === 'UPCOMING') gameIds.push(game.id);
+    });
+    await joinPublicCompetition(competition, gameIds);
+
+    if (competition.competitionId && game.event?.blockchainId && game.id) {
       if (user.loginMethod == 'Casama') {
         await registerBet(
-          game.event.competitionId,
-          game.event.blockchainId,
-          game.id
+          competition.competitionId,
+          competition.blockchainId,
+          gameIds
         );
       } else {
-        setLoading(false);
-        setJoiningCompetitionId(game.event?.competitionId);
-        setJoiningBlockchainId(game.event?.blockchainId);
-        setJoiningGameId(game.event?.gameId);
+        setJoiningCompetitionId(competition.competitionId);
+        setJoiningBlockchainId(competition.blockchainId);
+        setJoiningGameId(gameIds);
       }
     } else {
       setLoading(false);
@@ -88,8 +94,8 @@ export default function MultiCard(props) {
     setLoading(null);
     setLoadingText(null);
     setShowDetails(false);
-    setGuessOne('');
-    setGuessTwo('');
+    setGuessOne([]);
+    setGuessTwo([]);
     setJoiningCompetitionId(null);
     setJoiningBlockchainId(null);
     setJoiningGameId(null);
@@ -104,64 +110,46 @@ export default function MultiCard(props) {
     });
   };
 
-  const joinPublicCompetition = async () => {
+  const joinPublicCompetition = async (competition, gameIds) => {
+    console.log('competition', competition);
     setLoading(true);
     scrollIntoView();
     setLoadingText('Joining Public Competition...');
-    if (selectedCompetition.matchingCompetition) {
-      try {
-        await joinSingleCompetition({
-          userAddress: user.address,
-          stake: selectedCompetition.matchingCompetition.stake,
-          poolAddress: selectedCompetition.matchingCompetition.poolAddress,
-          poolVersion: 'ETA',
-        });
-        return {
-          competitionId: selectedCompetition.matchingCompetition.id,
-          blockchainId: selectedCompetition.matchingCompetition.blockchainId,
-          gameId: selectedCompetition.matchingCompetition.games[0].id,
-        };
-      } catch (error) {
-        handleError(
-          typeof error == 'string' ? error : 'Competition could not be joined',
-          user.wunderId,
-          user.userName
-        );
-        return {};
-      }
-    } else {
-      try {
-        const { competitionId, blockchainId, gameId } =
-          await createSingleCompetition({
-            event,
-            stake: selectedCompetition.stake,
-            creator: user.address,
-            isPublic: true,
-          });
-        return { competitionId, blockchainId, gameId };
-      } catch (error) {
-        handleError(
-          typeof error == 'string' ? error : 'Competition could not be joined',
-          user.wunderId,
-          user.userName
-        );
-        return {};
-      }
+
+    try {
+      await joinSingleCompetition({
+        userAddress: user.address,
+        stake: competition.stake,
+        poolAddress: competition.poolAddress,
+        poolVersion: 'ETA',
+      });
+      return {
+        competitionId: competition.competitionId,
+        blockchainId: competition.blockchainId,
+        gameId: gameIds,
+      };
+    } catch (error) {
+      console.log(error);
+      handleError(
+        typeof error == 'string' ? error : 'Competition could not be joined',
+        user.wunderId,
+        user.userName
+      );
+      return {};
     }
   };
 
-  const registerBet = async (competitionId, blockchainId, gameId) => {
-    console.log('gameID', gameId);
+  const registerBet = async (competitionId, blockchainId, gameIds) => {
+    console.log('gameIDs', gameIds);
     setLoading(true);
     setLoadingText('Placing your Bet...');
     let success = false;
-    console.log('bets herer', bets);
+    console.log('bets here', bets);
     try {
       await registerParticipantForMulti(
         competitionId || joiningCompetitionId,
         blockchainId,
-        gameId || joiningGameId,
-        [guessOne[0], guessTwo[0]],
+        gameIds || joiningGameId,
         user.address,
         competition.games[0].event.version,
         bets
@@ -281,6 +269,12 @@ export default function MultiCard(props) {
         )} */}
         </div>
       )}
+      <MagicMomentMultiDialog //TODO TEST MAGIC MOMENT FOR MULTI COMPETITION
+        open={showSuccess}
+        setOpen={setShowSuccess}
+        reset={reset}
+        competition={competition}
+      />
     </>
   );
 }
