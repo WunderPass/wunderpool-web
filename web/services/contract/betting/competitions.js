@@ -6,7 +6,7 @@ import { joinPool } from '../pools';
 import { approveUSDC } from '../token';
 import * as ga from '/lib/google-analytics';
 
-async function createCompetition({
+export async function createCompetition({
   name,
   creator,
   eventIds,
