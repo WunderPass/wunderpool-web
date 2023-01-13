@@ -268,7 +268,7 @@ export default function MultiCard(props) {
         )} */}
         </div>
       )}
-      <MagicMomentMultiDialog //TODO TEST MAGIC MOMENT FOR MULTI COMPETITION
+      <MagicMomentMultiDialog
         open={showSuccess}
         setOpen={setShowSuccess}
         reset={reset}

@@ -295,6 +295,10 @@ button:disabled {
   @apply border w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-casama-extra-light-blue;
 }
 
+.textfield-score {
+  @apply border w-full py-1 px-3 text-5xl text-center font-medium text-casama-blue leading-tight rounded-lg bg-[#F6F6F6] focus:bg-white focus:outline-none focus:border-casama-extra-light-blue;
+}
+
 .container-checkbox {
   @apply w-full px-3 text-gray-700 leading-tight rounded-lg bg-[#F6F6F6] focus:border-casama-blue;
 }

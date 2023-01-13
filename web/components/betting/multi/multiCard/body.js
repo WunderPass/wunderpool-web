@@ -49,7 +49,7 @@ export default function MultitCardBody(props) {
 
   return (
     <div className="flex flex-col items-center justify-center text-center my-5">
-      {competition.games //TODO add groupBy according to date
+      {competition.games //TODO Add group by according to date
         .sort((a, b) =>
           a.event.startTime < b.event.startTime
             ? -1
@@ -62,10 +62,10 @@ export default function MultitCardBody(props) {
             <div className="container-gray flex h-auto  flex-row items-center mt-5 justify-between w-full text-lg py-14">
               <div className=" flex flex-col justify-center items-center w-full">
                 <div>
-                  <div className="text-md sm:text-2xl">
+                  <div className="text-md sm:text-xl">
                     {toDate(game.event?.startTime)}
                   </div>
-                  <div className="text-md sm:text-xl">
+                  <div className="text-md sm:text-lg">
                     {toTime(game.event?.startTime)}
                   </div>
                 </div>

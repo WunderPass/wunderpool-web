@@ -27,7 +27,7 @@ export default function MultiCardPredicitionInput(props) {
                 <input
                   togglable="false"
                   inputMode="numeric"
-                  className="textfield text-center py-1 px-3"
+                  className="textfield-score "
                   value={guessOne[i]}
                   onChange={(e) => updateFieldChangedOne(i, e)}
                 />
@@ -41,7 +41,7 @@ export default function MultiCardPredicitionInput(props) {
                 <input
                   togglable="false"
                   inputMode="numeric"
-                  className="textfield text-center py-1 px-3"
+                  className="textfield-score "
                   value={guessTwo[i]}
                   onChange={(e) => updateFieldChangedTwo(i, e)}
                 />
