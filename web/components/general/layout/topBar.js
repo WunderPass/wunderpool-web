@@ -87,7 +87,7 @@ export default function TopBar(props) {
                                   : ''
                               }`}
                             >
-                              All Games
+                              Single
                             </li>
                           </Link>
                         </div>
@@ -104,7 +104,7 @@ export default function TopBar(props) {
                                   : ''
                               }`}
                             >
-                              Multi Games
+                              Combo
                             </li>
                           </Link>
                         </div>

@@ -40,7 +40,7 @@ export default function Betting(props) {
                 <div className="flex flex-col">
                   <div className="flex flex-row items-center ">
                     <Typography className=" text-2xl mt-5 sm:text-4xl mb-2 font-medium">
-                      Multi - Competitions
+                      Combo Games
                     </Typography>
                   </div>
                 </div>
@@ -49,9 +49,6 @@ export default function Betting(props) {
               <div className="sm:flex sm:flex-row">
                 <div className="w-full pr-1 mb-8 mt-8 sm:mb-0 sm:mt-0 ">
                   <div className="flex flex-row items-center justify-between mb-3 h-14 w-full">
-                    <Typography className="text-xl sm:text-3xl font-medium ">
-                      Join or Create a Multi Competition
-                    </Typography>
                     {/* <div className="flex gap-2">
                       <DropDown
                         list={[

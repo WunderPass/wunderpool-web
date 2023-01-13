@@ -1,6 +1,11 @@
 import { currency } from '../../../../services/formatter';
 
-export default function MulitCardSubmitButton({ loading, placeBet, disabled }) {
+export default function MulitCardSubmitButton({
+  loading,
+  placeBet,
+  disabled,
+  competition,
+}) {
   return (
     <div className="flex items-center justify-center w-full ">
       <button
@@ -13,7 +18,7 @@ export default function MulitCardSubmitButton({ loading, placeBet, disabled }) {
         }
         onClick={placeBet}
       >
-        <p className="text-2xl">Place all your bets</p>
+        <p className="text-2xl">Place all your bets for ${competition.stake}</p>
       </button>
     </div>
   );

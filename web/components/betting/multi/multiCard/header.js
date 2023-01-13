@@ -7,6 +7,7 @@ export default function MultitCardHeader(props) {
         <span>{competition.name}</span>{' '}
         <span>({competition.games.length} games in competition)</span>
       </div>
+      <div className="flex flex-row justify-between items-center"></div>
     </div>
   );
 }

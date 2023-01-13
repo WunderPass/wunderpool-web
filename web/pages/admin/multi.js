@@ -27,10 +27,11 @@ function EventInput({ events, setSelectedEvents, selectedEvents }) {
   });
 
   const handleChange = (e, value, reason) => {
+    console.log(value);
     if (reason == 'clear') {
       setSelectedEvents([]);
     } else {
-      setSelectedEvents((selectedEvents) => [...selectedEvents, value]);
+      setSelectedEvents(value);
     }
   };
 
@@ -45,6 +46,7 @@ function EventInput({ events, setSelectedEvents, selectedEvents }) {
       }}
       filterOptions={filterOptions}
       onChange={handleChange}
+      multiple
       renderInput={(params) => (
         <TextField
           className="opacity-50 text-black rounded-lg"

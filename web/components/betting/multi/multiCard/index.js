@@ -222,7 +222,7 @@ export default function MultiCard(props) {
                     setGuessTwo={setGuessTwo}
                   />
                   <div className="flex flex-col justify-center items-center w-full">
-                    <p>(Fill out all tips to place your bets)</p>
+                    <p>(Enter your score predictions for all games)</p>
 
                     <div className="flex items-center justify-center mb-5 w-full">
                       <div className="flex justify-center items-center text-semibold sm:text-lg"></div>
@@ -248,10 +248,9 @@ export default function MultiCard(props) {
                             }
                             loading={loading}
                             placeBet={placeBet}
-                            selectedCompetition={competition}
+                            competition={competition}
                             guessOne={guessOne}
                             guessTwo={guessTwo}
-                            event={event}
                           />
                         )}
                       </div>
