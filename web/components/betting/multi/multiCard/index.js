@@ -99,9 +99,9 @@ export default function MultiCard(props) {
     setJoiningCompetitionId(null);
     setJoiningBlockchainId(null);
     setJoiningGameId(null);
-    setSelectedCompetition({});
     setCustomAmount('');
     setShowCustomInput(false);
+    window.location.reload(false); //TODO FIX THIS IN THE FUTURE (BUG after voting all mutli games are displayed as the same game)
   };
 
   const scrollIntoView = () => {
@@ -181,7 +181,6 @@ export default function MultiCard(props) {
           <div ref={cardRef} className="absolute -top-12" />
           <div onClick={(e) => handleToggle(e)}>
             <Header competition={competition} />
-
             <div className="mt-6">
               <TransactionFrame open={loading} text={loadingText} />
             </div>
