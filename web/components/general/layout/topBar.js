@@ -87,7 +87,24 @@ export default function TopBar(props) {
                                   : ''
                               }`}
                             >
-                              All Games
+                              Single
+                            </li>
+                          </Link>
+                        </div>
+                      </ReactourTarget>
+                      <ReactourTarget name="multi-games" from="sm">
+                        <div>
+                          <Link href={`/betting/multi`}>
+                            <li
+                              className={`px-4 p-2 rounded-lg cursor-pointer hover:bg-casama-light-blue ${
+                                ['/betting/multi', '/onboarding'].includes(
+                                  router.pathname
+                                )
+                                  ? 'bg-casama-light-blue'
+                                  : ''
+                              }`}
+                            >
+                              Combo
                             </li>
                           </Link>
                         </div>

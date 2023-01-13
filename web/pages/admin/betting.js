@@ -424,7 +424,7 @@ function ClosedCompetitionCard({
         <Collapse in={showMembers}>
           {showMembers && (
             <ParticipantTable
-              participants={gameResults}
+              participants={competition.games[0]?.participants}
               stake={sponsored ? 0 : stake}
               user={user}
             />

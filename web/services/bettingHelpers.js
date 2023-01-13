@@ -304,7 +304,7 @@ export function formatEvent(event) {
     blockchainId: network_event_id?.event_id || null,
     version: network_event_id?.contract_version || null,
     competitionName: event_competition_name || event_competition?.name,
-    competitionId: event_competition?.id,
+    eventBlockchainId: event_competition?.id,
     teamHome: {
       id: team_home_id,
       name: team_home,
@@ -347,6 +347,9 @@ export function formatParticipant(participant) {
     profile_name,
     home_score,
     away_score,
+    points,
+    stake,
+    profit,
   } = participant;
   return {
     address: user_address,
@@ -354,6 +357,9 @@ export function formatParticipant(participant) {
     wunderId: wunder_id,
     userName: user_name,
     profileName: profile_name,
+    points: points,
+    stake: stake,
+    profit: profit,
   };
 }
 
@@ -401,7 +407,7 @@ export function formatCompetition(competition) {
   } = competition;
 
   return {
-    id: competition_id,
+    competitionId: competition_id,
     blockchainId: tournament_id,
     name,
     version,

@@ -61,6 +61,7 @@ export default function useBettingService(userAddress) {
           size: 150,
         },
       });
+
       setUserHistoryCompetitions(
         data?.content?.filter((comp) =>
           comp.members.find((m) => compAddr(m.address, userAddress))

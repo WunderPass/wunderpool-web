@@ -288,7 +288,7 @@ export default function EventCard(props) {
                       className="btn-casama py-2 px-3 text-lg w-full max-w-sm"
                       onClick={() =>
                         registerBet(
-                          poolRequiresBet.id,
+                          poolRequiresBet.competitionId,
                           poolRequiresBet.blockchainId,
                           poolRequiresBet.games[0].id
                         )
