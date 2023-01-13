@@ -4,7 +4,6 @@ import MultiCard from '/components/betting/multi/multiCard';
 
 export default function MulitList(props) {
   const { eventTypeSort, bettingService, sortId, isSortById } = props;
-  const [publicCompetitions, setPublicCompetitions] = useState([]);
 
   return bettingService.isReady ? (
     <div className="grid grid-cols-1 gap-5 w-full">

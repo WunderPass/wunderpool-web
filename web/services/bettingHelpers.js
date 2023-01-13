@@ -339,6 +339,7 @@ export function calculateOdds(participants) {
 }
 
 export function formatParticipant(participant) {
+  console.log('participant in formating', participant);
   if (!participant) return null;
   const {
     user_address,
@@ -347,6 +348,9 @@ export function formatParticipant(participant) {
     profile_name,
     home_score,
     away_score,
+    points,
+    stake,
+    profit,
   } = participant;
   return {
     address: user_address,
@@ -354,6 +358,9 @@ export function formatParticipant(participant) {
     wunderId: wunder_id,
     userName: user_name,
     profileName: profile_name,
+    points: points,
+    stake: stake,
+    profit: profit,
   };
 }
 

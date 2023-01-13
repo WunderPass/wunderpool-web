@@ -13,6 +13,7 @@ import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import ParticipantTable, {
   ParticipantTableRow,
+  PointsTable,
 } from '../games/ParticipantTable';
 import { compAddr, getNameFor } from '../../../services/memberHelpers';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -147,7 +148,7 @@ export default function DashboardCompetitionCard(props) {
               </div>
             </div>
             <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full">
-              Multi Game
+              Combo Game
             </Typography>
             <div className="flex flex-col items-end gap-3">
               <Chip
@@ -170,7 +171,7 @@ export default function DashboardCompetitionCard(props) {
               />
             </div>
           </div>
-          <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 ">
+          <div className="flex flex-col gap-1 items-center justify-center my-2  ">
             <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
               <div
                 togglable="false"
@@ -214,6 +215,36 @@ export default function DashboardCompetitionCard(props) {
                     )}
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1 items-center justify-center my-2 mb-4 ">
+            <div className="w-full sm:w-2/3 md:w-7/12 mb-5">
+              <div
+                togglable="false"
+                className="flex flex-col container-white-p-0 p-2 px-4 text-right mb-2"
+              >
+                <div
+                  togglable="false"
+                  className="flex flex-row text-left text-xl font-semibold text-casama-blue justify-center items-center underline truncate z-10 ..."
+                >
+                  <p togglable="false" className="mx-2">
+                    Ranking
+                  </p>
+                </div>
+                <Divider className="my-1" />
+
+                <div className="flex flex-row text-xl my-1 font-medium text-casama-light-blue justify-between truncate ...">
+                  <p>Name</p>
+                  <p className="ml-2">Points</p>
+                </div>
+                <Divider className="my-1" />
+
+                <PointsTable
+                  participants={game.participants}
+                  stake={sponsored ? 0 : stake}
+                  user={user}
+                />
               </div>
             </div>
           </div>

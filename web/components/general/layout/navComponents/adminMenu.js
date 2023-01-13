@@ -63,7 +63,7 @@ export default function AdminMenu() {
             handleClose();
           }}
         >
-          💫 Multi Games
+          💫 Combo Games
         </MenuItem>
         <MenuItem
           className="text-xl"
