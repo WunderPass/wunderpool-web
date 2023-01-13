@@ -339,7 +339,6 @@ export function calculateOdds(participants) {
 }
 
 export function formatParticipant(participant) {
-  console.log('participant in formating', participant);
   if (!participant) return null;
   const {
     user_address,

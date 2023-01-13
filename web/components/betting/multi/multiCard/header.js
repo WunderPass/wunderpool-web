@@ -13,11 +13,11 @@ export default function MultitCardHeader(props) {
             <div className="flex flex-col sm:flex-row ">
               <img
                 src={`/api/betting/events/teamImage?id=${game.event?.teamHome?.id}`}
-                className="w-16 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)] "
+                className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)] "
               />
               <img
                 src={`/api/betting/events/teamImage?id=${game.event?.teamAway?.id}`}
-                className="w-16 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
+                className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
               />
             </div>
           );
