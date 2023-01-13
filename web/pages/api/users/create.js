@@ -55,9 +55,7 @@ export default async function handler(req, res) {
           service: 'Casama',
         },
       });
-    } catch (discordError) {
-      console.log(discordError);
-    }
+    } catch (discordError) {}
     try {
       sendSignUpMail({
         to: req.body.email,

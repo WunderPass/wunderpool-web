@@ -37,11 +37,11 @@ export default function EventCardFreeRollTile({
     scrollIntoView();
     try {
       await joinFreeRollCompetition({
-        competitionId: competition.id,
+        competitionId: competition.competitionId,
         userAddress: user.address,
       });
       await registerBet(
-        competition.id,
+        competition.competitionId,
         competition.blockchainId,
         competition.games[0].id
       );

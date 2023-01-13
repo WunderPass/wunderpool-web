@@ -21,7 +21,6 @@ export async function registerParticipant(
       false,
       popup
     );
-
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bet',
       body: {
@@ -39,6 +38,55 @@ export async function registerParticipant(
     });
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+export async function registerParticipantForMulti(
+  competitionId,
+  blockchainId,
+  gameIds,
+  userAddress,
+  version,
+  bets
+) {
+  const { openPopup, sendSignatureRequest } = useWeb3();
+  const popup = openPopup('sign');
+  const address = distributorAddress(version);
+
+  let predictions = [];
+  bets.map((bet) => {
+    let prediction = [];
+    prediction.push(bet.home_score);
+    prediction.push(bet.guest_score);
+    predictions.push(prediction);
+  });
+
+  try {
+    const { signature } = await sendSignatureRequest(
+      ['uint256', 'uint256[]', 'address', 'uint256[][]'],
+      [blockchainId, gameIds, address, predictions],
+      false,
+      popup
+    );
+
+    await postAndWaitForTransaction({
+      url: '/api/betting/competitions/bets',
+      body: {
+        competitionId,
+        gameId: gameIds,
+        userAddress,
+        bets,
+        signature,
+      },
+    });
+    ga.event({
+      action: 'betting',
+      category: 'game',
+      label: 'Place Bet',
+    });
+  } catch (error) {
+    console.log('error', error);
     throw error;
   }
 }
