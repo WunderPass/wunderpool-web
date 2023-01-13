@@ -69,13 +69,13 @@ export default function MultitCardBody(props) {
                     {toTime(game.event?.startTime)}
                   </div>
                 </div>
-                <div className="flex flex-row w-full items-center justify-center text-center gap-2 ">
-                  <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2 ">
+                <div className="flex flex-row w-full items-center justify-center text-center gap-2 sm:mt-0 mt-2 ">
+                  <div className="flex flex-col w-5/12 items-center justify-center text-center sm:gap-2 gap-24 sm:mt-0 -mt-5">
                     <img
                       src={`/api/betting/events/teamImage?id=${game.event?.teamHome?.id}`}
                       className="w-16 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
                     />
-                    <div className="font-semibold">
+                    <div className="font-semibold sm:h-0 h-14 sm:ml-0 ml-6">
                       {game.event?.teamHome?.name}
                     </div>
                   </div>
@@ -92,12 +92,12 @@ export default function MultitCardBody(props) {
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col w-5/12 items-center justify-center text-center gap-2">
+                  <div className="flex flex-col w-5/12 items-center justify-center text-center sm:gap-2 gap-24 sm:mt-0 -mt-5">
                     <img
                       src={`/api/betting/events/teamImage?id=${game.event?.teamAway?.id}`}
                       className="w-16 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
                     />
-                    <div className="font-semibold">
+                    <div className="font-semibold sm:h-0 h-14 sm:mr-0 mr-6">
                       {game.event?.teamAway?.name}
                     </div>
                   </div>

@@ -34,7 +34,7 @@ export default function MultiCardPredicitionInput(props) {
               </div>
             </div>
             <div className="flex flex-row justify-center items-center">
-              <p className="text-4xl sm:mx-10">:</p>
+              <p className="text-4xl sm:mx-10 mx-1">:</p>
             </div>
             <div className="w-full flex flex-col items-center justify-center">
               <div className="w-32">
