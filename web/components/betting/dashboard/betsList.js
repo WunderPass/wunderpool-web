@@ -80,11 +80,9 @@ export default function BetsList(props) {
         next={() => setVisibleCompetitionLength((num) => num + 10)}
         hasMore={visibleCompetitions.length < allCompetitions.length}
       >
-        {console.log('visibleCompetitions', visibleCompetitions)}
         {visibleCompetitions.map((comp, i) => {
           //If competitions has more than 1 game other view
           //create other view first
-          console.log('comp', comp);
 
           return comp.games.length > 1 ? (
             <MultiCompetitionCard

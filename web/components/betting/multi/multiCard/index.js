@@ -111,7 +111,6 @@ export default function MultiCard(props) {
   };
 
   const joinPublicCompetition = async (competition, gameIds) => {
-    console.log('competition', competition);
     setLoading(true);
     scrollIntoView();
     setLoadingText('Joining Public Competition...');
@@ -140,11 +139,9 @@ export default function MultiCard(props) {
   };
 
   const registerBet = async (competitionId, blockchainId, gameIds) => {
-    console.log('gameIDs', gameIds);
     setLoading(true);
     setLoadingText('Placing your Bet...');
     let success = false;
-    console.log('bets here', bets);
     try {
       await registerParticipantForMulti(
         competitionId || joiningCompetitionId,

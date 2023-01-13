@@ -27,7 +27,6 @@ function EventInput({ events, setSelectedEvents, selectedEvents }) {
   });
 
   const handleChange = (e, value, reason) => {
-    console.log(value);
     if (reason == 'clear') {
       setSelectedEvents([]);
     } else {

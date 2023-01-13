@@ -271,7 +271,6 @@ export default function EventCard(props) {
                   <div className="flex flex-col justify-center items-center text-semibold sm:text-lg gap-1">
                     There seemed to be an Error last time you tried to bet.
                     Please enter your Bet for the{' '}
-                    {console.log('poolRequiresBet', poolRequiresBet)}
                     {currency(poolRequiresBet.stake)} Competition again.
                     <div className="w-full max-w-sm">
                       <EventCardPredicitionInput

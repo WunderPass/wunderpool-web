@@ -26,7 +26,6 @@ export default function MultitCardBody(props) {
   const [gamesSortedByDate, setGamesSortedByDate] = useState([]);
 
   const formatCompetition = (comp) => {
-    console.log('games', comp.games);
     const sorted = comp.games
       .sort((a, b) =>
         a.event.startTime < b.event.startTime
@@ -39,7 +38,6 @@ export default function MultitCardBody(props) {
         return game.event.startTime;
       });
 
-    console.log('games afta', sorted);
     setGamesSortedByDate(sorted);
   };
 

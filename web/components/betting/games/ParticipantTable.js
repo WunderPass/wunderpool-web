@@ -102,7 +102,6 @@ export function PointsTable({
       {participants && participants.length > 0 && (
         <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 "></div>
       )}
-      {console.log('participants in tablerow', participants)}
       {participants &&
         (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
           .sort((a, b) => (b.points || 0) - (a.points || 0))

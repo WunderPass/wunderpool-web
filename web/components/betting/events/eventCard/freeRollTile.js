@@ -25,7 +25,6 @@ export default function EventCardFreeRollTile({
 }) {
   const [selected, setSelected] = useState(false);
 
-  console.log('comp in freeRoll', competition);
   const alreadyJoined = competition.games?.[0]?.participants?.find((p) =>
     compAddr(p.address, user.address)
   );

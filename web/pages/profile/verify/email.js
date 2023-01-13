@@ -22,7 +22,6 @@ export default function VerifyEmailPage(props) {
           data: { wunderId: user.wunderId, code: router.query.code },
           headers: { signed: signedMessage, signature },
         });
-        console.log(result);
         handleSuccess('Email Verified');
         user.fetchNotifications();
       } catch (error) {

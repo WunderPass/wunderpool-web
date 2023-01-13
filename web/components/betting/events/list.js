@@ -8,7 +8,6 @@ export default function EventList(props) {
 
   return bettingService.isReady ? (
     <div className="grid grid-cols-1 gap-5 w-full">
-      {console.log(bettingService, 'bettingService')}
       {bettingService.events.map((event) => {
         if (
           (isSortById && event.id == sortId) ||

@@ -21,13 +21,6 @@ export async function registerParticipant(
       false,
       popup
     );
-    console.log('userAddress', userAddress);
-    console.log('version', version);
-    console.log('blockchainId', blockchainId);
-    console.log('prediction', prediction);
-    console.log('competitionId', competitionId);
-    console.log('gameId', gameId);
-
     await postAndWaitForTransaction({
       url: '/api/betting/competitions/bet',
       body: {
@@ -69,13 +62,6 @@ export async function registerParticipantForMulti(
     predictions.push(prediction);
   });
 
-  console.log('prediction', predictions);
-  console.log('gameIds', gameIds);
-  console.log('userAddress', userAddress);
-  console.log('version', version);
-  console.log('blockchainId', blockchainId);
-  console.log('predictions', predictions);
-  console.log('competitionId', competitionId);
   try {
     const { signature } = await sendSignatureRequest(
       ['uint256', 'uint256[]', 'address', 'uint256[][]'],
@@ -100,7 +86,7 @@ export async function registerParticipantForMulti(
       label: 'Place Bet',
     });
   } catch (error) {
-    console.log('thats the erro', error);
+    console.log('error', error);
     throw error;
   }
 }
