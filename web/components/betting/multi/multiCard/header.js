@@ -37,19 +37,23 @@ export default function MultitCardHeader(props) {
         </div>
       </div>
       <div className="flex flex-row justify-between items-center mt-16">
-        {competition.games.map((game) => {
-          return (
-            <div className="flex flex-col sm:flex-row ">
-              <img
-                src={`/api/betting/events/teamImage?id=${game.event?.teamHome?.id}`}
-                className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)] "
-              />
-              <img
-                src={`/api/betting/events/teamImage?id=${game.event?.teamAway?.id}`}
-                className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
-              />
-            </div>
-          );
+        {competition.games.map((game, i) => {
+          if (i <= 4)
+            return (
+              <>
+                {console.log(i, 'GAMELOLGO', game)}
+                <div className="flex flex-col sm:flex-row ">
+                  <img
+                    src={`/api/betting/events/teamImage?id=${game.event?.teamHome?.id}`}
+                    className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)] "
+                  />
+                  <img
+                    src={`/api/betting/events/teamImage?id=${game.event?.teamAway?.id}`}
+                    className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
+                  />
+                </div>
+              </>
+            );
         })}
       </div>
     </div>
