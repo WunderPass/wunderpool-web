@@ -50,7 +50,7 @@ export default function DashboardCompetitionCard(props) {
     if (isPublic || inviteLink) {
       handleShare(
         inviteLink ||
-          `${window.location.origin}/betting/join/${competition.competitionId}`,
+          `${window.location.origin}/betting/join/${competition.id}`,
         `Join this Betting Competition`,
         handleSuccess
       );
@@ -274,10 +274,10 @@ export default function DashboardCompetitionCard(props) {
                                 className="w-16 mb-2"
                               />
                             </div>
-
+                            {console.log('GAME', game)}{' '}
                             <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
                               {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
-                                game.event.state
+                                game.state
                               ) ? (
                                 <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
                                   {isLive && (
@@ -334,7 +334,6 @@ export default function DashboardCompetitionCard(props) {
                                 </div>
                               )}
                             </div>
-
                             <div className="flex flex-col justify-center items-center text-center w-5/12">
                               <img
                                 src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
