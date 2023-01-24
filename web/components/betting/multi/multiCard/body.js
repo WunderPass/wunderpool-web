@@ -56,6 +56,8 @@ export default function MultitCardBody(props) {
             : 0
         )
         .map((game, i) => {
+          console.log('comp in body', competition);
+
           return (
             <div className="container-gray flex h-auto  flex-row items-center mt-5 justify-between w-full text-lg py-14">
               <div className=" flex flex-col justify-center items-center w-full">
