@@ -211,6 +211,7 @@ export default function MultiCard(props) {
               ) : (
                 <Collapse in={showDetails}>
                   <Body
+                    user={user}
                     competition={competition}
                     guessOne={guessOne}
                     guessTwo={guessTwo}
@@ -218,21 +219,9 @@ export default function MultiCard(props) {
                     setGuessTwo={setGuessTwo}
                   />
                   <div className="flex flex-col justify-center items-center w-full">
-                    <p>(Enter your score predictions for all games)</p>
-
                     <div className="flex items-center justify-center mb-5 w-full">
                       <div className="flex justify-center items-center text-semibold sm:text-lg"></div>
-                      {/* <div className="flex flex-col gap-3 mt-4">
-                      <MultiCardPredicitionInput
-                        competition={competition}
-                        event={event}
-                        loading={loading}
-                        guessOne={guessOne}
-                        guessTwo={guessTwo}
-                        setGuessOne={setGuessOne}
-                        setGuessTwo={setGuessTwo}
-                      />
-                    </div> */}
+
                       <div className="flex justify-center items-center sm:w-1/2 w-full">
                         {guessOne && guessTwo && (
                           <MultiCardSubmitButton
@@ -242,6 +231,7 @@ export default function MultiCard(props) {
                                 guessTwo.length === competition.games.length
                               )
                             }
+                            user={user}
                             loading={loading}
                             placeBet={placeBet}
                             competition={competition}
@@ -256,12 +246,6 @@ export default function MultiCard(props) {
                 </Collapse>
               ))}
           </div>
-          {/* {showDetails && !loading && !mustClickAgain && (
-          <EventCardFooter
-            scrollIntoView={scrollIntoView}
-            setShowDetails={setShowDetails}
-          />
-        )} */}
         </div>
       )}
       <MagicMomentMultiDialog

@@ -10,7 +10,6 @@ export default function MulitList(props) {
       {bettingService.competitions.map((competition) => {
         return (
           <>
-            {console.log('comp in list', competition)}
             <MultiCard
               key={`competition-card-${competition.id}`}
               competition={competition}

@@ -5,8 +5,6 @@ import { FaMedal } from 'react-icons/fa';
 export default function MultitCardHeader(props) {
   const { competition } = props;
 
-  console.log('competition', competition);
-
   return (
     <div className="flex flex-col items-center justify-center text-center mt-2 ">
       <div className="flex flex-col text-gray-500 text-xl h-auto sm:h-5">
@@ -41,7 +39,6 @@ export default function MultitCardHeader(props) {
           if (i <= 4)
             return (
               <>
-                {console.log(i, 'GAMELOLGO', game)}
                 <div className="flex flex-col sm:flex-row ">
                   <img
                     src={`/api/betting/events/teamImage?id=${game.event?.teamHome?.id}`}
