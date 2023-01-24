@@ -100,7 +100,10 @@ export function PointsTable({
   return (
     <div className="">
       {participants && participants.length > 0 && (
-        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 "></div>
+        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
+          {' '}
+          {console.log('participants', participants)}
+        </div>
       )}
       {participants &&
         (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)

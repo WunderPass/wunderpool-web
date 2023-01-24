@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { CgProfile } from 'react-icons/cg';
 import ReactourTarget from '../utils/reactourTarget';
 import { GiAchievement } from 'react-icons/gi';
+import { GiStack } from 'react-icons/gi';
 
 export default function BottomBar(props) {
   const { user } = props;
@@ -49,7 +50,7 @@ export default function BottomBar(props) {
 
                 <button onClick={() => toggleMenuButton()}>
                   <Link href="/profile">
-                    <div className="flex flex-col items-center justify-center ml-9 cursor-pointer">
+                    <div className="flex flex-col items-center justify-center ml-4 cursor-pointer">
                       <CgProfile className="text-2xl mt-0.5" />
                       <div>Profile</div>
                     </div>
@@ -57,16 +58,24 @@ export default function BottomBar(props) {
                 </button>
                 <button onClick={() => toggleMenuButton()}>
                   <Link href="/balance">
-                    <div className="flex flex-col items-center justify-center mr-2 cursor-pointer">
+                    <div className="flex flex-col items-center justify-center ml-2 mr-2 cursor-pointer">
                       <FaWallet className="text-2xl mt-0.5" />
                       <div>Wallet</div>
                     </div>
                   </Link>
                 </button>
                 <button onClick={() => toggleMenuButton()}>
+                  <Link href="/betting/multi">
+                    <div className="flex flex-col items-center justify-center mr-2 cursor-pointer">
+                      <GiStack className="text-2xl mt-0.5" />
+                      <div>Combo</div>
+                    </div>
+                  </Link>
+                </button>
+                <button onClick={() => toggleMenuButton()}>
                   <Link href="/profile/rewards">
-                    <div className="flex flex-col items-center justify-center mr-9 cursor-pointer">
-                      <GiAchievement className="text-2xl" />
+                    <div className="flex flex-col items-center justify-center mr-4 cursor-pointer">
+                      <GiAchievement className="text-2xl mt-0.5" />
                       <div>Rewards</div>
                     </div>
                   </Link>
