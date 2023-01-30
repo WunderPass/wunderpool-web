@@ -170,7 +170,7 @@ export default function MultiCard(props) {
         <div className="container-white pb-16 cursor-pointer relative">
           <div className="absolute -top-12" />
           <div onClick={(e) => handleToggle(e)}>
-            <Header competition={competition} />
+            <Header competition={competition} user={user} />
             <div className="mt-6">
               <TransactionFrame open={loading} text={loadingText} />
             </div>

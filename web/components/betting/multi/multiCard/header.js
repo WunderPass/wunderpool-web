@@ -3,7 +3,7 @@ import { GoPerson } from 'react-icons/go';
 import { FaMedal } from 'react-icons/fa';
 
 export default function MultitCardHeader(props) {
-  const { competition } = props;
+  const { competition, user } = props;
 
   return (
     <div className="flex flex-col items-center justify-center text-center mt-2 ">
@@ -36,23 +36,40 @@ export default function MultitCardHeader(props) {
       </div>
       <div className="flex flex-row justify-between items-center mt-16">
         {competition.games.map((game, i) => {
-          if (i <= 4)
+          if (i <= 9)
             return (
               <>
-                <div className="flex flex-col sm:flex-row ">
+                <div className="flex flex-col mt-1">
                   <img
                     src={`/api/betting/events/teamImage?id=${game.event?.teamHome?.id}`}
-                    className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)] "
+                    className="w-12 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)] mb-4"
                   />
                   <img
                     src={`/api/betting/events/teamImage?id=${game.event?.teamAway?.id}`}
-                    className="w-16 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
+                    className="w-12 mx-0.5 drop-shadow-[0_0_18px_rgba(0,0,0,0.15)]"
                   />
                 </div>
               </>
             );
         })}
       </div>
+
+      <>
+        {competition.members.find((member) => member.address == user.address) && //if part of pool
+          competition.games[0].participants.find(
+            //if part of bets
+            (p) => p.address == user.address
+          ) && (
+            <div className="flex items-center justify-center w-full ">
+              <div className="flex flex-col justify-center items-center w-full">
+                <p className="mt-6 text-red-600 text-lg">
+                  (Your previous attempt to place your bets failed, please try
+                  again!)
+                </p>
+              </div>
+            </div>
+          )}
+      </>
     </div>
   );
 }
