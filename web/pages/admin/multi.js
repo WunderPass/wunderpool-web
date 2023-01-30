@@ -203,7 +203,8 @@ export default function AdminMultiPage(props) {
               <div>
                 <label>Entry Price</label>
                 <CurrencyInput
-                  value={stake}
+                  disabled
+                  value={0.5 * selectedEvents.length} //TODO FIXED ENTRY 0.50€
                   placeholder="$ 10"
                   onChange={(val) => setStake(val)}
                 />

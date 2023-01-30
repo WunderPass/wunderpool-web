@@ -208,10 +208,17 @@ export default function DashboardCompetitionCard(props) {
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right">
                 <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
-                  <p>Entry:</p>
+                  <p>Entry per match:</p>
                   <p className="ml-2">{`${
-                    sponsored ? 'Free' : currency(stake)
+                    sponsored
+                      ? 'Free'
+                      : currency(stake / competition.games.length)
                   }`}</p>
+                </div>
+                <Divider className="my-1" />
+                <div className="flex flex-row text-xl  text-casama-blue justify-between truncate ...">
+                  <p>Matches:</p>
+                  <p className="ml-2">{competition.games.length}</p>
                 </div>
                 <Divider className="my-1" />
                 <div className="flex flex-row text-xl font-semibold text-casama-blue justify-between truncate ...">

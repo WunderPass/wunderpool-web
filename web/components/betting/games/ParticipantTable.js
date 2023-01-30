@@ -135,11 +135,6 @@ export function PointsTable({
   const calculateTotalPoints = () => {
     competition.games.map((game) => {
       game.participants.map((p) => {
-        console.log('name', competition.name);
-
-        console.log('p.points', p.points);
-        console.log('total', totalPointsMap.get(p.address));
-
         updateTotalPointsMap(
           p.address,
           p.points + totalPointsMap.get(p.address)

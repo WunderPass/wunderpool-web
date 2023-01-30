@@ -35,9 +35,11 @@ export default function MulitCardSubmitButton({
         ) : (
           <div className="flex items-center justify-center w-full ">
             <div className="flex flex-col justify-center items-center w-full">
-              <p className="mb-8 text-red-600">
-                (Your previous attempt to place your bets failed, please try
-                again!)
+              <p className="flex flex-row mb-8">
+                (Enter your score predictions for all{' '}
+                <p className="font-medium mx-1">{competition.games.length}</p>
+                {` `}
+                matches)
               </p>
 
               <button
@@ -51,7 +53,9 @@ export default function MulitCardSubmitButton({
                 onClick={placeBet}
               >
                 <p className="text-2xl">
-                  Place all your bets for ${competition.stake}
+                  {`Place all your bets for ${currency(
+                    competition.stake / competition.games.length
+                  )} each`}
                 </p>
               </button>
             </div>
@@ -61,7 +65,12 @@ export default function MulitCardSubmitButton({
         //if not part of anything
         <div className="flex items-center justify-center w-full ">
           <div className="flex flex-col justify-center items-center w-full">
-            <p className="mb-8">(Enter your score predictions for all games)</p>
+            <p className="flex flex-row mb-8">
+              (Enter your score predictions for all{' '}
+              <p className="font-medium mx-1">{competition.games.length}</p>
+              {` `}
+              matches)
+            </p>
 
             <button
               togglable="false"
@@ -74,7 +83,9 @@ export default function MulitCardSubmitButton({
               onClick={placeBet}
             >
               <p className="text-2xl">
-                Place all your bets for ${competition.stake}
+                {`Place all your bets for ${currency(
+                  competition.stake / competition.games.length
+                )} each`}
               </p>
             </button>
           </div>
