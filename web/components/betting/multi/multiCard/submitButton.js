@@ -21,7 +21,7 @@ export default function MulitCardSubmitButton({
             </p>
             <div className="flex items-center justify-center w-full ">
               <Link
-                href={`/betting/bets`} //TOOD add ?sortId=${competition.competitionId}`
+                href={`/betting/bets`} //TODO add ?sortId=${competition.competitionId}`
               >
                 <button
                   togglable="false"

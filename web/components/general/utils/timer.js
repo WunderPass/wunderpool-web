@@ -53,7 +53,7 @@ const Timer = (props) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [timer]);
+  }, [timer, start, end]);
 
   return (
     <div className="flex-col justify-end items-center w-full ">
@@ -61,6 +61,7 @@ const Timer = (props) => {
         <div className="flex sm:text-3xl text-xl justify-center items-center w-16 ">
           {formattedDate(timer)}
         </div>
+
         <div className="flex flex-row opacity-50 w-full">
           {timer >= 86400 ? (
             <div className="sm:text-sm flex flex-row text-xs justify-center items-center w-full">

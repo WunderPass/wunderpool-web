@@ -126,8 +126,7 @@ export default function DashboardCompetitionCard(props) {
   }, [isLive]);
 
   useEffect(() => {
-    setReload(false);
-    setReload(true);
+    setIndex(index);
   }, [index]);
 
   return (
@@ -341,10 +340,10 @@ export default function DashboardCompetitionCard(props) {
                                 start={Number(new Date())}
                                 end={
                                   new Date(
-                                    competition.games[index]?.event.startTime
+                                    competition.games[index]?.event?.startTime
                                   ) > new Date()
-                                    ? competition.games[index]?.event.startTime
-                                    : competition.games[index]?.event.endTime
+                                    ? competition.games[index]?.event?.startTime
+                                    : competition.games[index]?.event?.endTime
                                 }
                                 setTimerLoading={setTimerLoading}
                                 {...props}
