@@ -35,6 +35,7 @@ export default function DashboardCompetitionCard(props) {
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [index, setIndex] = useState(0);
+  const [reload, setReload] = useState(true);
   const [timerLoading, setTimerLoading] = useState(true);
   const scrollToRef = useRef(null);
 
@@ -109,11 +110,6 @@ export default function DashboardCompetitionCard(props) {
   }
 
   useEffect(() => {
-    console.log('index', index);
-    console.log('game', competition.games[index]);
-  }, [index]);
-
-  useEffect(() => {
     if (isLive) {
       const interval = setInterval(() => {
         axios({
@@ -128,6 +124,11 @@ export default function DashboardCompetitionCard(props) {
       };
     }
   }, [isLive]);
+
+  useEffect(() => {
+    setReload(false);
+    setReload(true);
+  }, [index]);
 
   return (
     <div className="container-gray w-full cursor-pointer relative">
@@ -154,8 +155,7 @@ export default function DashboardCompetitionCard(props) {
               <Typography
                 className="text-xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full" //TODO only shows name for the whole competition from the first game in list
               >
-                {competition.games.length > 0 &&
-                  competition.games[0].event.shortName}
+                {competition.name}
               </Typography>
             </div>
 
@@ -245,7 +245,8 @@ export default function DashboardCompetitionCard(props) {
 
                 <div className="flex flex-row text-xl my-1 font-medium text-casama-light-blue justify-between truncate ...">
                   <p>Name</p>
-                  <p className="ml-2">Points</p>
+
+                  <p className="">Points</p>
                 </div>
                 <Divider className="my-1" />
 
@@ -265,7 +266,7 @@ export default function DashboardCompetitionCard(props) {
               className="text-5xl text-casama-blue hover:text-casama-light-blue"
             />
             <div className="text-gray-500 font-xl">
-              Game {index + 1} / {competition.games.length}
+              Match {index + 1} / {competition.games.length}
             </div>
             <HiArrowCircleRight
               onClick={() => handleChangeIndex(1)}
@@ -335,6 +336,7 @@ export default function DashboardCompetitionCard(props) {
                                   </div>
                                 </div>
                               )}
+
                               <Timer
                                 start={Number(new Date())}
                                 end={

@@ -139,6 +139,7 @@ export default function AdminMultiPage(props) {
         payoutRule,
         stake,
         isPublic,
+        version: 'BETA',
       });
       handleSuccess('Multi was created!');
     } catch (error) {

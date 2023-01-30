@@ -48,7 +48,9 @@ export default function MultitCardBody(props) {
 
   return (
     <>
-      {competition.members.find((member) => member.address == user.address) ? ( //Dont show anything if already voted
+      {competition.games[0].participants.find(
+        (p) => p.address == user.address
+      ) ? ( //Dont show anything if already voted
         <></>
       ) : (
         <div className="flex flex-col items-center justify-center text-center my-5">

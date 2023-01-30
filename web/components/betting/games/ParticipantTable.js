@@ -127,6 +127,9 @@ export function PointsTable({
   hideLosers = false,
 }) {
   const [totalPointsMap, setTotalPointsMap] = useState(new Map());
+  {
+    console.log('competition', competition);
+  }
 
   const updateTotalPointsMap = (k, v) => {
     setTotalPointsMap(new Map(totalPointsMap.set(k, v)));
@@ -236,7 +239,7 @@ export function PointsTableRow({
           {totalPointsMap.get(address) || 0}
         </p>
       </div>
-      {winnings != undefined && (
+      {winnings !== undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
           {winnings > stake ? (
             <p className="text-green-500 whitespace-nowrap">

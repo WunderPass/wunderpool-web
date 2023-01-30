@@ -36,8 +36,6 @@ export default function MultiCard(props) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [bets, setBets] = useState([]);
 
-  const cardRef = useRef(null);
-
   const mustClickAgain = useMemo(
     () => joiningCompetitionId && joiningGameId,
     [joiningCompetitionId, joiningGameId]
@@ -104,15 +102,8 @@ export default function MultiCard(props) {
     window.location.reload(false); //TODO FIX THIS IN THE FUTURE (BUG after voting all mutli games are displayed as the same game)
   };
 
-  const scrollIntoView = () => {
-    cardRef.current.scrollIntoView({
-      behavior: 'smooth',
-    });
-  };
-
   const joinPublicCompetition = async (competition, gameIds) => {
     setLoading(true);
-    scrollIntoView();
     setLoadingText('Joining Public Competition...');
 
     try {
@@ -171,14 +162,13 @@ export default function MultiCard(props) {
   const handleToggle = (e) => {
     if (e.target.getAttribute('togglable') == 'false') return;
     setShowDetails(!showDetails);
-    setTimeout(() => scrollIntoView(), 50);
   };
 
   return (
     <>
       {competition.games.length > 1 && (
         <div className="container-white pb-16 cursor-pointer relative">
-          <div ref={cardRef} className="absolute -top-12" />
+          <div className="absolute -top-12" />
           <div onClick={(e) => handleToggle(e)}>
             <Header competition={competition} />
             <div className="mt-6">
