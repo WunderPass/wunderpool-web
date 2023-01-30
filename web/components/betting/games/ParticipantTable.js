@@ -135,6 +135,11 @@ export function PointsTable({
   const calculateTotalPoints = () => {
     competition.games.map((game) => {
       game.participants.map((p) => {
+        console.log('name', competition.name);
+
+        console.log('p.points', p.points);
+        console.log('total', totalPointsMap.get(p.address));
+
         updateTotalPointsMap(
           p.address,
           p.points + totalPointsMap.get(p.address)
@@ -147,6 +152,8 @@ export function PointsTable({
     competition.games.map((game) => {
       game.participants.map((p) => {
         if (totalPointsMap.get(p.address) === undefined) {
+          console.log('total init for address', p.address);
+
           updateTotalPointsMap(p.address, 0);
         }
       });
@@ -154,9 +161,10 @@ export function PointsTable({
   };
 
   useEffect(() => {
+    if (!participants) return null;
     initMap();
     calculateTotalPoints();
-  }, []);
+  }, [participants]);
 
   return (
     <div className="">

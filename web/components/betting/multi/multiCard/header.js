@@ -55,9 +55,8 @@ export default function MultitCardHeader(props) {
       </div>
 
       <>
-        {competition.members.find((member) => member.address == user.address) && //if part of pool
+        {competition.members.find((member) => member.address == user.address) && //if part of pool but not part of bet
           !competition.games[0].participants.find(
-            //if part of bets
             (p) => p.address == user.address
           ) && (
             <div className="flex items-center justify-center w-full ">
