@@ -1,6 +1,7 @@
 import { currency } from '/services/formatter';
 import Avatar from '/components/general/members/avatar';
 import { compAddr } from '../../../services/memberHelpers';
+import { useEffect, useState } from 'react';
 
 export function ParticipantTableRow({
   user,
@@ -41,11 +42,13 @@ export function ParticipantTableRow({
         <div
           className={
             points > 0
-              ? 'text-green-500 mb-2 ml-2 font-bold'
-              : 'text-red-500 mb-2 ml-2 font-bold'
+              ? 'text-green-500 text-sm mt-3 ml-0.5 font-medium'
+              : 'text-red-500 text-sm mt-3  ml-0.5 font-medium'
           }
         >
-          {points}
+          <div className="flex flex-row">
+            <p>{points}</p> <p className="font-gray-800 ml-0.5"></p>
+          </div>
         </div>
       </div>
       {winnings != undefined && (
@@ -116,26 +119,62 @@ export default function ParticipantTable({
 }
 
 export function PointsTable({
+  competition,
   participants,
   stake,
   user,
   hideImages = false,
   hideLosers = false,
 }) {
+  const [totalPointsMap, setTotalPointsMap] = useState(new Map());
+
+  const updateTotalPointsMap = (k, v) => {
+    setTotalPointsMap(new Map(totalPointsMap.set(k, v)));
+  };
+
+  const calculateTotalPoints = () => {
+    competition.games.map((game) => {
+      game.participants.map((p) => {
+        updateTotalPointsMap(
+          p.address,
+          p.points + totalPointsMap.get(p.address)
+        );
+      });
+    });
+  };
+
+  const initMap = () => {
+    competition.games.map((game) => {
+      game.participants.map((p) => {
+        if (totalPointsMap.get(p.address) === undefined) {
+          updateTotalPointsMap(p.address, 0);
+        }
+      });
+    });
+  };
+
+  useEffect(() => {
+    initMap();
+    calculateTotalPoints();
+  }, []);
+
   return (
     <div className="">
       {participants && participants.length > 0 && (
-        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 ">
-          {' '}
-          {console.log('participants', participants)}
-        </div>
+        <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 "></div>
       )}
       {participants &&
-        (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
-          .sort((a, b) => (b.points || 0) - (a.points || 0))
+        participants
+          .sort(
+            (a, b) =>
+              (totalPointsMap.get(b.address) || '-') -
+              (totalPointsMap.get(a.address) || '-')
+          )
           .map(({ address, points, winnings, userName, wunderId }, i) => {
             return (
               <PointsTableRow
+                totalPointsMap={totalPointsMap}
+                competition={competition}
                 key={`participant-${address}`}
                 user={user}
                 address={address}
@@ -154,6 +193,8 @@ export function PointsTable({
 }
 
 export function PointsTableRow({
+  totalPointsMap,
+  competition,
   user,
   address,
   wunderId,
@@ -164,6 +205,11 @@ export function PointsTableRow({
   points,
   i,
 }) {
+  let totalPoints = 0;
+  totalPoints = competition.games.map((game) => {
+    game.participants.points + totalPoints;
+  });
+
   return (
     <div
       className={`${
@@ -171,7 +217,7 @@ export function PointsTableRow({
       }  flex flex-row items-center justify-between gap-2 my-2 w-full`}
     >
       <div className="flex flex-row justify-center items-center">
-        <p className="flex pr-2 text-3xl font-medium text-casama-blue w-10">
+        <p className="flex pr-2 text-xl font-medium text-gray-700 w-6">
           {i + 1}.
         </p>
         <Avatar
@@ -184,7 +230,11 @@ export function PointsTableRow({
         <div className="truncate">{userName || address}</div>
       </div>
       <div className="flex flex-row justify-end items-center text-xl">
-        <p>{points || '-'}</p>
+        <p>{totalPoints}</p>
+
+        <p className="flex text-2xl font-medium text-casama-blue ">
+          {totalPointsMap.get(address) || 0}
+        </p>
       </div>
       {winnings != undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
