@@ -56,7 +56,7 @@ export default function MultitCardHeader(props) {
 
       <>
         {competition.members.find((member) => member.address == user.address) && //if part of pool
-          competition.games[0].participants.find(
+          !competition.games[0].participants.find(
             //if part of bets
             (p) => p.address == user.address
           ) && (
