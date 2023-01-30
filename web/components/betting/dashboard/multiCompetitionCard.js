@@ -18,6 +18,8 @@ import ParticipantTable, {
 import { compAddr, getNameFor } from '../../../services/memberHelpers';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useRef } from 'react';
+import { HiArrowCircleRight } from 'react-icons/hi';
+import { HiArrowCircleLeft } from 'react-icons/hi';
 
 export default function DashboardCompetitionCard(props) {
   const {
@@ -28,11 +30,11 @@ export default function DashboardCompetitionCard(props) {
     isSortById,
     isHistory,
   } = props;
-  const [showDetails, setShowDetails] = useState(false);
   const [liveCompetition, setLiveCompetition] = useState(null);
   const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [index, setIndex] = useState(0);
   const [timerLoading, setTimerLoading] = useState(true);
   const scrollToRef = useRef(null);
 
@@ -100,18 +102,15 @@ export default function DashboardCompetitionCard(props) {
     return new Date(date.getTime() + minutes * 60000);
   }
 
-  const handleToggle = (e) => {
-    if (e.target.getAttribute('togglable') == 'false') return;
-    setShowDetails(!showDetails);
-    scrollToRef.current.scrollIntoView({
-      behavior: 'smooth',
-    });
-  };
+  function handleChangeIndex(value) {
+    if (index + value < 0) setIndex(competition.games.length - 1);
+    else if (index + value > competition.games.length - 1) setIndex(0);
+    else setIndex(index + value);
+  }
 
   useEffect(() => {
-    if (!isSortById) return;
-    setShowDetails(true);
-  }, [isSortById]);
+    console.log('index', index);
+  }, [index]);
 
   useEffect(() => {
     if (isLive) {
@@ -133,7 +132,7 @@ export default function DashboardCompetitionCard(props) {
     <div className="container-gray w-full cursor-pointer relative">
       <div ref={scrollToRef} className="absolute -top-16" />
 
-      <div onClick={handleToggle}>
+      <div>
         <div className="flex flex-col items-between gap-2 w-full">
           <div className="flex flex-row w-full">
             <div className="flex flex-col">
@@ -147,9 +146,18 @@ export default function DashboardCompetitionCard(props) {
                 </IconButton>
               </div>
             </div>
-            <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full">
-              Combo Game
-            </Typography>
+            <div className="flex flex-col justify-center items-center w-full ">
+              <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full">
+                Combo Game
+              </Typography>
+              <Typography
+                className="text-xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full" //TODO only shows name for the whole competition from the first game in list
+              >
+                {competition.games.length > 0 &&
+                  competition.games[0].event.shortName}
+              </Typography>
+            </div>
+
             <div className="flex flex-col items-end gap-3">
               <Chip
                 className={`${
@@ -248,168 +256,135 @@ export default function DashboardCompetitionCard(props) {
               </div>
             </div>
           </div>
-          {competition.games
-            .sort((a, b) =>
-              a.event.startTime < b.event.startTime
-                ? -1
-                : a.event.startTime > b.event.startTime
-                ? 1
-                : 0
-            )
-            .map((game) => {
-              return (
-                <>
-                  <div className="flex flex-col w-full mb-4 ">
-                    <Typography className="text-2xl sm:text-3xl font-bold mx-3 ml-8 sm:ml-0 text-gray-800 text-center my-1 sm:my-3 w-full">
-                      {game.event.shortName}
-                    </Typography>
-                    <div className="flex flex-col w-full mt-6">
-                      <div className="flex flex-col w-full justify-center items-center">
-                        <div className="flex flex-col w-full ml-2">
-                          {/* ICONS */}
-                          <div className="flex flex-row justify-between items-center text-center w-full">
-                            <div className="flex flex-col justify-center items-center text-center w-5/12">
-                              <img
-                                src={`/api/betting/events/teamImage?id=${game.event.teamHome.id}`}
-                                className="w-16 mb-2"
-                              />
-                            </div>
-                            {console.log('GAME', game)}{' '}
-                            <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
-                              {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
-                                game.state
-                              ) ? (
-                                <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
-                                  {isLive && (
-                                    <div className="flex justify-center items-center  ">
-                                      <div className="flex flex-row justify-center animate-pulse ">
-                                        <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                                        <div className="text-sm">
-                                          {game.event?.minute
-                                            ? game.event.minute
-                                            : 'LIVE'}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
 
-                                  <div className="flex flex-row justify-center items-center my-2">
-                                    <div className=" flex flex-row justify-center text-xl sm:text-3xl">
-                                      <p className="font-semibold ">
-                                        {game.event?.outcome[0] || 0}
-                                      </p>
-                                      <p className="px-2  "> : </p>
-                                      <p className="font-semibold ">
-                                        {game.event?.outcome[1] || 0}
-                                      </p>
-                                    </div>
+          <div className="flex flex-row justify-between items-center mx-5">
+            <HiArrowCircleLeft
+              onClick={() => handleChangeIndex(-1)}
+              className="text-5xl text-casama-blue hover:text-casama-light-blue"
+            />
+            <div className="text-gray-500 font-xl">
+              Game {index + 1} / {competition.games.length}
+            </div>
+            <HiArrowCircleRight
+              onClick={() => handleChangeIndex(1)}
+              className="text-5xl text-casama-blue hover:text-casama-light-blue"
+            />
+          </div>
+
+          <>
+            <div className="flex flex-col w-full mb-4 ">
+              <div className="flex flex-col w-full mt-6">
+                <div className="flex flex-col w-full justify-center items-center">
+                  <div className="flex flex-col w-full ml-2">
+                    {/* ICONS */}
+                    <div className="flex flex-row justify-between items-center text-center w-full">
+                      <div className="flex flex-col justify-center items-center text-center w-5/12">
+                        <img
+                          src={`/api/betting/events/teamImage?id=${competition.games[index]?.event.teamHome.id}`}
+                          className="w-16 mb-2"
+                        />
+                      </div>
+                      <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
+                        {['RESOLVED', 'CLOSED_FOR_BETTING'].includes(
+                          competition.games[index]?.state
+                        ) ? (
+                          <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
+                            {isLive && (
+                              <div className="flex justify-center items-center  ">
+                                <div className="flex flex-row justify-center animate-pulse ">
+                                  <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                                  <div className="text-sm">
+                                    {competition.games[index]?.event?.minute
+                                      ? competition.games[index]?.event.minute
+                                      : 'LIVE'}
                                   </div>
                                 </div>
-                              ) : (
-                                <div
-                                  className={timerLoading ? 'invisible' : ''}
-                                >
-                                  <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
-                                    {new Date(game.event.startTime) <
-                                      new Date() && (
-                                      <div className="flex justify-center items-center gap-1 ">
-                                        <div className="flex flex-row justify-center animate-pulse ">
-                                          <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                                          <div className="text-sm">LIVE</div>
-                                        </div>
-                                      </div>
-                                    )}
-                                    <Timer
-                                      start={Number(new Date())}
-                                      end={
-                                        new Date(game.event.startTime) >
-                                        new Date()
-                                          ? game.event.startTime
-                                          : game.event.endTime
-                                      }
-                                      setTimerLoading={setTimerLoading}
-                                      {...props}
-                                    />
+                              </div>
+                            )}
+
+                            <div className="flex flex-row justify-center items-center my-2">
+                              <div className=" flex flex-row justify-center text-xl sm:text-3xl">
+                                <p className="font-semibold ">
+                                  {competition.games[index]?.event
+                                    ?.outcome[0] || 0}
+                                </p>
+                                <p className="px-2  "> : </p>
+                                <p className="font-semibold ">
+                                  {competition.games[index]?.event
+                                    ?.outcome[1] || 0}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className={timerLoading ? 'invisible' : ''}>
+                            <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
+                              {new Date(
+                                competition.games[index]?.event.startTime
+                              ) < new Date() && (
+                                <div className="flex justify-center items-center gap-1 ">
+                                  <div className="flex flex-row justify-center animate-pulse ">
+                                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                                    <div className="text-sm">LIVE</div>
                                   </div>
                                 </div>
                               )}
-                            </div>
-                            <div className="flex flex-col justify-center items-center text-center w-5/12">
-                              <img
-                                src={`/api/betting/events/teamImage?id=${game.event.teamAway.id}`}
-                                className="w-16 mb-2"
+                              <Timer
+                                start={Number(new Date())}
+                                end={
+                                  new Date(
+                                    competition.games[index]?.event.startTime
+                                  ) > new Date()
+                                    ? competition.games[index]?.event.startTime
+                                    : competition.games[index]?.event.endTime
+                                }
+                                setTimerLoading={setTimerLoading}
+                                {...props}
                               />
                             </div>
                           </div>
-
-                          {/* NAMEN */}
-                          <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
-                            <div className="flex flex-row justify-center items-center text-center w-5/12">
-                              <p className="text-xl sm:text-2xl font-semibold">
-                                {game.event.teamHome?.name ||
-                                  game.event?.teamHome}
-                              </p>
-                            </div>
-                            <div className="flex sm:w-2/12 w-3/12"></div>
-                            <div className="flex flex-col justify-center items-center text-center w-5/12">
-                              <p className="text-xl sm:text-2xl font-semibold">
-                                {game.event.teamAway?.name ||
-                                  game.event?.teamAway}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <Collapse in={!showDetails}>
-                        <ParticipantTableRow
-                          user={user}
-                          address={'Your Bet'}
-                          wunderId={user.wunderId}
-                          userName={user.userName}
-                          profileName={getNameFor(user)}
-                          prediction={
-                            game.participants.find((p) =>
-                              compAddr(p.address, user.address)
-                            )?.prediction
-                          }
-                          winnings={
-                            game.participants.find((p) =>
-                              compAddr(p.address, user.address)
-                            )?.winnings
-                          }
-                          stake={sponsored ? 0 : stake}
-                        />
-                      </Collapse>
-                      <Collapse in={showDetails}>
-                        {showDetails && (
-                          <ParticipantTable
-                            participants={game.participants}
-                            stake={sponsored ? 0 : stake}
-                            user={user}
-                          />
                         )}
-                      </Collapse>
-
-                      <TransactionDialog
-                        open={loading}
-                        onClose={() => setLoading(false)}
-                      />
+                      </div>
+                      <div className="flex flex-col justify-center items-center text-center w-5/12">
+                        <img
+                          src={`/api/betting/events/teamImage?id=${competition.games[index]?.event.teamAway.id}`}
+                          className="w-16 mb-2"
+                        />
+                      </div>
                     </div>
-                    <Divider className="mt-6" />
+
+                    {/* NAMEN */}
+                    <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
+                      <div className="flex flex-row justify-center items-center text-center w-5/12">
+                        <p className="text-xl sm:text-2xl font-semibold">
+                          {competition.games[index]?.event.teamHome?.name ||
+                            competition.games[index]?.event?.teamHome}
+                        </p>
+                      </div>
+                      <div className="flex sm:w-2/12 w-3/12"></div>
+                      <div className="flex flex-col justify-center items-center text-center w-5/12">
+                        <p className="text-xl sm:text-2xl font-semibold">
+                          {competition.games[index]?.event.teamAway?.name ||
+                            competition.games[index]?.event?.teamAway}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </>
-              );
-            })}
-          <div className="flex justify-center text-3xl text-casama-blue">
-            <div
-              className={`transition-transform ${
-                showDetails ? 'rotate-180' : ''
-              }`}
-            >
-              <IoIosArrowDown />
+                </div>
+                <div>
+                  <ParticipantTable
+                    participants={competition.games[index]?.participants}
+                    stake={sponsored ? 0 : stake}
+                    user={user}
+                  />
+                </div>
+                <TransactionDialog
+                  open={loading}
+                  onClose={() => setLoading(false)}
+                />
+              </div>
             </div>
-          </div>
+          </>
         </div>
       </div>
     </div>
