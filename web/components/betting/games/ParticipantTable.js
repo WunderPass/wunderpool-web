@@ -127,9 +127,6 @@ export function PointsTable({
   hideLosers = false,
 }) {
   const [totalPointsMap, setTotalPointsMap] = useState(new Map());
-  {
-    console.log('competition', competition);
-  }
 
   const updateTotalPointsMap = (k, v) => {
     setTotalPointsMap(new Map(totalPointsMap.set(k, v)));

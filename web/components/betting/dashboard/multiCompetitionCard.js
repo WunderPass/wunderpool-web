@@ -286,13 +286,12 @@ export default function DashboardCompetitionCard(props) {
                           className="w-16 mb-2"
                         />
                       </div>
-                      {console.log('state', competition.games[index]?.state)}
                       <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
                         {[
                           'RESOLVED',
                           'CLOSED_FOR_BETTING',
                           'HISTORIC',
-                        ].includes(competition.games[index]?.state) ? (
+                        ].includes(competition.games[index]?.state) ? ( //IF GAME started, or is finished
                           <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
                             {isLive && (
                               <div className="flex justify-center items-center  ">
@@ -322,6 +321,7 @@ export default function DashboardCompetitionCard(props) {
                             </div>
                           </div>
                         ) : (
+                          //IF GAME is upcoming
                           //TODO CHECK IF THIS SCOPE IS USELESS?
                           <div className={timerLoading ? 'invisible' : ''}>
                             <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">

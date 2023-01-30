@@ -492,7 +492,6 @@ export default function AdminBettingPage(props) {
       url: '/api/betting/competitions',
       params: { states: 'HISTORIC', sort: 'endTimestamp,desc', size: 50 },
     }).then((res) => {
-      console.log('historic', res.data?.content);
       setClosedCompetitions(res.data?.content);
     });
   };
