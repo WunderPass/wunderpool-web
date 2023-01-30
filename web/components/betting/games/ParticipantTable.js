@@ -11,6 +11,8 @@ export function ParticipantTableRow({
   winnings,
   stake,
   hideImages,
+  points,
+  profit,
 }) {
   return (
     <div
@@ -30,10 +32,21 @@ export function ParticipantTableRow({
       <div className="flex items-center justify-start truncate flex-grow">
         <div className="truncate">{userName || address}</div>
       </div>
-      <div className="flex flex-row justify-end items-center text-xl">
-        <p>{prediction?.[0] ?? '-'}</p>
-        <p className="px-1">:</p>
-        <p>{prediction?.[1] ?? '-'}</p>
+      <div className="flex flex-row items-center text-xl">
+        <div className="flex flex-row justify-end items-center ">
+          <p>{prediction?.[0] ?? '-'}</p>
+          <p className="px-1">:</p>
+          <p>{prediction?.[1] ?? '-'}</p>
+        </div>
+        <div
+          className={
+            points > 0
+              ? 'text-green-500 mb-2 ml-2 font-bold'
+              : 'text-red-500 mb-2 ml-2 font-bold'
+          }
+        >
+          {points}
+        </div>
       </div>
       {winnings != undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
@@ -70,22 +83,34 @@ export default function ParticipantTable({
 
       {participants &&
         (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
-          .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
-          .map(({ address, prediction, winnings, userName, wunderId }) => {
-            return (
-              <ParticipantTableRow
-                key={`participant-${address}`}
-                user={user}
-                address={address}
-                wunderId={wunderId}
-                userName={userName}
-                prediction={prediction}
-                winnings={winnings}
-                stake={stake}
-                hideImages={hideImages}
-              />
-            );
-          })}
+          .sort((a, b) => (b.points || 0) - (a.points || 0))
+          .map(
+            ({
+              address,
+              prediction,
+              winnings,
+              userName,
+              wunderId,
+              points,
+              profit,
+            }) => {
+              return (
+                <ParticipantTableRow
+                  key={`participant-${address}`}
+                  user={user}
+                  address={address}
+                  wunderId={wunderId}
+                  userName={userName}
+                  prediction={prediction}
+                  winnings={winnings}
+                  stake={stake}
+                  hideImages={hideImages}
+                  points={points}
+                  profit={profit}
+                />
+              );
+            }
+          )}
     </div>
   );
 }

@@ -110,6 +110,7 @@ export default function DashboardCompetitionCard(props) {
 
   useEffect(() => {
     console.log('index', index);
+    console.log('game', competition.games[index]);
   }, [index]);
 
   useEffect(() => {
