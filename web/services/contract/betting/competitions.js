@@ -14,7 +14,7 @@ export async function createCompetition({
   payoutRule,
   stake,
   isPublic,
-  version = null,
+  version = 'GAMMA',
 }) {
   try {
     await approveUSDC(
