@@ -48,7 +48,7 @@ export default function DashboardCompetitionCard(props) {
     if (isPublic || inviteLink) {
       handleShare(
         inviteLink ||
-          `${window.location.origin}/betting/join/${competition.id}`,
+          `${window.location.origin}/betting/join/${competition.competitionId}`,
         `Join this Betting Competition`,
         handleSuccess
       );
@@ -65,11 +65,11 @@ export default function DashboardCompetitionCard(props) {
         7,
         () => {
           setInviteLink(
-            `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`
+            `${window.location.origin}/betting/join/${competition.competitionId}?secret=${secret}`
           );
           setLoading(false);
           handleShare(
-            `${window.location.origin}/betting/join/${competition.id}?secret=${secret}`,
+            `${window.location.origin}/betting/join/${competition.competitionId}?secret=${secret}`,
             `Join this Betting Competition`,
             handleSuccess
           );

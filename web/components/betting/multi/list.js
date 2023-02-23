@@ -9,11 +9,13 @@ export default function MulitList(props) {
     <div className="grid grid-cols-1 gap-5 w-full">
       {bettingService.competitions.map((competition) => {
         return (
-          <MultiCard
-            key={`competition-card-${competition.id}`}
-            competition={competition}
-            {...props}
-          />
+          <>
+            <MultiCard
+              key={`competition-card-${competition.id}`}
+              competition={competition}
+              {...props}
+            />
+          </>
         );
       })}
     </div>
