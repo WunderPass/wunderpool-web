@@ -363,17 +363,21 @@ export function formatParticipant(participant) {
   };
 }
 
-export function formatMember(member) {
+export function formatMember(member, results) {
   if (!member) return null;
   const { address, user_name, wunder_id, profile_name, stake, profit } = member;
+  const result = results.find(({ players_address }) =>
+    compAddr(players_address, address)
+  );
 
   return {
     address,
-    stake,
+    stake: result?.stake || stake || 0,
     wunderId: wunder_id,
     userName: user_name,
     profileName: profile_name,
-    profit,
+    profit: result?.cash_out || profit || 0,
+    points: result?.total_points || 0,
   };
 }
 
@@ -401,6 +405,7 @@ export function formatCompetition(competition) {
     pool_address,
     games = [],
     members = [],
+    players_results = [],
     rule,
     public: isPublic,
     sponsored,
@@ -415,7 +420,9 @@ export function formatCompetition(competition) {
     isPublic,
     sponsored,
     games: games.map(formatGame)?.filter((g) => g),
-    members: members.map(formatMember)?.filter((m) => m),
+    members: members
+      .map((m) => formatMember(m, players_results))
+      ?.filter((m) => m),
     payoutRule: rule?.payout_type,
     stake: Number(rule?.stake),
     maxMembers: rule?.max_members,

@@ -4,11 +4,8 @@ import { MdSportsSoccer } from 'react-icons/md';
 import { currency } from '/services/formatter';
 import PayoutRuleInfoButton from '/components/general/utils/payoutRuleInfoButton';
 import Timer from '/components/general/utils/timer';
-import SoccerTimer from '/components/general/utils/soccerTimer';
 import ShareIcon from '@mui/icons-material/Share';
 import { handleShare } from '/services/shareLink';
-import axios from 'axios';
-import { calculateWinnings } from '/services/bettingHelpers';
 import { addToWhiteListWithSecret } from '../../../services/contract/pools';
 import TransactionDialog from '../../general/utils/transactionDialog';
 import ParticipantTable, {
@@ -20,17 +17,8 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { useRef } from 'react';
 
 export default function DashboardCompetitionCard(props) {
-  const {
-    competition,
-    handleSuccess,
-    handleError,
-    user,
-    isSortById,
-    isHistory,
-  } = props;
+  const { competition, handleSuccess, user, isSortById } = props;
   const [showDetails, setShowDetails] = useState(false);
-  const [liveCompetition, setLiveCompetition] = useState(null);
-  const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timerLoading, setTimerLoading] = useState(true);
@@ -38,13 +26,6 @@ export default function DashboardCompetitionCard(props) {
 
   const { stake, sponsored, payoutRule, isPublic, maxMembers } =
     competition || {};
-
-  const game = (liveCompetition || competition).games[0]; // Only assume Single Competitions as of now
-
-  const isLive = game?.event?.startTime
-    ? new Date(game.event.startTime) < new Date() &&
-      new Date(game.event.endTime) > new Date()
-    : false;
 
   const handleShareCompetition = () => {
     if (isPublic || inviteLink) {
@@ -80,22 +61,6 @@ export default function DashboardCompetitionCard(props) {
     }
   };
 
-  useEffect(() => {
-    if (['RESOLVED', 'CLOSED_FOR_BETTING'].includes(game.event.state)) {
-      setGameResultTable(
-        calculateWinnings(
-          game,
-          sponsored ? stake / maxMembers : stake,
-          game.event.outcome,
-          payoutRule,
-          sponsored
-        )
-      );
-    } else {
-      setGameResultTable(game.participants);
-    }
-  }, [game.event?.outcome]);
-
   function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes * 60000);
   }
@@ -112,22 +77,6 @@ export default function DashboardCompetitionCard(props) {
     if (!isSortById) return;
     setShowDetails(true);
   }, [isSortById]);
-
-  useEffect(() => {
-    if (isLive) {
-      const interval = setInterval(() => {
-        axios({
-          url: '/api/betting/competitions/show',
-          params: { id: competition.id },
-        }).then(({ data }) => {
-          if (data && data.games?.[0]) setLiveCompetition(data);
-        });
-      }, 150000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [isLive]);
 
   return (
     <div className="container-gray w-full cursor-pointer relative">
@@ -165,7 +114,7 @@ export default function DashboardCompetitionCard(props) {
                 size="medium"
                 label={currency(
                   sponsored
-                    ? (stake / (maxMembers - 1)) * game.participants.length
+                    ? (stake / (maxMembers - 1)) * competition.members.length
                     : stake
                 )}
               />
@@ -195,7 +144,7 @@ export default function DashboardCompetitionCard(props) {
 
                 <div className="flex flex-row text-xl text-casama-light-blue justify-between truncate ...">
                   <p>Participants:</p>
-                  <p className="ml-2">{`${game.participants.length}`}</p>
+                  <p className="ml-2">{`${competition.members.length}`}</p>
                 </div>
               </div>
               <div className="flex flex-col container-white-p-0 p-2 px-4 text-right">
@@ -211,7 +160,7 @@ export default function DashboardCompetitionCard(props) {
                   <p className="ml-2">
                     {currency(
                       (sponsored ? stake / (maxMembers - 1) : stake) *
-                        game.participants.length
+                        competition.members.length
                     )}
                   </p>
                 </div>
@@ -234,14 +183,15 @@ export default function DashboardCompetitionCard(props) {
                 </div>
                 <Divider className="my-1" />
 
-                <div className="flex flex-row text-xl my-1 font-medium text-casama-light-blue justify-between truncate ...">
-                  <p>Name</p>
-                  <p className="ml-2">Points</p>
+                <div className="flex flex-row text-xl my-1 font-medium text-casama-light-blue truncate gap-5">
+                  <p className="flex-grow text-left">Name</p>
+                  <p>Points</p>
+                  <p>Profit</p>
                 </div>
                 <Divider className="my-1" />
 
                 <PointsTable
-                  participants={game.participants}
+                  participants={competition.members}
                   stake={sponsored ? 0 : stake}
                   user={user}
                 />
@@ -257,6 +207,10 @@ export default function DashboardCompetitionCard(props) {
                 : 0
             )
             .map((game) => {
+              const isLive = game?.event?.startTime
+                ? new Date(game.event.startTime) < new Date() &&
+                  new Date(game.event.endTime) > new Date()
+                : false;
               return (
                 <>
                   <div className="flex flex-col w-full mb-4 ">

@@ -103,9 +103,9 @@ export function PointsTable({
         <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 "></div>
       )}
       {participants &&
-        (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
+        (hideLosers ? participants.filter((p) => p.profit > 0) : participants)
           .sort((a, b) => (b.points || 0) - (a.points || 0))
-          .map(({ address, points, winnings, userName, wunderId }, i) => {
+          .map(({ address, points, profit, userName, wunderId }, i) => {
             return (
               <PointsTableRow
                 key={`participant-${address}`}
@@ -114,7 +114,7 @@ export function PointsTable({
                 wunderId={wunderId}
                 userName={userName}
                 points={points}
-                winnings={winnings}
+                winnings={profit}
                 stake={stake}
                 hideImages={hideImages}
                 i={i}
