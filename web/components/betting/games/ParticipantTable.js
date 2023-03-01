@@ -126,65 +126,24 @@ export function PointsTable({
   hideImages = false,
   hideLosers = false,
 }) {
-  const [totalPointsMap, setTotalPointsMap] = useState(new Map());
-
-  const updateTotalPointsMap = (k, v) => {
-    setTotalPointsMap(new Map(totalPointsMap.set(k, v)));
-  };
-
-  const calculateTotalPoints = () => {
-    competition.games.map((game) => {
-      game.participants.map((p) => {
-        updateTotalPointsMap(
-          p.address,
-          p.points + totalPointsMap.get(p.address)
-        );
-      });
-    });
-  };
-
-  const initMap = () => {
-    competition.games.map((game) => {
-      game.participants.map((p) => {
-        if (totalPointsMap.get(p.address) === undefined) {
-          console.log('total init for address', p.address);
-
-          updateTotalPointsMap(p.address, 0);
-        }
-      });
-    });
-  };
-
-  useEffect(() => {
-    if (!participants) return null;
-    initMap();
-    calculateTotalPoints();
-  }, [participants]);
-
   return (
     <div className="">
       {participants && participants.length > 0 && (
         <div className="text-gray-800 font-medium mt-3 ml-1 text-lg mb-1 "></div>
       )}
       {participants &&
-        participants
-          .sort(
-            (a, b) =>
-              (totalPointsMap.get(b.address) || '-') -
-              (totalPointsMap.get(a.address) || '-')
-          )
-          .map(({ address, points, winnings, userName, wunderId }, i) => {
+        (hideLosers ? participants.filter((p) => p.profit > 0) : participants)
+          .sort((a, b) => (b.points || 0) - (a.points || 0))
+          .map(({ address, points, profit, userName, wunderId }, i) => {
             return (
               <PointsTableRow
-                totalPointsMap={totalPointsMap}
-                competition={competition}
                 key={`participant-${address}`}
                 user={user}
                 address={address}
                 wunderId={wunderId}
                 userName={userName}
                 points={points}
-                winnings={winnings}
+                winnings={profit}
                 stake={stake}
                 hideImages={hideImages}
                 i={i}
@@ -196,8 +155,6 @@ export function PointsTable({
 }
 
 export function PointsTableRow({
-  totalPointsMap,
-  competition,
   user,
   address,
   wunderId,
@@ -208,11 +165,6 @@ export function PointsTableRow({
   points,
   i,
 }) {
-  let totalPoints = 0;
-  totalPoints = competition.games.map((game) => {
-    game.participants.points + totalPoints;
-  });
-
   return (
     <div
       className={`${
@@ -233,11 +185,7 @@ export function PointsTableRow({
         <div className="truncate">{userName || address}</div>
       </div>
       <div className="flex flex-row justify-end items-center text-xl">
-        <p>{totalPoints}</p>
-
-        <p className="flex text-2xl font-medium text-casama-blue ">
-          {totalPointsMap.get(address) || 0}
-        </p>
+        <p className="flex text-2xl font-medium text-casama-blue ">{points}</p>
       </div>
       {winnings !== undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
