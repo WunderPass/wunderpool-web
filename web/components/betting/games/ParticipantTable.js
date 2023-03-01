@@ -195,7 +195,7 @@ export function PointsTableRow({
             </p>
           ) : (
             <p className="text-red-500 whitespace-nowrap">
-              {stake - winnings == 0 ? '' : '-'} {currency(stake - winnings)}
+              {currency(winnings)}
             </p>
           )}
         </div>

@@ -377,7 +377,7 @@ export function formatMember(member, results) {
     wunderId: wunder_id,
     userName: user_name,
     profileName: profile_name,
-    profit: result?.cash_out || profit || 0,
+    profit: result?.cash_out || 0,
     points: result?.total_points || 0,
   };
 }
