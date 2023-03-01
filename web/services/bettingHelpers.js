@@ -351,6 +351,7 @@ export function formatParticipant(participant) {
     stake,
     profit,
   } = participant;
+
   return {
     address: user_address,
     prediction: [home_score, away_score],

@@ -48,7 +48,7 @@ export default function BetsList(props) {
           eventTypeSort
         )
       : sortCompetition(
-          bettingService.userCompetitions, //TODO TESTING Change this back to userCompetitions
+          bettingService.userCompetitions,
           isSortById,
           sortId,
           eventTypeSort,

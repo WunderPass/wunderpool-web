@@ -1,6 +1,7 @@
 import { currency } from '/services/formatter';
 import Avatar from '/components/general/members/avatar';
 import { compAddr } from '../../../services/memberHelpers';
+import { useEffect, useState } from 'react';
 
 export function ParticipantTableRow({
   user,
@@ -11,6 +12,8 @@ export function ParticipantTableRow({
   winnings,
   stake,
   hideImages,
+  points,
+  profit,
 }) {
   return (
     <div
@@ -30,10 +33,23 @@ export function ParticipantTableRow({
       <div className="flex items-center justify-start truncate flex-grow">
         <div className="truncate">{userName || address}</div>
       </div>
-      <div className="flex flex-row justify-end items-center text-xl">
-        <p>{prediction?.[0] ?? '-'}</p>
-        <p className="px-1">:</p>
-        <p>{prediction?.[1] ?? '-'}</p>
+      <div className="flex flex-row items-center text-xl">
+        <div className="flex flex-row justify-end items-center ">
+          <p>{prediction?.[0] ?? '-'}</p>
+          <p className="px-1">:</p>
+          <p>{prediction?.[1] ?? '-'}</p>
+        </div>
+        <div
+          className={
+            points > 0
+              ? 'text-green-500 text-sm mt-3 ml-0.5 font-medium'
+              : 'text-red-500 text-sm mt-3  ml-0.5 font-medium'
+          }
+        >
+          <div className="flex flex-row">
+            <p>{points}</p> <p className="font-gray-800 ml-0.5"></p>
+          </div>
+        </div>
       </div>
       {winnings != undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
@@ -70,27 +86,40 @@ export default function ParticipantTable({
 
       {participants &&
         (hideLosers ? participants.filter((p) => p.winnings > 0) : participants)
-          .sort((a, b) => (b.winnings || 0) - (a.winnings || 0))
-          .map(({ address, prediction, winnings, userName, wunderId }) => {
-            return (
-              <ParticipantTableRow
-                key={`participant-${address}`}
-                user={user}
-                address={address}
-                wunderId={wunderId}
-                userName={userName}
-                prediction={prediction}
-                winnings={winnings}
-                stake={stake}
-                hideImages={hideImages}
-              />
-            );
-          })}
+          .sort((a, b) => (b.points || 0) - (a.points || 0))
+          .map(
+            ({
+              address,
+              prediction,
+              winnings,
+              userName,
+              wunderId,
+              points,
+              profit,
+            }) => {
+              return (
+                <ParticipantTableRow
+                  key={`participant-${address}`}
+                  user={user}
+                  address={address}
+                  wunderId={wunderId}
+                  userName={userName}
+                  prediction={prediction}
+                  winnings={winnings}
+                  stake={stake}
+                  hideImages={hideImages}
+                  points={points}
+                  profit={profit}
+                />
+              );
+            }
+          )}
     </div>
   );
 }
 
 export function PointsTable({
+  competition,
   participants,
   stake,
   user,
@@ -143,7 +172,7 @@ export function PointsTableRow({
       }  flex flex-row items-center justify-between gap-2 my-2 w-full`}
     >
       <div className="flex flex-row justify-center items-center">
-        <p className="flex pr-2 text-3xl font-medium text-casama-blue w-10">
+        <p className="flex pr-2 text-xl font-medium text-gray-700 w-6">
           {i + 1}.
         </p>
         <Avatar
@@ -156,9 +185,9 @@ export function PointsTableRow({
         <div className="truncate">{userName || address}</div>
       </div>
       <div className="flex flex-row justify-end items-center text-xl">
-        <p>{points || '-'}</p>
+        <p className="flex text-2xl font-medium text-casama-blue ">{points}</p>
       </div>
-      {winnings != undefined && (
+      {winnings !== undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
           {winnings > stake ? (
             <p className="text-green-500 whitespace-nowrap">

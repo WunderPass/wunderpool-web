@@ -36,8 +36,6 @@ export default function MultiCard(props) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [bets, setBets] = useState([]);
 
-  const cardRef = useRef(null);
-
   const mustClickAgain = useMemo(
     () => joiningCompetitionId && joiningGameId,
     [joiningCompetitionId, joiningGameId]
@@ -104,15 +102,8 @@ export default function MultiCard(props) {
     window.location.reload(false); //TODO FIX THIS IN THE FUTURE (BUG after voting all mutli games are displayed as the same game)
   };
 
-  const scrollIntoView = () => {
-    cardRef.current.scrollIntoView({
-      behavior: 'smooth',
-    });
-  };
-
   const joinPublicCompetition = async (competition, gameIds) => {
     setLoading(true);
-    scrollIntoView();
     setLoadingText('Joining Public Competition...');
 
     try {
@@ -171,16 +162,15 @@ export default function MultiCard(props) {
   const handleToggle = (e) => {
     if (e.target.getAttribute('togglable') == 'false') return;
     setShowDetails(!showDetails);
-    setTimeout(() => scrollIntoView(), 50);
   };
 
   return (
     <>
       {competition.games.length > 1 && (
         <div className="container-white pb-16 cursor-pointer relative">
-          <div ref={cardRef} className="absolute -top-12" />
+          <div className="absolute -top-12" />
           <div onClick={(e) => handleToggle(e)}>
-            <Header competition={competition} />
+            <Header competition={competition} user={user} />
             <div className="mt-6">
               <TransactionFrame open={loading} text={loadingText} />
             </div>
@@ -211,6 +201,7 @@ export default function MultiCard(props) {
               ) : (
                 <Collapse in={showDetails}>
                   <Body
+                    user={user}
                     competition={competition}
                     guessOne={guessOne}
                     guessTwo={guessTwo}
@@ -218,21 +209,9 @@ export default function MultiCard(props) {
                     setGuessTwo={setGuessTwo}
                   />
                   <div className="flex flex-col justify-center items-center w-full">
-                    <p>(Enter your score predictions for all games)</p>
-
                     <div className="flex items-center justify-center mb-5 w-full">
                       <div className="flex justify-center items-center text-semibold sm:text-lg"></div>
-                      {/* <div className="flex flex-col gap-3 mt-4">
-                      <MultiCardPredicitionInput
-                        competition={competition}
-                        event={event}
-                        loading={loading}
-                        guessOne={guessOne}
-                        guessTwo={guessTwo}
-                        setGuessOne={setGuessOne}
-                        setGuessTwo={setGuessTwo}
-                      />
-                    </div> */}
+
                       <div className="flex justify-center items-center sm:w-1/2 w-full">
                         {guessOne && guessTwo && (
                           <MultiCardSubmitButton
@@ -242,6 +221,7 @@ export default function MultiCard(props) {
                                 guessTwo.length === competition.games.length
                               )
                             }
+                            user={user}
                             loading={loading}
                             placeBet={placeBet}
                             competition={competition}
@@ -256,12 +236,6 @@ export default function MultiCard(props) {
                 </Collapse>
               ))}
           </div>
-          {/* {showDetails && !loading && !mustClickAgain && (
-          <EventCardFooter
-            scrollIntoView={scrollIntoView}
-            setShowDetails={setShowDetails}
-          />
-        )} */}
         </div>
       )}
       <MagicMomentMultiDialog
