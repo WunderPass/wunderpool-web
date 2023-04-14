@@ -11,7 +11,9 @@ interface WalletConnectWindow extends Window {
 async function approveUsdc(spender, amount, chain: SupportedChain) {
   if ('walletConnect' in window) {
     const usdcAmount = ethers.BigNumber.from(amount);
-    const provider = new ethers.providers.Web3Provider(window.walletConnect);
+    const provider = new ethers.providers.Web3Provider(
+      (window as WalletConnectWindow).walletConnect
+    );
     const tokenContract = new ethers.Contract(
       usdcAddress(chain),
       tokenAbi,
@@ -43,7 +45,9 @@ async function approveUsdc(spender, amount, chain: SupportedChain) {
 export default function useWalletConnect() {
   const signMillis = async () => {
     if ('walletConnect' in window) {
-      const provider = new ethers.providers.Web3Provider(window.walletConnect);
+      const provider = new ethers.providers.Web3Provider(
+        (window as WalletConnectWindow).walletConnect
+      );
       const signer = provider.getSigner();
       const millis = new Date().getTime();
       try {
@@ -59,7 +63,9 @@ export default function useWalletConnect() {
 
   const sendSignatureRequest = async (types, values, packed = true) => {
     if ('walletConnect' in window) {
-      const provider = new ethers.providers.Web3Provider(window.walletConnect);
+      const provider = new ethers.providers.Web3Provider(
+        (window as WalletConnectWindow).walletConnect
+      );
       const signer = provider.getSigner();
       let dataToSign;
       if (packed) {
