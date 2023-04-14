@@ -16,7 +16,7 @@ interface IOsAppWindow extends Window {
   };
 }
 
-function iOSAppInstalled(win: Window): win is IOsAppWindow {
+function iOSAppInstalled(win: any): win is IOsAppWindow {
   return (
     'webkit' in win &&
     typeof win.webkit == 'object' &&

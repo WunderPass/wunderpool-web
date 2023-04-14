@@ -11,7 +11,9 @@ interface EthereumWindow extends Window {
 async function approveUsdc(spender, amount, chain: SupportedChain) {
   if ('ethereum' in window) {
     const usdcAmount = ethers.BigNumber.from(amount);
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(
+      (window as EthereumWindow).ethereum
+    );
     const tokenContract = new ethers.Contract(
       usdcAddress(chain),
       tokenAbi,
@@ -43,7 +45,9 @@ async function approveUsdc(spender, amount, chain: SupportedChain) {
 export default function useMetaMask() {
   const signMillis = async () => {
     if ('ethereum' in window) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(
+        (window as EthereumWindow).ethereum
+      );
       const signer = provider.getSigner();
       const millis = new Date().getTime();
       try {
@@ -59,7 +63,9 @@ export default function useMetaMask() {
 
   const sendSignatureRequest = async (types, values, packed = true) => {
     if ('ethereum' in window) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(
+        (window as EthereumWindow).ethereum
+      );
       const signer = provider.getSigner();
       let dataToSign;
       if (packed) {

@@ -26,6 +26,7 @@ import {
 } from '../../services/contract/types';
 import { BigNumber } from 'ethers';
 import { UsersFindResponse } from '../api/users/find';
+import { UseNotification } from '../../hooks/useNotification';
 
 type RawEventData = {
   name: string;
@@ -121,13 +122,14 @@ async function formatGame({
 
 type AdminOnChainDataProps = {
   user: UseUserType;
+  handleError: UseNotification.handleError;
 };
 
 export default function AdminOnChainData(props: AdminOnChainDataProps) {
-  const { user } = props;
+  const { user, handleError } = props;
   const router = useRouter();
   const [distributorVersion, setDistributorVersion] =
-    useState<SupportedDistributorVersion>('BETA');
+    useState<SupportedDistributorVersion>('GAMMA');
   const [chain, setChain] = useState<SupportedChain>('gnosis');
   const [eventId, setEventId] = useState('');
   const [event, setEvent] = useState<OnChainEvent>();
@@ -139,10 +141,16 @@ export default function AdminOnChainData(props: AdminOnChainDataProps) {
   const [error, setError] = useState(null);
 
   const contract = useMemo(() => {
-    return initDistributor(distributorVersion, chain)[0];
+    try {
+      return initDistributor(distributorVersion, chain)[0];
+    } catch (error) {
+      handleError(error);
+      return null;
+    }
   }, [distributorVersion, chain]);
 
   const getEventData = async (id = null) => {
+    if (!contract) return;
     setLoadingEvent(true);
     const data = await contract.getEvent(id || eventId);
     setEvent(formatEvent(data));
@@ -150,6 +158,7 @@ export default function AdminOnChainData(props: AdminOnChainDataProps) {
   };
 
   const getGameData = async () => {
+    if (!contract) return;
     setLoadingGame(true);
     setError(null);
     const data = await contract.getGame(gameId);
