@@ -4,6 +4,8 @@ import {
   DialogTitle,
   InputAdornment,
   LinearProgress,
+  Menu,
+  MenuItem,
   TextField,
 } from '@mui/material';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
@@ -17,6 +19,7 @@ import axios from 'axios';
 import { getNameFor } from '../../../services/memberHelpers';
 import { UseUserType } from '../../../hooks/useUser';
 import { UseNotification } from '../../../hooks/useNotification';
+import { BsGearFill } from 'react-icons/bs';
 
 type SendDialogProps = {
   open: boolean;
@@ -38,6 +41,8 @@ export default function SendDialog(props: SendDialogProps) {
   const [loading, setLoading] = useState(false);
   const [waitingForTx, setWaitingForTx] = useState(false);
   const [trxSent, setTrxSent] = useState(false);
+  const [chain, setChain] = useState(user.preferredChain);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const addressRegex = new RegExp('^0x[a-fA-F0-9]{40}$');
 
@@ -57,7 +62,7 @@ export default function SendDialog(props: SendDialogProps) {
 
   const sendFunds = () => {
     setLoading(true);
-    transferUsdc(user.address, address, Number(amount), user.preferredChain)
+    transferUsdc(user.address, address, Number(amount), chain)
       .then((res) => {
         setWaitingForTx(true);
         setLoading(false);
@@ -75,7 +80,7 @@ export default function SendDialog(props: SendDialogProps) {
         })
           .then(console.log)
           .catch((err) => console.log(err));
-        waitForTransaction(res, user.preferredChain).then((tx) => {
+        waitForTransaction(res, chain).then((tx) => {
           setWaitingForTx(false);
           setTrxSent(true);
           user.fetchUsdBalance();
@@ -129,7 +134,40 @@ export default function SendDialog(props: SendDialogProps) {
         fullWidth={true}
         maxWidth="sm"
       >
-        <DialogTitle className="w-full">Send USDC</DialogTitle>
+        <DialogTitle className="w-full">
+          Send USDC
+          <button
+            onClick={(e) => setAnchorEl(e.currentTarget)}
+            className="btn-default w-8 h-8 rounded-full flex items-center justify-center absolute right-4 top-4"
+          >
+            <BsGearFill className="w-5 h-5 text-casama-blue" />
+          </button>
+        </DialogTitle>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          <p className="p-2 text-casama-blue">Select your Chain</p>
+          <MenuItem
+            selected={chain == 'gnosis'}
+            onClick={() => {
+              setChain('gnosis');
+              setAnchorEl(null);
+            }}
+          >
+            Gnosis
+          </MenuItem>
+          <MenuItem
+            selected={chain == 'polygon'}
+            onClick={() => {
+              setChain('polygon');
+              setAnchorEl(null);
+            }}
+          >
+            Polygon
+          </MenuItem>
+        </Menu>
         {trxSent ? (
           <DialogContent>
             <div className="flex flex-col gap-3">
