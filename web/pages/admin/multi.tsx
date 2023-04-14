@@ -117,7 +117,7 @@ export default function AdminMultiPage(props) {
   const [name, setName] = useState('');
   const [invitedMembers, setInvitedMembers] = useState([]);
   const [payoutRule, setPayoutRule] = useState('PROPORTIONAL');
-  const [stake, setStake] = useState('');
+  const [stake, setStake] = useState(0.5);
   const [maxMembers, setMaxMembers] = useState('');
   const [isPublic, setIsPublic] = useState(true);
 
@@ -208,7 +208,7 @@ export default function AdminMultiPage(props) {
                   disabled
                   value={0.5 * selectedEvents.length} //TODO FIXED ENTRY 0.50€
                   placeholder="$ 10"
-                  onChange={(val) => setStake(val)}
+                  onChange={(val) => 0}
                 />
               </div>
               <div>
@@ -265,11 +265,7 @@ export default function AdminMultiPage(props) {
                   </p>
                 </>
               ) : (
-                <button
-                  disabled={Number(stake) == 0}
-                  onClick={handleSubmit}
-                  className="btn-casama py-2 px-3"
-                >
+                <button onClick={handleSubmit} className="btn-casama py-2 px-3">
                   Create
                 </button>
               )}
