@@ -3,7 +3,7 @@ services:
   web:
     build:
       context: ./web
-    command: bash -c "mv ./cypress ../ && npm install --production --unsafe-perm && npm run build && mv ../cypress . && npm run start"
+    command: bash -c "npm install --production --unsafe-perm && npm run build && npm run start"
     volumes:
       - './web:/web'
     ports:
