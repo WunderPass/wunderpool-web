@@ -300,13 +300,6 @@ export default function ProposalCard(props) {
       goBack(() => removeQueryParam('proposal'));
     } else {
       addQueryParam({ proposal: proposal.id }, false);
-      // setLoading(true);
-      // wunderPool
-      //   .getTransactionData(proposal.id, proposal.transactionCount.toNumber())
-      //   .then((res) => {
-      //     setLoading(false);
-      //     setTransactionData(res);
-      //   });
     }
   };
 

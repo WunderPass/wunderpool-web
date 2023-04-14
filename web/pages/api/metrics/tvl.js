@@ -22,7 +22,11 @@ async function getToken(address) {
         url: `${process.env.TOKEN_API}/polygon/tokens/${address}`,
       })
     ).data;
-    const tokenContract = new ethers.Contract(address, tokenAbi, httpProvider);
+    const tokenContract = new ethers.Contract(
+      address,
+      tokenAbi,
+      httpProvider()
+    );
     const decimals =
       token?.decimals || (await tokenContract.decimals().toNumber());
     tokenMap[address] = { price: token?.dollar_price || 0, decimals };

@@ -2,7 +2,7 @@ export const pageview = (url) => {
   window.gtag('config', process.env.GA_TRACKING_CODE, { path_url: url });
 };
 
-export const event = ({ action, category, label, value }) => {
+export const event = ({ action, category, label, value = undefined }) => {
   window.gtag('event', action, {
     event_category: category,
     event_label: label,

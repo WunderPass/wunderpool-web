@@ -51,3 +51,14 @@ export function errorToJson(err) {
   // TODO: Erweitern um alle möglichen Error Cases
   return null;
 }
+
+export function translateChain(chain) {
+  switch (chain) {
+    case 'polygon':
+      return 'POLYGON_MAINNET';
+    case 'gnosis':
+      return 'GNOSIS_MAINNET';
+    default:
+      return 'POLYGON_MAINNET';
+  }
+}
