@@ -1,15 +1,23 @@
-import axios from 'axios';
+import { SupportedChain } from './contract/types';
+import axios, { AxiosRequestConfig } from 'axios';
 import { decodeError, waitForTransaction } from './contract/provider';
 
-export function postAndWaitForTransaction(config) {
-  const { method = 'POST', url, body } = config;
+type Config = {
+  method?: AxiosRequestConfig['method'];
+  url: string;
+  body?: AxiosRequestConfig['data'];
+  chain: SupportedChain;
+};
+
+export function postAndWaitForTransaction(config: Config) {
+  const { method = 'POST', url, body, chain } = config;
   return new Promise((resolve, reject) => {
     axios({ method: method, url: url, data: body })
       .then((res) => {
-        waitForTransaction(res.data)
+        waitForTransaction(res.data, chain)
           .then((tx) => {
             if (tx.status === 0) {
-              decodeError(tx.transactionHash)
+              decodeError(tx.transactionHash, chain)
                 .then((msg) => {
                   reject(msg);
                 })

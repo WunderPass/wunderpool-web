@@ -32,6 +32,7 @@ export async function registerParticipant(
         prediction,
         signature,
       },
+      chain,
     });
     ga.event({
       action: 'betting',
@@ -85,6 +86,7 @@ export async function registerParticipantForMulti(
         bets,
         signature,
       },
+      chain,
     });
     ga.event({
       action: 'betting',

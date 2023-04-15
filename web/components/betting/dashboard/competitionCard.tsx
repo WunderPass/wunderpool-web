@@ -16,7 +16,7 @@ import TransactionDialog from '../../general/utils/transactionDialog';
 import ParticipantTable, {
   ParticipantTableRow,
 } from '../games/ParticipantTable';
-import { compAddr, getNameFor } from '../../../services/memberHelpers';
+import { compAddr } from '../../../services/memberHelpers';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useRef } from 'react';
 import { UseNotification } from '../../../hooks/useNotification';
@@ -72,6 +72,7 @@ export default function DashboardCompetitionCard(
         secret,
         50,
         7,
+        game.event.chain,
         () => {
           setInviteLink(
             `${window.location.origin}/betting/join/${competition.competitionId}?secret=${secret}`

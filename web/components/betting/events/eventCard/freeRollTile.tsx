@@ -60,6 +60,7 @@ export default function EventCardFreeRollTile({
       await joinFreeRollCompetition({
         competitionId: competition.competitionId,
         userAddress: user.address,
+        chain: competition.games[0].event.chain,
       });
       await registerBet(
         competition.competitionId,

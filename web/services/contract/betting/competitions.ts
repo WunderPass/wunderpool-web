@@ -1,4 +1,4 @@
-import { latestVersion } from './../init';
+import { initPool, latestVersion } from './../init';
 import { SupportedDistributorVersion, SupportedPoolVersion } from './../types';
 import { FormattedCompetition, FormattedEvent } from './../../bettingHelpers';
 import axios from 'axios';
@@ -163,7 +163,11 @@ export async function joinSingleCompetition({
       );
     } catch (error) {
       if (error != '204: Already Member') {
-        throw error;
+        const [poolContract] = initPool(poolAddress, chain);
+        const isMember = await poolContract.isMember(userAddress);
+        if (!isMember) {
+          throw error;
+        }
       }
     }
     ga.event({
@@ -226,11 +230,13 @@ export async function createFreeRollCompetition({
 type JoinFreeRollCompetitionProps = {
   competitionId: number;
   userAddress: string;
+  chain: SupportedChain;
 };
 
 export async function joinFreeRollCompetition({
   competitionId,
   userAddress,
+  chain,
 }: JoinFreeRollCompetitionProps) {
   try {
     await postAndWaitForTransaction({
@@ -239,6 +245,7 @@ export async function joinFreeRollCompetition({
         competitionId,
         userAddress,
       },
+      chain,
     });
     ga.event({
       action: 'betting',
