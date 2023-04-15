@@ -128,7 +128,7 @@ export function approve(
       const approveTx = await smartContractTransaction(
         populatedTx,
         null,
-        'polygon',
+        chain,
         popup
       );
       const receipt = await provider.waitForTransaction(approveTx.hash);
@@ -155,7 +155,7 @@ export async function approveUSDC(
     const transaction = await smartContractTransaction(
       null,
       { amount, spender },
-      'polygon',
+      chain,
       popup
     );
     if (transaction.hash) {
