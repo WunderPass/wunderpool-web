@@ -1,9 +1,10 @@
+import { latestVersion } from './../init';
 import { SupportedDistributorVersion, SupportedPoolVersion } from './../types';
 import { FormattedCompetition, FormattedEvent } from './../../bettingHelpers';
 import axios from 'axios';
 import { postAndWaitForTransaction } from '../../backendApi';
 import { usdc } from '../../formatter';
-import { versionLookup } from '../init';
+import { launcherAddress, versionLookup } from '../init';
 import { joinPool } from '../pools';
 import { approveUSDC } from '../token';
 import * as ga from '../../../lib/google-analytics';
@@ -35,7 +36,7 @@ export async function createCompetition({
   try {
     await approveUSDC(
       creator,
-      '0x8c3B8456077F0A853c667BF18F4B77E4B3Ca0cB1',
+      launcherAddress(latestVersion.name, chain),
       usdc(stake),
       chain
     );
