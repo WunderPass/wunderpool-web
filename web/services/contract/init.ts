@@ -1,4 +1,4 @@
-import { SupportedChain, VersionInfo } from './types';
+import { SupportedChain, VersionInfo, SupportedPoolVersion } from './types';
 import { ethers } from 'ethers';
 import { httpProvider } from './provider';
 
@@ -12,6 +12,38 @@ export const wunderSwapperAddress = (chain: SupportedChain) => {
       throw `Unsupported Chain: ${chain}`;
   }
 };
+
+export function launcherAddress(
+  version: SupportedPoolVersion,
+  chain: SupportedChain
+) {
+  switch (chain) {
+    case 'polygon':
+      switch (version) {
+        case 'GAMMA':
+          return '0xAE32217Dc2d87c07C0885D69121B968C96d3E693';
+        case 'DELTA':
+          return '0xA40E3c0efA5a1Fa1C84aD7958e7aBf0Cf186809F';
+        case 'EPSILON':
+          return '0x4294FB86A22c3A89B2FA660de39e23eA91D5B35E';
+        case 'ZETA':
+          return '0xB5Ae136D3817d8116Fce70Ac47e856fc484dafAe';
+        case 'ETA':
+          return '0x8c3B8456077F0A853c667BF18F4B77E4B3Ca0cB1';
+        default:
+          throw `Unsupported Pool Version ${version} at chain ${chain}`;
+      }
+    case 'gnosis':
+      switch (version) {
+        case 'ETA':
+          return '0xbB7dAdDD024Ab49309915Fb1d0c80a259A2Db31B';
+        default:
+          throw `Unsupported Pool Version ${version} at chain ${chain}`;
+      }
+    default:
+      throw `Unsupported Chain: ${chain}`;
+  }
+}
 
 export const usdcAddress = (chain: SupportedChain) => {
   switch (chain) {
@@ -76,7 +108,10 @@ export const versionLookup: {
   },
 };
 
-export const latestVersion = { name: 'ETA', number: 7 };
+export const latestVersion: { name: SupportedPoolVersion; number: number } = {
+  name: 'ETA',
+  number: 7,
+};
 
 export const tokenAbi = [
   'function name() public view returns(string)',

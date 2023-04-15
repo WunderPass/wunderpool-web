@@ -6,7 +6,7 @@ import { PoolsWhitelistsResponse } from './../../pages/api/pools/whitelisted';
 import { UserPoolsResponse } from './../../pages/api/pools/userPools';
 import { ShowPoolResponse } from './../../pages/api/pools/show';
 import { usdc } from '../../services/formatter';
-import { versionLookup } from './init';
+import { launcherAddress, versionLookup } from './init';
 import { addToWhiteListDelta, joinPoolDelta } from './delta/pools';
 import { joinPoolGamma } from './gamma/pools';
 import { addToWhiteListWithSecretEpsilon } from './epsilon/pools';
@@ -67,12 +67,7 @@ export function createPool({
     const formData = new FormData();
     formData.append('pool_image', image);
     formData.append('pool', JSON.stringify(body));
-    approveUSDC(
-      creator,
-      '0x8c3B8456077F0A853c667BF18F4B77E4B3Ca0cB1',
-      usdc(amount),
-      chain
-    )
+    approveUSDC(creator, launcherAddress('ETA', chain), usdc(amount), chain)
       .then(() => {
         axios({
           method: 'POST',
