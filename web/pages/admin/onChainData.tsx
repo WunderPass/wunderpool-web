@@ -130,7 +130,7 @@ export default function AdminOnChainData(props: AdminOnChainDataProps) {
   const router = useRouter();
   const [distributorVersion, setDistributorVersion] =
     useState<SupportedDistributorVersion>('GAMMA');
-  const [chain, setChain] = useState<SupportedChain>('gnosis');
+  const [chain, setChain] = useState<SupportedChain>(user.preferredChain);
   const [eventId, setEventId] = useState('');
   const [event, setEvent] = useState<OnChainEvent>();
   const [loadingEvent, setLoadingEvent] = useState(false);

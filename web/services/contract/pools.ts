@@ -443,10 +443,11 @@ export function addToWhiteList(
   poolAddress: string,
   userAddress: string,
   newMember: string,
-  version: number
+  version: number,
+  chain: SupportedChain
 ) {
   if (version > 3) {
-    return addToWhiteListDelta(poolAddress, userAddress, newMember);
+    return addToWhiteListDelta(poolAddress, userAddress, newMember, chain);
   } else {
     throw 'Not implemented before DELTA';
   }
@@ -458,6 +459,7 @@ export function addToWhiteListWithSecret(
   secret: string,
   validFor: number,
   version: number,
+  chain: SupportedChain,
   afterSignature: (secret: string) => void = () => {}
 ) {
   if (version > 4) {
@@ -466,6 +468,7 @@ export function addToWhiteListWithSecret(
       userAddress,
       secret,
       validFor,
+      chain,
       afterSignature
     );
   } else {

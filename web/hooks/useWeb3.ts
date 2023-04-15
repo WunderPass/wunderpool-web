@@ -27,21 +27,21 @@ export default function useWeb3() {
   const smartContractTransaction = (
     tx,
     usdc = {},
-    network: SupportedChain,
+    chain: SupportedChain,
     popup = null
   ): Promise<{ hash?: string }> => {
     if (loginMethod == 'MetaMask') {
-      return useMetaMask().smartContractTransaction(tx, usdc, network);
+      return useMetaMask().smartContractTransaction(tx, usdc, chain);
     } else if (loginMethod == 'WalletConnect') {
-      return useWalletConnect().smartContractTransaction(tx, usdc, network);
+      return useWalletConnect().smartContractTransaction(tx, usdc, chain);
     } else if (loginMethod == 'Casama') {
-      return useCasama().smartContractTransaction(tx, usdc, network);
+      return useCasama().smartContractTransaction(tx, usdc, chain);
     } else {
       return useWunderPass({
         name: 'Casama',
         accountId: 'ABCDE',
         userAddress: address,
-      }).smartContractTransaction(tx, usdc, network, popup);
+      }).smartContractTransaction(tx, usdc, chain, popup);
     }
   };
 

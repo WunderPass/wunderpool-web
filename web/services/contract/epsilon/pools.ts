@@ -1,12 +1,14 @@
 import { ethers } from 'ethers';
 import { postAndWaitForTransaction } from '../../backendApi';
 import useWeb3 from '../../../hooks/useWeb3';
+import { SupportedChain } from '../types';
 
 export function addToWhiteListWithSecretEpsilon(
   poolAddress: string,
   userAddress: string,
   secret: string,
   validFor: number,
+  chain: SupportedChain,
   afterSignature: (secret: string) => void
 ) {
   return new Promise(async (resolve, reject) => {
@@ -32,6 +34,7 @@ export function addToWhiteListWithSecretEpsilon(
         postAndWaitForTransaction({
           url: '/api/pools/whitelist',
           body: body,
+          chain,
         })
           .then((res) => {
             resolve(res);

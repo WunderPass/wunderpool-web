@@ -325,6 +325,7 @@ function InputJoinAmount(props: InputJoinAmountProps) {
         await joinFreeRollCompetition({
           competitionId: competition.competitionId,
           userAddress: user.address,
+          chain: game.event.chain,
         });
       } else {
         await joinSingleCompetition({

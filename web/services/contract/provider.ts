@@ -30,20 +30,19 @@ export async function getEnsName(address: string) {
   }
 }
 
-export function waitForTransaction(txHash: string, chain: SupportedChain) {
-  return new Promise((resolve, reject) => {
-    httpProvider(chain)
-      .waitForTransaction(txHash)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+export async function waitForTransaction(
+  txHash: string,
+  chain: SupportedChain
+) {
+  try {
+    const tx = await httpProvider(chain).waitForTransaction(txHash);
+    return tx;
+  } catch (error) {
+    throw error;
+  }
 }
 
-function decodeMessage(code) {
+function decodeMessage(code: string) {
   let codeString = `0x${code.substr(138)}`.replace(/0+$/, '');
 
   if (codeString.length % 2 === 1) {

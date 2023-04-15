@@ -43,14 +43,13 @@ export default function MultiCard(props: MultiCardProps) {
   );
 
   const placeBet = async () => {
-    const game = competition.games[0];
     const gameIds = competition.games
       .filter(({ state }) => state === 'UPCOMING')
       .map(({ id }) => id);
 
     await joinPublicCompetition();
 
-    if (competition.competitionId && game.event?.blockchainId && game.id) {
+    if (competition.competitionId) {
       if (user.loginMethod == 'Casama') {
         await registerBet(
           competition.competitionId,

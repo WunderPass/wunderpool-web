@@ -20,6 +20,8 @@ import CurrencyInput from '../../components/general/utils/currencyInput';
 import MemberInput from '../../components/general/members/input';
 import { FormattedEvent } from '../../services/bettingHelpers';
 import { SupportedChain } from '../../services/contract/types';
+import { UseUserType } from '../../hooks/useUser';
+import { UseNotification } from '../../hooks/useNotification';
 
 type EventInputProps = {
   events: FormattedEvent[];
@@ -106,14 +108,20 @@ function EventInput({ events, setSelectedEvents }: EventInputProps) {
   );
 }
 
-export default function AdminMultiPage(props) {
+type AdminMultiPageProps = {
+  user: UseUserType;
+  handleSuccess: UseNotification.handleSuccess;
+  handleError: UseNotification.handleError;
+};
+
+export default function AdminMultiPage(props: AdminMultiPageProps) {
   const { user, handleSuccess, handleError } = props;
   const router = useRouter();
   const [events, setEvents] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedEvents, setSelectedEvents] = useState([]);
 
-  const [chain, setChain] = useState<SupportedChain>('gnosis');
+  const [chain, setChain] = useState<SupportedChain>(user.preferredChain);
   const [name, setName] = useState('');
   const [invitedMembers, setInvitedMembers] = useState([]);
   const [payoutRule, setPayoutRule] = useState('PROPORTIONAL');

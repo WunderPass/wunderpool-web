@@ -514,7 +514,7 @@ type AdminBettingPageProps = {
 export default function AdminBettingPage(props: AdminBettingPageProps) {
   const { user, handleError } = props;
   const router = useRouter();
-  const [chain, setChain] = useState<SupportedChain>('gnosis');
+  const [chain, setChain] = useState<SupportedChain>(user.preferredChain);
   const [competitions, setCompetitions] = useState([]);
   const [closedCompetitions, setClosedCompetitions] = useState([]);
   const [events, setEvents] = useState([]);

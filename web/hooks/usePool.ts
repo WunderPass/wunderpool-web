@@ -204,7 +204,13 @@ export default function usePool(
   };
 
   const inviteUser = (newMember: string) => {
-    return addToWhiteList(poolAddress, userAddress, newMember, version?.number);
+    return addToWhiteList(
+      poolAddress,
+      userAddress,
+      newMember,
+      version?.number,
+      version?.chain
+    );
   };
 
   const createInviteLink = (secret: string, validFor: number) => {
@@ -213,7 +219,8 @@ export default function usePool(
       userAddress,
       secret,
       validFor,
-      version?.number
+      version?.number,
+      version?.chain
     );
   };
 

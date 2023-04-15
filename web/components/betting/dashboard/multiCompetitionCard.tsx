@@ -54,6 +54,7 @@ export default function DashboardCompetitionCard(
         secret,
         50,
         7,
+        competition.games[0].event.chain,
         () => {
           setInviteLink(
             `${window.location.origin}/betting/join/${competition.competitionId}?secret=${secret}`

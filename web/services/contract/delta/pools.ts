@@ -21,7 +21,7 @@ export function joinPoolDelta(
           secret: secret,
         };
 
-        postAndWaitForTransaction({ url: '/api/pools/join', body: body })
+        postAndWaitForTransaction({ url: '/api/pools/join', body: body, chain })
           .then((res) => {
             resolve(res);
           })
@@ -38,7 +38,8 @@ export function joinPoolDelta(
 export function addToWhiteListDelta(
   poolAddress: string,
   userAddress: string,
-  newMember: string
+  newMember: string,
+  chain: SupportedChain
 ) {
   return new Promise(async (resolve, reject) => {
     if (userAddress == newMember) {
@@ -61,6 +62,7 @@ export function addToWhiteListDelta(
         postAndWaitForTransaction({
           url: '/api/pools/whitelist',
           body: body,
+          chain,
         })
           .then((res) => {
             resolve(res);
