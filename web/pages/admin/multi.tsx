@@ -117,7 +117,6 @@ export default function AdminMultiPage(props) {
   const [name, setName] = useState('');
   const [invitedMembers, setInvitedMembers] = useState([]);
   const [payoutRule, setPayoutRule] = useState('PROPORTIONAL');
-  const [stake, setStake] = useState(0.5);
   const [maxMembers, setMaxMembers] = useState('');
   const [isPublic, setIsPublic] = useState(true);
 
@@ -138,7 +137,7 @@ export default function AdminMultiPage(props) {
         creator: user.address,
         eventIds,
         payoutRule,
-        stake: Number(stake),
+        stake: 0.5 * selectedEvents.length,
         isPublic,
         version: 'GAMMA',
         chain,
