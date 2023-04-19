@@ -35,6 +35,8 @@ export default function DashboardCompetitionCard(
   const { stake, sponsored, payoutRule, isPublic, maxMembers } =
     competition || {};
 
+  const game = competition.games[index];
+
   const handleShareCompetition = () => {
     if (isPublic || inviteLink) {
       handleShare(
@@ -80,10 +82,6 @@ export default function DashboardCompetitionCard(
     ? new Date(competition.games?.[index].event.startTime) < new Date() &&
       new Date(competition.games?.[index].event.endTime) > new Date()
     : false;
-
-  useEffect(() => {
-    setIndex(index);
-  }, [index]);
 
   return (
     <div className="container-gray w-full relative">
@@ -190,7 +188,7 @@ export default function DashboardCompetitionCard(
               <div className="flex flex-row text-xl my-1 font-medium text-casama-light-blue truncate gap-5">
                 <p className="flex-grow text-left">Name</p>
                 <p>Points</p>
-                <p>Profit</p>
+                <p>Payout</p>
               </div>
               <Divider className="my-1" />
 
@@ -226,24 +224,22 @@ export default function DashboardCompetitionCard(
                   <div className="flex flex-row justify-between items-center text-center w-full">
                     <div className="flex flex-col justify-center items-center text-center w-5/12">
                       <img
-                        src={`/api/betting/events/teamImage?id=${competition.games[index]?.event.teamHome.id}`}
+                        src={`/api/betting/events/teamImage?id=${game?.event.teamHome.id}`}
                         className="w-16 mb-2"
                       />
                     </div>
                     <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
                       {['RESOLVED', 'CLOSED_FOR_BETTING', 'HISTORIC'].includes(
-                        competition.games[index]?.state
+                        game?.state
                       ) ? ( //IF GAME started, or is finished
                         <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
                           {isLive && (
-                            <div className="flex justify-center items-center  ">
-                              <div className="flex flex-row justify-center animate-pulse ">
-                                <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                                <div className="text-sm">
-                                  {competition.games[index]?.event?.minute
-                                    ? competition.games[index]?.event.minute
-                                    : 'LIVE'}
-                                </div>
+                            <div className="flex justify-between items-center">
+                              <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                              <div className="text-sm">
+                                {game?.event?.minute
+                                  ? game?.event.minute
+                                  : 'LIVE'}
                               </div>
                             </div>
                           )}
@@ -251,13 +247,11 @@ export default function DashboardCompetitionCard(
                           <div className="flex flex-row justify-center items-center my-2">
                             <div className=" flex flex-row justify-center text-xl sm:text-3xl">
                               <p className="font-semibold ">
-                                {competition.games[index]?.event?.outcome[0] ||
-                                  0}
+                                {game?.event?.outcome[0] || 0}
                               </p>
                               <p className="px-2  "> : </p>
                               <p className="font-semibold ">
-                                {competition.games[index]?.event?.outcome[1] ||
-                                  0}
+                                {game?.event?.outcome[1] || 0}
                               </p>
                             </div>
                           </div>
@@ -267,25 +261,19 @@ export default function DashboardCompetitionCard(
                         //TODO CHECK IF THIS SCOPE IS USELESS?
                         <div className={timerLoading ? 'invisible' : ''}>
                           <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
-                            {new Date(
-                              competition.games[index]?.event.startTime
-                            ) < new Date() && (
-                              <div className="flex justify-center items-center gap-1 ">
-                                <div className="flex flex-row justify-center animate-pulse ">
-                                  <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                                  <div className="text-sm">LIVE</div>
-                                </div>
+                            {new Date(game?.event.startTime) < new Date() && (
+                              <div className="flex flex-row justify-center items-center gap-1 animate-pulse">
+                                <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                                <div className="text-sm">LIVE</div>
                               </div>
                             )}
 
                             <Timer
                               start={Number(new Date())}
                               end={
-                                new Date(
-                                  competition.games[index]?.event?.startTime
-                                ) > new Date()
-                                  ? competition.games[index]?.event?.startTime
-                                  : competition.games[index]?.event?.endTime
+                                new Date(game?.event?.startTime) > new Date()
+                                  ? game?.event?.startTime
+                                  : game?.event?.endTime
                               }
                               setTimerLoading={setTimerLoading}
                               {...props}
@@ -296,7 +284,7 @@ export default function DashboardCompetitionCard(
                     </div>
                     <div className="flex flex-col justify-center items-center text-center w-5/12">
                       <img
-                        src={`/api/betting/events/teamImage?id=${competition.games[index]?.event.teamAway.id}`}
+                        src={`/api/betting/events/teamImage?id=${game?.event.teamAway.id}`}
                         className="w-16 mb-2"
                       />
                     </div>
@@ -306,15 +294,13 @@ export default function DashboardCompetitionCard(
                   <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
                     <div className="flex flex-row justify-center items-center text-center w-5/12">
                       <p className="text-xl sm:text-2xl font-semibold">
-                        {competition.games[index]?.event.teamHome?.name ||
-                          competition.games[index]?.event?.teamHome}
+                        {game?.event.teamHome?.name || game?.event?.teamHome}
                       </p>
                     </div>
                     <div className="flex sm:w-2/12 w-3/12"></div>
                     <div className="flex flex-col justify-center items-center text-center w-5/12">
                       <p className="text-xl sm:text-2xl font-semibold">
-                        {competition.games[index]?.event.teamAway?.name ||
-                          competition.games[index]?.event?.teamAway}
+                        {game?.event.teamAway?.name || game?.event?.teamAway}
                       </p>
                     </div>
                   </div>
@@ -322,7 +308,7 @@ export default function DashboardCompetitionCard(
               </div>
               <div>
                 <ParticipantTable
-                  participants={competition.games[index]?.participants}
+                  participants={game?.participants}
                   stake={sponsored ? 0 : stake}
                   user={user}
                 />
