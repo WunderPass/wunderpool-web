@@ -129,7 +129,7 @@ export default function MultiCard(props: MultiCardProps) {
       console.log(error);
       handleError(error, user.wunderId, user.userName);
     }
-    user.fetchUsdBalance();
+    user.fetchUsdBalance(competition.games[0].event.chain);
     bettingService.reFetchCompetition(
       competitionId || joiningCompetitionId,
       3000
