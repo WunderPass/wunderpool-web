@@ -19,9 +19,13 @@ import { MdSportsSoccer } from 'react-icons/md';
 import CurrencyInput from '../../components/general/utils/currencyInput';
 import MemberInput from '../../components/general/members/input';
 import { FormattedEvent } from '../../services/bettingHelpers';
-import { SupportedChain } from '../../services/contract/types';
+import {
+  SupportedChain,
+  SupportedPayoutRule,
+} from '../../services/contract/types';
 import { UseUserType } from '../../hooks/useUser';
 import { UseNotification } from '../../hooks/useNotification';
+import { BettingEventsRegisteredResponse } from '../api/betting/events/registered';
 
 type EventInputProps = {
   events: FormattedEvent[];
@@ -117,14 +121,17 @@ type AdminMultiPageProps = {
 export default function AdminMultiPage(props: AdminMultiPageProps) {
   const { user, handleSuccess, handleError } = props;
   const router = useRouter();
-  const [events, setEvents] = useState(null);
+  const [events, setEvents] = useState<BettingEventsRegisteredResponse>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [selectedEvents, setSelectedEvents] =
+    useState<BettingEventsRegisteredResponse>([]);
 
   const [chain, setChain] = useState<SupportedChain>(user.preferredChain);
   const [name, setName] = useState('');
   const [invitedMembers, setInvitedMembers] = useState([]);
-  const [payoutRule, setPayoutRule] = useState('PROPORTIONAL');
+  const [payoutRule, setPayoutRule] = useState<SupportedPayoutRule>(
+    'WINNER_TAKES_IT_ALL'
+  );
   const [maxMembers, setMaxMembers] = useState('');
   const [isPublic, setIsPublic] = useState(true);
 
@@ -185,7 +192,10 @@ export default function AdminMultiPage(props: AdminMultiPageProps) {
             Multi Competition Manager
           </h1>
 
-          <EventInput events={events} setSelectedEvents={setSelectedEvents} />
+          <EventInput
+            events={events.filter((e) => e.chain == chain)}
+            setSelectedEvents={setSelectedEvents}
+          />
 
           {selectedEvents.length > 0 && (
             <div className="mt-5 flex flex-col gap-3">
@@ -234,7 +244,9 @@ export default function AdminMultiPage(props: AdminMultiPageProps) {
                 <label>Payout Rule</label>
                 <Select
                   value={payoutRule}
-                  onChange={(e) => setPayoutRule(e.target.value)}
+                  onChange={(e) =>
+                    setPayoutRule(e.target.value as SupportedPayoutRule)
+                  }
                   className="mt-2"
                 >
                   <MenuItem value={'PROPORTIONAL'}>Proportional</MenuItem>
