@@ -70,6 +70,7 @@ export type UseUserType = {
   topUpRequired: boolean;
   setTopUpRequired: Dispatch<SetStateAction<boolean>>;
   preferredChain: SupportedChain;
+  updatePreferredChain: (chain: SupportedChain) => void;
   unsupportedChain: boolean;
   checkedTopUp: boolean;
   updateCheckedTopUp: (checked: boolean) => void;
@@ -555,6 +556,7 @@ export default function useUser(): UseUserType {
     topUpRequired,
     setTopUpRequired,
     preferredChain,
+    updatePreferredChain,
     unsupportedChain,
     checkedTopUp,
     updateCheckedTopUp,
