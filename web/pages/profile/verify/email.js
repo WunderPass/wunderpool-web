@@ -75,7 +75,7 @@ export default function VerifyEmailPage(props) {
             </>
           )}
           <Divider className="w-full" />
-          <Link href="/betting">
+          <Link href="/betting/multi">
             <a className="btn-casama text-xl px-2 py-3">Start Betting</a>
           </Link>
         </div>

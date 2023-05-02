@@ -49,7 +49,7 @@ export default function TopBar(props: TopBarProps) {
         >
           <Toolbar>
             <Stack className="hidden sm:flex flex-row w-full justify-between items-center">
-              <Link href="/betting">
+              <Link href="/betting/multi">
                 <div className="flex flex-row cursor-pointer items-center">
                   <div className="pl-1.5 items-center justify-center mr-3">
                     <div className="hidden lg:block w-40">

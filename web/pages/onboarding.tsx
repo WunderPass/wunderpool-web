@@ -66,7 +66,7 @@ function WelcomeDialog({
           <div className="w-full flex flex-col sm:flex-row gap-3">
             <button
               className="w-full py-3 px-5 btn-default"
-              onClick={() => router.push('/betting')}
+              onClick={() => router.push('/betting/multi')}
             >
               Skip Tutorial
             </button>
@@ -306,7 +306,7 @@ export default function Onboarding(props: OnboardingProps) {
       {
         selector: '.react-tour-all-games',
         content:
-          'This is the All Games Tab. Here you can find all Upcoming Games and place your Bets.',
+          'This is the Single Games Tab. Here you can find all Upcoming Games and place your Bets.',
         action: () => {
           setShowSuccess(false);
           setShowDetails(false);

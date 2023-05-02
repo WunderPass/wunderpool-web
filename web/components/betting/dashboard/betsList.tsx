@@ -133,7 +133,7 @@ export default function BetsList(props: DashboardBetsListProps) {
               create new bets.
             </Typography>
           </div>
-          <Link href="/betting">
+          <Link href="/betting/multi">
             <button className="btn-casama-white justify-center items-center w-full my-5 py-3.5 px-3 mb-0 text-lg font-semibold ">
               Check possible Bets
             </button>
