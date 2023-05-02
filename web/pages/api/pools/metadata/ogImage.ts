@@ -1,123 +1,14 @@
+import {
+  roundRect,
+  getLines,
+  imageToSquare,
+  roundImage,
+} from '../../../../services/nodeCanvas';
+
 const http = require('https');
-const { createCanvas, loadImage, Image, registerFont } = require('canvas');
+import { createCanvas, loadImage, Image, registerFont } from 'canvas';
 
-function square(image) {
-  const minWidthHeight = Math.min(image.naturalWidth, image.naturalHeight);
-  const canvas = createCanvas(minWidthHeight, minWidthHeight);
-  const context = canvas.getContext('2d');
-  context.drawImage(
-    image,
-    (image.naturalWidth - minWidthHeight) / 2,
-    (image.naturalHeight - minWidthHeight) / 2,
-    minWidthHeight,
-    minWidthHeight,
-    0,
-    0,
-    minWidthHeight,
-    minWidthHeight
-  );
-  return canvas;
-}
-
-function roundRect(context, x, y, width, height, radius) {
-  context.beginPath();
-  context.moveTo(x + radius, y);
-  context.lineTo(x + width - radius, y);
-  context.quadraticCurveTo(x + width, y, x + width, y + radius);
-  context.lineTo(x + width, y + height - radius);
-  context.quadraticCurveTo(
-    x + width,
-    y + height,
-    x + width - radius,
-    y + height
-  );
-  context.lineTo(x + radius, y + height);
-  context.quadraticCurveTo(x, y + height, x, y + height - radius);
-  context.lineTo(x, y + radius);
-  context.quadraticCurveTo(x, y, x + radius, y);
-  context.closePath();
-  context.fill();
-}
-
-function round(image) {
-  const { width, height } = image;
-  const radius = width * 0.1;
-  const canvas = createCanvas(width, height);
-  const context = canvas.getContext('2d');
-  context.save();
-  context.beginPath();
-  context.moveTo(radius, 0);
-  context.lineTo(width - radius, 0);
-  context.quadraticCurveTo(width, 0, width, radius);
-  context.lineTo(width, height - radius);
-  context.quadraticCurveTo(width, height, width - radius, height);
-  context.lineTo(radius, height);
-  context.quadraticCurveTo(0, height, 0, height - radius);
-  context.lineTo(0, radius);
-  context.quadraticCurveTo(0, 0, radius, 0);
-  context.closePath();
-  context.clip();
-  context.drawImage(image, 0, 0, width, height);
-  context.restore();
-  return canvas;
-}
-
-function seperateWord(context, text, maxWidth) {
-  const textWidth = context.measureText(text).width;
-  if (textWidth <= maxWidth) return [text];
-  let letters = text.split('');
-  let lines = [];
-  let currentLine = letters[0];
-
-  for (let i = 1; i < letters.length; i++) {
-    let letter = letters[i];
-    let width = context.measureText(`${currentLine}${letter}-`).width;
-    if (width < maxWidth) {
-      currentLine += letter;
-    } else {
-      lines.push(`${currentLine}-`);
-      currentLine = letter;
-    }
-  }
-  lines.push(currentLine);
-  return lines;
-}
-
-function getLines(context, text, maxWidth) {
-  const textWidth = context.measureText(text).width;
-  if (textWidth <= maxWidth) return [text];
-  let words = text.split(' ');
-  let lines = [];
-  let currentLine = words[0];
-
-  for (let i = 1; i < words.length; i++) {
-    if (
-      context.measureText(currentLine).width > maxWidth &&
-      currentLine.split(' ').length == 1
-    ) {
-      const seperatedWord = seperateWord(context, currentLine, maxWidth);
-      lines.push(...seperatedWord.slice(0, -1));
-      currentLine = seperatedWord.slice(-1)[0];
-    }
-    let word = words[i];
-    let width = context.measureText(`${currentLine} ${word}`).width;
-    if (width < maxWidth) {
-      currentLine += ' ' + word;
-    } else {
-      lines.push(currentLine);
-      currentLine = word;
-    }
-  }
-  if (context.measureText(currentLine).width > maxWidth) {
-    const seperatedWord = seperateWord(context, currentLine, maxWidth);
-    lines.push(...seperatedWord.slice(0, -1));
-    currentLine = seperatedWord.slice(-1)[0];
-  }
-  lines.push(currentLine);
-  return lines;
-}
-
-function getImage(address) {
+function getImage(address: string): Promise<Image> {
   return new Promise((resolve) => {
     const options = {
       hostname: 'pools-service.wunderpass.org',
@@ -194,8 +85,8 @@ export default function handler(req, res) {
         canvasHeight - padding,
         20
       );
-      const croppedImage = square(image);
-      const roundedImage = round(croppedImage);
+      const croppedImage = imageToSquare(image);
+      const roundedImage = roundImage(croppedImage);
       context.drawImage(
         roundedImage,
         canvasWidth - poolImgWidth - padding,
