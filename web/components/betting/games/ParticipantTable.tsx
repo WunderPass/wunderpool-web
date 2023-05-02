@@ -233,13 +233,7 @@ export function PointsTableRow({
       </div>
       {profit !== undefined && (
         <div className=" min-w-[5rem] text-right text-xl">
-          {profit > stake ? (
-            <p className="text-green-500 whitespace-nowrap">
-              + {currency(profit)}
-            </p>
-          ) : (
-            <p className="text-red-500 whitespace-nowrap">{currency(profit)}</p>
-          )}
+          <p className="text-green-500 whitespace-nowrap">{currency(profit)}</p>
         </div>
       )}
     </div>
