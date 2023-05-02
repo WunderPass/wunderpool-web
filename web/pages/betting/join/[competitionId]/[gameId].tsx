@@ -42,7 +42,7 @@ export default function JoinCompetitionGame(props: JoinCompetitionGameProps) {
       }
     } else {
       handleInfo('This Bet does not exist');
-      router.push('/betting');
+      router.push('/betting/multi');
     }
   }, [game?.id, user?.address]);
 

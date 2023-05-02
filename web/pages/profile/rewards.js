@@ -153,7 +153,7 @@ function RewardsNotAvailable() {
         <h1 className="text-3xl font-semibold">
           Rewards are only available for Casama Users
         </h1>
-        <Link href="/betting">
+        <Link href="/betting/multi">
           <a className="btn-casama px-3 py-2">View Bets</a>
         </Link>
       </div>

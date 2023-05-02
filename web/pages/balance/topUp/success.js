@@ -164,7 +164,7 @@ export default function BalanceTopUpSuccess(props) {
             )}
             <p className="text-xl md:text-3xl">Finalizing Transaction</p>
           </Stack>
-          <Link href={'/betting'}>
+          <Link href={'/betting/multi'}>
             <button
               className="btn-casama py-3 px-5 md:text-2xl"
               variant="contained"

@@ -589,7 +589,7 @@ export default function AdminBettingPage(props: AdminBettingPageProps) {
   useEffect(() => {
     if (router.isReady && user.isReady) {
       if (!user.isAdmin) {
-        router.push('/betting');
+        router.push('/betting/multi');
       } else {
         fetchCompetitions();
         fetchEvents(true);

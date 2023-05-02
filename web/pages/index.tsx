@@ -51,7 +51,7 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     if (user.loggedIn) {
-      router.push(isNewUser ? '/onboarding' : '/betting');
+      router.push(isNewUser ? '/onboarding' : '/betting/multi');
     }
   }, [user.loggedIn]);
 

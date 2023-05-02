@@ -168,7 +168,7 @@ export default function AdminMultiPage(props: AdminMultiPageProps) {
   useEffect(() => {
     if (router.isReady && user.isReady) {
       if (!user.isAdmin) {
-        router.push('/betting');
+        router.push('/betting/multi');
       } else {
         fetchEvents();
       }
