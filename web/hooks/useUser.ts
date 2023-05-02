@@ -522,7 +522,7 @@ export default function useUser(): UseUserType {
     setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
     setLoginMethod(localStorage.getItem('loginMethod') as LoginMethod);
     setPreferredChain(
-      (localStorage.getItem('preferredChain') as SupportedChain) || 'polygon'
+      (localStorage.getItem('preferredChain') as SupportedChain) || 'gnosis'
     );
   }, []);
 
