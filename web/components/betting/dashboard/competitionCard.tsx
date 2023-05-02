@@ -41,7 +41,6 @@ export default function DashboardCompetitionCard(
   const [gameResultTable, setGameResultTable] = useState([]);
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [timerLoading, setTimerLoading] = useState(true);
   const scrollToRef = useRef(null);
 
   const { stake, sponsored, payoutRule, isPublic, maxMembers } =
@@ -212,7 +211,7 @@ export default function DashboardCompetitionCard(
                       </div>
                     </div>
                   ) : (
-                    <div className={timerLoading ? 'invisible' : ''}>
+                    <div>
                       <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
                         {new Date(game.event.startTime) < new Date() && (
                           <div className="flex justify-center items-center gap-1 ">
@@ -229,7 +228,6 @@ export default function DashboardCompetitionCard(
                               ? game.event.startTime
                               : game.event.endTime
                           }
-                          setTimerLoading={setTimerLoading}
                           {...props}
                         />
                       </div>

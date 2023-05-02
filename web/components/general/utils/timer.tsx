@@ -6,11 +6,10 @@ type TimerProps = {
   end: number | Date;
   text?: string;
   bar?: boolean;
-  setTimerLoading?: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function Timer(props: TimerProps) {
-  const { start, end, text = 'Days', bar, setTimerLoading = () => {} } = props;
+  const { start, end, text = 'Days', bar } = props;
   const [timer, setTimer] = useState(0);
 
   const formatDecimals = (num: number) => {
@@ -24,10 +23,8 @@ export default function Timer(props: TimerProps) {
     const days = Math.floor(millis / 60 / 60 / 24);
 
     if (days >= 1) {
-      setTimerLoading(false);
       return `${Math.round(millis / 60 / 60 / 24)}`;
     } else if (millis >= 1) {
-      setTimerLoading(false);
       if (hours >= 1) {
         return `${hours}:${formatDecimals(minutes)}`;
       } else {
@@ -39,24 +36,15 @@ export default function Timer(props: TimerProps) {
   };
 
   useEffect(() => {
-    const newTimer = Math.floor(
-      (Number(new Date(end)) - Number(new Date())) / 1000
-    );
-    let timeout = null;
-    if (newTimer > 172800) {
-      setTimer(newTimer);
-      timeout = setTimeout(() => {
-        setTimer(newTimer);
-      }, 86400);
-    } else {
-      timeout = setTimeout(() => {
-        setTimer(newTimer);
-      }, 1000);
-    }
+    setTimer(Math.floor((Number(new Date(end)) - Number(new Date())) / 1000));
+    let interval = null;
+    interval = setInterval(() => {
+      setTimer(Math.floor((Number(new Date(end)) - Number(new Date())) / 1000));
+    }, 1000);
     return () => {
-      clearTimeout(timeout);
+      clearInterval(interval);
     };
-  }, [timer, start, end]);
+  }, [start, end]);
 
   return (
     <div className="flex-col justify-end items-center w-full ">

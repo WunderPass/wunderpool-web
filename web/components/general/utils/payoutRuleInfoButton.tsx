@@ -1,12 +1,12 @@
 import { Popover, Divider } from '@mui/material';
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 
 export default function PayoutRuleInfoButton() {
   const [showInfo, setShowInfo] = useState(false);
   const [infoBoxAnchorEl, setInfoBoxAnchorEl] = useState<Element>();
 
-  const showPayoutRuleInfo = (e) => {
-    setInfoBoxAnchorEl(e.currentTarget + 2);
+  const showPayoutRuleInfo = (e: MouseEvent<HTMLDivElement>) => {
+    setInfoBoxAnchorEl(e.currentTarget);
     setShowInfo(!showInfo);
   };
 
@@ -16,11 +16,11 @@ export default function PayoutRuleInfoButton() {
 
   return (
     <div>
-      <div className="cursor-pointer" onClick={(e) => showPayoutRuleInfo(e)}>
+      <div className="cursor-pointer" onClick={showPayoutRuleInfo}>
         <svg
           stroke="currentColor"
           fill="currentColor"
-          stroke-width="0"
+          strokeWidth="0"
           viewBox="0 0 512 512"
           className="ml-2 text-xl mb-1 text-casama-blue"
           height="1em"
@@ -51,7 +51,9 @@ export default function PayoutRuleInfoButton() {
             <div className="flex flex-col m-2 mx-3 ">
               <span className="flex flex-row justify-between w-full text-base font-bold underline sm:text-center mb-1">
                 Scoring system:
-                <span className="flex flex-row justify-end">X</span>
+                <span className="flex flex-row justify-end cursor-pointer">
+                  X
+                </span>
               </span>
 
               <div className="flex flex-col mx-0 sm:mx-2">

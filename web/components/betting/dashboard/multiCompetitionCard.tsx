@@ -15,6 +15,7 @@ import { HiArrowCircleLeft } from 'react-icons/hi';
 import { FormattedCompetition } from '../../../services/bettingHelpers';
 import { UseNotification } from '../../../hooks/useNotification';
 import { UseUserType } from '../../../hooks/useUser';
+import axios from 'axios';
 
 type DasboardMultiCompetitionCardProps = {
   competition: FormattedCompetition;
@@ -29,13 +30,14 @@ export default function DashboardCompetitionCard(
   const [inviteLink, setInviteLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [index, setIndex] = useState(0);
-  const [timerLoading, setTimerLoading] = useState(true);
+  const [liveCompetition, setLiveCompetition] =
+    useState<FormattedCompetition>();
   const scrollToRef = useRef(null);
 
   const { stake, sponsored, payoutRule, isPublic, maxMembers } =
     competition || {};
 
-  const game = competition.games[index];
+  const game = (liveCompetition || competition).games[index];
 
   const handleShareCompetition = () => {
     if (isPublic || inviteLink) {
@@ -78,10 +80,27 @@ export default function DashboardCompetitionCard(
     else setIndex(index + value);
   }
 
-  const isLive = competition.games?.[index]?.event?.startTime
-    ? new Date(competition.games?.[index].event.startTime) < new Date() &&
-      new Date(competition.games?.[index].event.endTime) > new Date()
+  const isLive = game?.event?.startTime
+    ? new Date(game.event.startTime) < new Date() &&
+      new Date(game.event.endTime) > new Date()
     : false;
+
+  useEffect(() => {
+    if (isLive) {
+      const interval = setInterval(() => {
+        axios({
+          url: '/api/betting/competitions/show',
+          params: { id: competition.competitionId },
+        }).then(({ data }) => {
+          console.log(data);
+          setLiveCompetition(data);
+        });
+      }, 150000);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [isLive]);
 
   return (
     <div className="container-gray w-full relative">
@@ -193,7 +212,7 @@ export default function DashboardCompetitionCard(
               <Divider className="my-1" />
 
               <PointsTable
-                participants={competition.members}
+                participants={(liveCompetition || competition).members}
                 stake={sponsored ? 0 : stake}
                 user={user}
               />
@@ -215,111 +234,73 @@ export default function DashboardCompetitionCard(
           />
         </div>
 
-        <>
-          <div className="flex flex-col w-full mb-4 ">
-            <div className="flex flex-col w-full mt-6">
-              <div className="flex flex-col w-full justify-center items-center">
-                <div className="flex flex-col w-full ml-2">
-                  {/* ICONS */}
-                  <div className="flex flex-row justify-between items-center text-center w-full">
-                    <div className="flex flex-col justify-center items-center text-center w-5/12">
-                      <img
-                        src={`/api/betting/events/teamImage?id=${game?.event.teamHome.id}`}
-                        className="w-16 mb-2"
-                      />
-                    </div>
-                    <div className="flex justify-center items-center my-2 sm:w-2/12 w-3/12">
-                      {['RESOLVED', 'CLOSED_FOR_BETTING', 'HISTORIC'].includes(
-                        game?.state
-                      ) ? ( //IF GAME started, or is finished
-                        <div className="container-transparent-clean sm:pb-1 sm:pt-1.5 sm:px-5 pb-1 pt-2 px-4 bg-casama-light text-white  w-full flex flex-col justify-center items-center relative">
-                          {isLive && (
-                            <div className="flex justify-between items-center">
-                              <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                              <div className="text-sm">
-                                {game?.event?.minute
-                                  ? game?.event.minute
-                                  : 'LIVE'}
-                              </div>
-                            </div>
-                          )}
-
-                          <div className="flex flex-row justify-center items-center my-2">
-                            <div className=" flex flex-row justify-center text-xl sm:text-3xl">
-                              <p className="font-semibold ">
-                                {game?.event?.outcome[0] || 0}
-                              </p>
-                              <p className="px-2  "> : </p>
-                              <p className="font-semibold ">
-                                {game?.event?.outcome[1] || 0}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        //IF GAME is upcoming
-                        //TODO CHECK IF THIS SCOPE IS USELESS?
-                        <div className={timerLoading ? 'invisible' : ''}>
-                          <div className="container-transparent-clean p-1 py-5 pb-1 pt-2 px-4 w-full bg-casama-light text-white flex-col justify-center items-center ">
-                            {new Date(game?.event.startTime) < new Date() && (
-                              <div className="flex flex-row justify-center items-center gap-1 animate-pulse">
-                                <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                                <div className="text-sm">LIVE</div>
-                              </div>
-                            )}
-
-                            <Timer
-                              start={Number(new Date())}
-                              end={
-                                new Date(game?.event?.startTime) > new Date()
-                                  ? game?.event?.startTime
-                                  : game?.event?.endTime
-                              }
-                              setTimerLoading={setTimerLoading}
-                              {...props}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col justify-center items-center text-center w-5/12">
-                      <img
-                        src={`/api/betting/events/teamImage?id=${game?.event.teamAway.id}`}
-                        className="w-16 mb-2"
-                      />
-                    </div>
-                  </div>
-
-                  {/* NAMEN */}
-                  <div className="flex flex-row justify-between items-center text-center mb-2 w-full">
-                    <div className="flex flex-row justify-center items-center text-center w-5/12">
-                      <p className="text-xl sm:text-2xl font-semibold">
-                        {game?.event.teamHome?.name || game?.event?.teamHome}
-                      </p>
-                    </div>
-                    <div className="flex sm:w-2/12 w-3/12"></div>
-                    <div className="flex flex-col justify-center items-center text-center w-5/12">
-                      <p className="text-xl sm:text-2xl font-semibold">
-                        {game?.event.teamAway?.name || game?.event?.teamAway}
-                      </p>
-                    </div>
+        <div className="flex flex-row justify-between items-center text-center w-full">
+          <div className="w-5/12">
+            <img
+              src={`/api/betting/events/teamImage?id=${game?.event.teamHome.id}`}
+              className="w-16 mx-auto"
+            />
+          </div>
+          <div className="my-2 sm:w-2/12 w-3/12">
+            {isLive ? (
+              <div className="shadow rounded-lg py-2 px-2 bg-casama-light text-white w-full">
+                <div className="flex justify-end items-center gap-1 animate-pulse">
+                  <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                  <div className="text-sm">
+                    {game?.event?.minute ? game?.event.minute : 'LIVE'}
                   </div>
                 </div>
+
+                <div className="flex justify-center gap-2 text-xl sm:text-3xl font-semibold">
+                  <p>{game?.event?.outcome[0] || 0}</p>
+                  <p>:</p>
+                  <p>{game?.event?.outcome[1] || 0}</p>
+                </div>
               </div>
+            ) : (
               <div>
-                <ParticipantTable
-                  participants={game?.participants}
-                  stake={sponsored ? 0 : stake}
-                  user={user}
-                />
+                <div className="shadow rounded-lg py-2 px-2 w-full bg-casama-light text-white">
+                  <Timer
+                    start={Number(new Date())}
+                    end={
+                      new Date(game?.event?.startTime) > new Date()
+                        ? game?.event?.startTime
+                        : game?.event?.endTime
+                    }
+                    {...props}
+                  />
+                </div>
               </div>
-              <TransactionDialog
-                open={loading}
-                onClose={() => setLoading(false)}
-              />
-            </div>
+            )}
           </div>
-        </>
+          <div className="w-5/12">
+            <img
+              src={`/api/betting/events/teamImage?id=${game?.event.teamAway.id}`}
+              className="w-16 mx-auto"
+            />
+          </div>
+        </div>
+
+        {/* NAMEN */}
+        <div className="flex flex-row justify-between items-center text-center w-full">
+          <div className="flex flex-row justify-center items-center text-center w-5/12">
+            <p className="text-xl sm:text-2xl font-semibold">
+              {game?.event.teamHome?.name || game?.event?.teamHome}
+            </p>
+          </div>
+          <div className="flex sm:w-2/12 w-3/12"></div>
+          <div className="flex flex-col justify-center items-center text-center w-5/12">
+            <p className="text-xl sm:text-2xl font-semibold">
+              {game?.event.teamAway?.name || game?.event?.teamAway}
+            </p>
+          </div>
+        </div>
+        <ParticipantTable
+          participants={game?.participants}
+          stake={sponsored ? 0 : stake}
+          user={user}
+        />
+        <TransactionDialog open={loading} onClose={() => setLoading(false)} />
       </div>
     </div>
   );
