@@ -131,7 +131,7 @@ export default function LoginWithMetaMask({
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        handleError(error, wunderId, handle);
+        handleError(error);
       }
     } else {
       handleError('MetaMask is not installed', wunderId, handle);

@@ -70,6 +70,7 @@ export type UseUserType = {
   topUpRequired: boolean;
   setTopUpRequired: Dispatch<SetStateAction<boolean>>;
   preferredChain: SupportedChain;
+  updatePreferredChain: (chain: SupportedChain) => void;
   unsupportedChain: boolean;
   checkedTopUp: boolean;
   updateCheckedTopUp: (checked: boolean) => void;
@@ -522,7 +523,7 @@ export default function useUser(): UseUserType {
     setCheckedTopUp(localStorage.getItem('checkedTopUp') === 'true');
     setLoginMethod(localStorage.getItem('loginMethod') as LoginMethod);
     setPreferredChain(
-      (localStorage.getItem('preferredChain') as SupportedChain) || 'polygon'
+      (localStorage.getItem('preferredChain') as SupportedChain) || 'gnosis'
     );
   }, []);
 
@@ -555,6 +556,7 @@ export default function useUser(): UseUserType {
     topUpRequired,
     setTopUpRequired,
     preferredChain,
+    updatePreferredChain,
     unsupportedChain,
     checkedTopUp,
     updateCheckedTopUp,
