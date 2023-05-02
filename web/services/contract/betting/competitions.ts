@@ -1,5 +1,9 @@
 import { initPool, latestVersion } from './../init';
-import { SupportedDistributorVersion, SupportedPoolVersion } from './../types';
+import {
+  SupportedDistributorVersion,
+  SupportedPayoutRule,
+  SupportedPoolVersion,
+} from './../types';
 import { FormattedCompetition, FormattedEvent } from './../../bettingHelpers';
 import axios from 'axios';
 import { postAndWaitForTransaction } from '../../backendApi';
@@ -15,7 +19,7 @@ type CreateCompetitionProps = {
   creator: string;
   eventIds: number[];
   invitations?: string[];
-  payoutRule: string;
+  payoutRule: SupportedPayoutRule;
   stake: number;
   isPublic: boolean;
   version: SupportedDistributorVersion;

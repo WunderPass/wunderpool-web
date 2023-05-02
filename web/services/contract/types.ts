@@ -8,6 +8,8 @@ export type SupportedPoolVersion =
   | 'ZETA'
   | 'ETA';
 
+export type SupportedPayoutRule = 'PROPORTIONAL' | 'WINNER_TAKES_IT_ALL';
+
 export type TransactionData = {
   action: any;
   params: any;

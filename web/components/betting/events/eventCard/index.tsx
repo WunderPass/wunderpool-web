@@ -213,7 +213,7 @@ export default function EventCard(props: EventCardProps) {
       console.log(error);
       handleError(error, user.wunderId, user.userName);
     }
-    user.fetchUsdBalance();
+    user.fetchUsdBalance(event.chain);
     bettingService.reFetchCompetition(
       competitionId || joiningCompetitionId,
       3000

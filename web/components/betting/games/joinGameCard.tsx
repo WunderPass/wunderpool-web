@@ -361,7 +361,7 @@ function InputJoinAmount(props: InputJoinAmountProps) {
         game.event.version,
         game.event.chain
       );
-      user.fetchUsdBalance();
+      user.fetchUsdBalance(game.event.chain);
       router.push('/betting/bets');
     } catch (error) {
       handleError(error, user.wunderId, user.userName);

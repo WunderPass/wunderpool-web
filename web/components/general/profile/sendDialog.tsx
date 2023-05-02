@@ -83,7 +83,7 @@ export default function SendDialog(props: SendDialogProps) {
         waitForTransaction(res, chain).then((tx) => {
           setWaitingForTx(false);
           setTrxSent(true);
-          user.fetchUsdBalance();
+          user.fetchUsdBalance(chain);
         });
       })
       .catch((err) => {
