@@ -94,15 +94,14 @@ export default function useMetaMask() {
   ) => {
     if ('ethereum' in window) {
       if (usdc?.spender && usdc?.amount) {
-        approveUsdc(usdc.spender, usdc.amount, chain)
-          .then((res) => {
-            if (!tx) {
-              return res;
-            }
-          })
-          .catch((err) => {
-            throw err;
-          });
+        try {
+          const res = await approveUsdc(usdc.spender, usdc.amount, chain);
+          if (!tx) {
+            return res;
+          }
+        } catch (error) {
+          throw error;
+        }
       }
       if (tx) {
         const sanitizedTx = { data: tx.data, from: tx.from, to: tx.to };
