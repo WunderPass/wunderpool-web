@@ -71,10 +71,10 @@ async function switchChain(chain: SupportedChain) {
           params: [{ chainId: chainParams.chainId }],
         });
       } catch (addError) {
-        throw 'Could not add Polygon';
+        throw `Could not add ${chain}`;
       }
     }
-    throw 'Failed to switch to Polygon';
+    throw `Failed to switch to ${chain}`;
   }
 }
 
