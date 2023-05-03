@@ -8,7 +8,7 @@ const ERRORS = [
 
 export default async function handler(req, res) {
   try {
-    const { transactionId } = req.body;
+    const { transactionId, chain } = req.body;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -19,6 +19,7 @@ export default async function handler(req, res) {
 
     const data = {
       payment_transaction_id: transactionId,
+      network: chain,
     };
 
     axios({

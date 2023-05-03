@@ -4,24 +4,31 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import EmailVerificationCard from '../../components/general/profile/emailVerificationCard';
 import fs from 'fs';
-import AchievementsCard from '/components/rewards/achievementsCard';
-import { useHistory } from 'react-router-dom';
-import { handleShare } from '/services/shareLink';
+import { handleShare } from '../../services/shareLink';
+import AchievementsCard from '../../components/rewards/achievementsCard';
+import { UseNotification } from '../../hooks/useNotification';
+import { UseUserType } from '../../hooks/useUser';
 
-export default function RewardsPage(props) {
-  const { user, handleError, handleSuccess } = props;
+type RewardsPageProps = {
+  user: UseUserType;
+  wunderIdsNotified: string[];
+  handleError: UseNotification.handleError;
+  handleSuccess: UseNotification.handleSuccess;
+};
+
+export default function RewardsPage(props: RewardsPageProps) {
+  const { user, handleError } = props;
   const [loading, setLoading] = useState(true);
   const [emailVerified, setEmailVerified] = useState(null);
 
-  useEffect(async () => {
+  const fetchEmailVerified = async () => {
     setLoading(true);
-    if (user.loginMethod != 'Casama') return;
     try {
       const { signedMessage, signature } = await user.getSignedMillis();
       const { data } = await axios({
         url: '/api/users/getProfile',
         params: { wunderId: user.wunderId },
-        headers: { signed: signedMessage, signature },
+        headers: { signed: `${signedMessage}`, signature },
       });
       setEmailVerified(data?.contactDetails?.email_verified);
     } catch (error) {
@@ -33,6 +40,11 @@ export default function RewardsPage(props) {
       );
     }
     setLoading(false);
+  };
+
+  useEffect(() => {
+    if (user.loginMethod != 'Casama') return;
+    fetchEmailVerified();
   }, [user.loginMethod]);
 
   if (user.loginMethod == 'Casama') {
@@ -56,28 +68,27 @@ export default function RewardsPage(props) {
 function LoadingPage() {
   return (
     <>
-      <LinearProgress color="casamaBlue" />
+      <LinearProgress />
       <p>Loading Rewards...</p>
     </>
   );
 }
 
-function RewardsSection(props) {
-  const { user, handleSuccess } = props;
+function RewardsSection(props: RewardsPageProps) {
+  const { user, handleSuccess, handleError } = props;
   const [tellAFriendStats, setTellAFriendStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(async () => {
+  const fetchRewardStats = async () => {
     setLoading(true);
     try {
       const { signedMessage, signature } = await user.getSignedMillis();
       const { data } = await axios({
         url: '/api/users/rewards/stats',
         params: { wunderId: user.wunderId },
-        headers: { signed: signedMessage, signature },
+        headers: { signed: `${signedMessage}`, signature },
       });
       setTellAFriendStats(data[0]);
-      setLoading(false);
     } catch (error) {
       console.log(error);
       handleError(
@@ -85,8 +96,12 @@ function RewardsSection(props) {
         user.wunderId,
         user.userName
       );
-      setLoading(false);
     }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchRewardStats();
   }, [user.wunderId]);
 
   const inviteFriends = () => {
@@ -125,7 +140,14 @@ function RewardsSection(props) {
   );
 }
 
-function AccountUnverified(props) {
+type AccountUnverifiedProps = {
+  user: UseUserType;
+  wunderIdsNotified: string[];
+  handleSuccess: UseNotification.handleSuccess;
+  handleError: UseNotification.handleError;
+};
+
+function AccountUnverified(props: AccountUnverifiedProps) {
   const { user, wunderIdsNotified } = props;
   return (
     <>
