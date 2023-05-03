@@ -84,6 +84,10 @@ export default function DashboardCompetitionCard(
     ? new Date(game.event.startTime) < new Date() &&
       new Date(game.event.endTime) > new Date()
     : false;
+  const hasEnded = game?.event?.startTime
+    ? new Date(game.event.startTime) < new Date() &&
+      new Date(game.event.endTime) < new Date()
+    : false;
 
   useEffect(() => {
     if (isLive) {
@@ -92,7 +96,6 @@ export default function DashboardCompetitionCard(
           url: '/api/betting/competitions/show',
           params: { id: competition.competitionId },
         }).then(({ data }) => {
-          console.log(data);
           setLiveCompetition(data);
         });
       }, 150000);
@@ -242,14 +245,18 @@ export default function DashboardCompetitionCard(
             />
           </div>
           <div className="my-2 sm:w-2/12 w-3/12">
-            {isLive ? (
+            {isLive || hasEnded ? (
               <div className="shadow rounded-lg py-2 px-2 bg-casama-light text-white w-full">
-                <div className="flex justify-end items-center gap-1 animate-pulse">
-                  <div className="bg-red-500 w-2 h-2 rounded-full"></div>
-                  <div className="text-sm">
-                    {game?.event?.minute ? game?.event.minute : 'LIVE'}
+                {isLive ? (
+                  <div className="flex justify-end items-center gap-1 animate-pulse">
+                    <div className="bg-red-500 w-2 h-2 rounded-full"></div>
+                    <div className="text-sm">
+                      {game?.event?.minute ? game?.event.minute : 'LIVE'}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="text-sm">RESULT</div>
+                )}
 
                 <div className="flex justify-center gap-2 text-xl sm:text-3xl font-semibold">
                   <p>{game?.event?.outcome[0] || 0}</p>

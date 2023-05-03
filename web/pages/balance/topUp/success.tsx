@@ -4,10 +4,15 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
-import { waitForTransaction } from '/services/contract/provider';
+import { waitForTransaction } from '../../../services/contract/provider';
 import { getNameFor } from '../../../services/memberHelpers';
+import { UseUserType } from '../../../hooks/useUser';
 
-export default function BalanceTopUpSuccess(props) {
+type BalanceTopUpSuccessProps = {
+  user: UseUserType;
+};
+
+export default function BalanceTopUpSuccess(props: BalanceTopUpSuccessProps) {
   const { user } = props;
   const router = useRouter();
 
@@ -24,7 +29,7 @@ export default function BalanceTopUpSuccess(props) {
     axios({
       method: 'post',
       url: '/api/paypal/topUp',
-      data: { transactionId: transactionId },
+      data: { transactionId: transactionId, chain: user.preferredChain },
       headers: {
         signed: signature.signedMessage,
         signature: signature.signature,
@@ -41,7 +46,7 @@ export default function BalanceTopUpSuccess(props) {
           .catch(console.log);
         if (res.data) {
           setTransactionHash(res.data);
-          localStorage.setItem(`topUpSuccess${transactionId}`, true);
+          localStorage.setItem(`topUpSuccess${transactionId}`, 'true');
         }
       })
       .catch((err) => {
@@ -64,7 +69,7 @@ export default function BalanceTopUpSuccess(props) {
 
   const awaitTransaction = () => {
     localStorage.setItem('topUpTransactionHash', transactionHash);
-    waitForTransaction(transactionHash).then(() => {
+    waitForTransaction(transactionHash, user.preferredChain).then(() => {
       setWaitingForUSD(false);
       user.fetchUsdBalance();
     });
@@ -134,7 +139,7 @@ export default function BalanceTopUpSuccess(props) {
             {signature ? (
               <CheckCircleIcon color="success" />
             ) : (
-              <CircularProgress size={20} color="casamaBlue" />
+              <CircularProgress size={20} />
             )}
             <p className="text-xl md:text-3xl">Send Request</p>
           </Stack>
@@ -145,7 +150,7 @@ export default function BalanceTopUpSuccess(props) {
             alignItems="center"
           >
             {loading ? (
-              <CircularProgress size={20} color="casamaBlue" />
+              <CircularProgress size={20} />
             ) : (
               <CheckCircleIcon color="success" />
             )}
@@ -158,17 +163,14 @@ export default function BalanceTopUpSuccess(props) {
             alignItems="center"
           >
             {waitingForUSD ? (
-              <CircularProgress size={20} color="casamaBlue" />
+              <CircularProgress size={20} />
             ) : (
               <CheckCircleIcon color="success" />
             )}
             <p className="text-xl md:text-3xl">Finalizing Transaction</p>
           </Stack>
           <Link href={'/betting/multi'}>
-            <button
-              className="btn-casama py-3 px-5 md:text-2xl"
-              variant="contained"
-            >
+            <button className="btn-casama py-3 px-5 md:text-2xl">
               Continue to Casama
             </button>
           </Link>
