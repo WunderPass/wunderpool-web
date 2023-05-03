@@ -57,6 +57,7 @@ export default function MultiCard(props: MultiCardProps) {
           gameIds
         );
       } else {
+        setLoading(false);
         setJoiningCompetitionId(competition.competitionId);
         setJoiningBlockchainId(competition.blockchainId);
         setJoiningGameIds(gameIds);
@@ -94,7 +95,7 @@ export default function MultiCard(props: MultiCardProps) {
         blockchainId: competition.blockchainId,
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       handleError(
         typeof error == 'string' ? error : 'Competition could not be joined',
         user.wunderId,

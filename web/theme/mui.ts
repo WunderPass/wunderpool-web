@@ -15,8 +15,8 @@ const colors = {
 
 export default createTheme({
   palette: {
-    red: { main: '#ef4444' },
-    casamaBlue: { main: colors.casamaBlue, darker: colors.casamaDarkBlue },
+    error: { main: '#ef4444' },
+    primary: { main: colors.casamaBlue, dark: colors.casamaDarkBlue },
   },
   typography: {
     fontFamily: `"Graphik", sans-serif`,
