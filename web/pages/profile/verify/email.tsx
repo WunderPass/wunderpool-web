@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Divider, LinearProgress } from '@mui/material';
-import { IoMdNotifications } from 'react-icons/io';
 import Link from 'next/link';
 
 export default function VerifyEmailPage(props) {
@@ -11,25 +10,28 @@ export default function VerifyEmailPage(props) {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  useEffect(async () => {
+  const verifyEmail = async () => {
+    try {
+      const { signedMessage, signature } = await user.getSignedMillis();
+      const result = await axios({
+        method: 'POST',
+        url: '/api/users/verify/verifyMail',
+        data: { wunderId: user.wunderId, code: router.query.code },
+        headers: { signed: signedMessage, signature },
+      });
+      handleSuccess('Email Verified');
+      user.fetchNotifications();
+    } catch (error) {
+      console.log(error?.response?.data);
+      setError(error?.response?.data);
+      handleError(error, user.wunderId, user.userName);
+    }
+  };
+
+  useEffect(() => {
     setLoading(true);
     if (user.isReady && router.isReady) {
-      try {
-        const { signedMessage, signature } = await user.getSignedMillis();
-        const result = await axios({
-          method: 'POST',
-          url: '/api/users/verify/verifyMail',
-          data: { wunderId: user.wunderId, code: router.query.code },
-          headers: { signed: signedMessage, signature },
-        });
-        handleSuccess('Email Verified');
-        user.fetchNotifications();
-      } catch (error) {
-        console.log(error?.response?.data);
-        setError(error?.response?.data);
-        handleError(error, user.wunderId, user.userName);
-      }
-      setLoading(false);
+      verifyEmail().then(() => setLoading(false));
     }
   }, [router.isReady, user.isReady]);
 
@@ -37,7 +39,7 @@ export default function VerifyEmailPage(props) {
     <Container className="mt-20" maxWidth="lg">
       {loading ? (
         <>
-          <LinearProgress color="casamaBlue" />
+          <LinearProgress />
           <p className="text-center mt-5">Verifiying your Email...</p>
         </>
       ) : (
