@@ -308,18 +308,18 @@ export default function EditProfileCard(props: EditProfileCardProps) {
                 Email is not valid!
               </p>
             )}
-            <div className="flex flex-row justify-between ">
-              <div className="flex flex-row items-center justify-between w-full">
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-row items-center justify-between w-1/2">
                 <label className={'text-black py-2 px-3 mt-2 font-semibold'}>
                   Address
                 </label>
               </div>
-              <div className="flex flex-row justify-between w-full">
+              <div className="flex flex-row justify-between w-1/2">
                 <CopyToClipboard
                   text={user?.address}
                   onCopy={() => handleSuccess('address copied!')}
                 >
-                  <div className="textfield py-2 px-3 mx-2 flex items-center cursor-copy">
+                  <div className="textfield py-2 px-3 mx-2 flex items-center cursor-copy truncate">
                     {user?.address}
                   </div>
                 </CopyToClipboard>
