@@ -16,8 +16,6 @@ export default async function handler(req, res) {
       headers,
     });
 
-    console.log(data);
-
     res.status(200).json(formatCompetition(data));
   } catch (error) {
     console.log(error);

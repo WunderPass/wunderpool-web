@@ -22,6 +22,7 @@ import {
 import { signMillis } from '../services/sign';
 import useMetaMask from './useMetaMask';
 import useWalletConnect from './useWalletConnect';
+import { switchMetamaskChain } from '../services/metamask';
 
 const admins = [
   '0x7e0b49362897706290b7312d0b0902a1629397d8', // Moritz
@@ -70,7 +71,7 @@ export type UseUserType = {
   topUpRequired: boolean;
   setTopUpRequired: Dispatch<SetStateAction<boolean>>;
   preferredChain: SupportedChain;
-  updatePreferredChain: (chain: SupportedChain) => void;
+  switchPreferredChain: (chain: SupportedChain) => void;
   unsupportedChain: boolean;
   checkedTopUp: boolean;
   updateCheckedTopUp: (checked: boolean) => void;
@@ -180,6 +181,20 @@ export default function useUser(): UseUserType {
   const updatePreferredChain = (chain: SupportedChain) => {
     chain && localStorage.setItem('preferredChain', chain);
     setPreferredChain(chain);
+  };
+
+  const switchPreferredChain = (chain: SupportedChain) => {
+    if (loginMethod == 'Casama') {
+      updatePreferredChain(chain);
+    } else if (loginMethod == 'MetaMask') {
+      switchMetamaskChain(chain)
+        .then(() => {
+          updatePreferredChain(chain);
+        })
+        .catch(() => {});
+    } else if (loginMethod == 'WalletConnect') {
+      updatePreferredChain(chain);
+    }
   };
 
   const fetchPools = async (speedy = false) => {
@@ -556,7 +571,7 @@ export default function useUser(): UseUserType {
     topUpRequired,
     setTopUpRequired,
     preferredChain,
-    updatePreferredChain,
+    switchPreferredChain,
     unsupportedChain,
     checkedTopUp,
     updateCheckedTopUp,
