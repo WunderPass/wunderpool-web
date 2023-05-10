@@ -20,7 +20,7 @@ export default function SwitchChainCard({ user }: { user: UseUserType }) {
         <Select
           value={user.preferredChain || 'gnosis'}
           onChange={(e) =>
-            user.updatePreferredChain(e.target.value as SupportedChain)
+            user.switchPreferredChain(e.target.value as SupportedChain)
           }
           fullWidth
         >
